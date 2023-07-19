@@ -6,7 +6,8 @@ import { clearCredentials } from "../../slices/appSlice";
 import { useSignoutMutation } from "../../slices/authApiSlice";
 
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
-
+import Avatar from '@mui/material/Avatar';
+import { deepOrange, deepPurple } from '@mui/material/colors';
 import {
   CAvatar,
   CBadge,
@@ -42,8 +43,8 @@ const AppHeaderDropdown = () => {
   const handleSignout = async () => {
     try {
       const res = await signout().unwrap();
-
-      if (res?.status && !res.status) {
+      console.log(res);
+      if (!res.status) {
         console.log(res.message);
         console.log(res.logs);
 
@@ -63,7 +64,7 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+      <Avatar sx={{ bgcolor: deepOrange[500] }}>N</Avatar>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>

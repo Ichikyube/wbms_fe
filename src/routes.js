@@ -2,10 +2,27 @@ import { lazy } from "react";
 
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
-const ReportPksTransactions = lazy(() => import("./views/reports/PksTransactions"));
-
-const MdSite = lazy(() => import("./views/masterdata/Sites"));
-const MdProvince = lazy(() => import("./views/masterdata/Provinces"));
+const ReportPksTransactions = lazy(() =>
+  import("./views/reports/PksTransactions")
+);
+const Cities = lazy(() => import("./views/masterdata/cities"));
+const Provinces = lazy(() => import("./views/masterdata/provinces"));
+const Sites = lazy(() => import("./views/masterdata/sites"));
+const Companies = lazy(() => import("./views/masterdata/companies"));
+const BarcodeTypes = lazy(() => import("./views/masterdata/barcodetypes"));
+const CustomerTypes = lazy(() => import("./views/masterdata/customertypes"));
+const CustomerGroups = lazy(() => import("./views/masterdata/customergroups"));
+const Customers = lazy(() => import("./views/masterdata/customers"));
+const Mills = lazy(() => import("./views/masterdata/mills"));
+const Weighbridges = lazy(() => import("./views/masterdata/weighbridges"));
+const Productgroups = lazy(() => import("./views/masterdata/productgroups"));
+const Products = lazy(() => import("./views/masterdata/products"));
+const StorageTank = lazy(() => import("./views/masterdata/storagetanks"));
+const Driver = lazy(() => import("./views/masterdata/driver"));
+const Profile = lazy(() => import("./views/pages/profile"));
+const Transportvehicle = lazy(() =>
+  import("./views/masterdata/transportvehicles")
+);
 
 // Base
 // const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -69,15 +86,85 @@ const routes = [
   },
 
   {
-    path: "/md/provinces",
-    name: "Master Data Provinsi",
-    element: MdProvince,
+    path: "/profile",
+    name: "Profile",
+    element: Profile,
+  },
+  {
+    path: "/md/province",
+    name: "Master Data Province",
+    element: Provinces,
+  },
+  {
+    path: "/md/city",
+    name: "Master Data City",
+    element: Cities,
+  },
+  {
+    path: "/md/company",
+    name: "Master Data Company",
+    element: Companies,
+  },
+  {
+    path: "/md/site",
+    name: "Master Data Site",
+    element: Sites,
   },
 
   {
-    path: "/md/sites",
-    name: "Master Data Site",
-    element: MdSite,
+    path: "/md/customertype",
+    name: "Master Data Customer Type",
+    element: CustomerTypes,
+  },
+  {
+    path: "/md/customergroup",
+    name: "Master Data Customer Group",
+    element: CustomerGroups,
+  },
+  {
+    path: "/md/barcodetype",
+    name: "BarcodeType",
+    element: BarcodeTypes,
+  },
+  {
+    path: "/md/customer",
+    name: "Master Data Customer",
+    element: Customers,
+  },
+  {
+    path: "/md/mill",
+    name: "Master Data Mill",
+    element: Mills,
+  },
+  {
+    path: "/md/weighbridge",
+    name: "Master Data Weighbridge",
+    element: Weighbridges,
+  },
+  {
+    path: "/md/productgroup",
+    name: "Master Data Product Group",
+    element: Productgroups,
+  },
+  {
+    path: "/md/product",
+    name: "Master Data Product",
+    element: Products,
+  },
+  {
+    path: "/md/storagetank",
+    name: "Master Data Storage Tank",
+    element: StorageTank,
+  },
+  {
+    path: "/md/driver",
+    name: "Master Data Driver",
+    element: Driver,
+  },
+  {
+    path: "/md/transportvehicle",
+    name: "Master Data Transport Vehicle",
+    element: Transportvehicle,
   },
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },

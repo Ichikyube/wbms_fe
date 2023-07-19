@@ -6,6 +6,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.center-align {
+  text-align: center;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -29,4 +32,17 @@ code {
     margin: 0;
     padding: 10px;
   }
+}
+.custom-datetimepicker .MuiInputBase-root {
+  font-size: 14px;
+  width: 145px;
+  margin-right: 10px;
+  height: 38px;
+}
+.title {
+  font-size: 45px;
+  font-weight: bold;
+}
+.title.text-center.mb-4 span {
+  color: blue;
 }

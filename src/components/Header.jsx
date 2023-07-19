@@ -40,7 +40,13 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" data-bs-theme="dark" expand="lg" fixed="top" collapseOnSelect>
+      <Navbar
+        bg="dark"
+        data-bs-theme="dark"
+        expand="lg"
+        fixed="top"
+        collapseOnSelect
+      >
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>Weighbridge Management System</Navbar.Brand>
@@ -54,7 +60,9 @@ const Header = () => {
                     <LinkContainer to="/profile">
                       <NavDropdown.Item>Profile</NavDropdown.Item>
                     </LinkContainer>
-                    <NavDropdown.Item onClick={handleSignout}>Sign Out</NavDropdown.Item>
+                    <NavDropdown.Item onClick={handleSignout}>
+                      Sign Out
+                    </NavDropdown.Item>
                   </NavDropdown>
                 </>
               ) : (

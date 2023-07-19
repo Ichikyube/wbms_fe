@@ -9,6 +9,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: `${API_URL}/signin`,
         method: "POST",
         body: data,
+        mode: "cors",
+        credentials: "include",
       }),
     }),
     signout: builder.mutation({

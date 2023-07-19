@@ -38,7 +38,10 @@ const SignIn = () => {
     try {
       const res = await signin(values).unwrap();
 
-      if (res?.status && !res.status) {
+      console.log("signin");
+      console.log(res);
+
+      if (!res.status) {
         console.log(res.message);
         console.log(res.logs);
 
@@ -77,21 +80,26 @@ const SignIn = () => {
   }, [navigate, userInfo]);
 
   return (
-    <div className="min-vh-100 d-flex flex-row align-items-center">
+    <div className="min-vh-100 d-flex flex-row align-items-center" > 
       <FormContainer>
         <Form onSubmit={handleSubmit}>
-          <h1>Login</h1>
-          <p className="text-medium-emphasis">Sign In to your account</p>
+          <p className="text-center mb-2">
+            <Image src="assets/dsn.png" />
+          </p>
+          <p className="title text-center mb-4">
+            <span color="blue">WBMS </span>Administrator
+          </p>
           <InputGroup className="mb-3">
             <InputGroup.Text>
               <FaUser />
             </InputGroup.Text>
             <Form.Control
               name="username"
-              placeholder="Username"
+              placeholder="Masukkan Username..."
               autoComplete="username"
               value={values.username}
               onChange={(e) => handleInputChange(e)}
+              style={{ fontSize: "23px", height: "55px" }}
             />
           </InputGroup>
           <InputGroup className="mb-4">
@@ -100,19 +108,23 @@ const SignIn = () => {
             </InputGroup.Text>
             <Form.Control
               type="password"
-              name="password"
+              name="masukkan password...."
               placeholder="Password"
               autoComplete="password"
               value={values.password}
               onChange={(e) => handleInputChange(e)}
+              style={{ fontSize: "23px", height: "55px" }}
             />
           </InputGroup>
           <Row>
-            <Col xs={6}>
-              <Button type="submit" color="primary" className="px-4">
-                Sign In
-              </Button>
-            </Col>
+            <Button
+              type="submit"
+              color="primary"
+              className="px-4 text-center w-90"
+              style={{ fontSize: "20px" }}
+            >
+              LOGIN
+            </Button>
           </Row>
         </Form>
       </FormContainer>

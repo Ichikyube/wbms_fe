@@ -41,10 +41,17 @@ const App = () => {
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} />
           <Route path="/" element={<LayoutGuest />}>
-            <Route index={true} exact path="/" name="Home Page" element={<Home />} />
+            <Route
+              index={true}
+              exact
+              path="/"
+              name="Home Page"
+              element={<Home />}
+            />
             <Route path="/home" name="Home Page" element={<Home />} />
             <Route path="/signin" name="Sign In Page" element={<SignIn />} />
           </Route>
+
           <Route path="*" name="WBMS" element={<DefaultLayout />} />
         </Routes>
       </Suspense>

@@ -16,7 +16,7 @@ const PageHeader = (props) => {
           {icon}
         </Card>
         <Box sx={{ pl: 2 }}>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" fontWeight="bold">
             {title}
           </Typography>
           <Typography variant="subtitle2" component="div" sx={{ opacity: 0.6 }}>

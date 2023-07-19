@@ -2,7 +2,7 @@ import React from "react";
 import CIcon from "@coreui/icons-react";
 import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
 
-import { cilPuzzle, cilSpeedometer } from "@coreui/icons";
+import { cilPuzzle, cilSpeedometer, cilClipboard } from "@coreui/icons";
 import { MdCarRepair } from "react-icons/md";
 
 const _nav = [
@@ -77,23 +77,84 @@ const _nav = [
   {
     component: CNavGroup,
     name: "Master Data",
-    to: "/md/city",
-    icon: <MdCarRepair className="nav-icon" />,
+    to: "/base",
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: "Provinsi",
-        to: "/md/provinces",
+        name: "Province",
+        to: "/md/province",
+      },
+
+      {
+        component: CNavItem,
+        name: "City",
+        to: "/md/city",
       },
       {
         component: CNavItem,
-        name: "Kota",
-        to: "/md/cities",
+        name: "Company",
+        to: "/md/company",
       },
       {
         component: CNavItem,
-        name: "Site",
-        to: "/md/sites",
+        name: "Sites",
+        to: "/md/site",
+      },
+      {
+        component: CNavItem,
+        name: "Customers Type",
+        to: "/md/customertype",
+      },
+      {
+        component: CNavItem,
+        name: "Customer Group",
+        to: "/md/customergroup",
+      },
+      // {
+      //   component: CNavItem,
+      //   name: "Barcode Type",
+      //   to: "/md/barcodetype",
+      // },
+      {
+        component: CNavItem,
+        name: "Customer",
+        to: "/md/customer",
+      },
+      {
+        component: CNavItem,
+        name: "Mill",
+        to: "/md/mill",
+      },
+      {
+        component: CNavItem,
+        name: "Weighbridge",
+        to: "/md/weighbridge",
+      },
+      {
+        component: CNavItem,
+        name: "Product Group",
+        to: "/md/productgroup",
+      },
+      {
+        component: CNavItem,
+        name: "Product",
+        to: "/md/product",
+      },
+      {
+        component: CNavItem,
+        name: "Storage Tank",
+        to: "/md/storagetank",
+      },
+      {
+        component: CNavItem,
+        name: "Driver",
+        to: "/md/driver",
+      },
+      {
+        component: CNavItem,
+        name: "Transport Vehicle",
+        to: "/md/transportvehicle",
       },
     ],
   },

@@ -50,7 +50,7 @@ const Tables = (props) => {
         defaultColDef={defaultColDef} // Default Column Properties
         animateRows={true} // Optional - set to 'true' to have rows animate when sorted
         rowSelection="multiple" // Options - allows click selection of rows
-        rowGroupPanelShow="always"
+        // rowGroupPanelShow="always"
         enableRangeSelection="true"
         groupSelectsChildren="true"
         suppressRowClickSelection="true"
@@ -58,6 +58,7 @@ const Tables = (props) => {
         pagination="true"
         paginationAutoPageSize="true"
         groupDefaultExpanded="1"
+        
       />
     </div>
   );

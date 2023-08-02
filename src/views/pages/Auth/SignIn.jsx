@@ -80,14 +80,23 @@ const SignIn = () => {
   }, [navigate, userInfo]);
 
   return (
-    <div className="min-vh-100 d-flex flex-row align-items-center" > 
+    <div className="min-vh-100 d-flex flex-row align-items-center">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <p className="text-center mb-2">
-            <Image src="assets/dsn.png" />
+            <Image
+              src="assets/dsn.png"
+              style={{
+                width: "200px",
+                height: "100px",
+              }}
+            />
           </p>
-          <p className="title text-center mb-4">
-            <span color="blue">WBMS </span>Administrator
+          <p
+            className="title text-center mb-4 "
+            style={{ fontSize: "48px", fontWeight: "bold" }}
+          >
+            <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
             <InputGroup.Text>
@@ -95,7 +104,7 @@ const SignIn = () => {
             </InputGroup.Text>
             <Form.Control
               name="username"
-              placeholder="Masukkan Username..."
+              placeholder="Masukkan Username"
               autoComplete="username"
               value={values.username}
               onChange={(e) => handleInputChange(e)}
@@ -108,7 +117,7 @@ const SignIn = () => {
             </InputGroup.Text>
             <Form.Control
               type="password"
-              name="masukkan password...."
+              name="password"
               placeholder="Password"
               autoComplete="password"
               value={values.password}
@@ -119,9 +128,8 @@ const SignIn = () => {
           <Row>
             <Button
               type="submit"
-              color="primary"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px" }}
+              style={{ fontSize: "20px", fontWeight: "bold" }}
             >
               LOGIN
             </Button>

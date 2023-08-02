@@ -18,26 +18,26 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
-import * as RolesApi from "../../../api/roleApi";
-import * as CustomerTypesAPI from "../../../api/provinceApi";
+import * as RolesAPI from "../../../api/roleApi";
 
 const CreateRoles = ({ isOpen, onClose }) => {
   // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    CustomerTypesAPI.create(values)
+    RolesAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
-        // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+        toast.success("Data Berhasil Disimpan");
       })
       .catch((error) => {
         console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message); // Tampilkan pesan error spesifik
-        // Tangani error atau tampilkan pesan error
+        toast.error("Data Gagal Disimpan: " + error.message);
       })
       .finally(() => {
         setSubmitting(false);
         resetForm();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         onClose("", false);
       });
   };

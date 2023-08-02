@@ -13,6 +13,7 @@ const DefaultLayout = lazy(() => import("./layout/DefaultLayout"));
 
 // Pages
 const Home = lazy(() => import("./views/pages/Home"));
+const Login = lazy(() => import("./views/pages/login/Login"));
 const SignIn = lazy(() => import("./views/pages/Auth/SignIn"));
 const Page404 = lazy(() => import("./views/pages/page404/Page404"));
 const Page500 = lazy(() => import("./views/pages/page500/Page500"));

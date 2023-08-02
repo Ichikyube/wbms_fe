@@ -34,9 +34,9 @@ import InputBase from "@mui/material/InputBase";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import CreateSite from "./createSites";
-import EditSite from "./editSites";
-import ViewSite from "./viewSites";
+import CreateSite from "../../../views/masterdata/sites/createSites";
+import EditSite from "../../../views/masterdata/sites/editSites";
+import ViewSite from "../../../views/masterdata/sites/viewSites";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([

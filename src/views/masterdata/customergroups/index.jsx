@@ -59,8 +59,7 @@ const CustomerGroup = () => {
 
   const { data: dtCustomerGroup } = useSWR(
     searchQuery ? `customerGroup?name_like=${searchQuery}` : "customerGroup",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter

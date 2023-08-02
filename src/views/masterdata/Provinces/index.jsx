@@ -28,9 +28,9 @@ import InputBase from "@mui/material/InputBase";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import CreateProvinces from "./createProvince";
-import EditProvinces from "./editProvince";
-import ViewProvinces from "./viewProvince";
+import CreateProvinces from "../../../views/masterdata/provinces/createProvince";
+import EditProvinces from "../../../views/masterdata/provinces/editProvince";
+import ViewProvinces from "../../../views/masterdata/provinces/viewProvince";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -58,8 +58,7 @@ const Provinces = () => {
 
   const { data: dtProvince } = useSWR(
     searchQuery ? `province?name_like=${searchQuery}` : "province",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter

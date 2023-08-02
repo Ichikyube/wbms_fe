@@ -53,8 +53,7 @@ const ConfigRequest = () => {
 
   const { data: dtProvince } = useSWR(
     searchQuery ? `province?name_like=${searchQuery}` : "province",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter
@@ -154,7 +153,7 @@ const ConfigRequest = () => {
               display="flex"
               m="0 3px"
               bgcolor={green[500]}
-              borderRadius="50%"
+              borderRadius="25%"
               justifyContent="center"
               padding="10px 10px"
               color="white"
@@ -175,7 +174,7 @@ const ConfigRequest = () => {
               display="flex"
               m="0 3px"
               bgcolor={red[500]}
-              borderRadius="50%"
+              borderRadius="25%"
               padding="10px 10px"
               justifyContent="center"
               color="white"

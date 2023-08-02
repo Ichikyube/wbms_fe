@@ -66,8 +66,7 @@ const Cities = () => {
 
   const { data: dtCity } = useSWR(
     searchQuery ? `city?name_like=${searchQuery}` : "city",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter

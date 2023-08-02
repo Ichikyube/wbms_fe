@@ -18,13 +18,11 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
-import * as RolesApi from "../../../api/roleApi";
-import * as CustomerTypesAPI from "../../../api/provinceApi";
+import * as RoleAPI from "../../../api/roleApi";
 
-const CreateRoles = ({ isEditOpen, onClose, dtRole }) => {
-
-  const handleFormSubmit  = (values, { setSubmitting, resetForm }) => {
-    CustomerTypesAPI.update(values)
+const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
+  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
+    RoleAPI.update(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
         toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
@@ -69,7 +67,7 @@ const CreateRoles = ({ isEditOpen, onClose, dtRole }) => {
 
       <DialogContent dividers>
         <Formik
-          onSubmit={handleFormSubmit }
+          onSubmit={handleFormSubmit}
           initialValues={dtRole}
           validationSchema={userSchema}
         >
@@ -429,4 +427,4 @@ const CreateRoles = ({ isEditOpen, onClose, dtRole }) => {
   );
 };
 
-export default CreateRoles;
+export default EditRoles;

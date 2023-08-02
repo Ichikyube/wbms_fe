@@ -22,7 +22,7 @@ import * as SitesAPI from "../../../api/sitesApi";
 const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
   const handleSubmit = (values, { setSubmitting }) => {
     values.latitude = parseFloat(values.latitude);
-    values.longitude = parseFloat(values.longitude); 
+    values.longitude = parseFloat(values.longitude);
     values.solarCalibration = parseInt(values.solarCalibration);
 
     SitesAPI.create(values)
@@ -45,7 +45,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
     shortName: yup.string().required("required"),
     description: yup.string().required("required"),
     name: yup.string().required("required"),
-    companyId: yup.string().required("required"),
+    // companyId: yup.string().required("required"),
     cityId: yup.string().required("required"),
     solarCalibration: yup.number().required("required"),
     latitude: yup.number().required("required"),
@@ -63,7 +63,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
     latitude: "",
     longitude: "",
     isMill: "",
-    companyId: "",
+    // companyId: "",
     cityId: "",
     solarCalibration: "",
   };
@@ -224,7 +224,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   </FormLabel>
                   <Select
                     fullWidth
-                    name="companyId"
+                    name="companyName"
                     value={values.companyId}
                     onBlur={handleBlur}
                     onChange={(event) => {
@@ -254,7 +254,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                {/* <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -277,7 +277,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     error={!!touched.companyName && !!errors.companyName}
                     helperText={touched.companyName && errors.companyName}
                   />
-                </FormControl>
+                </FormControl> */}
 
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -422,7 +422,6 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     name="longitude"
                     error={!!touched.longitude && !!errors.longitude}
                     helperText={touched.longitude && errors.longitude}
-                    
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>

@@ -31,7 +31,8 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import CreateUsers from "../../../views/usermanagement/userslist/createUser";
 import EditUsers from "../../../views/usermanagement/userslist/editUser";
 import Swal from "sweetalert2";
-import * as RolesAPI from "../../../api/provinceApi";
+import * as RolesAPI from "../../../api/roleApi";
+import { useParams } from "react-router-dom";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -46,29 +47,30 @@ const ViewRole = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [roles, setRoles] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
+
+  const { id } = useParams();
+  const [role, setRole] = useState(null);
 
   const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
 
   useEffect(() => {
-    RolesAPI.getAll().then((res) => {
-      setRoles(res.data.province.records);
-    });
-  }, []);
+    RolesAPI.getById(id)
+      .then((res) => {
+        setRole(res);
+      })
+      .catch((error) => {
+        console.error("Error fetching role data:", error);
+      });
+  }, [id]);
 
-  useEffect(() => {
-    console.log(roles);
-  }, []);
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: dtUser } = useSWR(
     searchQuery ? `user?name_like=${searchQuery}` : "user",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter
@@ -208,7 +210,6 @@ const ViewRole = () => {
   return (
     <>
       <Grid container spacing={2} pl={8} pr={8}>
-      {roles.map((role) => (
         <Grid item xs={12} sm={6} md={4} lg={3}>
           <Paper
             variant="outlined"
@@ -245,7 +246,7 @@ const ViewRole = () => {
             </div>
           </Paper>
         </Grid>
- ))}
+
         <Grid item xs={12} sm={6} md={4} lg={9}>
           <Paper
             sx={{

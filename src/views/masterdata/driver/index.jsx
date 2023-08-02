@@ -69,8 +69,7 @@ const Driver = () => {
 
   const { data: dtDriver } = useSWR(
     searchQuery ? `driver?name_like=${searchQuery}` : "driver",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((driver) => {

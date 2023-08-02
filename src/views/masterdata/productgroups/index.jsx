@@ -57,8 +57,7 @@ const ProductGroups = () => {
 
   const { data: dtProductGroups } = useSWR(
     searchQuery ? `productgroups?name_like=${searchQuery}` : "productgroups",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((ProductGroups) => {

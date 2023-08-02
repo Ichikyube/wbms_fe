@@ -25,7 +25,7 @@ import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -51,8 +51,7 @@ const Config = () => {
 
   const { data: dtConfig } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   //filter
@@ -128,7 +127,7 @@ const Config = () => {
               display="flex"
               m="0 3px"
               bgcolor={yellow[900]}
-              borderRadius="50%"
+              borderRadius="25%"
               justifyContent="center"
               padding="10px 10px"
               color="white"
@@ -141,7 +140,7 @@ const Config = () => {
                 setIsEditOpen(true);
               }}
             >
-              <DriveFileRenameOutlineIcon sx={{ fontSize: "20px" }} />
+              <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
         );

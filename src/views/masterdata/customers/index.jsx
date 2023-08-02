@@ -90,8 +90,7 @@ const Customers = () => {
 
   const { data: dtCustomers } = useSWR(
     searchQuery ? `customers?name_like=${searchQuery}` : "customers",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((customers) => {

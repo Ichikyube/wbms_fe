@@ -55,8 +55,7 @@ const BarcodeTypes = () => {
 
   const { data: dtBarcodetypes } = useSWR(
     searchQuery ? `barcodetypes?name_like=${searchQuery}` : "barcodetypes",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((Barcodetypes) => {

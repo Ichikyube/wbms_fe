@@ -70,8 +70,7 @@ const TransportVehicles = () => {
     searchQuery
       ? `Transportvehicle?name_like=${searchQuery}`
       : "Transportvehicle",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((Transportvehicle) => {

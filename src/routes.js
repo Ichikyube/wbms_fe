@@ -2,16 +2,20 @@ import { lazy } from "react";
 
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
-const PksTransactionTbs = lazy(() =>
-  import(
-    "./views/PksTransactionInternal/pksWbTbsinternal/TbsInternalTimbangMasuk"
-  )
-);
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
-const PksTransactionManual = lazy(() =>
-  import("./views/pages/PksTransaction/PksManualEntry/timbangMasuk")
+const PksTransactionManualOthers = lazy(() =>
+  import("./views/PksManualEntry/manualentryothers/timbangMasuk")
+);
+const PksTransactionManualTbsInternal = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
+);
+const PksTransactionManualTbsEksternal = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
+);
+const PksTransactionManualCpoPko = lazy(() =>
+  import("./views/PksManualEntry/manualentryCpoPko/timbangMasuk")
 );
 const Cities = lazy(() => import("./views/masterdata/cities"));
 const Provinces = lazy(() => import("./views/masterdata/provinces"));
@@ -37,52 +41,6 @@ const ViewRole = lazy(() => import("./views/usermanagement/roles/viewRole"));
 const Config = lazy(() => import("./views/usermanagement/config/config"));
 const ConfigRequest = lazy(() => import("./views/usermanagement/config"));
 
-// Base
-// const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-// const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
-// const Cards = React.lazy(() => import('./views/base/cards/Cards'))
-// const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
-// const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
-// const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'))
-// const Navs = React.lazy(() => import('./views/base/navs/Navs'))
-// const Paginations = React.lazy(() => import('./views/base/paginations/Paginations'))
-// const Placeholders = React.lazy(() => import('./views/base/placeholders/Placeholders'))
-// const Popovers = React.lazy(() => import('./views/base/popovers/Popovers'))
-// const Progress = React.lazy(() => import('./views/base/progress/Progress'))
-// const Spinners = React.lazy(() => import('./views/base/spinners/Spinners'))
-// const Tables = React.lazy(() => import('./views/base/tables/Tables'))
-// const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
-
-// Buttons
-// const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
-// const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
-// const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
-
-//Forms
-// const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
-// const FloatingLabels = React.lazy(() => import('./views/forms/floating-labels/FloatingLabels'))
-// const FormControl = React.lazy(() => import('./views/forms/form-control/FormControl'))
-// const InputGroup = React.lazy(() => import('./views/forms/input-group/InputGroup'))
-// const Layout = React.lazy(() => import('./views/forms/layout/Layout'))
-// const Range = React.lazy(() => import('./views/forms/range/Range'))
-// const Select = React.lazy(() => import('./views/forms/select/Select'))
-// const Validation = React.lazy(() => import('./views/forms/validation/Validation'))
-
-// const Charts = React.lazy(() => import('./views/charts/Charts'))
-
-// Icons
-// const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'))
-// const Flags = React.lazy(() => import('./views/icons/flags/Flags'))
-// const Brands = React.lazy(() => import('./views/icons/brands/Brands'))
-
-// Notifications
-// const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
-// const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
-// const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
-// const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
-
-// const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
-
 const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
@@ -93,18 +51,30 @@ const routes = [
     exact: true,
   },
   {
-    path: "/pks-transaction-ManualEntry",
-    name: "PKS Transaction Manual Entry",
-    element: PksTransactionManual,
-    exact: true,
-  },
-  {
-    path: "/pks-transaction-TBS-Internal",
-    name: "PKS Transaction TBS Internal",
-    element: PksTransactionTbs,
+    path: "/pks-transaction-ManualEntry-Others",
+    name: "PKS Transaction Manual Entry Others",
+    element: PksTransactionManualOthers,
     exact: true,
   },
 
+  {
+    path: "/pks-transaction-ManualEntry-TBSInternal",
+    name: "PKS Transaction Manual Entry TBS Internal",
+    element: PksTransactionManualTbsInternal,
+    exact: true,
+  },
+  {
+    path: "/pks-transaction-ManualEntry-TBSEksternal",
+    name: "PKS Transaction Manual Entry TBS Eksternal",
+    element: PksTransactionManualTbsEksternal,
+    exact: true,
+  },
+  {
+    path: "/pks-transaction-ManualEntry-CpoPko",
+    name: "PKS Transaction Manual Entry CPO PKO",
+    element: PksTransactionManualCpoPko,
+    exact: true,
+  },
   {
     path: "/reports/pks-transactions",
     name: "Report PKS Transactions",
@@ -213,10 +183,11 @@ const routes = [
     element: ConfigRequest,
   },
   {
-    path: "/viewrole",
+    path: "/viewrole/:id",
     name: "View Role",
-    element: ViewRole,
+    element: <ViewRole />,
   },
+
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },
   // { path: "/base/accordion", name: "Accordion", element: Accordion },

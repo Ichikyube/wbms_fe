@@ -18,7 +18,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ModuleRegistry } from "@ag-grid-community/core";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import SyncIcon from "@mui/icons-material/Sync";
@@ -284,7 +284,12 @@ const Customers = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2, mx: 1 }}>
+          <Paper sx={{  p: 3,
+              mx: 3,
+              mb: 5,
+              mt: 2,
+              borderTop: "5px solid #000",
+              borderRadius: "10px 10px 10px 10px", }}>
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Customer</Typography>
@@ -317,7 +322,7 @@ const Customers = () => {
                       setIsOpen(true);
                     }}
                   >
-                    <AddBoxOutlinedIcon sx={{ mr: "5px", fontSize: "16px" }} />
+                    <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                     Tambah Data
                   </Button>
                 </Box>

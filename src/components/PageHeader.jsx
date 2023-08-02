@@ -19,7 +19,7 @@ const PageHeader = (props) => {
           <Typography variant="h6" component="div" fontWeight="bold">
             {title}
           </Typography>
-          <Typography variant="subtitle2" component="div" sx={{ opacity: 0.6 }}>
+          <Typography variant="subtitle2" component="div" sx={{ opacity: 0.8 }}>
             {subTitle}
           </Typography>
         </Box>

@@ -50,7 +50,7 @@ const PksWbNormal = (props) => {
     setProgressStatus("-");
     setWbPksTransaction(null);
 
-    navigate("/wb/pks-transaction");
+    navigate("/pks-transaction");
   };
 
   const handleSubmit = async () => {

@@ -128,7 +128,7 @@ const CreateCities = ({ isOpen, onClose, dtProvinces }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Province 
+                    Province
                   </FormLabel>
                   <Select
                     fullWidth

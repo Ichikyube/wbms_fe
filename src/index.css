@@ -46,3 +46,10 @@ code {
 .title.text-center.mb-4 span {
   color: blue;
 }
+.listItemStyle {
+  font-size: 16px; /* Ukuran teks */
+  line-height: 1.6; /* Atur tinggi garis untuk memberikan jarak antar baris */
+  margin-bottom: 10px; /* Atur margin di bagian bawah untuk memberikan jarak antar elemen <li> */
+  list-style-type: square; /* Menghapus latar belakang bulat */
+}
+

@@ -406,13 +406,15 @@ const TransportVehicles = () => {
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <TabContext value={value}>
-          <Paper
+            <Paper
               elevation={1}
               sx={{
+                mt: 2,
                 pt: 1,
                 width: "96%",
                 marginLeft: "37px",
-             
+                borderTop: "5px solid #000",
+                borderRadius: "10px 10px 0px 0px",
               }}
             >
               <TabList
@@ -426,7 +428,9 @@ const TransportVehicles = () => {
               </TabList>
             </Paper>
             <TabPanel value="">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -497,7 +501,9 @@ const TransportVehicles = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="0">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -562,7 +568,9 @@ const TransportVehicles = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="1">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -620,7 +628,9 @@ const TransportVehicles = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="2">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">

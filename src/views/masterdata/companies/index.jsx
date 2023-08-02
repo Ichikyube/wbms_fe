@@ -20,7 +20,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import * as React from "react";
 import * as CompaniesAPI from "../../../api/companiesApi";
 import * as ProvinceAPI from "../../../api/provinceApi";
@@ -416,9 +416,12 @@ const Companies = () => {
             <Paper
               elevation={1}
               sx={{
+                mt: 2,
                 pt: 1,
                 width: "96%",
                 marginLeft: "37px",
+                borderTop: "5px solid #000",
+                borderRadius: "10px 10px 0px 0px",
               }}
             >
               <TabList
@@ -433,7 +436,9 @@ const Companies = () => {
             </Paper>
 
             <TabPanel value="">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company</Typography>
@@ -452,9 +457,7 @@ const Companies = () => {
                           setIsOpen(true);
                         }}
                       >
-                        <AddBoxOutlinedIcon
-                          sx={{ mr: "5px", fontSize: "16px" }}
-                        />
+                        <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
                     </Box>
@@ -501,7 +504,9 @@ const Companies = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="0">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company Wbms</Typography>
@@ -520,9 +525,7 @@ const Companies = () => {
                           setIsOpen(true);
                         }}
                       >
-                        <AddBoxOutlinedIcon
-                          sx={{ mr: "5px", fontSize: "16px" }}
-                        />
+                        <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
                     </Box>
@@ -564,7 +567,9 @@ const Companies = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="1">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -622,7 +627,9 @@ const Companies = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="2">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company E-LHP</Typography>

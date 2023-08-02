@@ -58,7 +58,6 @@ const Tables = (props) => {
         pagination="true"
         paginationAutoPageSize="true"
         groupDefaultExpanded="1"
-        
       />
     </div>
   );

@@ -25,7 +25,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
   const userSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 Angka"),
+    nik: yup.string().required("required").min(16, "Minimal 16 Karakter"),
     name: yup.string().required("required"),
     address: yup.string().required("required"),
     email: yup
@@ -33,7 +33,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
       .email("Enter a valid email")
       .required("Email is required"),
     phone: yup.string().required("required"),
-    licenseNo: yup.string().required("required").min(12, "Minimal 12 Angka"),
+    licenseNo: yup.string().required("required").min(12, "Minimal 12 Karakter"),
     licenseED: yup.date().required("required"),
   });
 

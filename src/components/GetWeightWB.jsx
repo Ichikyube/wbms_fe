@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, InputAdornment, TextField } from "@mui/material";
+import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { w3cwebsocket } from "websocket";
 import moment from "moment";
 
@@ -63,14 +63,28 @@ const GetWeightWB = (props) => {
       <TextField
         type="number"
         fullWidth
-        sx={{
-          mb: 1,
-          backgroundColor: "whitesmoke",
-        }}
+        size="small"
         InputProps={{
           endAdornment: <InputAdornment position="end">kg</InputAdornment>,
         }}
-        label="GET WEIGHT"
+        sx={{
+          mb: 3.2,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+          },
+        }}
+        label={
+          <>
+            <Typography
+              sx={{
+                bgcolor: "white",
+                px: 1,
+              }}
+            >
+              GET WEIGHT
+            </Typography>
+          </>
+        }
         disabled={true}
         value={wb.weight}
       />
@@ -79,7 +93,7 @@ const GetWeightWB = (props) => {
         variant="contained"
         fullWidth
         sx={{
-          mb: 2,
+          mb: 3,
         }}
         disabled={
           isDisabled || !wb.isStable || wb.weight < configs.WBMS_WB_MIN_WEIGHT

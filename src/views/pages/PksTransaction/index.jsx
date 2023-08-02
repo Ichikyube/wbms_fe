@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
-import { Grid, Paper } from "@mui/material";
+import { Grid, Paper, Button, Menu, MenuItem } from "@mui/material";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,7 +12,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
 
 import * as TransactionAPI from "../../../api/transactionApi";
-
+import { Link } from "react-router-dom";
 import PageHeader from "../../../components/PageHeader";
 import QRCodeScanner from "../../../components/QRCodeScanner";
 import ProgressStatus from "../../../components/ProgressStatus";
@@ -116,6 +116,16 @@ const PksTransaction = () => {
     };
   }, []);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <PageHeader
@@ -129,7 +139,7 @@ const PksTransaction = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs="auto">
-              <Paper sx={{ p: 2, width: "220px", height: "70vh" }}>
+              <Paper sx={{ p: 2, width: "220px", height: "auto" }}>
                 <ProgressStatus />
                 <QRCodeScanner
                   onClose={handleCloseQRCodeScanner}
@@ -137,8 +147,37 @@ const PksTransaction = () => {
                 />
               </Paper>
             </Grid>
-            <Grid item xs>
-              <Paper sx={{ p: 2 }}>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                onClick={handleClick}
+                style={{ width: "10vh", fontSize: "13px", borderRadius: "10%" }}
+              >
+                New
+              </Button>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              > <MenuItem component={Link} to="/" onClick={handleClose}>
+                  CPO / PKO
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/pks-transaction-TBS-Internal"
+                  onClick={handleClose}
+                >
+                  TBS Internal
+                </MenuItem>
+               
+                <MenuItem component={Link} to="/item3" onClick={handleClose}>
+                  TBS Eksternal
+                </MenuItem>
+                <MenuItem component={Link} to="/pks-transaction-ManualEntry" onClick={handleClose}>
+                  Lainnya
+                </MenuItem>
+              </Menu>
+              <Paper sx={{ p: 2, mt: 1 }}>
                 <TransactionGrid tType={tType} />
               </Paper>
             </Grid>

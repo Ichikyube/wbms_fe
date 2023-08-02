@@ -18,7 +18,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import * as React from "react";
 import * as ProductGroupsAPI from "../../../api/productgroupsApi";
 import Tables from "../../../components/Tables";
@@ -211,7 +211,16 @@ const ProductGroups = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2, mx: 1 }}>
+          <Paper
+            sx={{
+              p: 3,
+              mx: 3,
+              mb: 5,
+              mt: 2,
+              borderTop: "5px solid #000",
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Product Group</Typography>
@@ -230,7 +239,7 @@ const ProductGroups = () => {
                       setIsOpen(true);
                     }}
                   >
-                    <AddBoxOutlinedIcon sx={{ mr: "5px", fontSize: "16px" }} />
+                    <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                     Tambah Data
                   </Button>
                 </Box>

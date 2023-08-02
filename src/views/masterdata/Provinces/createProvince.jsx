@@ -115,30 +115,6 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </FormControl>
-                {/* <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Short Deskripsi
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Short Deskripsi"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.shortDesc}
-                    name="shortDesc"
-                    error={!!touched.shortDesc && !!errors.shortDesc}
-                    helperText={touched.shortDesc && errors.shortDesc}
-                  />
-                </FormControl> */}
               </Box>
               <Box display="flex" mt={2} ml={3}>
                 <Button

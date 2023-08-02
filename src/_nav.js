@@ -2,7 +2,13 @@ import React from "react";
 import CIcon from "@coreui/icons-react";
 import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
 
-import { cilPuzzle, cilSpeedometer, cilClipboard } from "@coreui/icons";
+import {
+  cilPuzzle,
+  cilSpeedometer,
+  cilClipboard,
+  cilSettings,
+  cilUserFollow,
+} from "@coreui/icons";
 import { MdCarRepair } from "react-icons/md";
 
 const _nav = [
@@ -155,6 +161,65 @@ const _nav = [
         component: CNavItem,
         name: "Transport Vehicle",
         to: "/md/transportvehicle",
+      },
+    ],
+  },
+  {
+    component: CNavTitle,
+    name: "User Administration",
+  },
+  {
+    component: CNavGroup,
+    name: "Config",
+    to: "/base",
+    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: "Config",
+        to: "/config",
+      },
+      {
+        component: CNavItem,
+        name: "Config Request",
+        to: "/configrequest",
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: "User Management",
+    icon: <CIcon icon={cilUserFollow} customClassName="nav-icon" />,
+    to: "/base",
+    items: [
+      {
+        component: CNavGroup,
+        name: "Users",
+        to: "/base",
+        items: [
+          {
+            component: CNavItem,
+            name: "Users List",
+            to: "/userslist",
+          },
+        ],
+      },
+      {
+        component: CNavGroup,
+        name: "Roles",
+        to: "/base",
+        items: [
+          {
+            component: CNavItem,
+            name: "Roles List",
+            to: "roleslist",
+          },
+        ],
+      },
+      {
+        component: CNavItem,
+        name: "Permissions",
+        to: "/permissions",
       },
     ],
   },

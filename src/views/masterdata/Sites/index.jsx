@@ -21,7 +21,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import SyncIcon from "@mui/icons-material/Sync";
 import * as React from "react";
 import * as SitesAPI from "../../../api/sitesApi";
@@ -34,9 +34,9 @@ import InputBase from "@mui/material/InputBase";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import CreateSite from "../../../views/masterdata/sites/createSites";
-import EditSite from "../../../views/masterdata/sites/editSites";
-import ViewSite from "../../../views/masterdata/sites/viewSites";
+import CreateSite from "./createSites";
+import EditSite from "./editSites";
+import ViewSite from "./viewSites";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -378,13 +378,15 @@ const Sites = () => {
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <TabContext value={value}>
-          <Paper
+            <Paper
               elevation={1}
               sx={{
+                mt: 2,
                 pt: 1,
                 width: "96%",
                 marginLeft: "37px",
-            
+                borderTop: "5px solid #000",
+                borderRadius: "10px 10px 0px 0px",
               }}
             >
               <TabList
@@ -398,7 +400,9 @@ const Sites = () => {
               </TabList>
             </Paper>
             <TabPanel value="">
-              <Paper sx={{ p: 2, mx: 1,  }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Site</Typography>
@@ -417,9 +421,7 @@ const Sites = () => {
                           setIsOpen(true);
                         }}
                       >
-                        <AddBoxOutlinedIcon
-                          sx={{ mr: "5px", fontSize: "16px" }}
-                        />
+                        <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
                     </Box>
@@ -466,7 +468,9 @@ const Sites = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="0">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Site Wbms</Typography>
@@ -485,9 +489,7 @@ const Sites = () => {
                           setIsOpen(true);
                         }}
                       >
-                        <AddBoxOutlinedIcon
-                          sx={{ mr: "5px", fontSize: "16px" }}
-                        />
+                        <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
                     </Box>
@@ -529,7 +531,9 @@ const Sites = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="1">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -587,7 +591,9 @@ const Sites = () => {
               </Paper>
             </TabPanel>
             <TabPanel value="2">
-              <Paper sx={{ p: 2, mx: 1 }}>
+              <Paper
+                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+              >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Site E-LHP</Typography>

@@ -23,7 +23,8 @@ import { grey } from "@mui/material/colors";
 import * as UserApi from "../../../api/usersApi";
 
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
-  // Create
+  const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
+  console.log(path);
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     const {
       id,
@@ -221,7 +222,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         {/* Gambar ditampilkan terlebih dahulu */}
                         {image === null && dtuser.profilePic && (
                           <img
-                            src={"img/" + dtuser.profilePic}
+                            src={`${path}${dtuser.profilePic}`}
                             alt="Uploaded Preview"
                             style={{
                               width: "160px",

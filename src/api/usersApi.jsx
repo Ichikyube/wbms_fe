@@ -28,7 +28,11 @@ export const create = async (data) => {
 };
 
 export const update = async (data) => {
-  const response = await api.patch(`${endpoint}/${data.id}`, data);
+  const response = await api.patch(`${endpoint}/${data.id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 

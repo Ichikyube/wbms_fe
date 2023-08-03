@@ -66,6 +66,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
     } finally {
       setSubmitting(false);
       resetForm();
+      handleResetImage();
       onClose("", false);
     }
   };
@@ -91,12 +92,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
 
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file ? URL.createObjectURL(file) : null);
-    setInitialImage(false);
-  };
 
   const handleResetImage = () => {
     // Menghapus gambar yang baru dipilih saat tombol reset diklik
@@ -202,7 +197,13 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             id="imageInput"
                             type="file"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            name="file"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              setFieldValue("file", file);
+                              setImage(file ? URL.createObjectURL(file) : null);
+                              setInitialImage(false);
+                            }}
                             style={{ display: "none" }}
                           />
                           <AddCircleIcon

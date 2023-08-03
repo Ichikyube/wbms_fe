@@ -39,6 +39,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
+        handleResetImage();
         onClose("", false);
       });
   };
@@ -87,8 +88,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
-      >
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
         Tambah User
         <IconButton
           sx={{
@@ -99,8 +99,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -109,8 +108,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
         <Formik
           onSubmit={handleSubmit}
           initialValues={initialValues}
-          validationSchema={checkoutSchema}
-        >
+          validationSchema={checkoutSchema}>
           {({
             values,
             errors,
@@ -128,16 +126,14 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Profile
                   </FormLabel>
                   <Box mt={1} mb={1} position="relative">
@@ -156,8 +152,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           border: "1px solid #9e9e9e",
                           borderRadius: "50%",
                           boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                        }}
-                      >
+                        }}>
                         <Tooltip title="Cancel Profile">
                           <CancelIcon
                             style={{ fontSize: "24px", color: "#ff0000" }}
@@ -181,8 +176,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         border: "1px solid #9e9e9e",
                         borderRadius: "50%",
                         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                      }}
-                    >
+                      }}>
                       <Tooltip title="Pilih Profile">
                         <input
                           id="imageInput"
@@ -191,20 +185,19 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           name="file"
                           onChange={(event) => {
                             const selectedFile = event.target.files[0];
-                            setFieldValue('file', selectedFile)
+                            setFieldValue("file", selectedFile);
                             const reader = new FileReader();
-                        
+
                             // Baca file gambar yang dipilih menggunakan FileReader
                             reader.onloadend = () => {
                               setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
                               setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
                             };
-                        
+
                             if (selectedFile) {
                               reader.readAsDataURL(selectedFile);
                             }
                           }}
-                          
                           style={{ display: "none" }}
                         />
                         <AddCircleIcon
@@ -220,8 +213,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         height: "160px",
                         overflow: "hidden",
                         border: "2px solid #9e9e9e",
-                      }}
-                    >
+                      }}>
                       {/* Gambar ditampilkan terlebih dahulu */}
                       {image === null && (
                         <img
@@ -272,8 +264,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Name
                   </FormLabel>
                   <TextField
@@ -296,8 +287,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Email
                   </FormLabel>
                   <TextField
@@ -320,8 +310,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     No Telepon
                   </FormLabel>
                   <TextField
@@ -344,8 +333,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Nik
                   </FormLabel>
                   <TextField
@@ -369,8 +357,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Username
                   </FormLabel>
                   <TextField
@@ -393,8 +380,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Password
                   </FormLabel>
                   <TextField
@@ -417,8 +403,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Division
                   </FormLabel>
                   <TextField
@@ -441,8 +426,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Position
                   </FormLabel>
                   <TextField
@@ -465,9 +449,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
-                    Role 
+                    }}>
+                    Role
                   </FormLabel>
                   <Select
                     fullWidth
@@ -487,8 +470,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih Role Id --
                     </MenuItem>
@@ -509,8 +491,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Role Name
                   </FormLabel>
                   <TextField
@@ -533,8 +514,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     isLDAPUser
                   </FormLabel>
 
@@ -544,8 +524,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     name="isLDAPUser"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- LDAP User --
                     </MenuItem>
@@ -756,8 +735,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}
-                >
+                  }}>
                   Cancel
                 </Button>
                 <Box mr={1} />
@@ -768,8 +746,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     color: "white",
                     textTransform: "none",
                     fontSize: "16px",
-                  }}
-                >
+                  }}>
                   Simpan
                 </Button>
               </Box>

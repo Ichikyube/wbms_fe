@@ -51,17 +51,16 @@ const Cities = () => {
 
   const fetcher = () => CitiesApi.getAll().then((res) => res.data.city.records);
 
+
+
   // Mengambil data provinsi dari API
-  ProvinceApi.getAll()
-    .then((res) => {
+  useEffect(() => {
+    ProvinceApi.getAll().then((res) => {
       setDtProvinces(res.data.province.records);
-    })
-    .catch((error) => {
-      console.error("Error fetching provinces:", error);
     });
+  }, []);
 
   // search
-
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: dtCity } = useSWR(
@@ -137,7 +136,14 @@ const Cities = () => {
       hide: false,
       flex: 3,
     },
-
+    {
+      headerName: "Province",
+      field: "province.name",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
     {
       headerName: "Action",
       field: "id",
@@ -145,27 +151,6 @@ const Cities = () => {
       cellRenderer: (params) => {
         return (
           <Box display="flex" justifyContent="center">
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={indigo[700]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedCity(params.data);
-                setIsViewOpen(true);
-              }}
-            >
-              <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
             <Box
               width="25%"
               display="flex"
@@ -182,8 +167,7 @@ const Cities = () => {
               onClick={() => {
                 setSelectedCity(params.data);
                 setIsEditOpen(true);
-              }}
-            >
+              }}>
               <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -201,8 +185,7 @@ const Cities = () => {
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -223,8 +206,7 @@ const Cities = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data City</Typography>
@@ -241,8 +223,7 @@ const Cities = () => {
                     }}
                     onClick={() => {
                       setIsOpen(true);
-                    }}
-                  >
+                    }}>
                     <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                     Tambah Data
                   </Button>
@@ -254,8 +235,7 @@ const Cities = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -273,8 +253,7 @@ const Cities = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>
@@ -282,6 +261,7 @@ const Cities = () => {
             </div>
             <Tables
               name={"city"}
+              path={"/cities"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}

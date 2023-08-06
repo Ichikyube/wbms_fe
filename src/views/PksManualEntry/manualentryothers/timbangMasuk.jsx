@@ -40,8 +40,24 @@ const tType = 1;
 let wsClient;
 
 const PksManualOthersTimbangMasuk = () => {
-  const { values, setValues } = useForm({ ...TransactionAPI.InitialData });
   const navigate = useNavigate();
+  const [values, setValues] = useState({});
+  const [originWeightNetto, setOriginWeightNetto] = useState(0);
+
+  const handleSubmit = () => {
+    // Assuming you have all the required data in the 'values' state object.
+    TransactionAPI.create(values)
+      .then((res) => {
+        console.log("Data Berhasil Disimpan:", res.data);
+        toast.success("Data Berhasil Disimpan");
+        // Assuming you want to reset the form values after successful submission.
+        setValues({});
+      })
+      .catch((error) => {
+        console.error("Data Gagal Disimpan:", error);
+        toast.error("Data Gagal Disimpan: " + error.message);
+      });
+  };
 
   const handleChange = (event) => {
     setValues({
@@ -291,7 +307,7 @@ const PksManualOthersTimbangMasuk = () => {
                       color: MenuItem ? "gray" : "black",
                     }}
                   >
-                    <MenuItem value="" disabled >
+                    <MenuItem value="" disabled>
                       -- Pilih Vendor --
                     </MenuItem>
                     {dtCompany.map((item) => (
@@ -372,29 +388,72 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedProduct = dtProduct.find(
+                        (item) => item.id === value
+                      );
+                      setValues({
+                        ...values,
+                        [name]: value,
+                        productName: selectedProduct
+                          ? selectedProduct.name
+                          : "",
+                      });
+                    }}
                     name="productId"
-                    value={values.productId || ""}
-                    displayEmpty
+                    value={values.productId}
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
+                      color: "black", // Ganti "MenuItem" dengan "black" atau warna yang diinginkan
                     }}
+                    displayEmpty
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Barang --
                     </MenuItem>
-                    {dtProduct.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
+                    {dtProduct.map((item) => {
+                      return (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
+
+                {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                    display: "none",
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Nama Barang
+                    </Typography>
+                  }
+                  name="productName"
+                  value={values.productName}
+                />
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
-                {values.progressStatus === 0 && (
+                {/* {values.progressStatus === 0 && (
                   <GetWeightWB
                     handleSubmit={(weightWb) => {
                       setValues((prev) => ({
@@ -413,14 +472,14 @@ const PksManualOthersTimbangMasuk = () => {
                       }));
                     }}
                   />
-                )}
+                )} */}
                 <TextField
                   type="number"
                   variant="outlined"
                   size="small"
                   fullWidth
                   sx={{
-                    my: 2,
+                    mb: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
@@ -429,6 +488,9 @@ const PksManualOthersTimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -458,6 +520,9 @@ const PksManualOthersTimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -489,6 +554,9 @@ const PksManualOthersTimbangMasuk = () => {
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label={
                     <Typography
                       sx={{
@@ -517,6 +585,9 @@ const PksManualOthersTimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -561,14 +632,14 @@ const PksManualOthersTimbangMasuk = () => {
                     </Typography>
                   }
                   name="weightNetto"
-                  //   value={originWeightNetto || 0}
+                  value={originWeightNetto || 0}
                 />
 
                 <Button
                   variant="contained"
                   fullWidth
                   sx={{ mt: 2 }}
-                  // onClick={handleSubmit}
+                  onClick={handleSubmit}
                   // disabled={
                   //   !(
                   //     canSubmit &&

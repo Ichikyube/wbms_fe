@@ -55,7 +55,7 @@ const CreateTransportvehicle = ({
     productId: yup.string().required("required"),
     productName: yup.string().required("required"),
     productCode: yup.string().required("required"),
-    plateNo: yup.string().required("required").max(10),
+    plateNo: yup.string().required("required").max(12),
     capacity: yup.number().required("required"),
     brand: yup.string().required("required"),
     model: yup.string().required("required"),

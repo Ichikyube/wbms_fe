@@ -15,7 +15,8 @@ import * as RolesAPI from "../../../api/roleApi";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateRole from "../../../views/usermanagement/roles/createRole";
 import EditRole from "../../../views/usermanagement/roles/editRole";
-import { Link } from "react-router-dom";
+import ViewRole from "../../../views/usermanagement/roles/view";
+import { LinkContainer } from "react-router-bootstrap";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -29,6 +30,7 @@ const RoleList = () => {
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () => RolesAPI.getAll().then();
 
@@ -82,12 +84,22 @@ const RoleList = () => {
                 </Typography>
               </div>
               <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
-                <Link
+                {/* <LinkContainer
                   to={`/viewrole/${role.id}`}
-                  style={{ textDecoration: "none" }}
+                  sx={{ textDecoration: "none", textTransform: "none" }}
                 >
                   <Button variant="contained">View Role</Button>
-                </Link>
+                </LinkContainer> */}
+                <Button
+                variant="contained"
+                  style={{ textTransform: "none" }}
+                  onClick={() => {
+                    setSelectedRole(role);
+                    setIsViewOpen(true);
+                  }}
+                >
+                  View Role
+                </Button>
                 {!["Administrator", "administrator", "Admin", "admin"].includes(
                   role.name
                 ) && (
@@ -163,10 +175,18 @@ const RoleList = () => {
           </Paper>
         </Grid>
       </Grid>
+
       <CreateRole isOpen={isOpen} onClose={setIsOpen} />
+
       <EditRole
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
+        dtRole={selectedRole}
+      />
+
+      <ViewRole
+        isViewOpen={isViewOpen}
+        onClose={() => setIsViewOpen(false)}
         dtRole={selectedRole}
       />
     </div>

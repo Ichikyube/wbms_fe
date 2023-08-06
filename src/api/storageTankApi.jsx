@@ -1,12 +1,5 @@
-import axios from "axios";
-
-const { REACT_APP_WBMS_BACKEND_API_URL } = process.env;
-
-const api = axios.create({
-  baseURL: `${REACT_APP_WBMS_BACKEND_API_URL}`,
-});
-
-export const endpoint = "/storage-tanks";
+import { api } from "./api";
+const endpoint = "/storage-tanks";
 
 export const getAll = async () => {
   const response = await api.get(endpoint);

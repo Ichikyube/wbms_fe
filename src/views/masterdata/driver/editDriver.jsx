@@ -33,7 +33,8 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
       .email("Enter a valid email")
       .required("Email is required"),
     phone: yup.string().required("required"),
-    licenseNo: yup.string().required("required").min(12, "Minimal 12 Karakter"),
+    codeSap: yup.string().required("required"),
+    licenseNo: yup.string().min(12, "Minimal 12 Karakter"),
     licenseED: yup.date().required("required"),
   });
 

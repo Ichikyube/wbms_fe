@@ -21,7 +21,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddBoxOutlinedIcon from "@mui/icons-material/Add";
 import SyncIcon from "@mui/icons-material/Sync";
 import * as React from "react";
 import * as TransportvehiclesAPI from "../../../api/transportvehicleApi";
@@ -70,7 +70,8 @@ const TransportVehicles = () => {
     searchQuery
       ? `Transportvehicle?name_like=${searchQuery}`
       : "Transportvehicle",
-    fetcher
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   const updateGridData = useCallback((Transportvehicle) => {

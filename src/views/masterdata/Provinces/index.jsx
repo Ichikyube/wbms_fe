@@ -62,9 +62,9 @@ const Provinces = () => {
   );
 
   //filter
-  const updateGridData = useCallback((Province) => {
+  const updateGridData = useCallback((province) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(Province);
+      gridRef.current.api.setRowData(province);
     }
   }, []);
 
@@ -150,8 +150,7 @@ const Provinces = () => {
               onClick={() => {
                 setSelectedProvince(params.data);
                 setIsViewOpen(true);
-              }}
-            >
+              }}>
               <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -171,8 +170,7 @@ const Provinces = () => {
               onClick={() => {
                 setSelectedProvince(params.data);
                 setIsEditOpen(true);
-              }}
-            >
+              }}>
               <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -190,8 +188,7 @@ const Provinces = () => {
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -212,8 +209,7 @@ const Provinces = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Province</Typography>
@@ -230,8 +226,7 @@ const Provinces = () => {
                     }}
                     onClick={() => {
                       setIsOpen(true);
-                    }}
-                  >
+                    }}>
                     <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                     Tambah Data
                   </Button>
@@ -243,8 +238,7 @@ const Provinces = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -262,8 +256,7 @@ const Provinces = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>

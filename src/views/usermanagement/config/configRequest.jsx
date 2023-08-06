@@ -7,9 +7,8 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { toast } from "react-toastify";
 import useSWR from "swr";
-import { yellow } from "@mui/material/colors";
+import { blue, yellow } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -19,13 +18,13 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/provinceApi";
-
+import * as ConfigAPI from "../../../api/configsApi";
+import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
-import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -35,23 +34,31 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const Config = () => {
-  console.clear();
+const ConfigRequest = () => {
+  // console.clear();
   const gridRef = useRef();
 
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [dtSite, setdtSites] = useState([]);
   const fetcher = () =>
-    ConfigAPI.getAll().then((res) => res.data.province.records);
+    ConfigAPI.getAll().then((res) => res.data.config.records);
 
+  useEffect(() => {
+    SiteAPI.getAll().then((res) => {
+      setdtSites(res);
+    });
+  }, []);
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: dtConfig } = useSWR(
+  const { data: dtConfigs } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
-    fetcher
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   //filter
@@ -62,15 +69,26 @@ const Config = () => {
   }, []);
 
   useEffect(() => {
-    if (dtConfig) {
-      const filteredData = dtConfig.filter((config) => {
-        const configData = Object.values(config).join(" ").toLowerCase();
+    if (dtConfigs) {
+      const filteredData = dtConfigs.filter((conf) => {
+        const configData = Object.values(conf).join(" ").toLowerCase();
         return configData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtConfig, updateGridData]);
+  }, [searchQuery, dtConfigs, updateGridData]);
 
+  //open create dialog
+  useEffect(() => {}, [isOpen]);
+  // {
+  //   "name": "string",
+  //   "value": "string",
+  //   "type": "string",
+  //   "status": "ACTIVE",
+  //   "activeStart": "2023-08-06T09:53:03.504Z",
+  //   "activeEnd": "2023-08-06T09:53:03.504Z",
+  //   "siteId": "string"
+  // }
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -138,8 +156,7 @@ const Config = () => {
               onClick={() => {
                 setSelectedConfig(params.data);
                 setIsEditOpen(true);
-              }}
-            >
+              }}>
               <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -151,6 +168,7 @@ const Config = () => {
   return (
     <>
       <Grid container spacing={1}>
+        {dtConfigs}
         <Grid item xs={12}>
           <Paper
             sx={{
@@ -160,8 +178,7 @@ const Config = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">WBMS Config </Typography>
@@ -172,8 +189,7 @@ const Config = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -185,14 +201,13 @@ const Config = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtConfig.filter((config) =>
+                      const filteredData = dtConfigs.filter((config) =>
                         config.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>
@@ -210,10 +225,11 @@ const Config = () => {
       <EditDataConfig
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        dtProvince={selectedConfig}
+        dtConfig={selectedConfig}
+        dtSite={dtSite}
       />
     </>
   );
 };
 
-export default Config;
+export default ConfigRequest;

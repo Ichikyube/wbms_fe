@@ -21,7 +21,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import AddIcon from "@mui/icons-material/Add";
 import * as React from "react";
 import * as UsersAPI from "../../../api/usersApi";
-
+import { useQuery } from "react-query";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
@@ -49,28 +49,15 @@ const ViewRole = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const { id } = useParams();
-  const [role, setRole] = useState(null);
-
   const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
-
-  useEffect(() => {
-    RolesAPI.getById(id)
-      .then((res) => {
-        setRole(res);
-      })
-      .catch((error) => {
-        console.error("Error fetching role data:", error);
-      });
-  }, [id]);
-
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: dtUser } = useSWR(
     searchQuery ? `user?name_like=${searchQuery}` : "user",
-    fetcher
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   //filter
@@ -207,6 +194,36 @@ const ViewRole = () => {
     },
   ]);
 
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await RolesAPI.getById(id);
+        console.log("Data Role:", res); // Debug log the response
+        setRole(res); // Check if res is null or contains the expected data
+      } catch (error) {
+        console.error("Error fetching role data:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
+ console.log("ID:", id); // Debug log the ID
+  console.log("Loading:", loading); // Debug log the loading state
+  console.log("Role:", role); // Debug log the role state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!role) {
+    return <div>Role not found.</div>;
+  }
+
+
   return (
     <>
       <Grid container spacing={2} pl={8} pr={8}>
@@ -231,18 +248,6 @@ const ViewRole = () => {
               <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
                 Total users with this role: 5
               </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                  flex: 1,
-                }}
-              >
-                {role.description}
-              </Typography>
             </div>
           </Paper>
         </Grid>

@@ -50,7 +50,8 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
       .email("Enter a valid email")
       .required("Email is required"),
     phone: yup.string().required("required"),
-    licenseNo: yup.string().required("required").min(12, "Minimal 12 karakter"),
+    codeSap: yup.string().required("required"),
+    licenseNo: yup.string().min(12, "Minimal 12 karakter"),
     licenseED: yup.date().required("required"),
   });
   const initialValues = {

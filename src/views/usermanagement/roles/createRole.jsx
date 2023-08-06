@@ -35,9 +35,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
         onClose("", false);
       });
   };
@@ -49,6 +49,45 @@ const CreateRoles = ({ isOpen, onClose }) => {
   const checkoutSchema = yup.object().shape({
     name: yup.string().required("required"),
   });
+
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [transactionChecked, setTransactionChecked] = useState({
+    pks: false,
+    t30: false,
+    labanan: false,
+    report: false,
+  });
+
+  // ... your other code ...
+
+  const handleSelectAllChange = (event) => {
+    const isChecked = event.target.checked;
+    setSelectAllChecked(isChecked);
+    setTransactionChecked({
+      pks: isChecked,
+      t30: isChecked,
+      labanan: isChecked,
+      report: isChecked,
+    });
+  };
+
+  const handleTransactionChange = (name) => (event) => {
+    const isChecked = event.target.checked;
+    setTransactionChecked((prevChecked) => ({
+      ...prevChecked,
+      [name]: isChecked,
+    }));
+
+    // Set "Pilih Semua" checkbox to checked if all transaction checkboxes are checked
+    if (
+      isChecked &&
+      Object.values(transactionChecked).every((value) => value === true)
+    ) {
+      setSelectAllChecked(true);
+    } else {
+      setSelectAllChecked(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
@@ -128,8 +167,49 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     marginTop: "25px",
                   }}
                 >
-                  Role Permissions
+                  Role Permissions :
                 </FormLabel>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}
+                  >
+                    Transaction
+                  </FormLabel>
+
+                  <FormControlLabel
+                    sx={{ marginLeft: "21vh" }}
+                    control={
+                      <Checkbox
+                        checked={selectAllChecked}
+                        onChange={handleSelectAllChange}
+                      />
+                    }
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Pilih Semua
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
                 <FormControl
                   sx={{
                     gridColumn: "span 4",
@@ -151,7 +231,12 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <FormControlLabel
                     sx={{ marginLeft: "auto" }}
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        checked={transactionChecked.pks}
+                        onChange={handleTransactionChange("pks")}
+                      />
+                    }
                     label={
                       <>
                         <Typography
@@ -168,7 +253,12 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   />
                   <FormControlLabel
                     sx={{ marginLeft: "88px", marginRight: "88px" }}
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        checked={transactionChecked.pks}
+                        onChange={handleTransactionChange("pks")}
+                      />
+                    }
                     label={
                       <>
                         <Typography
@@ -343,6 +433,70 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     }
                   />
                 </FormControl>
+                <FormLabel
+                  sx={{
+                    color: "black",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginBottom: "5px",
+                  }}
+                >
+                  Master Data
+                </FormLabel>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "5px",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Province
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
                 <FormControl
                   sx={{
                     gridColumn: "span 4",
@@ -359,7 +513,645 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       fontSize: "18px",
                     }}
                   >
-                    Master Data
+                    City
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Company
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Sites
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "5px",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Customer Type
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Customer Group
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Customer
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Mill
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Weighbridge
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "5px",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Product Group
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Product
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Storage Tank
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Driver
+                  </FormLabel>
+                  <FormControlLabel
+                    sx={{ marginLeft: "auto" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Read
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <FormControlLabel
+                    sx={{ marginLeft: "88px", marginRight: "88px" }}
+                    control={<Checkbox />}
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}
+                        >
+                          Create/Edit/Delete
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <FormLabel
+                    sx={{
+                      color: "black",
+
+                      fontSize: "18px",
+                    }}
+                  >
+                    Transport Vehicle
                   </FormLabel>
                   <FormControlLabel
                     sx={{ marginLeft: "auto" }}

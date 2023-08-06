@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "./api";
 
 // import { getEnvInit } from "../configs";
 
@@ -20,13 +20,9 @@ import axios from "axios";
 
 // const { WBMS_SEMAI_BACKEND_URL, WBMS_SEMAI_API_KEY } = Config.ENV;
 
-const { REACT_APP_WBMS_BACKEND_API_URL } = process.env;
 
-const api = axios.create({
-  baseURL: `${REACT_APP_WBMS_BACKEND_API_URL}/`,
-});
 
-export const endpoint = "semai";
+const endpoint = "semai";
 
 // export const decodeQrcode = async (data) => {
 //   const dataOut = {

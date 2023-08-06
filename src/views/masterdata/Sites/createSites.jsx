@@ -254,7 +254,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     })}
                   </Select>
                 </FormControl>
-                {/* <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -277,7 +277,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     error={!!touched.companyName && !!errors.companyName}
                     helperText={touched.companyName && errors.companyName}
                   />
-                </FormControl> */}
+                </FormControl>
 
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel

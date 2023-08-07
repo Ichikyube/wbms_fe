@@ -21,7 +21,9 @@ ModuleRegistry.registerModules([
 const Tables = (props) => {
   const { name, fetcher, colDefs, groupColDef, gridRef, rowData } = props;
 
-  const { data } = useSWR(name, fetcher);
+  const { data } = useSWR(name, fetcher, {
+    refreshInterval: 2000,
+  });
 
   const defaultColDef = {
     sortable: true,

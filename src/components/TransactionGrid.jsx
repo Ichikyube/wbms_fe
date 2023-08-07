@@ -93,7 +93,9 @@ const TransactionGrid = (props) => {
       orderBy: { bonTripNo: "desc" },
     }).then((res) => res.records);
 
-  const { data: dtTransactions } = useSWR("transaction", fetcher);
+  const { data: dtTransactions } = useSWR("transaction", fetcher, {
+    refreshInterval: 2000,
+  });
   return (
     <div className="ag-theme-alpine" style={{ width: "auto" }}>
       <AgGridReact

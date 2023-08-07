@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-export const endpoint = "/cities";
+const endpoint = "/cities";
 
 export const getAll = async () => {
   const response = await api.get(endpoint);

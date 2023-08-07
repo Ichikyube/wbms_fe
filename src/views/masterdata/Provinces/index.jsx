@@ -58,7 +58,9 @@ const Provinces = () => {
 
   const { data: dtProvince } = useSWR(
     searchQuery ? `province?name_like=${searchQuery}` : "province",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   //filter

@@ -79,7 +79,9 @@ const StorageTanks = () => {
 
   const { data: dtStorageTank } = useSWR(
     searchQuery ? `storageTank?name_like=${searchQuery}` : "storageTank",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   //filter

@@ -7,8 +7,9 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { toast } from "react-toastify";
 import useSWR from "swr";
-import { blue, yellow } from "@mui/material/colors";
+import { orange, blue, red, indigo, green } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -19,12 +20,12 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
 import * as ConfigAPI from "../../../api/configsApi";
-import * as SiteAPI from "../../../api/sitesApi";
+
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import EditDataConfig from "../../../views/usermanagement/config/editConfig";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import CancelIcon from "@mui/icons-material/CancelOutlined";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -42,53 +43,69 @@ const ConfigRequest = () => {
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [dtSite, setdtSites] = useState([]);
+
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);
 
-  useEffect(() => {
-    SiteAPI.getAll().then((res) => {
-      setdtSites(res);
-    });
-  }, []);
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: dtConfigs } = useSWR(
+  const { data: dtConfig } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
     fetcher,
     { refreshInterval: 1000 }
   );
 
   //filter
-  const updateGridData = useCallback((config) => {
+  const updateGridData = useCallback((Config) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(config);
+      gridRef.current.api.setRowData(Config);
     }
   }, []);
 
   useEffect(() => {
-    if (dtConfigs) {
-      const filteredData = dtConfigs.filter((conf) => {
-        const configData = Object.values(conf).join(" ").toLowerCase();
+    if (dtConfig) {
+      const filteredData = dtConfig.filter((config) => {
+        const configData = Object.values(config).join(" ").toLowerCase();
         return configData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtConfigs, updateGridData]);
+  }, [searchQuery, dtConfig, updateGridData]);
+
+  // delete
+  const deleteById = (id, name) => {
+    Swal.fire({
+      title: `Yakin Ingin Menghapus?`,
+      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
+      icon: "question",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#D80B0B",
+      cancelButtonColor: "grey",
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Hapus",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ConfigAPI.deleteById(id)
+          .then((res) => {
+            console.log("Data berhasil dihapus:", res.data);
+            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
+            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+          })
+          .catch((error) => {
+            console.error("Data Gagal dihapus:", error);
+            toast.error("Data Gagal dihapus"); // Tampilkan toast error
+            // Tangani error atau tampilkan pesan error
+          });
+      }
+    });
+  };
 
   //open create dialog
   useEffect(() => {}, [isOpen]);
-  // {
-  //   "name": "string",
-  //   "value": "string",
-  //   "type": "string",
-  //   "status": "ACTIVE",
-  //   "activeStart": "2023-08-06T09:53:03.504Z",
-  //   "activeEnd": "2023-08-06T09:53:03.504Z",
-  //   "siteId": "string"
-  // }
+
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -126,14 +143,6 @@ const ConfigRequest = () => {
       flex: 3,
     },
     {
-      headerName: "Site",
-      field: "site",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 3,
-    },
-    {
       headerName: "Action",
       field: "id",
       sortable: true,
@@ -144,7 +153,7 @@ const ConfigRequest = () => {
               width="25%"
               display="flex"
               m="0 3px"
-              bgcolor={yellow[900]}
+              bgcolor={green[500]}
               borderRadius="25%"
               justifyContent="center"
               padding="10px 10px"
@@ -157,7 +166,25 @@ const ConfigRequest = () => {
                 setSelectedConfig(params.data);
                 setIsEditOpen(true);
               }}>
-              <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
+              <TaskAltIcon sx={{ fontSize: "20px" }} />
+            </Box>
+
+            <Box
+              width="25%"
+              display="flex"
+              m="0 3px"
+              bgcolor={red[500]}
+              borderRadius="25%"
+              padding="10px 10px"
+              justifyContent="center"
+              color="white"
+              onClick={() => deleteById(params.value, params.data.name)}
+              style={{
+                color: "white",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}>
+              <CancelIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
         );
@@ -168,7 +195,6 @@ const ConfigRequest = () => {
   return (
     <>
       <Grid container spacing={1}>
-        {dtConfigs}
         <Grid item xs={12}>
           <Paper
             sx={{
@@ -181,7 +207,7 @@ const ConfigRequest = () => {
             }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
-                <Typography fontSize="20px">WBMS Config </Typography>
+                <Typography fontSize="20px">WBMS Config Request</Typography>
               </Box>
               <hr sx={{ width: "100%" }} />
               <Box display="flex" pb={1}>
@@ -201,7 +227,7 @@ const ConfigRequest = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtConfigs.filter((config) =>
+                      const filteredData = dtConfig.filter((config) =>
                         config.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
@@ -214,7 +240,7 @@ const ConfigRequest = () => {
               </Box>
             </div>
             <Tables
-              name={"config"}
+              name={"WBMS Config Request"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}
@@ -222,12 +248,6 @@ const ConfigRequest = () => {
           </Paper>
         </Grid>
       </Grid>
-      <EditDataConfig
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtConfig={selectedConfig}
-        dtSite={dtSite}
-      />
     </>
   );
 };

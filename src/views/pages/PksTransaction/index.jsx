@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
@@ -62,7 +62,7 @@ const PksTransaction = () => {
     if (!wbTransaction) {
       dispatch(setWb({ onProcessing: false }));
     } else dispatch(setWb({ onProcessing: true, canStartScalling: false }));
-  }, [dispatch, wbTransaction]);
+  }, [wbTransaction]);
 
   useEffect(() => {
     const curWb = { ...wb };
@@ -82,7 +82,7 @@ const PksTransaction = () => {
       curWb.canStartScalling = true;
 
     dispatch(setWb({ ...curWb }));
-  }, [configs.WBMS_WB_STABLE_PERIOD, dispatch, wb, wbms]);
+  }, [wbms]);
 
   useEffect(() => {
     console.clear();
@@ -114,7 +114,7 @@ const PksTransaction = () => {
       dispatch(clearWb());
       console.clear();
     };
-  }, [configs.WBMS_WB_IP, configs.WBMS_WB_PORT, dispatch, wbms]);
+  }, []);
 
   const [anchorEl, setAnchorEl] = useState(null);
 

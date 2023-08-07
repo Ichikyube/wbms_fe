@@ -59,7 +59,9 @@ const CustomerType = () => {
 
   const { data: dtCustomerType } = useSWR(
     searchQuery ? `customerType?name_like=${searchQuery}` : "customerType",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   //filter

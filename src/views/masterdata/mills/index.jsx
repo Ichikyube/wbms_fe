@@ -60,7 +60,9 @@ const Mills = () => {
 
   const { data: dtMills } = useSWR(
     searchQuery ? `mills?name_like=${searchQuery}` : "mills",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   const updateGridData = useCallback((Mills) => {

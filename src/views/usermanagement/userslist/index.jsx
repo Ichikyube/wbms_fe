@@ -63,7 +63,9 @@ const UsersList = () => {
 
   const { data: dtUser } = useSWR(
     searchQuery ? `user?name_like=${searchQuery}` : "user",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   //filter

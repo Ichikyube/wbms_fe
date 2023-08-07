@@ -57,7 +57,9 @@ const Weighbridges = () => {
 
   const { data: dtWeighbridges } = useSWR(
     searchQuery ? `Weighbridges?name_like=${searchQuery}` : "Weighbridges",
-    fetcher
+    fetcher, {
+      refreshInterval: 2000,
+    }
   );
 
   const updateGridData = useCallback((Weighbridges) => {

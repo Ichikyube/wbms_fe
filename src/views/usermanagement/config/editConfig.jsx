@@ -24,7 +24,9 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
     name: yup.string().required("required"),
   });
 
-  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleFormSubmit = async (event, values, { setSubmitting, resetForm }) => {
+    event.preventDefault();
+    
     try {
       await ConfigApi.update(values);
       console.log("Data Berhasil Diperbarui:", values);

@@ -17,7 +17,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { Formik } from "formik";
+import { Formik, Form, Field, FieldArray  } from "formik";
 import * as yup from "yup";
 import { grey, blue, orange, red, yellow, purple } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
@@ -25,12 +25,8 @@ import * as API from "../../../api/api";
 
 const animatedComponents = makeAnimated();
 const CreateRoles = ({ isOpen, onClose }) => {
-  let Col = [];
   const [dtModel, setDtModel] = useState([]);
   const [dtAttr, setDtAttr] = useState([]);
-
-  const fetcher = () =>
-    API.getResourceslist().then((res) => res.data.model.records);
 
   useEffect(() => {
     API.getResourceslist().then((res) => {
@@ -38,78 +34,92 @@ const CreateRoles = ({ isOpen, onClose }) => {
       setDtAttr(res.data.model.allAttributes);
     });
   }, []);
-  let resourcesOpt, barcodeAttr, cityAttr, provinceAttr, companyAttr,customerAttr,customerGroupAttr,weighbridgeAttr,
-    customerTypeAttr, driverAttr, millsAttr, siteAttr, stankAttr, transactionAttr, transportAttr, productAttr, productgrupAttr;
+  let resourcesOpt,
+    barcodeAttr,
+    cityAttr,
+    provinceAttr,
+    companyAttr,
+    customerAttr,
+    customerGroupAttr,
+    weighbridgeAttr,
+    customerTypeAttr,
+    driverAttr,
+    millsAttr,
+    siteAttr,
+    stankAttr,
+    transactionAttr,
+    transportAttr,
+    productAttr,
+    productgrupAttr;
 
+  if (dtAttr) {
+    //const models = dtAttr.records;
+    resourcesOpt = dtModel.map((model) => ({ value: model, label: model }));
 
-  if(dtAttr) {
-      //const models = dtAttr.records;
-      resourcesOpt = dtModel.map((model) => ({ value: model, label: model }));
-
-      barcodeAttr = dtAttr[" BarcodeType"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      cityAttr = dtAttr["City"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      provinceAttr = dtAttr["Province"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-        companyAttr = dtAttr["Company"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      customerAttr = dtAttr["Customer"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      customerGroupAttr = dtAttr["CustomerGroup"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      customerTypeAttr = dtAttr["CustomerType"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      driverAttr = dtAttr["Driver"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      millsAttr = dtAttr["Mill"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      siteAttr = dtAttr["Site"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      stankAttr = dtAttr["StorageTank"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      transactionAttr = dtAttr["Transaction"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      transportAttr = dtAttr["TransportVehicle"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      productAttr = dtAttr["Product"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      productgrupAttr = dtAttr["ProductGroup"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
-      weighbridgeAttr = dtAttr["Product"]?.map((attr) => ({
-        value: attr,
-        label: attr,
-      }));
+    barcodeAttr = dtAttr[" BarcodeType"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    cityAttr = dtAttr["City"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    provinceAttr = dtAttr["Province"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    companyAttr = dtAttr["Company"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    customerAttr = dtAttr["Customer"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    customerGroupAttr = dtAttr["CustomerGroup"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    customerTypeAttr = dtAttr["CustomerType"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    driverAttr = dtAttr["Driver"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    millsAttr = dtAttr["Mill"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    siteAttr = dtAttr["Site"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    stankAttr = dtAttr["StorageTank"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    transactionAttr = dtAttr["Transaction"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    transportAttr = dtAttr["TransportVehicle"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    productAttr = dtAttr["Product"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    productgrupAttr = dtAttr["ProductGroup"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
+    weighbridgeAttr = dtAttr["Product"]?.map((attr) => ({
+      value: attr,
+      label: attr,
+    }));
   }
 
   // Create
@@ -135,6 +145,22 @@ const CreateRoles = ({ isOpen, onClose }) => {
 
   const initialValues = {
     name: "",
+    permissions: [
+      {
+        resource: "",
+        grants: [
+          {
+            action: "read",
+            possession: "own",
+            attributes: [
+              {
+                attr: "",
+              },
+            ],
+          },
+        ],
+      },
+    ],
   };
 
   const checkoutSchema = yup.object().shape({
@@ -245,6 +271,49 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   />
                 </FormControl>
 
+                <FieldArray name="permissions">
+                  {({ push, remove }) => (
+                    <div>
+                      {values.permissions.map((permission, index) => (
+                        <div key={index}>
+                          <label htmlFor={`permissions[${index}].resource`}>
+                            Resource:
+                          </label>
+                          <Field
+                            type="text"
+                            id={`permissions[${index}].resource`}
+                            name={`permissions[${index}].resource`}
+                          />
+
+                          {/* Grants */}
+                          <FieldArray name={`permissions[${index}].grants`}>
+                            {({ push: pushGrant, remove: removeGrant }) => (
+                              <div>
+                                {permission.grants.map((grant, grantIndex) => (
+                                  <div key={grantIndex}>
+                                    <label
+                                      htmlFor={`permissions[${index}].grants[${grantIndex}].action`}>
+                                      Action:
+                                    </label>
+                                    <Field
+                                      type="text"
+                                      id={`permissions[${index}].grants[${grantIndex}].action`}
+                                      name={`permissions[${index}].grants[${grantIndex}].action`}
+                                    />
+
+                                    {/* More fields for grants */}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </FieldArray>
+
+                          {/* Add more fields for permissions */}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </FieldArray>
                 <FormLabel
                   sx={{
                     color: "black",
@@ -733,7 +802,10 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       <Select
                         closeMenuOnSelect={false}
                         components={animatedComponents}
-                        defaultValue={[customerTypeAttr[4], customerTypeAttr[5]]}
+                        defaultValue={[
+                          customerTypeAttr[4],
+                          customerTypeAttr[5],
+                        ]}
                         isMulti
                         options={customerTypeAttr}
                       />
@@ -807,7 +879,10 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       <Select
                         closeMenuOnSelect={false}
                         components={animatedComponents}
-                        defaultValue={[customerGroupAttr[4], customerGroupAttr[5]]}
+                        defaultValue={[
+                          customerGroupAttr[4],
+                          customerGroupAttr[5],
+                        ]}
                         isMulti
                         options={customerGroupAttr}
                       />

@@ -14,14 +14,14 @@ jobs:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tag/}" >> $GITHUB_ENV
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag wbms_fe:$(date +%s)
+        run: docker build . --file Dockerfile --tag wbms_fe
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Tag the Docker image
-        run: docker tag wbms_fe:$(date +%s) almyra/fe:latest
+        run: docker tag wbms_fe almyra/fe:latest
       - name: Push to DockerHub
         run: docker push almyra/wbms_fe:latest
       - name: Tag the Docker image

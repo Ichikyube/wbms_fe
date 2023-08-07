@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Tag the Docker image
-        run: docker tag tino/wbms_fe almyra/fe:latest
+        run: docker tag wbms_fe almyra/wbms_fe:latest
       - name: Push to DockerHub
         run: docker push almyra/wbms_fe:latest
       - name: Tag the Docker image

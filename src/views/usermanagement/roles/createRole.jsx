@@ -325,7 +325,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                               width="50%"
                               name={`permissions[${permissionIndex}].resource`}
                               onChange={(e) => {
-                                // arrayHelpers.handleChange(e);
+                                arrayHelpers.handleReplace(e);
+                                console.log(arrayHelpers);
                                 handleResourceChange(permissionIndex, e.value);
                               }}
                               options={availableResources}

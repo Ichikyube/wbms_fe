@@ -17,23 +17,45 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { Formik, Form, Field, FieldArray  } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import * as yup from "yup";
 import { grey, blue, orange, red, yellow, purple } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
 import * as API from "../../../api/api";
+import SelectBox from "../../../components/selectbox";
 
+// Code snippet from c:\wbms\wbms_fe\src\components\AccessControl\PermissionForm.jsx
+import PermissionForm from "../../../components/AccessControl/PermissionForm";
 const animatedComponents = makeAnimated();
 const CreateRoles = ({ isOpen, onClose }) => {
-  const [dtModel, setDtModel] = useState([]);
+  const [resources, setResources] = useState([]);
   const [dtAttr, setDtAttr] = useState([]);
+  const [availableResources, setAvailableResources] = useState([]);
 
   useEffect(() => {
     API.getResourceslist().then((res) => {
-      setDtModel(res.data.model.records);
+      setResources(res.data.model.records);
       setDtAttr(res.data.model.allAttributes);
+      setAvailableResources(
+        resources.map((ares) => ({
+          value: ares,
+          label: ares,
+        }))
+      );
     });
   }, []);
+  useEffect(() => {
+    setAvailableResources(
+      resources.map((ares) => ({
+        value: ares,
+        label: ares,
+      }))
+    );
+  }, [resources]);
+
+  // console.log(resources);
+  // console.log(availableResources);
+
   let resourcesOpt,
     barcodeAttr,
     cityAttr,
@@ -53,8 +75,10 @@ const CreateRoles = ({ isOpen, onClose }) => {
     productgrupAttr;
 
   if (dtAttr) {
-    //const models = dtAttr.records;
-    resourcesOpt = dtModel.map((model) => ({ value: model, label: model }));
+    resourcesOpt = resources.map((resource) => ({
+      value: resource,
+      label: resource,
+    }));
 
     barcodeAttr = dtAttr[" BarcodeType"]?.map((attr) => ({
       value: attr,
@@ -121,9 +145,11 @@ const CreateRoles = ({ isOpen, onClose }) => {
       label: attr,
     }));
   }
+  const [selectedResources, setSelectedResources] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
 
   // Create
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     RolesAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -142,7 +168,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
         onClose("", false);
       });
   };
-
+  const actionOptions = ["read", "create", "update", "delete"];
   const initialValues = {
     name: "",
     permissions: [
@@ -150,7 +176,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
         resource: "",
         grants: [
           {
-            action: "read",
+            action: ["read"],
             possession: "own",
             attributes: [
               {
@@ -206,6 +232,12 @@ const CreateRoles = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleResourceChange = (index, newValue) => {
+    const updatedResources = availableResources.filter(
+      (resource) => resource.value !== newValue
+    );
+    setAvailableResources(updatedResources);
+  };
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
@@ -237,16 +269,19 @@ const CreateRoles = ({ isOpen, onClose }) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
+            isSubmitting,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
               <Box
-                display="grid"
+                display="block"
                 padding={2}
                 paddingBottom={3}
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                // gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -270,1231 +305,101 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </FormControl>
-
-                <FieldArray name="permissions">
-                  {({ push, remove }) => (
+                <FieldArray
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  name="permissions">
+                  {(arrayHelpers) => (
                     <div>
-                      {values.permissions.map((permission, index) => (
-                        <div key={index}>
-                          <label htmlFor={`permissions[${index}].resource`}>
-                            Resource:
-                          </label>
-                          <Field
-                            type="text"
-                            id={`permissions[${index}].resource`}
-                            name={`permissions[${index}].resource`}
-                          />
+                      {values.permissions.map((permission, permissionIndex) => (
+                        <div key={permissionIndex}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              arrayHelpers.remove(permissionIndex)
+                            }>
+                            Remove Permission
+                          </button>
+                          <label>Resource:</label>
+                          <div style={{ flex: 1, width: "50%" }}>
+                            <SelectBox
+                              width="50%"
+                              name={`permissions[${permissionIndex}].resource`}
+                              onChange={(e) => {
+                                // arrayHelpers.handleChange(e);
+                                handleResourceChange(permissionIndex, e.value);
+                              }}
+                              options={availableResources}
 
-                          {/* Grants */}
-                          <FieldArray name={`permissions[${index}].grants`}>
-                            {({ push: pushGrant, remove: removeGrant }) => (
+                              // label="Grants"
+                            />
+                          </div>
+
+                          <FieldArray
+                            name={`permissions[${permissionIndex}].grants`}>
+                            {(grantArrayHelpers) => (
                               <div>
                                 {permission.grants.map((grant, grantIndex) => (
                                   <div key={grantIndex}>
-                                    <label
-                                      htmlFor={`permissions[${index}].grants[${grantIndex}].action`}>
-                                      Action:
-                                    </label>
-                                    <Field
-                                      type="text"
-                                      id={`permissions[${index}].grants[${grantIndex}].action`}
-                                      name={`permissions[${index}].grants[${grantIndex}].action`}
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        grantArrayHelpers.remove(grantIndex)
+                                      }>
+                                      Remove Grant
+                                    </button>
+                                    <div>
+                                      <label>Actions:</label>
+                                      <div>
+                                        {actionOptions.map((actionOption) => (
+                                          <label key={actionOption}>
+                                            <Field
+                                              type="checkbox"
+                                              name={`permissions[${permissionIndex}].grants[${grantIndex}].action`}
+                                              value={actionOption}
+                                            />{" "}
+                                            {actionOption}
+                                          </label>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <label>Hide Attributes:</label>
+                                    <Select
+                                      fullWidth
+                                      name={`permissions[${permissionIndex}].grants[${grantIndex}].attributes`}
+                                      closeMenuOnSelect={false}
+                                      components={animatedComponents}
+                                      defaultValue={[siteAttr[4], siteAttr[5]]}
+                                      isMulti
+                                      options={siteAttr}
                                     />
-
-                                    {/* More fields for grants */}
                                   </div>
                                 ))}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    grantArrayHelpers.push({
+                                      action: "",
+                                      possession: "",
+                                      attributes: [],
+                                    })
+                                  }>
+                                  Add Grant
+                                </button>
                               </div>
                             )}
                           </FieldArray>
-
-                          {/* Add more fields for permissions */}
                         </div>
                       ))}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          arrayHelpers.push({ resource: "", grants: [] })
+                        }>
+                        Add Permission
+                      </button>
                     </div>
                   )}
                 </FieldArray>
-                <FormLabel
-                  sx={{
-                    color: "black",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    marginTop: "25px",
-                  }}>
-                  Permissions :
-                </FormLabel>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      fontWeight: "bold",
-                      fontSize: "18px",
-                    }}>
-                    Transaction
-                  </FormLabel>
-
-                  <FormControlLabel
-                    sx={{ marginLeft: "21vh" }}
-                    control={
-                      <Checkbox
-                        checked={selectAllChecked}
-                        onChange={handleSelectAllChange}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Pilih Semua
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <Box
-                  sx={{
-                    justifyContent: "space-between",
-                    alignContent: "center",
-                    width: "100%",
-                    display: "grid",
-                    gridColumn: "span 4",
-                  }}>
-                  <FormControl
-                    sx={{
-                      flexDirection: "row",
-                      marginTop: "5px",
-                      alignItems: "center",
-                      marginBottom: "5px",
-                    }}>
-                    <FormLabel
-                      sx={{
-                        color: "black",
-
-                        fontSize: "18px",
-                      }}>
-                      Transaksi PKS
-                    </FormLabel>
-                    <Checkbox
-                      checked={transactionChecked.pks}
-                      onChange={handleTransactionChange("pks")}
-                    />
-                  </FormControl>
-                  <FormControl
-                    sx={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: "5px",
-                    }}>
-                    <FormLabel
-                      sx={{
-                        color: "black",
-
-                        fontSize: "18px",
-                      }}>
-                      Transaksi T-30
-                    </FormLabel>
-                    <Checkbox />
-                  </FormControl>
-                  <FormControl
-                    sx={{
-                      gridColumn: "3/4",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: "5px",
-                    }}>
-                    <FormLabel
-                      sx={{
-                        color: "black",
-
-                        fontSize: "18px",
-                      }}>
-                      Transaksi Labanan
-                    </FormLabel>
-                    <Checkbox />
-                  </FormControl>
-                </Box>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Report
-                  </FormLabel>
-                  <Checkbox />
-                </FormControl>
-                <FormLabel
-                  sx={{
-                    color: "black",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    marginBottom: "5px",
-                  }}>
-                  Master Data
-                </FormLabel>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    marginTop: "5px",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Province
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[provinceAttr[4], provinceAttr[5]]}
-                        isMulti
-                        options={provinceAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    City
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[cityAttr[4], cityAttr[5]]}
-                        isMulti
-                        options={cityAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Company
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[companyAttr[4], companyAttr[5]]}
-                        isMulti
-                        options={companyAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Sites
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[siteAttr[4], siteAttr[5]]}
-                        isMulti
-                        options={siteAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    marginTop: "5px",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Customer Type
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[
-                          customerTypeAttr[4],
-                          customerTypeAttr[5],
-                        ]}
-                        isMulti
-                        options={customerTypeAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Customer Group
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[
-                          customerGroupAttr[4],
-                          customerGroupAttr[5],
-                        ]}
-                        isMulti
-                        options={customerGroupAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Customer
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[customerAttr[4], customerAttr[5]]}
-                        isMulti
-                        options={customerAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Mill
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[millsAttr[4], millsAttr[5]]}
-                        isMulti
-                        options={millsAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Weighbridge
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[weighbridgeAttr[4], weighbridgeAttr[5]]}
-                        isMulti
-                        options={weighbridgeAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    marginTop: "5px",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Product Group
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[productgrupAttr[4], productgrupAttr[5]]}
-                        isMulti
-                        options={productgrupAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Product
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[productAttr[4], productAttr[5]]}
-                        isMulti
-                        options={productAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Storage Tank
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[stankAttr[4], stankAttr[5]]}
-                        isMulti
-                        options={stankAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Driver
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[driverAttr[4], driverAttr[5]]}
-                        isMulti
-                        options={driverAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-
-                      fontSize: "18px",
-                    }}>
-                    Transport Vehicle
-                  </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "25px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Read
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ marginRight: "25px", marginLeft: "5px" }}
-                    control={<Checkbox />}
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                          }}>
-                          Full
-                        </Typography>
-                      </>
-                    }
-                  />
-                  <FormControlLabel
-                    sx={{ display: "block", width: "80%" }}
-                    control={
-                      <Select
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        defaultValue={[transportAttr[4], transportAttr[5]]}
-                        isMulti
-                        options={transportAttr}
-                      />
-                    }
-                    label={
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "17px",
-                            fontWeight: "bold",
-                            color: "grey",
-                            gridColumn: "span 2",
-                          }}>
-                          Hide Attributes
-                        </Typography>
-                      </>
-                    }
-                  />
-                </FormControl>
               </Box>
               <Box display="flex" mt={3} mb={4} justifyContent="center">
                 <Button
@@ -1512,6 +417,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                 </Button>
                 <Box mr={1} />
                 <Button
+                  disabled={isSubmitting}
                   type="submit"
                   variant="contained"
                   sx={{
@@ -1522,7 +428,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   Simpan
                 </Button>
               </Box>
-            </form>
+            </Form>
           )}
         </Formik>
       </DialogContent>

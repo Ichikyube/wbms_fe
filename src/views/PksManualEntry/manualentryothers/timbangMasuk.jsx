@@ -37,33 +37,52 @@ import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 
 const tType = 1;
-let wsClient;
 
 const PksManualOthersTimbangMasuk = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({});
+  const { values, setValues } = useForm({
+    ...TransactionAPI.InitialData,
+  });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
 
-  const handleSubmit = () => {
-    // Assuming you have all the required data in the 'values' state object.
-    TransactionAPI.create(values)
-      .then((res) => {
-        console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan");
-        // Assuming you want to reset the form values after successful submission.
-        setValues({});
-      })
-      .catch((error) => {
-        console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message);
-      });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  const handleSubmit = async () => {
+    let tempTrans = { ...values };
+
+    if (tempTrans.progressStatus === 0) {
+      tempTrans.progressStatus = 1;
+      tempTrans.originWeighInTimestamp = moment().toDate();
+    } 
+
+    try {
+      if (tempTrans.progressStatus === 1) {
+        const results = await TransactionAPI.create({ ...tempTrans });
+
+        if (!results?.status) {
+          toast.error(`Error: ${results?.message}.`);
+          return;
+        }
+
+        toast.success(`Transaksi WB-IN telah tersimpan.`);
+
+        return handleClose();
+      } else {
+        // ... logika jika progressStatus !== 1 ...
+      }
+    } catch (error) {
+      toast.error(`Error: ${error.message}.`);
+      return;
+    }
+
+    setValues({ ...tempTrans });
   };
 
   const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
@@ -226,6 +245,7 @@ const PksManualOthersTimbangMasuk = () => {
                   }
                   name="deliveryOrderNo"
                   value={values.deliveryOrderNo}
+                  onChange={handleChange}
                 />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
@@ -238,9 +258,21 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="Nopol"
-                    value={values.Nopol || ""}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedNopol = dtTransportVehicle.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        transportVehiclePlateNo: selectedNopol
+                          ? selectedNopol.plateNo
+                          : "",
+                      }));
+                    }}
+                    name="transportVehicleId"
+                    value={values.transportVehicleId || ""}
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
@@ -268,9 +300,19 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="driver"
-                    value={values.driver || ""}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedDriver = dtDriver.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        driverName: selectedDriver ? selectedDriver.name : "",
+                      }));
+                    }}
+                    name="driverId"
+                    value={values.driverId || ""}
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
@@ -298,7 +340,19 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedVendor = dtCompany.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        transporterCompanyName: selectedVendor
+                          ? selectedVendor.name
+                          : "",
+                      }));
+                    }}
                     name="transporterId"
                     value={values.transporterId || ""}
                     displayEmpty
@@ -388,42 +442,40 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
+                    sx={{
+                      borderRadius: "10px",
+                      color: MenuItem ? "gray" : "black",
+                    }}
                     onChange={(event) => {
                       const { name, value } = event.target;
                       const selectedProduct = dtProduct.find(
                         (item) => item.id === value
                       );
-                      setValues({
-                        ...values,
+                      setValues((prevValues) => ({
+                        ...prevValues,
                         [name]: value,
                         productName: selectedProduct
                           ? selectedProduct.name
                           : "",
-                      });
+                      }));
                     }}
                     name="productId"
-                    value={values.productId}
-                    sx={{
-                      borderRadius: "10px",
-                      color: "black", // Ganti "MenuItem" dengan "black" atau warna yang diinginkan
-                    }}
+                    value={values.productId || ""}
                     displayEmpty
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Barang --
                     </MenuItem>
-                    {dtProduct.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
+                    {dtProduct.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
                 {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   size="small"
                   fullWidth
@@ -449,7 +501,7 @@ const PksManualOthersTimbangMasuk = () => {
                   }
                   name="productName"
                   value={values.productName}
-                />
+                /> */}
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -503,7 +555,8 @@ const PksManualOthersTimbangMasuk = () => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={values.originWeighInKg || 0}
+                  value={values.originWeighInKg}
+                  onChange={handleChange}
                 />
                 <TextField
                   type="number"

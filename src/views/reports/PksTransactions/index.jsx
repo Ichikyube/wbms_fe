@@ -270,10 +270,14 @@ const ReportPksTransactions = () => {
                     <MenuItem value="pko">PKO</MenuItem>
                     <MenuItem value="cpo">CPO</MenuItem>
                     <MenuItem value="tbs">TBS</MenuItem>
-                    <MenuItem value="tbs eksternal">TBS Eksternal</MenuItem>
+                    <MenuItem value="solar">Pupuk</MenuItem>
+                    <MenuItem value="kernel">Kernel</MenuItem>
+                    <MenuItem value="cangkang">Cangkang</MenuItem>
+                    <MenuItem value="jangkos">Jangkos</MenuItem>
+                    <MenuItem value="pupuk">Pupuk</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl
+                {/* <FormControl
                   sx={{ ml: "10px", mt: "auto", minWidth: 150 }}
                   size="small"
                 >
@@ -293,7 +297,7 @@ const ReportPksTransactions = () => {
                     <MenuItem value="2">TIMBANG KELUAR</MenuItem>
                     <MenuItem value="3">DATA DISPATCHED</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
                 <Box ml="auto" mt="auto">
                   <Button
                     sx={{

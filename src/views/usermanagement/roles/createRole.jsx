@@ -305,13 +305,25 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </FormControl>
+
                 <FieldArray
                   gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                   name="permissions">
                   {(arrayHelpers) => (
                     <div>
+                    <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}>
+                      Permissions
+                    </FormLabel>
                       {values.permissions.map((permission, permissionIndex) => (
-                        <div key={permissionIndex}>
+                        <div
+                          style={{ backgroundColor: blue[50], marginTop: "5px", padding:"15px" }}
+                          key={permissionIndex}>
                           <button
                             type="button"
                             onClick={() =>
@@ -335,60 +347,36 @@ const CreateRoles = ({ isOpen, onClose }) => {
                             />
                           </div>
 
-                          <FieldArray
+                          <Field
                             name={`permissions[${permissionIndex}].grants`}>
-                            {(grantArrayHelpers) => (
                               <div>
-                                {permission.grants.map((grant, grantIndex) => (
-                                  <div key={grantIndex}>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        grantArrayHelpers.remove(grantIndex)
-                                      }>
-                                      Remove Grant
-                                    </button>
-                                    <div>
-                                      <label>Actions:</label>
-                                      <div>
-                                        {actionOptions.map((actionOption) => (
-                                          <label key={actionOption}>
-                                            <Field
-                                              type="checkbox"
-                                              name={`permissions[${permissionIndex}].grants[${grantIndex}].action`}
-                                              value={actionOption}
-                                            />{" "}
-                                            {actionOption}
-                                          </label>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    <label>Hide Attributes:</label>
-                                    <Select
-                                      fullWidth
-                                      name={`permissions[${permissionIndex}].grants[${grantIndex}].attributes`}
-                                      closeMenuOnSelect={false}
-                                      components={animatedComponents}
-                                      defaultValue={[siteAttr[4], siteAttr[5]]}
-                                      isMulti
-                                      options={siteAttr}
-                                    />
+                                <div>
+                                  <label>Actions:</label>
+                                  <div>
+                                    {actionOptions.map((actionOption) => (
+                                      <label key={actionOption}>
+                                        <Field
+                                          type="checkbox"
+                                          name={`permissions[${permissionIndex}].grants.action`}
+                                          value={actionOption}
+                                        />{" "}
+                                        {actionOption}
+                                      </label>
+                                    ))}
                                   </div>
-                                ))}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    grantArrayHelpers.push({
-                                      action: "",
-                                      possession: "",
-                                      attributes: [],
-                                    })
-                                  }>
-                                  Add Grant
-                                </button>
+                                </div>
+                                <label>Hide Attributes:</label>
+                                <Select
+                                  fullWidth
+                                  name={`permissions[${permissionIndex}].grants.attributes`}
+                                  closeMenuOnSelect={false}
+                                  components={animatedComponents}
+                                  defaultValue={[siteAttr[4], siteAttr[5]]}
+                                  isMulti
+                                  options={siteAttr}
+                                />
                               </div>
-                            )}
-                          </FieldArray>
+                          </Field>
                         </div>
                       ))}
                       <button

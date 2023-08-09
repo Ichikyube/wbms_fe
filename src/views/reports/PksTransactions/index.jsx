@@ -171,7 +171,7 @@ const ReportPksTransactions = () => {
 
   const filteredTransactions = useMemo(() => {
     let filteredData = dtTransactions;
-
+  
     if (selectedProduct !== "") {
       filteredData = filteredData.filter(
         (transaction) =>
@@ -179,20 +179,17 @@ const ReportPksTransactions = () => {
           selectedProduct.toLowerCase()
       );
     }
-
+  
     if (selectedStartDate !== null && selectedEndDate !== null) {
       filteredData = filteredData.filter((transaction) => {
         const transactionDate = dayjs(transaction.deliveryDate);
         const startDate = dayjs(selectedStartDate).startOf("day");
         const endDate = dayjs(selectedEndDate).endOf("day");
-
-        return (
-          transactionDate.isSame(startDate, "day") ||
-          transactionDate.isBetween(startDate, endDate, "day")
-        );
+  
+        return transactionDate.isBetween(startDate, endDate, "day", "[]");
       });
     }
-
+  
     if (selectedStatus !== "") {
       filteredData = filteredData.filter(
         (transaction) =>
@@ -200,7 +197,7 @@ const ReportPksTransactions = () => {
           selectedStatus.toLowerCase()
       );
     }
-
+  
     return filteredData;
   }, [
     dtTransactions,
@@ -209,6 +206,7 @@ const ReportPksTransactions = () => {
     selectedEndDate,
     selectedStatus,
   ]);
+  
 
   const today = dayjs();
 
@@ -270,7 +268,7 @@ const ReportPksTransactions = () => {
                     <MenuItem value="pko">PKO</MenuItem>
                     <MenuItem value="cpo">CPO</MenuItem>
                     <MenuItem value="tbs">TBS</MenuItem>
-                    <MenuItem value="solar">Pupuk</MenuItem>
+                    <MenuItem value="solar">Solar</MenuItem>
                     <MenuItem value="kernel">Kernel</MenuItem>
                     <MenuItem value="cangkang">Cangkang</MenuItem>
                     <MenuItem value="jangkos">Jangkos</MenuItem>

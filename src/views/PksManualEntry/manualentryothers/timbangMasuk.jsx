@@ -44,6 +44,7 @@ const PksManualOthersTimbangMasuk = () => {
     ...TransactionAPI.InitialData,
   });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -55,12 +56,43 @@ const PksManualOthersTimbangMasuk = () => {
   };
 
   const handleSubmit = async () => {
-    let tempTrans = { ...values };
+    const {
+      bonTripNo,
+      productId,
+      productName,
+      transporterId,
+      transporterCompanyName,
+      driverId,
+      driverName,
+      transportVehicleId,
+      transportVehiclePlateNo,
+      originWeighInKg,
+      deliveryOrderNo,
+      progressStatus,
+      originWeighInTimestamp,
+    } = values;
+
+    const tempTrans = {
+      bonTripNo,
+      productId,
+      productName,
+      transporterId,
+      transporterCompanyName,
+      driverId,
+      driverName,
+      transportVehicleId,
+      transportVehiclePlateNo,
+      originWeighInKg,
+      deliveryOrderNo,
+      progressStatus,
+      originWeighInTimestamp,
+    };
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
+      tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
-    } 
+    }
 
     try {
       if (tempTrans.progressStatus === 1) {
@@ -103,6 +135,22 @@ const PksManualOthersTimbangMasuk = () => {
       bonTripNo: generatedBonTripNo,
     });
   }, []);
+
+  // // Untuk validasi field
+  // useEffect(() => {
+  //   let cSubmit = false;
+
+  //   if (values.progressStatus === 0) {
+  //     if (values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT) {
+  //       cSubmit = true;
+  //     }
+  //   } else if (values.progressStatus === 2) {
+  //     if (values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT)
+  //       cSubmit = true;
+  //   }
+
+  //   setCanSubmit(cSubmit);
+  // }, [values]);
 
   const handleClose = () => {
     // setProgressStatus("-");
@@ -401,7 +449,8 @@ const PksManualOthersTimbangMasuk = () => {
                   // }
                 />
 
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                {/* BELUM ADA FIELDNYA DI API */}
+                {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
@@ -430,7 +479,7 @@ const PksManualOthersTimbangMasuk = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>
+                </FormControl> */}
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"

@@ -338,7 +338,6 @@ const CreateRoles = ({ isOpen, onClose }) => {
                               name={`permissions[${permissionIndex}].resource`}
                               onChange={(e) => {
                                 arrayHelpers.handleReplace(e);
-                                console.log(arrayHelpers);
                                 handleResourceChange(permissionIndex, e.value);
                               }}
                               options={availableResources}
@@ -382,7 +381,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       <button
                         type="button"
                         onClick={() =>
-                          arrayHelpers.push({ resource: "", grants: [] })
+                          arrayHelpers.push({ resource: "", grants: "[]" })
                         }>
                         Add Permission
                       </button>

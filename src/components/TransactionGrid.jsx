@@ -97,7 +97,7 @@ const TransactionGrid = (props) => {
     refreshInterval: 2000,
   });
   return (
-    <div className="ag-theme-alpine" style={{ width: "auto" }}>
+    <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>
       <AgGridReact
         rowData={dtTransactions} // Row Data for Rows
         columnDefs={columnDefs} // Column Defs for Columns

@@ -1,19 +1,9 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Container,
-  CardGroup,
-  Card,
-  InputGroup,
-  Image,
-} from "react-bootstrap";
-
+import { Form, Button, Row, InputGroup, Image } from "react-bootstrap";
+import Cookies from "js-cookie";
 import FormContainer from "../../../components/FormContainer";
 
 import { useSigninMutation } from "../../../slices/authApiSlice";
@@ -24,37 +14,56 @@ import { FaUser, FaLock } from "react-icons/fa";
 const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
+  const userRef = useRef();
+  const errRef = useRef();
+  const [errMsg, setErrMsg] = useState("");
+
   const { userInfo } = useSelector((state) => state.app);
-  const [signin, { isLoading }] = useSigninMutation();
+  const [signin] = useSigninMutation();
 
   const [values, setValues] = useState(initialValues);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await signin(values).unwrap();
+      const response = await signin(values).unwrap();
+      const at = response?.data?.tokens?.access_token;
+      Cookies.set("accessToken", at, { sameSite: "strict" });
 
-      console.log("signin");
-      console.log(res);
+      if (!response.status) {
+        console.log(response.message);
+        console.log(response.logs);
 
-      if (!res.status) {
-        console.log(res.message);
-        console.log(res.logs);
-
-        toast.error(res.message);
+        toast.error(response.message);
 
         return;
       }
 
-      dispatch(setCredentials({ ...res.data.user }));
+      dispatch(setCredentials({ ...response.data.user }));
 
-      navigate("/dashboard");
+      navigate(from, { replace: true });
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus();
+      toast.error(errMsg);
     }
   };
 
@@ -94,8 +103,7 @@ const SignIn = () => {
           </p>
           <p
             className="title text-center mb-4 "
-            style={{ fontSize: "48px", fontWeight: "bold" }}
-          >
+            style={{ fontSize: "48px", fontWeight: "bold" }}>
             <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
@@ -104,11 +112,13 @@ const SignIn = () => {
             </InputGroup.Text>
             <Form.Control
               name="username"
+              ref={userRef}
               placeholder="Masukkan Username"
               autoComplete="username"
               value={values.username}
               onChange={(e) => handleInputChange(e)}
               style={{ fontSize: "23px", height: "55px" }}
+              required
             />
           </InputGroup>
           <InputGroup className="mb-4">
@@ -123,14 +133,14 @@ const SignIn = () => {
               value={values.password}
               onChange={(e) => handleInputChange(e)}
               style={{ fontSize: "23px", height: "55px" }}
+              required
             />
           </InputGroup>
           <Row>
             <Button
               type="submit"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-            >
+              style={{ fontSize: "20px", fontWeight: "bold" }}>
               LOGIN
             </Button>
           </Row>

@@ -32,18 +32,26 @@ const CreateRoles = ({ isOpen, onClose }) => {
   const [dtAttr, setDtAttr] = useState([]);
   const [availableResources, setAvailableResources] = useState([]);
 
+  const resourcesList = [  
+    'barcodeTypes', 'cities', 'companies', 'configs',  
+    'customers', 'customerType','driver', 'customerGroups',
+    'mills', 'products', 'ProductGroups','provinces','semai', 'sites',
+    'storageTanks', 'transactions', 'transportVehicles', 'users', 'weighbridges']
+  setAvailableResources(
+    resourcesList.map((ares) => ({
+      value: ares,
+      label: ares,
+    }))
+  );
+  const MainSite = [ 'PKS','T30', 'Labanan' ]
+
   useEffect(() => {
     API.getResourceslist().then((res) => {
       setResources(res.data.model.records);
       setDtAttr(res.data.model.allAttributes);
-      setAvailableResources(
-        resources.map((ares) => ({
-          value: ares,
-          label: ares,
-        }))
-      );
     });
   }, []);
+
   useEffect(() => {
     setAvailableResources(
       resources.map((ares) => ({
@@ -54,7 +62,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
   }, [resources]);
 
   // console.log(resources);
-  // console.log(availableResources);
+  console.log(availableResources);
 
   let resourcesOpt,
     barcodeAttr,
@@ -168,6 +176,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
         onClose("", false);
       });
   };
+
   const actionOptions = ["read", "create", "update", "delete"];
   const initialValues = {
     name: "",
@@ -311,18 +320,22 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   name="permissions">
                   {(arrayHelpers) => (
                     <div>
-                    <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}>
-                      Permissions
-                    </FormLabel>
+                      <FormLabel
+                        sx={{
+                          color: "black",
+                          marginBottom: "8px",
+                          fontSize: "18px",
+                          fontWeight: "bold",
+                        }}>
+                        Permissions
+                      </FormLabel>
                       {values.permissions.map((permission, permissionIndex) => (
                         <div
-                          style={{ backgroundColor: blue[50], marginTop: "5px", padding:"15px" }}
+                          style={{
+                            backgroundColor: blue[50],
+                            marginTop: "5px",
+                            padding: "15px",
+                          }}
                           key={permissionIndex}>
                           <button
                             type="button"
@@ -331,7 +344,15 @@ const CreateRoles = ({ isOpen, onClose }) => {
                             }>
                             Remove Permission
                           </button>
-                          <label>Resource:</label>
+                          <FormLabel
+                            sx={{
+                              color: "black",
+                              marginBottom: "8px",
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                            }}>
+                            Resource:
+                          </FormLabel>
                           <div style={{ flex: 1, width: "50%" }}>
                             <SelectBox
                               width="50%"
@@ -341,47 +362,69 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                 handleResourceChange(permissionIndex, e.value);
                               }}
                               options={availableResources}
-
-                              // label="Grants"
                             />
                           </div>
 
-                          <Field
+                          <FieldArray
                             name={`permissions[${permissionIndex}].grants`}>
-                              <div>
+                            {(grantArrayHelpers) => (
                                 <div>
-                                  <label>Actions:</label>
-                                  <div>
-                                    {actionOptions.map((actionOption) => (
-                                      <label key={actionOption}>
-                                        <Field
-                                          type="checkbox"
-                                          name={`permissions[${permissionIndex}].grants.action`}
-                                          value={actionOption}
-                                        />{" "}
-                                        {actionOption}
-                                      </label>
-                                    ))}
-                                  </div>
+                                {permission.grants.map((grant, grantIndex) => (
+                                    <div key={grantIndex}>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                        grantArrayHelpers.remove(grantIndex)
+                                        }>
+                                        Remove Grant
+                                    </button>
+                                    <div>
+                                        <label>Actions:</label>
+                                        <div>
+                                        {actionOptions.map((actionOption) => (
+                                            <label key={actionOption}>
+                                            <Field
+                                                type="checkbox"
+                                                name={`permissions[${permissionIndex}].grants[${grantIndex}].action`}
+                                                value={actionOption}
+                                            />{" "}
+                                            {actionOption}
+                                            </label>
+                                        ))}
+                                        </div>
+                                    </div>
+                                    <label>Hide Attributes:</label>
+                                    <Select
+                                        fullWidth
+                                        name={`permissions[${permissionIndex}].grants[${grantIndex}].attributes`}
+                                        closeMenuOnSelect={false}
+                                        components={animatedComponents}
+                                        defaultValue={[siteAttr[4], siteAttr[5]]}
+                                        isMulti
+                                        options={siteAttr}
+                                    />
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                    grantArrayHelpers.push({
+                                        action: "",
+                                        possession: "",
+                                        attributes: [],
+                                    })
+                                    }>
+                                    Add Grant
+                                </button>
                                 </div>
-                                <label>Hide Attributes:</label>
-                                <Select
-                                  fullWidth
-                                  name={`permissions[${permissionIndex}].grants.attributes`}
-                                  closeMenuOnSelect={false}
-                                  components={animatedComponents}
-                                  defaultValue={[siteAttr[4], siteAttr[5]]}
-                                  isMulti
-                                  options={siteAttr}
-                                />
-                              </div>
-                          </Field>
+                            )}
+                            </FieldArray>
                         </div>
                       ))}
                       <button
                         type="button"
                         onClick={() =>
-                          arrayHelpers.push({ resource: "", grants: "[]" })
+                          arrayHelpers.push({ resource: "", grants: [] })
                         }>
                         Add Permission
                       </button>

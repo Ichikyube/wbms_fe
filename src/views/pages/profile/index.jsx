@@ -67,8 +67,7 @@ const Profile = () => {
   return (
     <>
       <Typography
-        sx={{ fontSize: "25px", fontWeight: "bold", mt: 2, mb: 3, ml: 2 }}
-      >
+        sx={{ fontSize: "25px", fontWeight: "bold", mt: 2, mb: 3, ml: 2 }}>
         Profile
       </Typography>
       <Formik initialValues={initialValues}>
@@ -90,12 +89,10 @@ const Profile = () => {
                     mx: 1,
                     borderTop: "5px solid #000",
                     borderRadius: "10px 10px 10px 10px",
-                  }}
-                >
+                  }}>
                   <div
                     className="ag-theme-alpine"
-                    style={{ width: "auto", height: "auto" }}
-                  >
+                    style={{ width: "auto", height: "auto" }}>
                     <Box
                       sx={{
                         justifyContent: "center",
@@ -103,8 +100,7 @@ const Profile = () => {
                         textAlign: "center",
                         display: "flex", // Mengatur tampilan secara vertikal
                         flexDirection: "column", // Mengatur tampilan secara vertikal
-                      }}
-                    >
+                      }}>
                       {/* Tambahkan div kontainer untuk mengatur posisi */}
                       <div style={{ position: "relative" }}>
                         <div
@@ -119,8 +115,7 @@ const Profile = () => {
                             border: "1px solid #9e9e9e",
                             borderRadius: "50%",
                             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                          }}
-                        >
+                          }}>
                           <Tooltip title="Edit Profile">
                             <label htmlFor="imageInput">
                               <input
@@ -147,8 +142,7 @@ const Profile = () => {
                             marginBottom: "15px",
                             marginTop: "47px",
                             border: "2px solid #9e9e9e",
-                          }}
-                        >
+                          }}>
                           {/* Gambar ditampilkan terlebih dahulu */}
                           {image === null && (
                             <div
@@ -158,8 +152,7 @@ const Profile = () => {
                                 alignItems: "center",
                                 width: "200px",
                                 height: "200px",
-                              }}
-                            >
+                              }}>
                               <img
                                 src={`../../assets/user.jpg`}
                                 alt="Uploaded Preview"
@@ -198,8 +191,7 @@ const Profile = () => {
                                 alignItems: "center",
                                 width: "200px",
                                 height: "200px",
-                              }}
-                            >
+                              }}>
                               <img
                                 src={`../../assets/user.jpg`}
                                 alt="Uploaded Preview"
@@ -215,12 +207,11 @@ const Profile = () => {
                       </div>
 
                       <Typography
-                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}
-                      >
+                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}>
                         {userInfo.name}
                       </Typography>
                       <Typography sx={{ fontSize: "15px", mb: 6 }}>
-                        PKS
+                        {userInfo.role}
                       </Typography>
 
                       <Button
@@ -233,8 +224,7 @@ const Profile = () => {
                           color: "white",
                           width: "100%",
                           mb: 2,
-                        }}
-                      >
+                        }}>
                         Edit Profile
                       </Button>
                       <Button
@@ -251,8 +241,7 @@ const Profile = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         Ganti Password
                       </Button>
                     </Box>
@@ -267,27 +256,23 @@ const Profile = () => {
                     mx: 1,
                     borderTop: "5px solid #000",
                     borderRadius: "10px 10px 10px 10px",
-                  }}
-                >
+                  }}>
                   <div
                     className="ag-theme-alpine"
-                    style={{ width: "auto", height: "auto" }}
-                  >
+                    style={{ width: "auto", height: "auto" }}>
                     <Box
                       display="grid"
                       margin={7}
                       width="75%"
                       gap="30px"
-                      gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                    >
+                      gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                       <FormControl
                         sx={{
                           gridColumn: "span 4",
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <FormLabel
                           sx={{
                             color: "black",
@@ -295,8 +280,7 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}
-                        >
+                          }}>
                           Name
                         </FormLabel>
                         <TextField
@@ -318,8 +302,7 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <FormLabel
                           sx={{
                             color: "black",
@@ -327,8 +310,7 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}
-                        >
+                          }}>
                           Email
                         </FormLabel>
                         <TextField
@@ -350,8 +332,7 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <FormLabel
                           sx={{
                             color: "black",
@@ -359,8 +340,7 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}
-                        >
+                          }}>
                           No.Telp
                         </FormLabel>
                         <TextField
@@ -382,8 +362,7 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <FormLabel
                           sx={{
                             color: "black",
@@ -391,8 +370,7 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}
-                        >
+                          }}>
                           Alamat
                         </FormLabel>
                         <TextField

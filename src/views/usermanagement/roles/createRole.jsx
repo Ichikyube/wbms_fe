@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, React } from "react";
+import { useState, useEffect, React, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,56 +13,21 @@ import {
   FormLabel,
   TextField,
 } from "@mui/material";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { Formik, Form, Field, FieldArray } from "formik";
 import * as yup from "yup";
-import { grey, blue, orange, red, yellow, purple } from "@mui/material/colors";
+import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
 import * as API from "../../../api/api";
 import SelectBox from "../../../components/selectbox";
 
-// Code snippet from c:\wbms\wbms_fe\src\components\AccessControl\PermissionForm.jsx
-import PermissionForm from "../../../components/AccessControl/PermissionForm";
-const animatedComponents = makeAnimated();
+// import PermissionForm from "../../../components/AccessControl/PermissionForm";
+
 const CreateRoles = ({ isOpen, onClose }) => {
-  const [resources, setResources] = useState([]);
   const [dtAttr, setDtAttr] = useState([]);
   const [availableResources, setAvailableResources] = useState([]);
-
-  const resourcesList = [  
-    'barcodeTypes', 'cities', 'companies', 'configs',  
-    'customers', 'customerType','driver', 'customerGroups',
-    'mills', 'products', 'ProductGroups','provinces','semai', 'sites',
-    'storageTanks', 'transactions', 'transportVehicles', 'users', 'weighbridges']
-  setAvailableResources(
-    resourcesList.map((ares) => ({
-      value: ares,
-      label: ares,
-    }))
-  );
-  const MainSite = [ 'PKS','T30', 'Labanan' ]
-
-  useEffect(() => {
-    API.getResourceslist().then((res) => {
-      setResources(res.data.model.records);
-      setDtAttr(res.data.model.allAttributes);
-    });
-  }, []);
-
-  useEffect(() => {
-    setAvailableResources(
-      resources.map((ares) => ({
-        value: ares,
-        label: ares,
-      }))
-    );
-  }, [resources]);
-
-  // console.log(resources);
-  console.log(availableResources);
 
   let resourcesOpt,
     barcodeAttr,
@@ -83,11 +48,6 @@ const CreateRoles = ({ isOpen, onClose }) => {
     productgrupAttr;
 
   if (dtAttr) {
-    resourcesOpt = resources.map((resource) => ({
-      value: resource,
-      label: resource,
-    }));
-
     barcodeAttr = dtAttr[" BarcodeType"]?.map((attr) => ({
       value: attr,
       label: attr,
@@ -153,8 +113,46 @@ const CreateRoles = ({ isOpen, onClose }) => {
       label: attr,
     }));
   }
-  const [selectedResources, setSelectedResources] = useState([]);
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const resourcesList = [
+    "BarcodeType",
+    "City",
+    "Company",
+    "Config",
+    "Customer",
+    "CustomerType",
+    "Driver",
+    "CustomerGroup",
+    "Mill",
+    "Product",
+    "ProductGroup",
+    "Province",
+    "Semai",
+    "Site",
+    "StorageTank",
+    "Transaction",
+    "TransportVehicle",
+    "User",
+    "Weighbridge",
+  ];
+  const MainSite = ["PKS", "T30", "Labanan"];
+  useEffect(() => {
+    API.getResourceslist()
+      .then((res) => {
+        console.log(res.data);
+        setDtAttr(res.data.model.allAttributes);
+      })
+      .then(
+        setAvailableResources(
+          resourcesList.map((ares) => ({
+            value: ares,
+            label: ares,
+            attrList: dtAttr[ares],
+          }))
+        )
+      );
+  }, []);
+
+  const [value, setValue] = useState([]);
 
   // Create
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -170,14 +168,11 @@ const CreateRoles = ({ isOpen, onClose }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+
         onClose("", false);
       });
   };
 
-  const actionOptions = ["read", "create", "update", "delete"];
   const initialValues = {
     name: "",
     permissions: [
@@ -291,7 +286,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                 gap="20px"
                 // gridTemplateColumns="repeat(2, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -314,21 +309,143 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </FormControl>
+              </Box>
+              <FormLabel
+                sx={{
+                  color: "black",
+                  marginTop: "25px",
+                  marginBottom: "8px",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}>
+                Permissions
+              </FormLabel>
+              <Box
+                sx={{ gridColumn: "span 4" }}
+                display="block"
+                padding={2}
+                paddingBottom={3}
+                paddingLeft={3}
+                paddingRight={3}>
+                <FormControl
+                  sx={{
+                    gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}>
+                    Transaction
+                  </FormLabel>
+
+                  <FormControlLabel
+                    sx={{ marginLeft: "21vh" }}
+                    control={
+                      <Checkbox
+                        checked={selectAllChecked}
+                        onChange={handleSelectAllChange}
+                      />
+                    }
+                    label={
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "17px",
+                            fontWeight: "bold",
+                            color: "grey",
+                          }}>
+                          Pilih Semua
+                        </Typography>
+                      </>
+                    }
+                  />
+                </FormControl>
+                <Box
+                  sx={{
+                    justifyContent: "space-between",
+                    alignContent: "center",
+                    width: "100%",
+                    display: "grid",
+                    gridColumn: "span 4",
+                  }}>
+                  <FormControl
+                    sx={{
+                      flexDirection: "row",
+                      marginTop: "5px",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+
+                        fontSize: "18px",
+                      }}>
+                      Transaksi PKS
+                    </FormLabel>
+                    <Checkbox
+                      checked={transactionChecked.pks}
+                      onChange={handleTransactionChange("pks")}
+                    />
+                  </FormControl>
+                  <FormControl
+                    sx={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+
+                        fontSize: "18px",
+                      }}>
+                      Transaksi T-30
+                    </FormLabel>
+                    <Checkbox
+                      checked={transactionChecked.t30}
+                      onChange={handleTransactionChange("t30")}
+                    />
+                  </FormControl>
+                  <FormControl
+                    sx={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        fontSize: "18px",
+                      }}>
+                      Transaksi Labanan
+                    </FormLabel>
+                    <Checkbox
+                      checked={transactionChecked.labanan}
+                      onChange={handleTransactionChange("labanan")}
+                    />
+                  </FormControl>
+                </Box>
+                <FormLabel
+                  sx={{
+                    color: "black",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginBottom: "8px",
+                  }}>
+                  Master Data
+                </FormLabel>
 
                 <FieldArray
                   gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                   name="permissions">
                   {(arrayHelpers) => (
                     <div>
-                      <FormLabel
-                        sx={{
-                          color: "black",
-                          marginBottom: "8px",
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}>
-                        Permissions
-                      </FormLabel>
                       {values.permissions.map((permission, permissionIndex) => (
                         <div
                           style={{
@@ -337,88 +454,32 @@ const CreateRoles = ({ isOpen, onClose }) => {
                             padding: "15px",
                           }}
                           key={permissionIndex}>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              arrayHelpers.remove(permissionIndex)
-                            }>
-                            Remove Permission
-                          </button>
-                          <FormLabel
-                            sx={{
-                              color: "black",
-                              marginBottom: "8px",
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}>
-                            Resource:
-                          </FormLabel>
-                          <div style={{ flex: 1, width: "50%" }}>
+                          <div style={{ flex: 1, width: "100%" }}>
                             <SelectBox
-                              width="50%"
+                              width="100%"
                               name={`permissions[${permissionIndex}].resource`}
+                              permInd={permissionIndex}
                               onChange={(e) => {
                                 arrayHelpers.handleReplace(e);
                                 handleResourceChange(permissionIndex, e.value);
+                                // const attrs = e.attrList?.map((att) => ({
+                                //   value: att,
+                                //   label: att,
+                                // }));
+                                this.attrList = e.attrList;
+                                console.log(e.attrList);
                               }}
+                              attrList={customerAttr}
                               options={availableResources}
                             />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                arrayHelpers.remove(permissionIndex)
+                              }>
+                              Remove Permission
+                            </button>
                           </div>
-
-                          <FieldArray
-                            name={`permissions[${permissionIndex}].grants`}>
-                            {(grantArrayHelpers) => (
-                                <div>
-                                {permission.grants.map((grant, grantIndex) => (
-                                    <div key={grantIndex}>
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                        grantArrayHelpers.remove(grantIndex)
-                                        }>
-                                        Remove Grant
-                                    </button>
-                                    <div>
-                                        <label>Actions:</label>
-                                        <div>
-                                        {actionOptions.map((actionOption) => (
-                                            <label key={actionOption}>
-                                            <Field
-                                                type="checkbox"
-                                                name={`permissions[${permissionIndex}].grants[${grantIndex}].action`}
-                                                value={actionOption}
-                                            />{" "}
-                                            {actionOption}
-                                            </label>
-                                        ))}
-                                        </div>
-                                    </div>
-                                    <label>Hide Attributes:</label>
-                                    <Select
-                                        fullWidth
-                                        name={`permissions[${permissionIndex}].grants[${grantIndex}].attributes`}
-                                        closeMenuOnSelect={false}
-                                        components={animatedComponents}
-                                        defaultValue={[siteAttr[4], siteAttr[5]]}
-                                        isMulti
-                                        options={siteAttr}
-                                    />
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                    grantArrayHelpers.push({
-                                        action: "",
-                                        possession: "",
-                                        attributes: [],
-                                    })
-                                    }>
-                                    Add Grant
-                                </button>
-                                </div>
-                            )}
-                            </FieldArray>
                         </div>
                       ))}
                       <button

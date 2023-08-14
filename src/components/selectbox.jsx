@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-
+import { Field } from "formik";
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
+const animatedComponents = makeAnimated();
 
 const Checkbox = ({ children, ...props }) => (
   <label style={{ marginRight: "1em" }}>
@@ -8,25 +10,17 @@ const Checkbox = ({ children, ...props }) => (
     {children}
   </label>
 );
-
-const SelectBox = ({ name, width, onChange, options }) => {
-  const [isClearable, setIsClearable] = useState(true);
-  const [isSearchable, setIsSearchable] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRtl, setIsRtl] = useState(false);
-
+const actionOptions = ["read", "create", "update", "delete"];
+const SelectBox = ({ name, width, onChange, options, permissionIndex, attrList }) => {
+  console.log(attrList);
   return (
     <>
       <Select
         className="basic-single"
         classNamePrefix="select"
         // defaultValue={options[0]}
-        isDisabled={isDisabled}
-        isLoading={isLoading}
-        isClearable={isClearable}
-        isRtl={isRtl}
-        isSearchable={isSearchable}
+        isClearable={true}
+        isSearchable={true}
         name={name}
         onChange={onChange}
         options={options}
@@ -34,36 +28,49 @@ const SelectBox = ({ name, width, onChange, options }) => {
       />
 
       <div
-        style={{
-          color: "hsl(0, 0%, 40%)",
-          display: "inline-block",
-          fontSize: 12,
-          fontStyle: "italic",
-          marginTop: "1em",
-        }}>
-        <Checkbox
-          checked={isClearable}
-          onChange={() => setIsClearable((state) => !state)}>
-          Clearable
-        </Checkbox>
-        <Checkbox
-          checked={isSearchable}
-          onChange={() => setIsSearchable((state) => !state)}>
-          Searchable
-        </Checkbox>
-        <Checkbox
-          checked={isDisabled}
-          onChange={() => setIsDisabled((state) => !state)}>
-          Disabled
-        </Checkbox>
-        <Checkbox
-          checked={isLoading}
-          onChange={() => setIsLoading((state) => !state)}>
-          Loading
-        </Checkbox>
-        <Checkbox checked={isRtl} onChange={() => setIsRtl((state) => !state)}>
-          RTL
-        </Checkbox>
+        name={`permissions[${permissionIndex}].grants`}>
+        <label>Actions:</label>
+        <div>
+          {actionOptions.map(
+            (actionOption, actionIndex) => (
+              <label
+                style={{
+                  display: "block",
+                  width: "100%",
+                  marginBottom: "5px",
+                }}
+                key={actionOption}>
+                <Field
+                  type="checkbox"
+                  name={`permissions[${permissionIndex}].grants.action[${actionIndex}]`}
+                  value={actionOption}
+                />{" "}
+                {actionOption}
+                <label
+                  style={{
+                    display: "block",
+                    textAlign: "right",
+                    fontSize: "12px",
+                    width: "100%",
+                  }}>
+                  Hide Attributes:
+                </label>
+                <Select
+                  fullWidth
+                  name={`permissions[${permissionIndex}].grants.action[${actionIndex}].attributes`}
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  // defaultValue={[
+                  //   attrList[4],
+                  //   attrList[5],
+                  // ]}
+                  isMulti
+                  options={attrList}
+                />
+              </label>
+            )
+          )}
+        </div>
       </div>
     </>
   );

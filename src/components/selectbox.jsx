@@ -1,77 +1,59 @@
-import React, { useState } from "react";
-import { Field } from "formik";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-const animatedComponents = makeAnimated();
+import React from "react";
+import Select, { components } from "react-select";
 
-const Checkbox = ({ children, ...props }) => (
-  <label style={{ marginRight: "1em" }}>
-    <input type="checkbox" {...props} />
-    {children}
-  </label>
-);
-const actionOptions = ["read", "create", "update", "delete"];
-const SelectBox = ({ name, width, onChange, options, permissionIndex, attrList }) => {
-  console.log(attrList);
+const ValueContainer = ({ children, getValue, ...props }) => {
+  let maxToShow = 3;
+  var length = getValue().length;
+  let displayChips = React.Children.toArray(children).slice(0, maxToShow);
+  let shouldBadgeShow = length > maxToShow;
+  let displayLength = length - maxToShow;
+
+  return (
+    <components.ValueContainer {...props}>
+      {!props.selectProps.inputValue && displayChips}
+      <div className="root">
+        {shouldBadgeShow &&
+          `+ ${displayLength} item${length !== 1 ? "s" : ""} selected`}
+      </div>
+    </components.ValueContainer>
+  );
+};
+
+// const Checkbox = ({ children, ...props }) => (
+//   <label style={{ marginRight: "1em" }}>
+//     <input type="checkbox" {...props} />
+//     {children}
+//   </label>
+// );
+
+const SelectBox = ({ name, width, onChange, options, values, defaultValues }) => {
+
+  const styles = {
+    option: (base, value) => {
+        return ((value) ? { ...base } : { display: 'none'});
+    }
+  };
   return (
     <>
       <Select
-        className="basic-single"
+        isMulti
+        fullWidth
+        name={name}
+        closeMenuOnSelect={false}
+        hideSelectedOptions={false}
         classNamePrefix="select"
-        // defaultValue={options[0]}
+        defaultValue= {defaultValues}
+        value={values}
         isClearable={true}
         isSearchable={true}
-        name={name}
         onChange={onChange}
         options={options}
+        components={{ ValueContainer }}
         style={{ flex: 1, width: "50%" }}
+        styles={styles}
+        width={width}
+        
       />
-
-      <div
-        name={`permissions[${permissionIndex}].grants`}>
-        <label>Actions:</label>
-        <div>
-          {actionOptions.map(
-            (actionOption, actionIndex) => (
-              <label
-                style={{
-                  display: "block",
-                  width: "100%",
-                  marginBottom: "5px",
-                }}
-                key={actionOption}>
-                <Field
-                  type="checkbox"
-                  name={`permissions[${permissionIndex}].grants.action[${actionIndex}]`}
-                  value={actionOption}
-                />{" "}
-                {actionOption}
-                <label
-                  style={{
-                    display: "block",
-                    textAlign: "right",
-                    fontSize: "12px",
-                    width: "100%",
-                  }}>
-                  Hide Attributes:
-                </label>
-                <Select
-                  fullWidth
-                  name={`permissions[${permissionIndex}].grants.action[${actionIndex}].attributes`}
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  // defaultValue={[
-                  //   attrList[4],
-                  //   attrList[5],
-                  // ]}
-                  isMulti
-                  options={attrList}
-                />
-              </label>
-            )
-          )}
-        </div>
-      </div>
     </>
   );
 };

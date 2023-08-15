@@ -1,4 +1,5 @@
-import { useState, useEffect, React, useMemo } from "react";
+import { useState, useEffect, useMemo, React } from "react";
+import "./style.css";
 import {
   Dialog,
   DialogContent,
@@ -8,111 +9,29 @@ import {
   Typography,
   Button,
   Box,
+  RadioGroup,
+  Radio,
   FormControl,
   IconButton,
   FormLabel,
   TextField,
 } from "@mui/material";
-
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
-import * as API from "../../../api/api";
 import SelectBox from "../../../components/selectbox";
-
+import { dtAttr } from "../../../data/attributeList";
 // import PermissionForm from "../../../components/AccessControl/PermissionForm";
 
+const animatedComponents = makeAnimated();
 const CreateRoles = ({ isOpen, onClose }) => {
-  const [dtAttr, setDtAttr] = useState([]);
   const [availableResources, setAvailableResources] = useState([]);
 
-  let resourcesOpt,
-    barcodeAttr,
-    cityAttr,
-    provinceAttr,
-    companyAttr,
-    customerAttr,
-    customerGroupAttr,
-    weighbridgeAttr,
-    customerTypeAttr,
-    driverAttr,
-    millsAttr,
-    siteAttr,
-    stankAttr,
-    transactionAttr,
-    transportAttr,
-    productAttr,
-    productgrupAttr;
-
-  if (dtAttr) {
-    barcodeAttr = dtAttr[" BarcodeType"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    cityAttr = dtAttr["City"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    provinceAttr = dtAttr["Province"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    companyAttr = dtAttr["Company"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    customerAttr = dtAttr["Customer"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    customerGroupAttr = dtAttr["CustomerGroup"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    customerTypeAttr = dtAttr["CustomerType"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    driverAttr = dtAttr["Driver"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    millsAttr = dtAttr["Mill"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    siteAttr = dtAttr["Site"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    stankAttr = dtAttr["StorageTank"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    transactionAttr = dtAttr["Transaction"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    transportAttr = dtAttr["TransportVehicle"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    productAttr = dtAttr["Product"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    productgrupAttr = dtAttr["ProductGroup"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-    weighbridgeAttr = dtAttr["Product"]?.map((attr) => ({
-      value: attr,
-      label: attr,
-    }));
-  }
   const resourcesList = [
     "BarcodeType",
     "City",
@@ -134,25 +53,44 @@ const CreateRoles = ({ isOpen, onClose }) => {
     "User",
     "Weighbridge",
   ];
-  const MainSite = ["PKS", "T30", "Labanan"];
-  useEffect(() => {
-    API.getResourceslist()
-      .then((res) => {
-        console.log(res.data);
-        setDtAttr(res.data.model.allAttributes);
-      })
-      .then(
-        setAvailableResources(
-          resourcesList.map((ares) => ({
-            value: ares,
-            label: ares,
-            attrList: dtAttr[ares],
-          }))
-        )
-      );
-  }, []);
 
-  const [value, setValue] = useState([]);
+  // const MainSite = ["PKS", "T30", "Labanan"];
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const handleSelectAllChange = (event, value) => {
+    const isChecked = event.target.checked;
+    setSelectAllChecked(isChecked);
+    value.pks= isChecked;
+    value.t30= isChecked;
+    value.labanan= isChecked;
+  };
+
+  const handleTransactionChange = (name, value) => (event) => {
+    const isChecked = event.target.checked;
+    value[name]= isChecked;
+
+    // Set "Pilih Semua" checkbox to checked if all transaction checkboxes are checked
+    if (
+      isChecked &&
+      value.pks && value.t30 && value.labanan)
+    {
+      setSelectAllChecked(true);
+    } else {
+      setSelectAllChecked(false);
+    }
+  };
+
+  const mapResources = useMemo(() => {
+    return (ares) => ({
+      value: ares,
+      label: ares,
+      attrList: dtAttr[ares],
+    });
+  }, []);
+  const mappedResources = resourcesList.map(mapResources);
+  useEffect(() => {
+    setAvailableResources(mappedResources);
+  }, [mappedResources]);
 
   // Create
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -174,19 +112,18 @@ const CreateRoles = ({ isOpen, onClose }) => {
   };
 
   const initialValues = {
+    pks: "",
+    t30: "",
+    labanan: "",
     name: "",
     permissions: [
       {
         resource: "",
         grants: [
           {
-            action: ["read"],
+            action: "read",
             possession: "own",
-            attributes: [
-              {
-                attr: "",
-              },
-            ],
+            attributes: [],
           },
         ],
       },
@@ -197,44 +134,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
     name: yup.string().required("required"),
   });
 
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const [transactionChecked, setTransactionChecked] = useState({
-    pks: false,
-    t30: false,
-    labanan: false,
-    report: false,
-  });
-
-  // ... your other code ...
-
-  const handleSelectAllChange = (event) => {
-    const isChecked = event.target.checked;
-    setSelectAllChecked(isChecked);
-    setTransactionChecked({
-      pks: isChecked,
-      t30: isChecked,
-      labanan: isChecked,
-      report: isChecked,
-    });
-  };
-
-  const handleTransactionChange = (name) => (event) => {
-    const isChecked = event.target.checked;
-    setTransactionChecked((prevChecked) => ({
-      ...prevChecked,
-      [name]: isChecked,
-    }));
-
-    // Set "Pilih Semua" checkbox to checked if all transaction checkboxes are checked
-    if (
-      isChecked &&
-      Object.values(transactionChecked).every((value) => value === true)
-    ) {
-      setSelectAllChecked(true);
-    } else {
-      setSelectAllChecked(false);
-    }
-  };
+  const [resourceAtt, setresourceAtt] = useState([]);
 
   const handleResourceChange = (index, newValue) => {
     const updatedResources = availableResources.filter(
@@ -242,6 +142,12 @@ const CreateRoles = ({ isOpen, onClose }) => {
     );
     setAvailableResources(updatedResources);
   };
+
+  const actionOptions = ["read", "create", "update", "delete"];
+  const [possesionList, setPossesionList] = useState(
+    Array(actionOptions.length).fill("own")
+  );
+
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
@@ -262,7 +168,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik
+        <Formik 
           onSubmit={handleSubmit}
           initialValues={initialValues}
           validationSchema={checkoutSchema}>
@@ -283,9 +189,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                 paddingBottom={3}
                 paddingLeft={3}
                 paddingRight={3}
-                gap="20px"
-                // gridTemplateColumns="repeat(2, minmax(0, 1fr))"
-              >
+                gap="20px">
                 <FormControl>
                   <FormLabel
                     sx={{
@@ -348,7 +252,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     control={
                       <Checkbox
                         checked={selectAllChecked}
-                        onChange={handleSelectAllChange}
+                        onChange={event=> handleSelectAllChange(event, values)}
                       />
                     }
                     label={
@@ -389,8 +293,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       Transaksi PKS
                     </FormLabel>
                     <Checkbox
-                      checked={transactionChecked.pks}
-                      onChange={handleTransactionChange("pks")}
+                      name="pks"
+                      checked={values.pks}
+                      onChange={handleTransactionChange("pks", values)}
                     />
                   </FormControl>
                   <FormControl
@@ -408,8 +313,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       Transaksi T-30
                     </FormLabel>
                     <Checkbox
-                      checked={transactionChecked.t30}
-                      onChange={handleTransactionChange("t30")}
+                      name="t30"
+                      checked={values.t30}
+                      onChange={handleTransactionChange("t30", values)}
                     />
                   </FormControl>
                   <FormControl
@@ -426,8 +332,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       Transaksi Labanan
                     </FormLabel>
                     <Checkbox
-                      checked={transactionChecked.labanan}
-                      onChange={handleTransactionChange("labanan")}
+                      name="labanan"
+                      checked={values.labanan}
+                      onChange={handleTransactionChange("labanan", values)}
                     />
                   </FormControl>
                 </Box>
@@ -455,23 +362,141 @@ const CreateRoles = ({ isOpen, onClose }) => {
                           }}
                           key={permissionIndex}>
                           <div style={{ flex: 1, width: "100%" }}>
-                            <SelectBox
-                              width="100%"
+                            <Select
+                              className="basic-single"
+                              classNamePrefix="select"
+                              // defaultValue={options[0]}
+                              isClearable={true}
+                              isSearchable={true}
+                              style={{ flex: 1, width: "50%" }}
+                              components={animatedComponents}
                               name={`permissions[${permissionIndex}].resource`}
-                              permInd={permissionIndex}
+                              // value={permission.resource}
                               onChange={(e) => {
                                 arrayHelpers.handleReplace(e);
                                 handleResourceChange(permissionIndex, e.value);
-                                // const attrs = e.attrList?.map((att) => ({
-                                //   value: att,
-                                //   label: att,
-                                // }));
-                                this.attrList = e.attrList;
-                                console.log(e.attrList);
+                                permission.resource = e.value;
+                                const attrs = e.attrList.map((att) => ({
+                                  value: att,
+                                  label: att,
+                                }));
+                                setresourceAtt(attrs);
                               }}
-                              attrList={customerAttr}
                               options={availableResources}
                             />
+                            <div
+                              name={`permissions[${permissionIndex}].grants`}>
+                              <label>Actions:</label>
+                              <div>
+                                {actionOptions.map(
+                                  (actionOption, actionIndex) => (
+                                    <>
+                                      <div
+                                        style={{
+                                          display: "block",
+                                          width: "100%",
+                                        }}>
+                                        <FormControl
+                                          sx={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginBottom: "5px",
+                                          }}>
+                                          <FormLabel
+                                            style={{
+                                              display: "flex",
+                                              marginRight: "25px",
+                                              marginBottom: "5px",
+                                            }}
+                                            key={actionOption}>
+                                            <Checkbox
+                                              name={`permissions[${permissionIndex}].grants[${actionIndex}].action`}
+                                              onChange={handleChange}
+                                              value={actionOption}
+                                              style={{ marginRight: "15px" }}
+                                            />
+                                            {actionOption}
+                                          </FormLabel>
+
+                                          <FormLabel
+                                            key={actionIndex}
+                                            className="switch-title">
+                                            Possession
+                                          </FormLabel>
+
+                                          <RadioGroup
+                                            row
+                                            name={`permissions[${permissionIndex}].grants[${actionIndex}].possession`}
+                                            className="switch-field"
+                                            sx={{
+                                              padding: "0px",
+                                              borderRadius: "0px",
+                                              "--RadioGroup-gap": "0px",
+                                              "--Radio-actionRadius": "0px",
+                                            }}
+                                            onChange={(event) => {
+                                              const { value } = event.target;
+                                              const list = [...possesionList];
+                                              list[actionIndex] = value;
+                                              setPossesionList(list);
+                                              // setFieldValue(
+                                              //   `permissions[${permissionIndex}].grants[${actionIndex}].possession`,
+                                              //   possesionList[actionIndex]
+                                              // );
+                                            }}
+                                            value={possesionList[actionIndex]}>
+                                            <FormControlLabel
+                                              sx={{
+                                                display: "flex",
+                                                marginRight: "0",
+                                                marginBottom: "0",
+                                              }}
+                                              value="own"
+                                              control={
+                                                <Radio disableicon="true" />
+                                              }
+                                              label="Own"
+                                            />
+                                            <FormControlLabel
+                                              value="any"
+                                              control={
+                                                <Radio disableicon="true" />
+                                              }
+                                              label="Any"
+                                            />
+                                          </RadioGroup>
+                                        </FormControl>
+                                      </div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          textAlign: "right",
+                                          fontSize: "12px",
+                                          width: "100%",
+                                        }}>
+                                        Hide Attributes:
+                                      </label>
+                                      <SelectBox
+                                        name={`permissions[${permissionIndex}].grants[${actionIndex}].attributes`}
+                                        onChange={(event) => {
+                                          console.log(event);
+                                          setFieldValue(`permissions[${permissionIndex}].grants[${actionIndex}].attributes`, event.map(option=>option.value))
+                                        }}
+                                        // value={values.permissions[permissionIndex].grants[actionIndex].attributes}
+                                        defaultValues={[
+                                          resourceAtt?.userCreated,
+                                          resourceAtt?.userModified,
+                                          resourceAtt?.dtCreated,
+                                          resourceAtt?.dtModified,
+                                        ]}
+                                        options={resourceAtt}
+                                      />
+                                    </>
+                                  )
+                                )}
+                              </div>
+                            </div>
                             <button
                               type="button"
                               onClick={() =>

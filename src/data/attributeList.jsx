@@ -191,31 +191,6 @@ const Role= [
     'users'
 ];
   
-const Permission= [
-    'id',
-    'resource',
-    'grants',
-    'roleId',
-    'role',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified'
-];
-  
-const Grant= [
-    'id',
-    'action',
-    'possession',
-    'attributes',
-    'permissionId',
-    'permission',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified'
-];
-  
 const Product= [
     'id',           'refType',
     'refId',        'productGroupName',
@@ -414,4 +389,4 @@ const Transaction= [
     "dtModified",
 ]
 
-export const dtAttr = { Province, City, Company, Customer, CustomerType, CustomerGroup, BarcodeType, Site, Mill, Weighbridge, Config, User, Product, ProductGroup, StorageTank, Driver, TransportVehicle, Transaction }
+export const dtAttr = { Province, City, Company, Customer, CustomerType, CustomerGroup, BarcodeType, Site, Mill, Weighbridge, Config, ConfigRequest, Role, User, Product, ProductGroup, StorageTank, Driver, TransportVehicle, Transaction }

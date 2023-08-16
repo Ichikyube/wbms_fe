@@ -26,12 +26,18 @@ const ValueContainer = ({ children, getValue, ...props }) => {
 //   </label>
 // );
 
-const SelectBox = ({ name, width, onChange, options, values, defaultValues }) => {
-
+const SelectBox = ({
+  name,
+  width,
+  onChange,
+  options,
+  values,
+  defaultValues,
+}) => {
   const styles = {
     option: (base, value) => {
-        return ((value) ? { ...base } : { display: 'none'});
-    }
+      return value ? { ...base } : { display: "none" };
+    },
   };
   return (
     <>
@@ -42,7 +48,7 @@ const SelectBox = ({ name, width, onChange, options, values, defaultValues }) =>
         closeMenuOnSelect={false}
         hideSelectedOptions={false}
         classNamePrefix="select"
-        defaultValue= {defaultValues}
+        defaultValue={defaultValues}
         value={values}
         isClearable={true}
         isSearchable={true}
@@ -52,7 +58,6 @@ const SelectBox = ({ name, width, onChange, options, values, defaultValues }) =>
         style={{ flex: 1, width: "50%" }}
         styles={styles}
         width={width}
-        
       />
     </>
   );

@@ -1,4 +1,12 @@
-
+<Field name={`permissions[${index}].resource`} value={resource} as="select" onChange={(event) => {
+                                const { checked } = event.target;
+                                if (checked) {
+                                  setFieldValue(
+                                    `permissions[${index}].resource`,
+                                    String(event.target.value)
+                                  );
+                                }
+                              }}>
 ## Usage
 
 `AsyncPaginate` is an alternative of `Async` but supports loading page by page. It is wrapper above default `react-select` thus it accepts all props of default `Select`. And there are some new props:

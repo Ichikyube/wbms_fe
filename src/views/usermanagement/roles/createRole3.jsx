@@ -26,7 +26,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Masonry from "@mui/lab/Masonry";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { Formik, Form, FieldArray } from "formik";
+import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
@@ -73,7 +73,14 @@ const CreateRoles = ({ isOpen, onClose }) => {
       )
     );
   };
-
+  const handleSelectAll = () => {
+    const allChecked = checkboxes.every((checkbox) => checkbox.checked);
+    const updatedCheckboxes = checkboxes.map((checkbox) => ({
+      ...checkbox,
+      checked: !allChecked,
+    }));
+    setCheckboxes(updatedCheckboxes);
+  };
   useEffect(() => {
     const updatedResources = checkboxes
       .filter((checkbox) => checkbox.checked)
@@ -95,7 +102,6 @@ const CreateRoles = ({ isOpen, onClose }) => {
   }, [selectedResources]);
   // Create
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log(values.permissions.grants.attributes);
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
     const filteredValues = Object.fromEntries(filtered);
@@ -219,13 +225,23 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       helperText={touched.name && errors.name}
                     />
                   </FormControl>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={checkboxes.every((checkbox) => checkbox.checked)}
+                      onChange={handleSelectAll}
+                    />
+                    Select All
+                  </label>
                   {checkboxes.map((checkbox) => (
                     <div key={checkbox.id}>
                       <label>
                         <input
                           type="checkbox"
                           checked={checkbox.checked}
-                          onChange={() => handleCheckboxChange(checkbox.id)}
+                          onChange={() =>
+                            handleCheckboxChange(checkbox.id, setFieldValue)
+                          }
                         />
                         {checkbox.label}
                       </label>
@@ -265,10 +281,36 @@ const CreateRoles = ({ isOpen, onClose }) => {
                         <StyledAccordion
                           sx={{ minHeight: "15px", width: "auto" }}>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography> {resource}</Typography>
+                            <Typography>
+                              {" "}
+                              {  values.permissions[index] &&
+                                (values.permissions[index].resource = resource) }
+                              {resource}
+                              <br />
+                              {values.permissions[index] &&
+                                actionOptions.map(
+                                  (actionOption, actionIndex) => (
+                                    <span>
+                                      {"|| " +
+                                        values.permissions[index]?.grants[
+                                          actionIndex
+                                        ]?.action}
+                                      <span style={{ fontSize: "10px" }}>
+                                        {
+                                          values.permissions[index]?.grants[
+                                            actionIndex
+                                          ]?.possession
+                                        }{" "}
+                                      </span>
+                                    </span>
+                                  )
+                                )}
+                              {"||"}
+                            </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
-                            <Box name={`permissions[${index}].grants`}
+                            <Box
+                              name={`permissions[${index}].grants`}
                               sx={{
                                 flex: 1,
                                 width: "auto",
@@ -302,28 +344,25 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                         <Checkbox
                                           name={`permissions[${index}].grants[${actionIndex}].action`}
                                           onChange={(event) => {
-                                            const { checked } =
-                                              event.target;
+                                            const { checked } = event.target;
                                             if (checked) {
                                               setFieldValue(
                                                 `permissions[${index}].grants[${actionIndex}].action`,
                                                 String(event.target.value)
                                               );
-                                              values.permissions[
-                                                index
-                                              ].grants[
-                                                actionIndex
-                                              ].possession = "own";
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}].possession`,
+                                                "own"
+                                              );
                                             } else if (!checked) {
                                               setFieldValue(
                                                 `permissions[${index}].grants[${actionIndex}].action`,
                                                 ""
                                               );
-                                              values.permissions[
-                                                index
-                                              ].grants[
-                                                actionIndex
-                                              ].possession = "";
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}].possession`,
+                                                ""
+                                              );
                                             }
                                           }}
                                           value={actionOption}
@@ -335,49 +374,45 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                       </FormLabel>
                                     </FormControl>
                                     <FormLabel className="switch-title">
-                                        Possession
-                                      </FormLabel>
-                                      <RadioGroup
-                                        row
-                                        name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                        className="switch-field"
+                                      Possession
+                                    </FormLabel>
+                                    <RadioGroup
+                                      row
+                                      name={`permissions[${index}].grants[${actionIndex}].possession`}
+                                      className="switch-field"
+                                      sx={{
+                                        padding: "0px",
+                                        borderRadius: "0px",
+                                        "--RadioGroup-gap": "0px",
+                                        "--Radio-actionRadius": "0px",
+                                      }}
+                                      onChange={(event) => {
+                                        const { value } = event.target;
+                                        const list = [...possesionList];
+                                        list[actionIndex] = value;
+                                        setPossesionList(list);
+                                        setFieldValue(
+                                          `permissions[${index}].grants[${actionIndex}].possession`,
+                                          possesionList[actionIndex]
+                                        );
+                                      }}
+                                      value={possesionList[actionIndex]}>
+                                      <FormControlLabel
                                         sx={{
-                                          padding: "0px",
-                                          borderRadius: "0px",
-                                          "--RadioGroup-gap": "0px",
-                                          "--Radio-actionRadius": "0px",
+                                          display: "flex",
+                                          marginRight: "0",
+                                          marginBottom: "0",
                                         }}
-                                        onChange={(event) => {
-                                          const { value } = event.target;
-                                          const list = [...possesionList];
-                                          list[actionIndex] = value;
-                                          setPossesionList(list);
-                                          setFieldValue(
-                                            `permissions[${index}].grants[${actionIndex}].possession`,
-                                            possesionList[actionIndex]
-                                          );
-                                        }}
-                                        value={possesionList[actionIndex]}>
-                                        <FormControlLabel
-                                          sx={{
-                                            display: "flex",
-                                            marginRight: "0",
-                                            marginBottom: "0",
-                                          }}
-                                          value="own"
-                                          control={
-                                            <Radio disableicon="true" />
-                                          }
-                                          label="Own"
-                                        />
-                                        <FormControlLabel
-                                          value="any"
-                                          control={
-                                            <Radio disableicon="true" />
-                                          }
-                                          label="Any"
-                                        />
-                                      </RadioGroup>
+                                        value="own"
+                                        control={<Radio disableicon="true" />}
+                                        label="Own"
+                                      />
+                                      <FormControlLabel
+                                        value="any"
+                                        control={<Radio disableicon="true" />}
+                                        label="Any"
+                                      />
+                                    </RadioGroup>
                                     <label
                                       style={{
                                         display: "block",
@@ -390,32 +425,27 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                     {attrOptions[resource] && (
                                       <SelectBox
                                         name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                        onChange={(selected) => {
-                                          setFieldValue(
-                                            `permissions[${index}].grants[${actionIndex}].attributes`,
-                                            selected
-                                          )
-                                          // event.forEach((option, i) =>
-                                          //   setFieldValue(
-                                          //     `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
-                                          //     option.value
-                                          //   )
-                                          // );
-                                          // if (
-                                          //   values.permissions[index] &&
-                                          //   values.permissions[index].grants[
-                                          //     actionIndex
-                                          //   ]
-                                          // ) {
-                                          //   values.permissions[index].grants[
-                                          //     actionIndex
-                                          //   ].attributes[i].attr = option.value;
-                                          // }
-                                          console.log(values.permissions[index].grants[actionIndex].attributes)
+                                        onChange={(event) => {
+                                          if (
+                                            values.permissions[index] &&
+                                            values.permissions[index].grants[
+                                              actionIndex
+                                            ]
+                                          ) {
+                                            event.forEach((option, i) =>
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
+                                                option.value
+                                              )
+                                            );
+                                            // values.permissions[index].grants[
+                                            //     actionIndex
+                                            //   ].attributes[i].attr = option.value;
+                                          }
                                         }}
-                                        length={
-                                          attrOptions[resource]?.length
-                                        }
+                                        setFieldValue={setFieldValue}
+                                        permission={`permissions[${index}].grants[${actionIndex}]`}
+                                        length={attrOptions[resource]?.length}
                                         options={attrOptions[resource]}
                                       />
                                     )}

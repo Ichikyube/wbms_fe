@@ -38,7 +38,6 @@ const SelectBox = (props) => {
       setOpts(props.options);
     }
   }, [props.options]);
-  
 
   return (
     <>

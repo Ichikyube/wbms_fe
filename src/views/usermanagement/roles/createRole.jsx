@@ -19,6 +19,8 @@ import {
   FormControl,
   IconButton,
   FormLabel,
+  Stack,
+  Switch,
   TextField,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -35,7 +37,7 @@ import SelectBox from "../../../components/selectbox";
 import { dtAttrJson } from "../../../data/attributeListObj";
 
 const CreateRoles = ({ isOpen, onClose }) => {
-  const [expanded , setExpanded] = useState(null);
+  const [expanded, setExpanded] = useState(null);
 
   const toggleAccordion = (index) => {
     setExpanded(index === expanded ? null : index);
@@ -83,24 +85,18 @@ const CreateRoles = ({ isOpen, onClose }) => {
   const [possesionList, setPossesionList] = useState(
     Array(actionOptions.length).fill("own")
   );
-  const [initialValues, setInitialValues] = useState({
-    name: "",
-    permissions: [
+  const [grants, setGrants] = useState(actionOptions.map((action, index) => ({
+    action: action,
+    possession: possesionList[index],
+    attributes: [
       {
-        resource: "",
-        grants: [
-          {
-            action: '',
-            possession: '',
-            attributes: [
-              {
-                attr: "",
-              },
-            ],
-          },
-        ],
+        attr: "",
       },
-    ],
+    ]})));
+  const [permissions, setPermissions] = useState({ resource: "", grants });
+  const generateInitialValues = (permissions) => ({
+    name: "",
+    permissions,
   });
   // Use the useEffect to update selectedResources
   useEffect(() => {
@@ -109,19 +105,11 @@ const CreateRoles = ({ isOpen, onClose }) => {
       .map((checkbox) => checkbox.label);
     setSelectedResources(updatedResources);
   }, [checkboxes]);
+
   useEffect(() => {
-    // Update initial values based on selected resources
-    const permissions = selectedResources.map((resource) => ({
-      resource,
-      grants: [
-        {
-          action: '',
-          possession: '',
-          attributes: [{ attr: '' }],
-        },
-      ],
-    }));
-    setInitialValues({name: "", permissions});
+    setPermissions(
+      selectedResources.map((resource) => ({ resource, grants }))
+    );
     setAttrOptions(
       Object.keys(dtAttrJson)
         .filter((resource) => selectedResources.includes(resource))
@@ -130,11 +118,10 @@ const CreateRoles = ({ isOpen, onClose }) => {
           return obj;
         }, {})
     );
-  }, [selectedResources]);
+  }, [selectedResources, grants]);
   
   // Create
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.permissions = initialValues.permissions
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
     const filteredValues = Object.fromEntries(filtered);
@@ -159,7 +146,6 @@ const CreateRoles = ({ isOpen, onClose }) => {
     name: yup.string().required("required"),
   });
 
-  
   const StyledAccordion = styled(Accordion)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     color: theme.palette.text.secondary,
@@ -184,9 +170,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Formik
+        <Formik enableReinitialize 
           onSubmit={handleSubmit}
-          initialValues={initialValues}
+          initialValues={generateInitialValues(permissions)}
           validationSchema={checkoutSchema}>
           {({
             values,
@@ -252,7 +238,11 @@ const CreateRoles = ({ isOpen, onClose }) => {
                           type="checkbox"
                           checked={checkbox.checked}
                           onChange={() =>
-                            handleCheckboxChange(checkbox.id, values, setFieldValue)
+                            handleCheckboxChange(
+                              checkbox.id,
+                              values,
+                              setFieldValue
+                            )
                           }
                         />
                         {checkbox.label}
@@ -290,27 +280,28 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   <Masonry columns={4} spacing={2}>
                     {selectedResources.map((resource, index) => (
                       <Paper key={index}>
-                        <StyledAccordion key={index} 
-                          expanded={expanded === index} 
-                          onChange={(e, expanded)=>toggleAccordion(index)}
+                        <StyledAccordion
+                          key={index}
+                          expanded={expanded === index}
+                          onChange={(e, expanded) => toggleAccordion(index)}
                           TransitionProps={{ unmountOnExit: true }}
                           sx={{ minHeight: "15px", width: "auto" }}>
-                          
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography>
                               {" "}
-                              {/* {  values.permissions[index] &&
-                                (values.permissions[index].resource = resource) } */}
-                              {values.permissions[index] && values.permissions[index].resource}
+                              {resource}
                               <br />
-                              {expanded !== index  && values.permissions[index]?.grants.length > 0 &&
+                              {expanded !== index &&
+                                values.permissions[index]?.grants.length > 0 &&
                                 actionOptions.map(
                                   (actionOption, actionIndex) => (
                                     <span>
-                                      {"|| " +
+                                      {
                                         values.permissions[index]?.grants[
                                           actionIndex
-                                        ]?.action}
+                                        ]?.action?values.permissions[index]?.grants[
+                                          actionIndex
+                                        ]?.action:""}
                                       <span style={{ fontSize: "10px" }}>
                                         {
                                           values.permissions[index]?.grants[
@@ -320,134 +311,76 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                       </span>
                                     </span>
                                   )
-                                ) }
-                              {expanded !== index  && values.permissions[index]?.grants.length && "||"}
+                                )}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
-                              <Box
-                                name={`permissions[${index}].grants`}
-                                sx={{
-                                  flex: 1,
-                                  width: "auto",
-                                  backgroundColor: blue[50],
-                                  marginTop: "5px",
-                                  padding: "15px",
-                                }}>
+                            <Box
+                              name={`permissions[${index}].grants`}
+                              sx={{
+                                flex: 1,
+                                width: "auto",
+                                backgroundColor: blue[50],
+                                marginTop: "5px",
+                                padding: "15px",
+                              }}>
+                              <div style={{display: "flex", justifyContent: "space-evenly"}}>
                                 <label>Actions:</label>
-                                {actionOptions.map(
-                                  (actionOption, actionIndex) => (
-                                    <div
-                                      key={actionIndex}
-                                      style={{
-                                        display: "block",
-                                        width: "100%",
-                                      }}>
-                                      <FormControl
-                                        sx={{
-                                          display: "flex",
-                                          flexWrap: "wrap",
-                                          flexDirection: "row",
-                                          alignItems: "center",
-                                          marginBottom: "5px",
-                                        }}>
-                                        <FormLabel
-                                          style={{
-                                            display: "flex",
-                                            marginRight: "25px",
-                                            marginBottom: "5px",
-                                          }}>
-                                          <Checkbox
-                                            name={`permissions[${index}].grants[${actionIndex}].action`}
-                                            onChange={handleChange}
-                                            value={actionOption}
-                                            style={{
-                                              marginRight: "15px",
-                                            }}
-                                          />
-                                          {actionOption}
-                                        </FormLabel>
-                                      </FormControl>
-                                      <FormLabel className="switch-title">
-                                        Possession
-                                      </FormLabel>
-                                      <RadioGroup
-                                        row
-                                        name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                        className="switch-field"
-                                        sx={{
-                                          padding: "0px",
-                                          borderRadius: "0px",
-                                          "--RadioGroup-gap": "0px",
-                                          "--Radio-actionRadius": "0px",
-                                        }}
-                                        onChange={(event) => {
-                                          const { value } = event.target;
-                                          const list = [...possesionList];
-                                          list[actionIndex] = value;
-                                          setPossesionList(list);
-                                          setFieldValue(
-                                            `permissions[${index}].grants[${actionIndex}].possession`,
-                                            possesionList[actionIndex]
-                                          );
-                                        }}
-                                        value={values.permissions[index]?.grants[actionIndex]?.possession}>
-                                        <FormControlLabel
-                                          sx={{
-                                            display: "flex",
-                                            marginRight: "0",
-                                            marginBottom: "0",
-                                          }}
-                                          value="own"
-                                          control={<Radio disableicon="true" />}
-                                          label="Own"
-                                        />
-                                        <FormControlLabel
-                                          value="any"
-                                          control={<Radio disableicon="true" />}
-                                          label="Any"
-                                        />
-                                      </RadioGroup>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          textAlign: "right",
-                                          fontSize: "12px",
-                                          width: "100%",
-                                        }}>
-                                        Hide Attributes:
+                                <label> Possession </label>
+                              </div>
+                              {actionOptions.map(
+                                (actionOption, actionIndex) => (
+                                  <div
+                                    key={actionIndex}
+                                    style={{
+                                      display: "block",
+                                      width: "100%",
+                                    }}>
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                      <label>
+                                        <Field type="checkbox" 
+                                          name={`permissions[${index}].grants[${actionIndex}].action`} 
+                                          checked={values.permissions[index]?.grants[actionIndex]?.action === actionOption}
+                                          value={values.permissions[index].grants[actionIndex].action} />
+                                        {actionOption}
                                       </label>
-                                      {attrOptions[resource] && (
-                                        <SelectBox
-                                          name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                          onChange={(event) => {
-                                            if (
-                                              values.permissions[index] &&
-                                              values.permissions[index].grants[
-                                                actionIndex
-                                              ]
-                                            ) {
-                                              event.forEach((option, i) =>
-                                                setFieldValue(
-                                                  `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
-                                                  option.value
-                                                )
-                                              );
-                                              // values.permissions[index].grants[
-                                              //     actionIndex
-                                              //   ].attributes[i].attr = option.value;
-                                            }
+                                        <Switch
+                                          name={`permissions[${index}].grants[${actionIndex}].possession`}
+                                          value="own" 
+                                          checked={values.permissions[index]?.grants[actionIndex]?.possession === "any"}
+                                          onChange={(event, checked) => {
+                                            setFieldValue(`permissions[${index}].grants[${actionIndex}].possession`, checked ? "any" : "own");
                                           }}
-                                          setFieldValue={setFieldValue}
-                                          permission={`permissions[${index}].grants[${actionIndex}]`}
-                                          length={attrOptions[resource]?.length}
-                                          options={attrOptions[resource]}
                                         />
-                                      )}
-                                    </div>
-                                  )
-                                )}
-                              </Box>
+                                      <Typography>{values.permissions[index]?.grants[actionIndex]?.possession}</Typography>
+                                    </Stack>
+                                    {attrOptions[resource] && (
+                                      <SelectBox
+                                        name={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                        onChange={(event) => {
+                                          if (
+                                            values.permissions[index] &&
+                                            values.permissions[index].grants[
+                                              actionIndex
+                                            ]
+                                          ) {
+                                            event.forEach((options, i) =>
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
+                                                options
+                                              )
+                                            );
+                                          }
+                                        }}
+                                        placeholder="Hide Attributes: "
+                                        length={attrOptions[resource]?.length}
+                                        options={attrOptions[resource]}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              )}
+                            </Box>
                           </AccordionDetails>
                         </StyledAccordion>
                       </Paper>

@@ -38,7 +38,8 @@ const SelectBox = (props) => {
       setOpts(props.options);
     }
   }, [props.options]);
-
+  const [selectedValues, setselectedValues] = useState(props.defaultValue)
+ 
   return (
     <>
     { opts && opts.length > 0 && (
@@ -49,14 +50,11 @@ const SelectBox = (props) => {
         closeMenuOnSelect={false}
         hideSelectedOptions={false}
         classNamePrefix="select"
-        defaultValue={[
-          opts[len-3],
-          opts[len-4],
-          opts[len-5],
-        ]}
         isOptionSelected={true}
         isClearable={true}
         isSearchable={true}
+        placeholder={props.placeholder}
+        value={props.value}
         options={opts}
         onChange={props.onChange}
         components={{ ValueContainer }}

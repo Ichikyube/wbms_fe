@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useCollapse from "react-collapsed";
 import "./style.css";
 import { styled } from "@mui/material/styles";
 import {
@@ -34,25 +35,22 @@ import SelectBox from "../../../components/selectbox";
 import { dtAttrJson } from "../../../data/attributeListObj";
 
 const CreateRoles = ({ isOpen, onClose }) => {
+  const [expanded , setExpanded] = useState(null);
+
+  const toggleAccordion = (index) => {
+    setExpanded(index === expanded ? null : index);
+  };
   const resourcesList = [
-    "BarcodeType",
-    "City",
     "Company",
-    "Config",
     "Customer",
-    "CustomerType",
     "Driver",
-    "CustomerGroup",
     "Mill",
     "Product",
-    "ProductGroup",
-    "Province",
     "Semai",
     "Site",
     "StorageTank",
     "Transaction",
     "TransportVehicle",
-    "User",
     "Weighbridge",
   ];
   const [checkboxes, setCheckboxes] = useState(
@@ -64,7 +62,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
   );
   const [selectedResources, setSelectedResources] = useState([]);
   const [attrOptions, setAttrOptions] = useState(dtAttrJson);
-  const handleCheckboxChange = (id) => {
+  const handleCheckboxChange = (id, values, setFieldValue) => {
     setCheckboxes((prevCheckboxes) =>
       prevCheckboxes.map((checkbox) =>
         checkbox.id === id
@@ -81,31 +79,65 @@ const CreateRoles = ({ isOpen, onClose }) => {
     }));
     setCheckboxes(updatedCheckboxes);
   };
+  const actionOptions = ["read", "create", "update", "delete"];
+  const [possesionList, setPossesionList] = useState(
+    Array(actionOptions.length).fill("own")
+  );
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    permissions: [
+      {
+        resource: "",
+        grants: [
+          {
+            action: '',
+            possession: '',
+            attributes: [
+              {
+                attr: "",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  // Use the useEffect to update selectedResources
   useEffect(() => {
     const updatedResources = checkboxes
       .filter((checkbox) => checkbox.checked)
       .map((checkbox) => checkbox.label);
     setSelectedResources(updatedResources);
   }, [checkboxes]);
-
   useEffect(() => {
-    if (selectedResources) {
-      setAttrOptions(
-        Object.keys(dtAttrJson)
-          .filter((resource) => selectedResources.includes(resource))
-          .reduce((obj, key) => {
-            obj[key] = dtAttrJson[key];
-            return obj;
-          }, {})
-      );
-    }
+    // Update initial values based on selected resources
+    const permissions = selectedResources.map((resource) => ({
+      resource,
+      grants: [
+        {
+          action: '',
+          possession: '',
+          attributes: [{ attr: '' }],
+        },
+      ],
+    }));
+    setInitialValues({name: "", permissions});
+    setAttrOptions(
+      Object.keys(dtAttrJson)
+        .filter((resource) => selectedResources.includes(resource))
+        .reduce((obj, key) => {
+          obj[key] = dtAttrJson[key];
+          return obj;
+        }, {})
+    );
   }, [selectedResources]);
+  
   // Create
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    values.permissions = initialValues.permissions
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
     const filteredValues = Object.fromEntries(filtered);
-    console.log(filteredValues);
     RolesAPI.create(filteredValues)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -127,27 +159,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
     name: yup.string().required("required"),
   });
 
-  const actionOptions = ["read", "create", "update", "delete"];
-  const [possesionList, setPossesionList] = useState(
-    Array(actionOptions.length).fill("own")
-  );
-  const initialValues = {
-    name: "",
-    permissions: [
-      {
-        resource: "",
-        grants: actionOptions.map((action, index) => ({
-          action: action,
-          possession: possesionList[index],
-          attributes: [
-            {
-              attr: "",
-            },
-          ],
-        })),
-      },
-    ],
-  };
+  
   const StyledAccordion = styled(Accordion)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     color: theme.palette.text.secondary,
@@ -240,7 +252,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                           type="checkbox"
                           checked={checkbox.checked}
                           onChange={() =>
-                            handleCheckboxChange(checkbox.id, setFieldValue)
+                            handleCheckboxChange(checkbox.id, values, setFieldValue)
                           }
                         />
                         {checkbox.label}
@@ -278,16 +290,20 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   <Masonry columns={4} spacing={2}>
                     {selectedResources.map((resource, index) => (
                       <Paper key={index}>
-                        <StyledAccordion
+                        <StyledAccordion key={index} 
+                          expanded={expanded === index} 
+                          onChange={(e, expanded)=>toggleAccordion(index)}
+                          TransitionProps={{ unmountOnExit: true }}
                           sx={{ minHeight: "15px", width: "auto" }}>
+                          
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography>
                               {" "}
-                              {  values.permissions[index] &&
-                                (values.permissions[index].resource = resource) }
-                              {resource}
+                              {/* {  values.permissions[index] &&
+                                (values.permissions[index].resource = resource) } */}
+                              {values.permissions[index] && values.permissions[index].resource}
                               <br />
-                              {values.permissions[index] &&
+                              {expanded !== index  && values.permissions[index]?.grants.length > 0 &&
                                 actionOptions.map(
                                   (actionOption, actionIndex) => (
                                     <span>
@@ -304,155 +320,134 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                       </span>
                                     </span>
                                   )
-                                )}
-                              {"||"}
+                                ) }
+                              {expanded !== index  && values.permissions[index]?.grants.length && "||"}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
-                            <Box
-                              name={`permissions[${index}].grants`}
-                              sx={{
-                                flex: 1,
-                                width: "auto",
-                                backgroundColor: blue[50],
-                                marginTop: "5px",
-                                padding: "15px",
-                              }}>
-                              <label>Actions:</label>
-                              {actionOptions.map(
-                                (actionOption, actionIndex) => (
-                                  <div
-                                    key={actionIndex}
-                                    style={{
-                                      display: "block",
-                                      width: "100%",
-                                    }}>
-                                    <FormControl
-                                      sx={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginBottom: "5px",
-                                      }}>
-                                      <FormLabel
-                                        style={{
-                                          display: "flex",
-                                          marginRight: "25px",
-                                          marginBottom: "5px",
-                                        }}>
-                                        <Checkbox
-                                          name={`permissions[${index}].grants[${actionIndex}].action`}
-                                          onChange={(event) => {
-                                            const { checked } = event.target;
-                                            if (checked) {
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                String(event.target.value)
-                                              );
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].possession`,
-                                                "own"
-                                              );
-                                            } else if (!checked) {
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                ""
-                                              );
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].possession`,
-                                                ""
-                                              );
-                                            }
-                                          }}
-                                          value={actionOption}
-                                          style={{
-                                            marginRight: "15px",
-                                          }}
-                                        />
-                                        {actionOption}
-                                      </FormLabel>
-                                    </FormControl>
-                                    <FormLabel className="switch-title">
-                                      Possession
-                                    </FormLabel>
-                                    <RadioGroup
-                                      row
-                                      name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                      className="switch-field"
-                                      sx={{
-                                        padding: "0px",
-                                        borderRadius: "0px",
-                                        "--RadioGroup-gap": "0px",
-                                        "--Radio-actionRadius": "0px",
-                                      }}
-                                      onChange={(event) => {
-                                        const { value } = event.target;
-                                        const list = [...possesionList];
-                                        list[actionIndex] = value;
-                                        setPossesionList(list);
-                                        setFieldValue(
-                                          `permissions[${index}].grants[${actionIndex}].possession`,
-                                          possesionList[actionIndex]
-                                        );
-                                      }}
-                                      value={possesionList[actionIndex]}>
-                                      <FormControlLabel
-                                        sx={{
-                                          display: "flex",
-                                          marginRight: "0",
-                                          marginBottom: "0",
-                                        }}
-                                        value="own"
-                                        control={<Radio disableicon="true" />}
-                                        label="Own"
-                                      />
-                                      <FormControlLabel
-                                        value="any"
-                                        control={<Radio disableicon="true" />}
-                                        label="Any"
-                                      />
-                                    </RadioGroup>
-                                    <label
+                              <Box
+                                name={`permissions[${index}].grants`}
+                                sx={{
+                                  flex: 1,
+                                  width: "auto",
+                                  backgroundColor: blue[50],
+                                  marginTop: "5px",
+                                  padding: "15px",
+                                }}>
+                                <label>Actions:</label>
+                                {actionOptions.map(
+                                  (actionOption, actionIndex) => (
+                                    <div
+                                      key={actionIndex}
                                       style={{
                                         display: "block",
-                                        textAlign: "right",
-                                        fontSize: "12px",
                                         width: "100%",
                                       }}>
-                                      Hide Attributes:
-                                    </label>
-                                    {attrOptions[resource] && (
-                                      <SelectBox
-                                        name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                        onChange={(event) => {
-                                          if (
-                                            values.permissions[index] &&
-                                            values.permissions[index].grants[
-                                              actionIndex
-                                            ]
-                                          ) {
-                                            event.forEach((option, i) =>
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
-                                                option.value
-                                              )
-                                            );
-                                            // values.permissions[index].grants[
-                                            //     actionIndex
-                                            //   ].attributes[i].attr = option.value;
-                                          }
+                                      <FormControl
+                                        sx={{
+                                          display: "flex",
+                                          flexWrap: "wrap",
+                                          flexDirection: "row",
+                                          alignItems: "center",
+                                          marginBottom: "5px",
+                                        }}>
+                                        <FormLabel
+                                          style={{
+                                            display: "flex",
+                                            marginRight: "25px",
+                                            marginBottom: "5px",
+                                          }}>
+                                          <Checkbox
+                                            name={`permissions[${index}].grants[${actionIndex}].action`}
+                                            onChange={handleChange}
+                                            value={actionOption}
+                                            style={{
+                                              marginRight: "15px",
+                                            }}
+                                          />
+                                          {actionOption}
+                                        </FormLabel>
+                                      </FormControl>
+                                      <FormLabel className="switch-title">
+                                        Possession
+                                      </FormLabel>
+                                      <RadioGroup
+                                        row
+                                        name={`permissions[${index}].grants[${actionIndex}].possession`}
+                                        className="switch-field"
+                                        sx={{
+                                          padding: "0px",
+                                          borderRadius: "0px",
+                                          "--RadioGroup-gap": "0px",
+                                          "--Radio-actionRadius": "0px",
                                         }}
-                                        setFieldValue={setFieldValue}
-                                        permission={`permissions[${index}].grants[${actionIndex}]`}
-                                        length={attrOptions[resource]?.length}
-                                        options={attrOptions[resource]}
-                                      />
-                                    )}
-                                  </div>
-                                )
-                              )}
-                            </Box>
+                                        onChange={(event) => {
+                                          const { value } = event.target;
+                                          const list = [...possesionList];
+                                          list[actionIndex] = value;
+                                          setPossesionList(list);
+                                          setFieldValue(
+                                            `permissions[${index}].grants[${actionIndex}].possession`,
+                                            possesionList[actionIndex]
+                                          );
+                                        }}
+                                        value={values.permissions[index]?.grants[actionIndex]?.possession}>
+                                        <FormControlLabel
+                                          sx={{
+                                            display: "flex",
+                                            marginRight: "0",
+                                            marginBottom: "0",
+                                          }}
+                                          value="own"
+                                          control={<Radio disableicon="true" />}
+                                          label="Own"
+                                        />
+                                        <FormControlLabel
+                                          value="any"
+                                          control={<Radio disableicon="true" />}
+                                          label="Any"
+                                        />
+                                      </RadioGroup>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          textAlign: "right",
+                                          fontSize: "12px",
+                                          width: "100%",
+                                        }}>
+                                        Hide Attributes:
+                                      </label>
+                                      {attrOptions[resource] && (
+                                        <SelectBox
+                                          name={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                          onChange={(event) => {
+                                            if (
+                                              values.permissions[index] &&
+                                              values.permissions[index].grants[
+                                                actionIndex
+                                              ]
+                                            ) {
+                                              event.forEach((option, i) =>
+                                                setFieldValue(
+                                                  `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
+                                                  option.value
+                                                )
+                                              );
+                                              // values.permissions[index].grants[
+                                              //     actionIndex
+                                              //   ].attributes[i].attr = option.value;
+                                            }
+                                          }}
+                                          setFieldValue={setFieldValue}
+                                          permission={`permissions[${index}].grants[${actionIndex}]`}
+                                          length={attrOptions[resource]?.length}
+                                          options={attrOptions[resource]}
+                                        />
+                                      )}
+                                    </div>
+                                  )
+                                )}
+                              </Box>
                           </AccordionDetails>
                         </StyledAccordion>
                       </Paper>

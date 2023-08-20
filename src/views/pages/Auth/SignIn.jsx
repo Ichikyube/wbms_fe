@@ -17,7 +17,8 @@ const SignIn = () => {
   const userRef = useRef();
   const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-
+  const [user, setUser] = useState('');
+  const [pwd, setPwd] = useState('');
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
 
@@ -38,6 +39,7 @@ const SignIn = () => {
     try {
       const response = await signin(values).unwrap();
       const at = response?.data?.tokens?.access_token;
+      // const roles = response?.data?.roles;
       Cookies.set("accessToken", at, { sameSite: "strict" });
 
       if (!response.status) {
@@ -50,7 +52,9 @@ const SignIn = () => {
       }
 
       dispatch(setCredentials({ ...response.data.user }));
-
+      // setAuth({ user, pwd, roles, at });
+      setUser('');
+      setPwd('');
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {

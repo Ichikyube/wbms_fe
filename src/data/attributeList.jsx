@@ -1,23 +1,3 @@
-
-const Province= [
-    'id',
-    'name',
-    'isDeleted',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified',
-    'cities'
-];
-const City= [
-    'id',          'provinceId',
-    'name',        'isDeleted',
-    'userCreated', 'userModified',
-    'dtCreated',   'dtModified',
-    'province',    'sites',
-    'customers'
-];
-
 const Company= [
     'id',                'refType',
     'refId',             'code',
@@ -37,7 +17,6 @@ const Company= [
     'Driver',            'Transaction',
     'StorageTank'
 ];
-
 const Customer= [
     'id',              'customerTypeId',
     'customerGroupId', 'cityId',
@@ -52,44 +31,6 @@ const Customer= [
     'dtCreated',       'dtModified',
     'customerType',    'customerGroup',
     'city',            'Transaction'
-];
-  
-const CustomerType= [
-    'id',
-    'name',
-    'shortDesc',
-    'description',
-    'isDeleted',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified',
-    'customers'
-];
-
-const CustomerGroup= [
-    'id',
-    'name',
-    'shortDesc',
-    'description',
-    'isDeleted',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified',
-    'customers'
-];
- 
-const BarcodeType= [
-    'id',
-    'name',
-    'shortDesc',
-    'description',
-    'isDeleted',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified'
 ];
 const Site= [
     'id',
@@ -126,7 +67,6 @@ const Site= [
     'originSiteTransactions',
     'destinationSiteTransactions'
 ];
-  
 const Mill= [
     'id',          'siteId',
     'companyId',   'code',
@@ -135,7 +75,6 @@ const Mill= [
     'dtCreated',   'dtModified',
     'site',        'company'
 ];
-  
 const Weighbridge= [
     'id',           'siteId',
     'code',         'name',
@@ -143,7 +82,6 @@ const Weighbridge= [
     'userModified', 'dtCreated',
     'dtModified',   'site'
 ];
-  
 const ConfigRequest= [
     'id',
     'lvl1Aprrover',
@@ -154,43 +92,6 @@ const ConfigRequest= [
     'lvl3Signed',
     'configId'
 ];
-
-const Config= [
-    'id',           'name',
-    'description',  'type',
-    'value',        'editedValue',
-    'lvlOfApprvl',  'status',
-    'start',        'end',
-    'isDeleted',    'userCreated',
-    'userModified', 'dtCreated',
-    'dtModified'
-];
-  
-const User= [
-    'id',           'username',
-    'email',        'nik',
-    'name',         'phone',
-    'division',     'position',
-    'profilePic',   'roleId',
-    'role',         'hashedPassword',
-    'hashedRT',     'isEmailVerified',
-    'isLDAPUser',   'isDisabled',
-    'isDeleted',    'userCreated',
-    'userModified', 'dtCreated',
-    'dtModified',   'userRole'
-];
-
-const Role= [
-    'id',
-    'name',
-    'permissions',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified',
-    'users'
-];
-  
 const Product= [
     'id',           'refType',
     'refId',        'productGroupName',
@@ -202,19 +103,6 @@ const Product= [
     'dtModified',   'storageTanks',
     'transactions', 'transportVehicles'
 ];
-  
-const ProductGroup= [
-    'id',
-    'name',
-    'shortDesc',
-    'description',
-    'isDeleted',
-    'userCreated',
-    'userModified',
-    'dtCreated',
-    'dtModified'
-];
-  
 const StorageTank= [
     'id',
     'refType',
@@ -247,7 +135,6 @@ const StorageTank= [
     'originSourceStorageTankTransactions',
     'destinationSinkStorageTankTransactions'
 ];
-  
 const Driver= [
     'id',           'refType',
     'refId',        'codeSap',
@@ -261,7 +148,6 @@ const Driver= [
     'dtModified',   'company',
     'transactions'
 ];
-  
 const TransportVehicle= [
     'id',           'refType',
     'refId',        'codeSap',
@@ -277,7 +163,6 @@ const TransportVehicle= [
     'dtCreated',    'dtModified',
     'company',      'product'
 ];
-  
 const Transaction= [
     'id',
     'tType',
@@ -389,4 +274,4 @@ const Transaction= [
     "dtModified",
 ]
 
-export const dtAttr = { Province, City, Company, Customer, CustomerType, CustomerGroup, BarcodeType, Site, Mill, Weighbridge, Config, ConfigRequest, Role, User, Product, ProductGroup, StorageTank, Driver, TransportVehicle, Transaction }
+export const dtAttr = { Company, Customer, Site, Mill, Weighbridge, Product, StorageTank, Driver, TransportVehicle, Transaction }

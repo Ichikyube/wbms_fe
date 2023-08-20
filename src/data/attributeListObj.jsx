@@ -1,29 +1,4 @@
-export const dtAttrJson = {
-    Province: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-
-        {value: 'cities', label: 'cities'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}, 
-    ], 
-    City: [
-        {value: 'id', label: 'id'},
-        {value: 'provinceId', label: 'provinceId'},
-        {value: 'name', label: 'name'},
-
-        {value: 'province', label: 'province'},
-        {value: 'sites', label: 'sites'},
-        {value: 'customers', label: 'customers'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}    
-    ],  
+export const dtAttrJson = { 
     Company: [
         {value: 'id', label: 'id'},
         {value: 'refType', label: 'refType'},
@@ -47,19 +22,6 @@ export const dtAttrJson = {
         {value: 'isTransporter', label: 'isTransporter'},
         {value: 'isSiteOperator', label: 'isSiteOperator'},
         {value: 'isEstate', label: 'isEstate'},
-
-        {value: 'sites', label: 'sites'},
-        {value: 'transportVehicles', label: 'transportVehicles'},
-        {value: 'mills', label: 'mills'},
-        {value: 'Driver', label: 'Driver'},
-        {value: 'Transaction', label: 'Transaction'},
-        {value: 'StorageTank', label: 'StorageTank'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}
-        
     ],  
     Customer: [
         {value: 'id', label: 'id'},
@@ -78,56 +40,7 @@ export const dtAttrJson = {
         {value: 'contactName', label: 'contactName'},
         {value: 'contactEmail', label: 'contactEmail'},
         {value: 'contactPhone', label: 'contactPhone'},
-        {value: 'sortasi', label: 'sortasi'},
-
-        {value: 'customerType', label: 'customerType'},
-        {value: 'customerGroup', label: 'customerGroup'},
-        {value: 'city', label: 'city'},
-        {value: 'Transaction', label: 'Transaction'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}    
-    ], 
-    CustomerType: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-        {value: 'shortDesc', label: 'shortDesc'},
-        {value: 'description', label: 'description'},
-
-        {value: 'customers', label: 'customers'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
-    ],  
-    CustomerGroup: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-        {value: 'shortDesc', label: 'shortDesc'},
-        {value: 'description', label: 'description'},
-
-        {value: 'customers', label: 'customers'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
-    ], 
-    BarcodeType: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-        {value: 'shortDesc', label: 'shortDesc'},
-        {value: 'description', label: 'description'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}    
+        {value: 'sortasi', label: 'sortasi'},   
     ], 
     Site: [
         {value: 'id', label: 'id'},
@@ -149,21 +62,6 @@ export const dtAttrJson = {
         {value: 'longitude', label: 'longitude'},
         {value: 'solarCalibration', label: 'solarCalibration'},
         {value: 'isMill', label: 'isMill'},
-
-        {value: 'sourceSite', label: 'sourceSite'},
-        {value: 'company', label: 'company'},
-        {value: 'city', label: 'city'},
-        {value: 'storageTanks', label: 'storageTanks'},
-        {value: 'weighbridges', label: 'weighbridges'},
-        {value: 'mills', label: 'mills'},
-        {value: 'destinationSites', label: 'destinationSites'},
-        {value: 'originSiteTransactions', label: 'originSiteTransactions'},
-        {value: 'destinationSiteTransactions', label: 'destinationSiteTransactions'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
     ], 
     Mill: [
         {value: 'id', label: 'id'},
@@ -171,84 +69,12 @@ export const dtAttrJson = {
         {value: 'companyId', label: 'companyId'},
         {value: 'code', label: 'code'},
         {value: 'name', label: 'name'},
-
-        {value: 'site', label: 'site'},
-        {value: 'company', label: 'company'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
     ], 
     Weighbridge: [
         {value: 'id', label: 'id'},
         {value: 'siteId', label: 'siteId'},
         {value: 'code', label: 'code'},
         {value: 'name', label: 'name'},
-
-        {value: 'site', label: 'site'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}
-        
-    ], 
-    ConfigRequest: [
-        {value: 'id', label: 'id'},
-        {value: 'lvl1Aprrover', label: 'lvl1Aprrover'},
-        {value: 'lvl2Approver', label: 'lvl2Approver'},
-        {value: 'lvl3Aprrover', label: 'lvl3Aprrover'},
-        {value: 'lvl1Signed', label: 'lvl1Signed'},
-        {value: 'lvl2Signed', label: 'lvl2Signed'},
-        {value: 'lvl3Signed', label: 'lvl3Signed'},
-        {value: 'configId', label: 'configId'}
-        
-    ],  
-    Config: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-        {value: 'description', label: 'description'},
-        {value: 'type', label: 'type'},
-        {value: 'value', label: 'value'},
-        {value: 'editedValue', label: 'editedValue'},
-        {value: 'lvlOfApprvl', label: 'lvlOfApprvl'},
-        {value: 'status', label: 'status'},
-        {value: 'start', label: 'start'},
-        {value: 'end', label: 'end'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}
-        
-    ], 
-    User: [
-        {value: 'id', label: 'id'},
-        {value: 'username', label: 'username'},
-        {value: 'email', label: 'email'},
-        {value: 'nik', label: 'nik'},
-        {value: 'name', label: 'name'},
-        {value: 'phone', label: 'phone'},
-        {value: 'division', label: 'division'},
-        {value: 'position', label: 'position'},
-        {value: 'profilePic', label: 'profilePic'},
-        {value: 'roleId', label: 'roleId'},
-        {value: 'role', label: 'role'},
-        {value: 'hashedPassword', label: 'hashedPassword'},
-        {value: 'hashedRT', label: 'hashedRT'},
-        {value: 'isEmailVerified', label: 'isEmailVerified'},
-        {value: 'isLDAPUser', label: 'isLDAPUser'},
-
-        {value: 'userRole', label: 'userRole'},
-        {value: 'isDisabled', label: 'isDisabled'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
     ], 
     Product: [
         {value: 'id', label: 'id'},
@@ -262,26 +88,6 @@ export const dtAttrJson = {
         {value: 'description', label: 'description'},
         {value: 'certification', label: 'certification'},
 
-        {value: 'storageTanks', label: 'storageTanks'},
-        {value: 'transactions', label: 'transactions'},
-        {value: 'transportVehicles', label: 'transportVehicles'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
-    ], 
-    ProductGroup: [
-        {value: 'id', label: 'id'},
-        {value: 'name', label: 'name'},
-        {value: 'shortDesc', label: 'shortDesc'},
-        {value: 'description', label: 'description'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}
         
     ], 
     StorageTank: [
@@ -305,17 +111,6 @@ export const dtAttrJson = {
         {value: 'capacity', label: 'capacity'},
         {value: 'height', label: 'height'},
         {value: 'sccModel', label: 'sccModel'},
-
-        {value: 'site', label: 'site'},
-        {value: 'stockOwner', label: 'stockOwner'},
-        {value: 'product', label: 'product'},
-        {value: 'originSourceStorageTankTransactions', label: 'originSourceStorageTankTransactions'},
-        {value: 'destinationSinkStorageTankTransactions', label: 'destinationSinkStorageTankTransactions'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
     ], 
     Driver: [
         {value: 'id', label: 'id'},
@@ -332,15 +127,6 @@ export const dtAttrJson = {
         {value: 'phone', label: 'phone'},
         {value: 'licenseNo', label: 'licenseNo'},
         {value: 'licenseED', label: 'licenseED'},
-
-        {value: 'company', label: 'company'},
-        {value: 'transactions', label: 'transactions'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
     ], 
     TransportVehicle: [
         {value: 'id', label: 'id'},
@@ -362,15 +148,6 @@ export const dtAttrJson = {
         {value: 'notes', label: 'notes'},
         {value: 'licenseED', label: 'licenseED'},
         {value: 'keurED', label: 'keurED'},
-
-        {value: 'company', label: 'company'},
-        {value: 'product', label: 'product'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'},
-        
     ], 
     Transaction: [
         {value: 'id', label: 'id'},
@@ -477,10 +254,5 @@ export const dtAttrJson = {
         {value: 'qtyTbsDikirim', label: 'qtyTbsDikirim'},
         {value: 'qtyTbsDikembalikan', label: 'qtyTbsDikembalikan'},
         {value: 'jsonData', label: 'jsonData'},
-        {value: 'isDeleted', label: 'isDeleted'},
-        {value: 'userCreated', label: 'userCreated'},
-        {value: 'userModified', label: 'userModified'},
-        {value: 'dtCreated', label: 'dtCreated'},
-        {value: 'dtModified', label: 'dtModified'}
     ]
 }

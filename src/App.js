@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import "./scss/style.scss";
 import { setConfigs } from "./slices/appSlice";
@@ -16,7 +16,6 @@ const Page500 = lazy(() => import("./views/pages/page500/Page500"));
 
 const App = () => {
   const dispatch = useDispatch();
- 
   const loading = (
     <div className="pt-3 text-center">
       <div className="sk-spinner sk-spinner-pulse"></div>
@@ -47,7 +46,8 @@ const App = () => {
             <Route path="/home" name="Home Page" element={<Home />} />
             <Route path="/signin" name="Sign In Page" element={<SignIn />} />
           </Route>
-          <Route path="*" name="WBMS" element={<DefaultLayout />} />
+
+          <Route path="*" name="WBMS" element={<DefaultLayout />}/>
         </Routes>
       </Suspense>
     </HashRouter>

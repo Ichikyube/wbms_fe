@@ -1,3 +1,25 @@
+  const resourcesList = [
+    "BarcodeType",
+    "City",
+    "Company",
+    "Config",
+    "Customer",
+    "CustomerType",
+    "Driver",
+    "CustomerGroup",
+    "Mill",
+    "Product",
+    "ProductGroup",
+    "Province",
+    "Semai",
+    "Site",
+    "StorageTank",
+    "Transaction",
+    "TransportVehicle",
+    "User",
+    "Weighbridge",
+  ];
+
 <Field name={`permissions[${index}].resource`} value={resource} as="select" onChange={(event) => {
                                 const { checked } = event.target;
                                 if (checked) {

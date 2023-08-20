@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Grid,
   Paper,
@@ -53,9 +54,7 @@ const Profile = () => {
     name: "",
   };
   const { userInfo } = useSelector((state) => state.app);
-
   const [isOpen, setIsOpen] = useState(false);
-
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
 
@@ -64,6 +63,9 @@ const Profile = () => {
     setImage(file ? URL.createObjectURL(file) : null);
     setInitialImage(false);
   };
+  if (!userInfo) {
+    return <Navigate to="/login" />;
+  }
   return (
     <>
       <Typography

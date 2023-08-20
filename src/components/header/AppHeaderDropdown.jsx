@@ -18,30 +18,32 @@ import {
 } from "@coreui/react";
 
 import { LinkContainer } from "react-router-bootstrap";
-const AppHeaderDropdown = () => {
+import AuthContext from "../../components/Auth/context/authProvider";
+import { useContext } from "react";
 
+const AppHeaderDropdown = () => {
   const { userInfo } = useSelector((state) => state.app);
+  const { setAuth } = useContext(AuthContext);
   const [signout] = useSignoutMutation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   const handleSignout = async () => {
     try {
-      const res = await signout().unwrap();
+      const response = await signout().unwrap();
       Cookies.remove("accessToken");
-      if (!res.status) {
-        console.log(res.message);
-        console.log(res.logs);
+      dispatch(clearCredentials());
+      // setAuth({});
+      if (!response.status) {
+        console.log(response.message);
+        console.log(response.logs);
 
-        toast.error(res.message);
+        toast.error(response.message);
 
         return;
       }
-
-      dispatch(clearCredentials());
-      toast.success(res.message);
+      toast.success(response.message);
       navigate("/");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
@@ -55,13 +57,13 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">
-          Account
+          Account <strong>{userInfo?.profile ? userInfo.profile.name : null}</strong>
         </CDropdownHeader>
- 
+
         <LinkContainer to="/profile">
-          <CDropdownItem title={userInfo.name} id="username">
+          <CDropdownItem id="username">
             <FaUserCircle className="me-2" />
-            Profile 
+            Profile
           </CDropdownItem>
         </LinkContainer>
 

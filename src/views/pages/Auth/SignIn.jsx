@@ -28,6 +28,10 @@ const SignIn = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
 
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 

@@ -10,7 +10,9 @@ WORKDIR /app
 # install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
+COPY .env ./.env
 RUN npm install --silent
+
 COPY . ./
 
 # Make port 3000 available to the world outside this container

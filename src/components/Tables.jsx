@@ -35,11 +35,9 @@ const Tables = (props) => {
   };
 
   useEffect(() => {
-    console.clear();
 
-    return () => {
-      console.clear();
-    };
+
+
   }, []);
   return (
     <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>

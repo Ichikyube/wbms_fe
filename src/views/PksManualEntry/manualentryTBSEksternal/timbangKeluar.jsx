@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
 import {
   Button,
@@ -35,15 +35,16 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import * as SiteAPI from "../../../api/sitesApi";
+import { getById } from "../../../api/configApi";
 
 const tType = 1;
-let wsClient;
 
-const PksManualTBSinternalTimbangMasuk = () => {
-  const { values, setValues } = useForm({ ...TransactionAPI.InitialData });
+const PksManualTBSEksternalTimbangKeluar = () => {
   const navigate = useNavigate();
-
+  const { id } = useParams();
+  const { values, setValues } = useForm({
+    ...TransactionAPI.InitialData,
+  });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
   const [canSubmit, setCanSubmit] = useState(false);
 
@@ -56,19 +57,9 @@ const PksManualTBSinternalTimbangMasuk = () => {
     }));
   };
 
-  const fetchTransactionsFromAPI = async () => {
-    try {
-      const response = await TransactionAPI.getAll({});
-      return response.records;
-    } catch (error) {
-      // Tangani error jika permintaan gagal
-      console.error("Error fetching transactions:", error);
-      return [];
-    }
-  };
-
   const handleSubmit = async () => {
     const {
+      id,
       bonTripNo,
       productId,
       productName,
@@ -78,17 +69,27 @@ const PksManualTBSinternalTimbangMasuk = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
-      originSiteId,
-      originSiteName,
+      transportVehicleSccModel,
       originWeighInKg,
+      originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
+      qtyTbsDikirim,
+      qtyTbsDikembalikan,
       originWeighInTimestamp,
-      transportVehicleSccModel,
-      qtyTbs,
+      originWeighOutTimestamp,
     } = values;
 
-    const tempTrans = {
+    let updatedProgressStatus = progressStatus;
+    let updatedOriginWeighOutTimestamp = originWeighOutTimestamp;
+
+    if (progressStatus === 22) {
+      updatedProgressStatus = 4;
+      updatedOriginWeighOutTimestamp = moment().toDate();
+    }
+
+    const updatedTransaction = {
+      id,
       bonTripNo,
       productId,
       productName,
@@ -98,78 +99,49 @@ const PksManualTBSinternalTimbangMasuk = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
-      originSiteId,
-      originSiteName,
-      originWeighInKg,
-      deliveryOrderNo,
-      progressStatus,
-      originWeighInTimestamp,
       transportVehicleSccModel,
-      qtyTbs,
+      originWeighInKg,
+      originWeighOutKg: parseFloat(originWeighOutKg),
+      deliveryOrderNo,
+      progressStatus: updatedProgressStatus,
+      qtyTbsDikirim: parseFloat(qtyTbsDikirim),
+      qtyTbsDikembalikan: parseFloat(qtyTbsDikembalikan),
+      originWeighInTimestamp,
+      originWeighOutTimestamp: updatedOriginWeighOutTimestamp,
     };
 
-    if (tempTrans.progressStatus === 0) {
-      tempTrans.progressStatus = 21;
-      tempTrans.tType = "1";
-      tempTrans.originWeighInTimestamp = moment().toDate();
-    }
-
     try {
-      const transactionsFromAPI = await fetchTransactionsFromAPI();
+      const results = await TransactionAPI.update({ ...updatedTransaction });
 
-      const duplicateEntryFromAPI = transactionsFromAPI.some(
-        (item) =>
-          item.transportVehiclePlateNo === transportVehiclePlateNo &&
-          [20, 21, 22].includes(item.progressStatus)
-      );
-
-      if (duplicateEntryFromAPI) {
-        toast.error(`LOADING/UNLOADING  ${transportVehiclePlateNo}.`);
+      if (!results?.status) {
+        toast.error(`Error: ${results?.message}.`);
         return;
       }
 
-      if (
-        tempTrans.progressStatus === 20 ||
-        tempTrans.progressStatus === 21 ||
-        tempTrans.progressStatus === 22
-      ) {
-        const results = await TransactionAPI.create({ ...tempTrans });
-
-        if (!results?.status) {
-          toast.error(`Error: ${results?.message}.`);
-          return;
-        }
-
-        toast.success(`Transaksi Timbang Masuk telah tersimpan.`);
-
-        return handleClose();
-      }
+      toast.success(`Transaksi Timbang Keluar Berhasil disimpan.`);
+      setValues({ ...updatedTransaction });
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
-      return;
     }
-
-    setValues({ ...tempTrans });
   };
 
-  const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
-
   useEffect(() => {
-    // Fungsi untuk menghasilkan Nomor BON Trip dengan format P041YYMMDDHHmmss
-    const generateBonTripNo = () => {
-      const dateNow = moment().format("YYMMDDHHmmss");
-      return `P041${dateNow}`;
+    const fetchData = async () => {
+      try {
+        const dataById = await TransactionAPI.getById(id);
+        console.log(dataById);
+        if (dataById) {
+          setValues({
+            ...dataById.record,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
-    const generatedBonTripNo = generateBonTripNo(); // Panggil fungsi untuk menghasilkan Nomor BON Trip
-    setBonTripNo(generatedBonTripNo); // Simpan Nomor BON Trip dalam state
-
-    // Set nilai Nomor BON Trip ke dalam form values
-    setValues({
-      ...values,
-      bonTripNo: generatedBonTripNo,
-    });
-  }, []);
+    fetchData();
+  }, [id]);
 
   useEffect(() => {
     // ... (kode useEffect yang sudah ada)
@@ -178,26 +150,31 @@ const PksManualTBSinternalTimbangMasuk = () => {
     let cSubmit = false;
     if (values.progressStatus === 0) {
       cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 4) {
+    } else if (values.progressStatus === 22) {
       cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
     }
     setCanSubmit(cSubmit);
   }, [values]);
 
+  useEffect(() => {
+    // setProgressStatus(Config.PKS_PROGRESS_STATUS[values.progressStatus]);
+
+    if (
+      values.originWeighInKg < Config.ENV.WBMS_WB_MIN_WEIGHT ||
+      values.originWeighOutKg < Config.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values]);
+
   const validateForm = () => {
-    // Implementasikan aturan validasi Anda di sini
-    // Kembalikan true jika semua kolom yang dibutuhkan terisi, jika tidak, kembalikan false
-    return (
-      values.bonTripNo &&
-      values.deliveryOrderNo &&
-      values.transportVehicleId &&
-      values.driverId &&
-      values.transporterId &&
-      values.productId &&
-      values.originSiteId &&
-      values.qtyTbs &&
-      values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
-    );
+    return values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
   };
 
   const handleClose = () => {
@@ -211,7 +188,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -231,9 +207,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
 
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
-    });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
     });
   }, []);
 
@@ -276,7 +249,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
               }
               fullWidth
               multiline
-              value={"Timbang Masuk"}
+              value={"Timbang Keluar"}
             />
           </Paper>
         </Grid>
@@ -289,32 +262,32 @@ const PksManualTBSinternalTimbangMasuk = () => {
             >
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
-                  variant="outlined" // Variasi TextField dengan style "outlined"
-                  size="small" // Ukuran TextField kecil
-                  fullWidth // TextField akan memiliki lebar penuh
+                  variant="outlined"
+                  size="small"
+                  fullWidth
                   InputLabelProps={{
                     shrink: true,
                   }}
                   sx={{
-                    mb: 2, // Margin bawah dengan jarak 2 unit
+                    mb: 2,
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px", // Set radius border untuk bagian input
+                      borderRadius: "10px",
                     },
                   }}
                   label={
                     <>
                       <Typography
                         sx={{
-                          bgcolor: "white", // Background color teks label
-                          px: 1, // Padding horizontal teks label 1 unit
+                          bgcolor: "white",
+                          px: 1,
                         }}
                       >
                         Nomor BON Trip
                       </Typography>
                     </>
                   }
-                  name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
-                  value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
+                  name="bonTripNo"
+                  value={values?.bonTripNo || ""}
                 />
 
                 <TextField
@@ -379,7 +352,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
                     }}
                   >
                     <MenuItem value="" disabled>
@@ -419,7 +391,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
                     }}
                   >
                     <MenuItem value="" disabled>
@@ -461,7 +432,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
                     }}
                   >
                     <MenuItem value="" disabled>
@@ -515,13 +485,14 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
+                    
                     onChange={handleChange}
                     name="customer"
                     value={values.customer || ""}
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
+                      
                     }}
                   >
                     <MenuItem value="" disabled>
@@ -547,7 +518,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     id="select"
                     sx={{
                       borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
                     }}
                     onChange={(event) => {
                       const { name, value } = event.target;
@@ -576,76 +546,35 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
-                    Asal
-                  </InputLabel>
-                  <Select
-                    labelId="select-label"
-                    id="select"
-                    sx={{
-                      borderRadius: "10px",
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                    onChange={(event) => {
-                      const { name, value } = event.target;
-                      const selectedSite = dtSite.find(
-                        (item) => item.id === value
-                      );
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        [name]: value,
-                        originSiteName: selectedSite ? selectedSite.name : "",
-                      }));
-                    }}
-                    name="originSiteId"
-                    value={values.originSiteId || ""}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Asal--
-                    </MenuItem>
-                    {dtSite.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField
+
+                {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
+                {/* <TextField
                   variant="outlined"
                   size="small"
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  placeholder="Masukkan Jumlah Janjang"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
+                    display: "none",
                   }}
                   label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1.5,
-                        }}
-                      >
-                        Qty TBS
-                      </Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Nama Barang
+                    </Typography>
                   }
-                  name="qtyTbs"
-                  value={values.qtyTbs}
-                  onChange={handleChange}
-                />
+                  name="productName"
+                  value={values.productName}
+                /> */}
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -659,7 +588,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     }}
                   />
                 )}
-                {/* {values.progressStatus === 2 && (
+                {values.progressStatus === 2 && (
                   <GetWeightWB
                     handleSubmit={(weightWb) => {
                       setValues((prev) => ({
@@ -669,7 +598,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     }}
                   />
                 )} */}
-
                 <TextField
                   type="number"
                   variant="outlined"
@@ -685,6 +613,10 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                    readOnly: true,
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -716,6 +648,9 @@ const PksManualTBSinternalTimbangMasuk = () => {
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label={
                     <Typography
                       sx={{
@@ -727,8 +662,10 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     </Typography>
                   }
                   name="originWeighOutKg"
-                  value={values.originWeighOutKg || 0}
+                  value={values.originWeighOutKg}
+                  onChange={handleChange}
                 />
+
                 <TextField
                   type="number"
                   variant="outlined"
@@ -744,6 +681,9 @@ const PksManualTBSinternalTimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -774,6 +714,9 @@ const PksManualTBSinternalTimbangMasuk = () => {
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label={
                     <Typography
                       sx={{
@@ -792,14 +735,14 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   variant="outlined"
                   size="small"
                   fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                   InputProps={{
                     endAdornment: (
@@ -816,9 +759,10 @@ const PksManualTBSinternalTimbangMasuk = () => {
                       TOTAL
                     </Typography>
                   }
-                  name="weightNetto"
+                  // name="weightNetto"
                   value={originWeightNetto || 0}
                 />
+
                 <Button
                   variant="contained"
                   fullWidth
@@ -830,17 +774,117 @@ const PksManualTBSinternalTimbangMasuk = () => {
                 </Button>
                 <BonTripPrint
                   dtTrans={{ ...values }}
-                  isDisable={!(values.progressStatus === 4)}
+                  isDisable={values.progressStatus !== 4}
                 />
                 <Button
                   variant="contained"
                   sx={{ my: 1 }}
                   fullWidth
                   onClick={handleClose}
-                  // disabled={!(values.progressStatus === 4)}
                 >
                   Tutup
                 </Button>
+              </FormControl>
+              <FormControl sx={{ gridColumn: "span 4" }}>
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikirim
+                    </Typography>
+                  }
+                  name="qtyTbsDikirim"
+                  value={values.qtyTbsDikirim}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikembalikan
+                    </Typography>
+                  }
+                  name="qtyTbsDikembalikan"
+                  value={values.qtyTbsDikembalikan}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Potongan
+                    </Typography>
+                  }
+                  // name="potonganLain"
+                  value={values.potonganLain || 0}
+                  onChange={handleChange}
+                />
               </FormControl>
             </Box>
           </Paper>
@@ -855,4 +899,4 @@ const PksManualTBSinternalTimbangMasuk = () => {
   );
 };
 
-export default PksManualTBSinternalTimbangMasuk;
+export default PksManualTBSEksternalTimbangKeluar;

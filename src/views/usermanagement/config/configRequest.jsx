@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import { useForm } from "../../../utils/useForm";
 import useSWR from "swr";
 import { orange, blue, red, indigo, green } from "@mui/material/colors";
 import "ag-grid-enterprise";
@@ -40,9 +41,6 @@ const ConfigRequest = () => {
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedConfig, setSelectedConfig] = useState(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);
@@ -50,6 +48,7 @@ const ConfigRequest = () => {
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   const { data: dtConfig } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
@@ -57,10 +56,9 @@ const ConfigRequest = () => {
     { refreshInterval: 1000 }
   );
 
-  //filter
-  const updateGridData = useCallback((Config) => {
+  const updateGridData = useCallback((configData) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(Config);
+      gridRef.current.api.setRowData(configData);
     }
   }, []);
 
@@ -70,41 +68,77 @@ const ConfigRequest = () => {
         const configData = Object.values(config).join(" ").toLowerCase();
         return configData.includes(searchQuery.toLowerCase());
       });
-      updateGridData(filteredData);
+      setFilteredData(filteredData);
     }
-  }, [searchQuery, dtConfig, updateGridData]);
+  }, [searchQuery, dtConfig]);
+
+  useEffect(() => {
+    const refreshData = setInterval(() => {
+      if (filteredData.length > 0) {
+        const filteredPendingData = filteredData.filter(
+          (config) => config.status.toLowerCase() === "pending"
+        );
+        updateGridData(filteredPendingData);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(refreshData);
+    };
+  }, [filteredData]);
 
   // delete
-  const deleteById = (id, name) => {
-    Swal.fire({
-      title: `Yakin Ingin Menghapus?`,
-      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
-      icon: "question",
-      showConfirmButton: true,
+  const handleDisapprove = async (data, name) => {
+    // Tampilkan SweetAlert untuk konfirmasi
+    const result = await Swal.fire({
+      title: "Pembatalan",
+      html: `Apakah Anda yakin ingin batalkan <span style="font-weight: bold; font-size: "30px;"> ${name} ?</span>`,
+      icon: "error",
       showCancelButton: true,
-      confirmButtonColor: "#D80B0B",
-      cancelButtonColor: "grey",
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Hapus",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        ConfigAPI.deleteById(id)
-          .then((res) => {
-            console.log("Data berhasil dihapus:", res.data);
-            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
-            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
-          })
-          .catch((error) => {
-            console.error("Data Gagal dihapus:", error);
-            toast.error("Data Gagal dihapus"); // Tampilkan toast error
-            // Tangani error atau tampilkan pesan error
-          });
-      }
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+      reverseButtons: true,
     });
+
+    // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
+    if (result.isConfirmed) {
+      data.status = "REJECTED";
+      try {
+        await ConfigAPI.update(data);
+
+        toast.success("Config berhasil di batalkan");
+      } catch (error) {
+        console.error("Config Gagal di batalkan:", error);
+        toast.error("Config Gagal di batalkan ");
+      }
+    }
   };
 
-  //open create dialog
-  useEffect(() => {}, [isOpen]);
+  const handleApprove = async (data, name) => {
+    // Tampilkan SweetAlert untuk konfirmasi
+    const result = await Swal.fire({
+      title: "Persetujuan",
+      html: `Apakah Anda yakin ingin menyetujui <span style="font-weight: bold; font-size: "30px;"> ${name} ?</span> `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+      reverseButtons: true,
+    });
+
+    // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
+    if (result.isConfirmed) {
+      data.status = "APPROVED";
+      try {
+        await ConfigAPI.update(data);
+
+        toast.success("Config berhasil di setujui");
+      } catch (error) {
+        console.error("Config Gagal di setujui:", error);
+        toast.error("Config Gagal di setujui ");
+      }
+    }
+  };
 
   const [columnDefs] = useState([
     {
@@ -123,8 +157,9 @@ const ConfigRequest = () => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 3,
+      flex: 2,
     },
+
     {
       headerName: "Status",
       field: "status",
@@ -136,11 +171,35 @@ const ConfigRequest = () => {
 
     {
       headerName: "Active Time",
-      field: "activeTime",
       filter: true,
       sortable: true,
       hide: false,
       flex: 3,
+      valueGetter: (params) => {
+        const { data } = params;
+        const activeStart = new Date(data.start);
+        const activeEnd = new Date(data.end);
+
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+
+        const formattedActiveStart = activeStart.toLocaleDateString(
+          "en-US",
+          options
+        );
+        const formattedActiveEnd = activeEnd.toLocaleDateString(
+          "en-US",
+          options
+        );
+
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
+      },
     },
     {
       headerName: "Action",
@@ -162,10 +221,8 @@ const ConfigRequest = () => {
                 textDecoration: "none",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                setSelectedConfig(params.data);
-                setIsEditOpen(true);
-              }}>
+              onClick={() => handleApprove(params.data, params.data.name)}
+            >
               <TaskAltIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -178,12 +235,13 @@ const ConfigRequest = () => {
               padding="10px 10px"
               justifyContent="center"
               color="white"
-              onClick={() => deleteById(params.value, params.data.name)}
+              onClick={() => handleDisapprove(params.data, params.data.name)}
               style={{
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}>
+              }}
+            >
               <CancelIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -204,7 +262,8 @@ const ConfigRequest = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}>
+            }}
+          >
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">WBMS Config Request</Typography>
@@ -215,7 +274,8 @@ const ConfigRequest = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px">
+                  border="solid grey 1px"
+                >
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -233,7 +293,8 @@ const ConfigRequest = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}>
+                    }}
+                  >
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>

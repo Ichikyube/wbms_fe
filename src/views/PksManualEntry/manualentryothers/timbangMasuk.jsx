@@ -28,7 +28,7 @@ import GetWeightWB from "../../../components/GetWeightWB";
 import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
 import Config from "../../../configs";
-import TransactionGrid from "../../../components/TransactionGrid";
+import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
 import * as CompaniesAPI from "../../../api/companiesApi";
@@ -55,6 +55,17 @@ const PksManualOthersTimbangMasuk = () => {
     }));
   };
 
+  const fetchTransactionsFromAPI = async () => {
+    try {
+      const response = await TransactionAPI.getAll({});
+      return response.records;
+    } catch (error) {
+      // Tangani error jika permintaan gagal
+      console.error("Error fetching transactions:", error);
+      return [];
+    }
+  };
+
   const handleSubmit = async () => {
     const {
       bonTripNo,
@@ -70,6 +81,7 @@ const PksManualOthersTimbangMasuk = () => {
       deliveryOrderNo,
       progressStatus,
       originWeighInTimestamp,
+      transportVehicleSccModel,
     } = values;
 
     const tempTrans = {
@@ -86,16 +98,34 @@ const PksManualOthersTimbangMasuk = () => {
       deliveryOrderNo,
       progressStatus,
       originWeighInTimestamp,
+      transportVehicleSccModel,
     };
 
     if (tempTrans.progressStatus === 0) {
-      tempTrans.progressStatus = 1;
+      tempTrans.progressStatus = 20;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
     }
 
     try {
-      if (tempTrans.progressStatus === 1) {
+      const transactionsFromAPI = await fetchTransactionsFromAPI();
+
+      const duplicateEntryFromAPI = transactionsFromAPI.some(
+        (item) =>
+          item.transportVehiclePlateNo === transportVehiclePlateNo &&
+          [20, 21, 22].includes(item.progressStatus)
+      );
+
+      if (duplicateEntryFromAPI) {
+        toast.error(`LOADING/UNLOADING  ${transportVehiclePlateNo}.`);
+        return;
+      }
+
+      if (
+        tempTrans.progressStatus === 20 ||
+        tempTrans.progressStatus === 21 ||
+        tempTrans.progressStatus === 22
+      ) {
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {
@@ -103,11 +133,9 @@ const PksManualOthersTimbangMasuk = () => {
           return;
         }
 
-        toast.success(`Transaksi WB-IN telah tersimpan.`);
+        toast.success(`Transaksi Timbang Masuk telah tersimpan.`);
 
         return handleClose();
-      } else {
-        // ... logika jika progressStatus !== 1 ...
       }
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
@@ -136,21 +164,32 @@ const PksManualOthersTimbangMasuk = () => {
     });
   }, []);
 
-  // // Untuk validasi field
-  // useEffect(() => {
-  //   let cSubmit = false;
+  useEffect(() => {
+    // ... (kode useEffect yang sudah ada)
 
-  //   if (values.progressStatus === 0) {
-  //     if (values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT) {
-  //       cSubmit = true;
-  //     }
-  //   } else if (values.progressStatus === 2) {
-  //     if (values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT)
-  //       cSubmit = true;
-  //   }
+    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+    let cSubmit = false;
+    if (values.progressStatus === 0) {
+      cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
+    } else if (values.progressStatus === 4) {
+      cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
+    }
+    setCanSubmit(cSubmit);
+  }, [values]);
 
-  //   setCanSubmit(cSubmit);
-  // }, [values]);
+  const validateForm = () => {
+    // Implementasikan aturan validasi Anda di sini
+    // Kembalikan true jika semua kolom yang dibutuhkan terisi, jika tidak, kembalikan false
+    return (
+      values.bonTripNo &&
+      values.deliveryOrderNo &&
+      values.transportVehicleId &&
+      values.driverId &&
+      values.transporterId &&
+      values.productId &&
+      values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
+    );
+  };
 
   const handleClose = () => {
     // setProgressStatus("-");
@@ -195,7 +234,7 @@ const PksManualOthersTimbangMasuk = () => {
       />
 
       <Grid container spacing={3}>
-        <Grid item xs={1.5}>
+        <Grid item xs={1.8}>
           <Paper elevation={2} sx={{ p: 2 }}>
             <TextField
               variant="outlined"
@@ -228,7 +267,7 @@ const PksManualOthersTimbangMasuk = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={10.5}>
+        <Grid item xs={10.2}>
           <Paper elevation={1} sx={{ p: 3, px: 5 }}>
             <Box
               display="grid"
@@ -316,6 +355,9 @@ const PksManualOthersTimbangMasuk = () => {
                         [name]: value,
                         transportVehiclePlateNo: selectedNopol
                           ? selectedNopol.plateNo
+                          : "",
+                        transportVehicleSccModel: selectedNopol
+                          ? selectedNopol.sccModel
                           : "",
                       }));
                     }}
@@ -423,13 +465,15 @@ const PksManualOthersTimbangMasuk = () => {
                   variant="outlined"
                   size="small"
                   fullWidth
-                  disabled
-                  value="-"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                    readOnly: true,
                   }}
                   label={
                     <>
@@ -443,13 +487,10 @@ const PksManualOthersTimbangMasuk = () => {
                       </Typography>
                     </>
                   }
-                  name="vehicleAllowableSccModel"
-                  // value={
-                  //   Config.SCC_MODEL[values?.jsonData?.vehicleAllowableSccModel || 0]
-                  // }
+                  name="transportVehicleSccModel"
+                  value={values.transportVehicleSccModel || "-"}
                 />
 
-                {/* BELUM ADA FIELDNYA DI API */}
                 {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
@@ -742,12 +783,7 @@ const PksManualOthersTimbangMasuk = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  // disabled={
-                  //   !(
-                  //     canSubmit &&
-                  //     (values.progressStatus === 0 || values.progressStatus === 2)
-                  //   )
-                  // }
+                  disabled={!canSubmit || !validateForm()}
                 >
                   Simpan
                 </Button>
@@ -770,7 +806,7 @@ const PksManualOthersTimbangMasuk = () => {
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
-            <TransactionGrid tType={tType} />
+            <ManualEntryGrid tType={tType} />
           </Paper>
         </Grid>
       </Grid>

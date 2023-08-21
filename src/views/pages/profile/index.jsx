@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { Navigate } from "react-router-dom";
 import {
   Grid,
   Paper,
@@ -36,8 +35,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import EditPassword from "../../../views/pages/profile/editPassword";
-import Config from "../../../configs";
-import * as TransactionAPI from "../../../api/transactionApi";
+import * as UsersAPI from "../../../api/usersApi";
 
 import PageHeader from "../../../components/PageHeader";
 ModuleRegistry.registerModules([
@@ -47,14 +45,15 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
-
 const Profile = () => {
+  const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
   const initialValues = {
     name: "",
   };
   const { userInfo } = useSelector((state) => state.app);
+
   const [isOpen, setIsOpen] = useState(false);
+  const [dtuser, setDtUser] = useState([]);
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
 
@@ -63,16 +62,21 @@ const Profile = () => {
     setImage(file ? URL.createObjectURL(file) : null);
     setInitialImage(false);
   };
-  if (!userInfo) {
-    return <Navigate to="/login" />;
-  }
+
+  useEffect(() => {
+    UsersAPI.getById(userInfo.id).then((res) => {
+      setDtUser(res.data.user.records);
+    });
+  }, [userInfo.id]);
+  console.log(dtuser, "data user");
   return (
     <>
       <Typography
-        sx={{ fontSize: "25px", fontWeight: "bold", mt: 2, mb: 3, ml: 2 }}>
+        sx={{ fontSize: "25px", fontWeight: "bold", mt: 2, mb: 3, ml: 2 }}
+      >
         Profile
       </Typography>
-      <Formik initialValues={initialValues}>
+      <Formik initialValues={userInfo}>
         {({
           values,
           errors,
@@ -91,10 +95,12 @@ const Profile = () => {
                     mx: 1,
                     borderTop: "5px solid #000",
                     borderRadius: "10px 10px 10px 10px",
-                  }}>
+                  }}
+                >
                   <div
                     className="ag-theme-alpine"
-                    style={{ width: "auto", height: "auto" }}>
+                    style={{ width: "auto", height: "auto" }}
+                  >
                     <Box
                       sx={{
                         justifyContent: "center",
@@ -102,7 +108,8 @@ const Profile = () => {
                         textAlign: "center",
                         display: "flex", // Mengatur tampilan secara vertikal
                         flexDirection: "column", // Mengatur tampilan secara vertikal
-                      }}>
+                      }}
+                    >
                       {/* Tambahkan div kontainer untuk mengatur posisi */}
                       <div style={{ position: "relative" }}>
                         <div
@@ -117,7 +124,8 @@ const Profile = () => {
                             border: "1px solid #9e9e9e",
                             borderRadius: "50%",
                             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                          }}>
+                          }}
+                        >
                           <Tooltip title="Edit Profile">
                             <label htmlFor="imageInput">
                               <input
@@ -125,7 +133,6 @@ const Profile = () => {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                value={values.profile}
                                 style={{ display: "none" }}
                               />
                               <EditIcon
@@ -144,7 +151,8 @@ const Profile = () => {
                             marginBottom: "15px",
                             marginTop: "47px",
                             border: "2px solid #9e9e9e",
-                          }}>
+                          }}
+                        >
                           {/* Gambar ditampilkan terlebih dahulu */}
                           {image === null && (
                             <div
@@ -154,14 +162,14 @@ const Profile = () => {
                                 alignItems: "center",
                                 width: "200px",
                                 height: "200px",
-                              }}>
+                              }}
+                            >
                               <img
-                                src={`../../assets/user.jpg`}
+                                src={`${path}${userInfo.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
+                                  width: "340px",
+                                  height: "340px",
                                 }}
                               />
                             </div>
@@ -184,35 +192,15 @@ const Profile = () => {
                             </div>
                           )}
 
-                          {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                          {image === null && !initialImage && (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                width: "200px",
-                                height: "200px",
-                              }}>
-                              <img
-                                src={`../../assets/user.jpg`}
-                                alt="Uploaded Preview"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                }}
-                              />
-                            </div>
-                          )}
                         </div>
                       </div>
 
                       <Typography
-                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}>
+                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}
+                      >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "15px", mb: 6 }}>
+                      <Typography sx={{ fontSize: "15px", mb: 4 }}>
                         {userInfo.role}
                       </Typography>
 
@@ -226,7 +214,8 @@ const Profile = () => {
                           color: "white",
                           width: "100%",
                           mb: 2,
-                        }}>
+                        }}
+                      >
                         Edit Profile
                       </Button>
                       <Button
@@ -239,11 +228,12 @@ const Profile = () => {
                           fontWeight: "bold",
                           color: "white",
                           width: "100%",
-                          mb: 4,
+                          mb: 1,
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}>
+                        }}
+                      >
                         Ganti Password
                       </Button>
                     </Box>
@@ -258,23 +248,28 @@ const Profile = () => {
                     mx: 1,
                     borderTop: "5px solid #000",
                     borderRadius: "10px 10px 10px 10px",
-                  }}>
+                  }}
+                >
                   <div
                     className="ag-theme-alpine"
-                    style={{ width: "auto", height: "auto" }}>
+                    style={{ width: "auto", height: "auto" }}
+                  >
                     <Box
                       display="grid"
                       margin={7}
+                      my={14.2}
                       width="75%"
                       gap="30px"
-                      gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                      gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                    >
                       <FormControl
                         sx={{
                           gridColumn: "span 4",
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <FormLabel
                           sx={{
                             color: "black",
@@ -282,7 +277,8 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}>
+                          }}
+                        >
                           Name
                         </FormLabel>
                         <TextField
@@ -304,7 +300,8 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <FormLabel
                           sx={{
                             color: "black",
@@ -312,7 +309,8 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}>
+                          }}
+                        >
                           Email
                         </FormLabel>
                         <TextField
@@ -334,7 +332,8 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <FormLabel
                           sx={{
                             color: "black",
@@ -342,7 +341,8 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}>
+                          }}
+                        >
                           No.Telp
                         </FormLabel>
                         <TextField
@@ -384,8 +384,8 @@ const Profile = () => {
                           placeholder="Alamat"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.nik}
-                          name="nik"
+                          value={values.alamat}
+                          name="alamat"
                           error={!!touched.nik && !!errors.nik}
                           helperText={touched.nik && errors.nik}
                         />

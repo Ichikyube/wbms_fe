@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,29 +12,32 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
+
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import { format, addDays, addHours } from "date-fns";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configsApi";
+import moment from "moment";
 
-const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
+const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
   const userSchema = yup.object().shape({
-    name: yup.string().required("required"),
+    // name: yup.string().required("required"),
   });
 
-  const handleFormSubmit = async (event, values, { setSubmitting, resetForm }) => {
-    event.preventDefault();
-    
+  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+    values.start = moment(values.start).toDate();
+    values.end = moment(values.end).toDate();
+
     try {
       await ConfigApi.update(values);
-      console.log("Data Berhasil Diperbarui:", values);
-      toast.success("Data Berhasil Diperbarui"); // Tampilkan toast sukses
+      toast.success("Data Berhasil Diperbarui");
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
       console.error("Data Gagal Diperbarui:", error);
-      toast.error("Data Gagal Diperbarui: " + error.message); // Tampilkan pesan error spesifik
+      toast.error("Data Gagal Diperbarui: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
       setSubmitting(false);
@@ -42,14 +45,17 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
       onClose("", false);
     }
   };
+
   return (
     <Dialog
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}>
+      onClose={() => onClose("", false)}
+    >
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Edit Data Config
         <IconButton
           sx={{
@@ -60,7 +66,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -69,7 +76,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={dtConfig}
-          validationSchema={userSchema}>
+          validationSchema={userSchema}
+        >
           {({
             values,
             errors,
@@ -87,7 +95,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -95,7 +104,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Config Name
                   </FormLabel>
 
@@ -107,6 +117,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                     onChange={handleChange}
                     value={values.name}
                     name="name"
+                    inputProps={{ readOnly: true }}
+                    sx={{ backgroundColor: "whitesmoke" }}
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
                     id="name-input"
@@ -119,20 +131,32 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Tanggal Mulai
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="date"
-                    placeholder="Masukkan Tanggal Mulai..."
+                    type="datetime-local"
                     onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.licenseED}
-                    name="licenseED"
-                    error={!!touched.licenseED && !!errors.licenseED}
-                    helperText={touched.licenseED && errors.licenseED}
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (
+                        !values.end ||
+                        new Date(e.target.value) <= new Date(values.end)
+                      ) {
+                        setFieldValue("status", "PENDING");
+                      }
+                    }}
+                    value={
+                      values.start
+                        ? format(new Date(values.start), "yyyy-MM-dd'T'HH:mm")
+                        : ""
+                    }
+                    name="start"
+                    error={!!touched.start && !!errors.start}
+                    helperText={touched.start && errors.start}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 2" }}>
@@ -142,52 +166,35 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Tanggal Akhir
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="date"
-                    placeholder="Masukkan Tanggal Akhir..."
+                    type="datetime-local"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.licenseED}
-                    name="licenseED"
-                    error={!!touched.licenseED && !!errors.licenseED}
-                    helperText={touched.licenseED && errors.licenseED}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    Sites
-                  </FormLabel>
-                  <Autocomplete
-                    multiple
-                    options={dtSite}
-                    getOptionLabel={(option) => option.name}
-                    value={values.sites}
-                    onChange={(event, newValue) => {
-                      // Handle changes to the selected values
-                      setFieldValue("Sites", newValue);
+                    value={
+                      values.end
+                        ? format(new Date(values.end), "yyyy-MM-dd'T'HH:mm")
+                        : ""
+                    }
+                    name="end"
+                    error={!!touched.end && !!errors.end}
+                    helperText={touched.end && errors.end}
+                    // Nonaktifkan pilihan tanggal yang lebih dari 24 jam dari tanggal mulai
+                    inputProps={{
+                      max: format(
+                        addDays(new Date(values.start), 1),
+                        "yyyy-MM-dd'T'HH:mm"
+                      ),
+                      min: format(
+                        addDays(new Date(values.start), 1),
+                        "yyyy-MM-dd'T'HH:mm"
+                      ),
                     }}
-                    onBlur={handleBlur}
-                    name="Sites"
-                    isOptionEqualToValue={(option, value) => option === value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        error={touched.sites && !!errors.sites}
-                      />
-                    )}
-                    renderValue={(selected) => selected.join(", ")}
                   />
                 </FormControl>
               </Box>
@@ -200,7 +207,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -209,7 +217,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

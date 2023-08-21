@@ -12,6 +12,7 @@ import {
   FormLabel,
   TextField,
   Tooltip,
+  Checkbox,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -32,13 +33,13 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       username,
       nik,
       email,
-      password,
       file,
       position,
       division,
       phone,
       roleId,
       isLDAPUser,
+      role,
     } = values;
     const dto = {
       id,
@@ -46,13 +47,13 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       username,
       nik,
       email,
-      password,
       file,
       position,
       division,
       phone,
       roleId,
       isLDAPUser,
+      role,
     };
     try {
       await UserApi.update(dto);
@@ -72,22 +73,22 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   };
 
   const userSchema = yup.object().shape({
-    // name: yup.string().required("required"),
-    // username: yup.string().required("required"),
-    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    // email: yup
-    //   .string()
-    //   .email("Enter a valid email")
-    //   .required("Email is required"),
-    // division: yup.string().required("required"),
-    // position: yup.string().required("required"),
-    // phone: yup.string().required("required"),
+    name: yup.string().required("required"),
+    username: yup.string().required("required"),
+    nik: yup.string().required("required"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    division: yup.string().required("required"),
+    position: yup.string().required("required"),
+    phone: yup.string().required("required"),
     // password: yup
     //   .string()
     //   .required("Kata sandi harus diisi")
     //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
     //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    // role: yup.string().required("required"),
+    role: yup.string().required("required"),
   });
 
   const [image, setImage] = useState(null);
@@ -102,7 +103,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   return (
     <Dialog open={isEditOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
+      >
         Edit User
         <IconButton
           sx={{
@@ -113,7 +115,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -122,7 +125,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={dtuser}
-          validationSchema={userSchema}>
+          validationSchema={userSchema}
+        >
           {({
             values,
             errors,
@@ -141,14 +145,16 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                   paddingLeft={3}
                   paddingRight={3}
                   gap="20px"
-                  gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                >
                   <FormControl sx={{ gridColumn: "span 4" }}>
                     <FormLabel
                       sx={{
                         color: "black",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Profile
                     </FormLabel>
                     <Box mt={1} mb={1} position="relative">
@@ -167,7 +173,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             border: "1px solid #9e9e9e",
                             borderRadius: "50%",
                             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                          }}>
+                          }}
+                        >
                           <Tooltip title="Cancel Profile">
                             <CancelIcon
                               style={{ fontSize: "24px", color: "#ff0000" }}
@@ -191,18 +198,28 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                           border: "1px solid #9e9e9e",
                           borderRadius: "50%",
                           boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                        }}>
+                        }}
+                      >
                         <Tooltip title="Pilih Profile">
                           <input
                             id="imageInput"
                             type="file"
                             accept="image/*"
                             name="file"
-                            onChange={(e) => {
-                              const file = e.target.files[0];
-                              setFieldValue("file", file);
-                              setImage(file ? URL.createObjectURL(file) : null);
-                              setInitialImage(false);
+                            onChange={(event) => {
+                              const selectedFile = event.target.files[0];
+                              setFieldValue("file", selectedFile);
+                              const reader = new FileReader();
+
+                              // Baca file gambar yang dipilih menggunakan FileReader
+                              reader.onloadend = () => {
+                                setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
+                                setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+                              };
+
+                              if (selectedFile) {
+                                reader.readAsDataURL(selectedFile);
+                              }
                             }}
                             style={{ display: "none" }}
                           />
@@ -219,11 +236,12 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                           height: "160px",
                           overflow: "hidden",
                           border: "2px solid #9e9e9e",
-                        }}>
+                        }}
+                      >
                         {/* Gambar ditampilkan terlebih dahulu */}
-                        {image === null && dtuser.profilePic && (
+                        {image === null && dtuser.profile.profilePic && (
                           <img
-                            src={`${path}${dtuser.profilePic}`}
+                            src={`${path}${dtuser.profile.profilePic}`}
                             alt="Uploaded Preview"
                             style={{
                               width: "160px",
@@ -248,22 +266,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                           </div>
                         )}
 
-                        {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                        {image === null &&
-                          !initialImage &&
-                          !dtuser.profilePic && (
-                            <img
-                              src={`../../assets/user.jpg`}
-                              alt="Uploaded Preview"
-                              style={{
-                                width: "160px",
-                                height: "160px",
-                              }}
-                            />
-                          )}
-
-                        {/* Tambahkan console.log untuk memeriksa URL gambar */}
-                        {console.log("URL Gambar:", dtuser.profilePic)}
                       </div>
                     </Box>
                   </FormControl>
@@ -274,7 +276,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Name
                     </FormLabel>
                     <TextField
@@ -284,7 +287,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Name"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.name}
+                      value={values.profile.name}
                       name="name"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
@@ -297,7 +300,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Email
                     </FormLabel>
                     <TextField
@@ -320,7 +324,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       No Telepon
                     </FormLabel>
                     <TextField
@@ -330,7 +335,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan No Telepon"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.phone}
+                      value={values.profile.phone}
                       name="phone"
                       error={!!touched.phone && !!errors.phone}
                       helperText={touched.phone && errors.phone}
@@ -343,8 +348,9 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
-                      Nik
+                      }}
+                    >
+                      NPK
                     </FormLabel>
                     <TextField
                       fullWidth
@@ -367,7 +373,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Username
                     </FormLabel>
                     <TextField
@@ -383,6 +390,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       helperText={touched.username && errors.username}
                     />
                   </FormControl>
+
                   <FormControl sx={{ gridColumn: "span 4" }}>
                     <FormLabel
                       sx={{
@@ -390,30 +398,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
-                      Password
-                    </FormLabel>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="password"
-                      placeholder="Masukkan Password"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.password}
-                      name="password"
-                      error={!!touched.password && !!errors.password}
-                      helperText={touched.password && errors.password}
-                    />
-                  </FormControl>
-                  <FormControl sx={{ gridColumn: "span 4" }}>
-                    <FormLabel
-                      sx={{
-                        color: "black",
-                        marginBottom: "8px",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Division
                     </FormLabel>
                     <TextField
@@ -423,8 +409,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Division"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.division}
-                      name="division"
+                      value={values.profile.division}
+                      name="profile.division"
                       error={!!touched.division && !!errors.division}
                       helperText={touched.division && errors.division}
                     />
@@ -436,7 +422,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Position
                     </FormLabel>
                     <TextField
@@ -446,8 +433,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Position"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.position}
-                      name="position"
+                      value={values.profile.position}
+                      name="profile.profile.position"
                       error={!!touched.position && !!errors.position}
                       helperText={touched.position && errors.position}
                     />
@@ -459,19 +446,20 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         marginBottom: "8px",
                         fontSize: "16px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Role
                     </FormLabel>
                     <Select
                       fullWidth
                       name="roleId"
                       value={values.roleId}
-                      onBlur={handleBlur}
                       onChange={(event) => {
-                        handleChange(event);
+                        const { name, value } = event.target;
                         const selectedRole = dtRole.find(
-                          (item) => item.id === event.target.value
+                          (item) => item.id === value
                         );
+                        setFieldValue(name, value);
                         setFieldValue(
                           "role",
                           selectedRole ? selectedRole.name : ""
@@ -480,9 +468,12 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       displayEmpty
                       sx={{
                         color: MenuItem ? "gray" : "black",
-                      }}>
+                      }}
+                      error={!!touched.roleId && !!errors.roleId}
+                      helperText={touched.roleId && errors.roleId}
+                    >
                       <MenuItem value="" disabled>
-                        -- Pilih Role Id --
+                        -- Pilih Role --
                       </MenuItem>
                       {dtRole.map((item) => {
                         return (
@@ -493,254 +484,32 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       })}
                     </Select>
                   </FormControl>
-
-                  <FormControl sx={{ gridColumn: "span 4" }}>
-                    <FormLabel
-                      sx={{
-                        marginBottom: "8px",
-                        color: "black",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                      }}>
-                      Role Name
-                    </FormLabel>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="text"
-                      placeholder="Masukan Role name....."
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.role}
-                      name="role"
-                      error={!!touched.role && !!errors.role}
-                      helperText={touched.role && errors.role}
-                    />
-                  </FormControl>
-                  <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormControl
+                    sx={{
+                      gridColumn: "span 4",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}
+                  >
                     <FormLabel
                       sx={{
                         color: "black",
-                        marginBottom: "8px",
-                        fontSize: "16px",
+                        fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       isLDAPUser
                     </FormLabel>
-                    {/* <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.isLDAPUser}
-                  onChange={handleChange}
-                  name="isLDAPUser"
-                />
-              }
-            /> */}
-                    <Select
-                      fullWidth
-                      value={values.isLDAPUser}
-                      name="isLDAPUser"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      displayEmpty>
-                      <MenuItem value="" disabled>
-                        -- LDAP User --
-                      </MenuItem>
-                      <MenuItem value={true}>YES</MenuItem>
-                      <MenuItem value={false}>NO</MenuItem>
-                    </Select>
+                    <Checkbox
+                      checked={values.isLDAPUser === true}
+                      onChange={(event) => {
+                        const newValue = event.target.checked ? true : false;
+                        setFieldValue("isLDAPUser", newValue);
+                      }}
+                    />
                   </FormControl>
-
-                  {/* <FormControl
-              sx={{
-                gridColumn: "span 4",
-              }}
-            >
-              <FormLabel
-                sx={{
-                  color: "black",
-                  marginBottom: "23px",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                }}
-              >
-                Role
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel
-                  sx={{
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 30,
-                    },
-                  }}
-                  value="administrator"
-                  control={<Radio />}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Administrator
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "16px",
-                          color: "grey",
-                        }}
-                      >
-                        Administrator bertanggung jawab untuk membuat akun
-                        pengguna baru dalam sistem. Administrator juga
-                        bertugas memberikan atau mengatur hak akses dan izin
-                        pengguna
-                      </Typography>
-                    </>
-                  }
-                />
-                <hr />
-                <FormControlLabel
-                  value="mill head"
-                  control={<Radio />}
-                  sx={{
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 30,
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Mill Head
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "16px",
-                          color: "grey",
-                        }}
-                      >
-                        Mill Head dapat memiliki akses untuk memantau dan
-                        mengawasi proses produksi di pabrik . Ini termasuk
-                        melihat data dan laporan produksi, mendapatkan
-                        informasi terkini tentang progres produksi.
-                      </Typography>
-                    </>
-                  }
-                />
-                <hr />
-                <FormControlLabel
-                  value="manager"
-                  control={<Radio />}
-                  sx={{
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 30,
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Manager
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "16px",
-                          color: "grey",
-                        }}
-                      >
-                        Manager dapat memiliki hak akses untuk mengelola dan
-                        mengawasi proses produksi di pabrik. Ini meliputi
-                        memantau kinerja produksi, mengidentifikasi masalah
-                        operasional.
-                      </Typography>
-                    </>
-                  }
-                />
-                <hr />
-                <FormControlLabel
-                  value="supervisor"
-                  control={<Radio />}
-                  sx={{
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 30,
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Supervisor
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "16px",
-                          color: "grey",
-                        }}
-                      >
-                        Supervisor dapat memiliki hak akses untuk mengawasi
-                        staf dan operator. mengatur jadwal kerja, dan
-                        memastikan bahwa tugas-tugas dilaksanakan dengan
-                        tepat.
-                      </Typography>
-                    </>
-                  }
-                />
-                <hr />
-                <FormControlLabel
-                  value="staff"
-                  control={<Radio />}
-                  sx={{
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 30,
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Staff
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "16px",
-                          color: "grey",
-                        }}
-                      >
-                        Staff atau Operator dapat memiliki hak akses
-                        melakukan proses penimbangan kelapa sawit,
-                        memastikan kualitas produk, dan melaksanakan
-                        tugas-tugas sesuai dengan prosedur yang ditetapkan.
-                      </Typography>
-                    </>
-                  }
-                />
-              </RadioGroup>
-            </FormControl> */}
                 </Box>
                 <Box display="flex" mt={3} mb={4} justifyContent="center">
                   <Button
@@ -753,7 +522,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}>
+                    }}
+                  >
                     Cancel
                   </Button>
                   <Box mr={1} />
@@ -764,7 +534,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       color: "white",
                       textTransform: "none",
                       fontSize: "16px",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

@@ -37,19 +37,11 @@ ModuleRegistry.registerModules([
 const Config = () => {
   console.clear();
   const gridRef = useRef();
-
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
-  const [dtSite, setdtSites] = useState([]);
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);
-  useEffect(() => {
-    SiteAPI.getAll().then((res) => {
-      setdtSites(res.data.config.records);
-    });
-  }, []);
+
   // search
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -76,8 +68,6 @@ const Config = () => {
     }
   }, [searchQuery, dtConfigs, updateGridData]);
 
-  //open create dialog
-  useEffect(() => {}, [isOpen]);
   // {
   //   "name": "string",
   //   "value": "string",
@@ -104,8 +94,9 @@ const Config = () => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 3,
+      flex: 2,
     },
+  
     {
       headerName: "Status",
       field: "status",
@@ -117,20 +108,33 @@ const Config = () => {
 
     {
       headerName: "Active Time",
-      field: "activeTime",
       filter: true,
       sortable: true,
       hide: false,
       flex: 3,
+      valueGetter: (params) => {
+        const { data } = params;
+        const activeStart = new Date(data.start);
+        const activeEnd = new Date(data.end);
+    
+        const options = {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        };
+        
+        const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
+        const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
+    
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
+      },
     },
-    {
-      headerName: "Site",
-      field: "site",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 3,
-    },
+    
+    
+
     {
       headerName: "Action",
       field: "id",
@@ -154,7 +158,8 @@ const Config = () => {
               onClick={() => {
                 setSelectedConfig(params.data);
                 setIsEditOpen(true);
-              }}>
+              }}
+            >
               <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -175,7 +180,8 @@ const Config = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}>
+            }}
+          >
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">WBMS Config </Typography>
@@ -186,7 +192,8 @@ const Config = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px">
+                  border="solid grey 1px"
+                >
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -204,7 +211,8 @@ const Config = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}>
+                    }}
+                  >
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>
@@ -223,7 +231,6 @@ const Config = () => {
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         dtConfig={selectedConfig}
-        dtSite={dtSite}
       />
     </>
   );

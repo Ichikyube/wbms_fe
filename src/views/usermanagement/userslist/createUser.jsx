@@ -12,6 +12,8 @@ import {
   FormLabel,
   TextField,
   Tooltip,
+  Checkbox,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -54,27 +56,29 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     position: "",
     division: "",
     phone: "",
-    role: "",
+    roleId: "",
     isLDAPUser: false,
   };
 
   const checkoutSchema = yup.object().shape({
     name: yup.string().required("required"),
-    // username: yup.string().required("required"),
-    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    // email: yup
-    //   .string()
-    //   .email("Enter a valid email")
-    //   .required("Email is required"),
-    // division: yup.string().required("required"),
-    // position: yup.string().required("required"),
-    // phone: yup.string().required("required"),
-    // password: yup
-    //   .string()
-    //   .required("Kata sandi harus diisi")
-    //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-    //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    // role: yup.string().required("required"),
+    username: yup.string().required("required"),
+    nik: yup.string().required("required"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    division: yup.string().required("required"),
+    position: yup.string().required("required"),
+    phone: yup.string().required("required"),
+    password: yup
+      .string()
+      .required("Kata sandi harus diisi")
+      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
+      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
+    roleId: yup.mixed().required("required"),
+    isLDAPUser: yup.mixed().required("required"),
+    file: yup.mixed().required("Gambar wajib diisi"),
   });
 
   const [image, setImage] = useState(null);
@@ -88,7 +92,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
+      >
         Tambah User
         <IconButton
           sx={{
@@ -99,7 +104,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -108,7 +114,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
         <Formik
           onSubmit={handleSubmit}
           initialValues={initialValues}
-          validationSchema={checkoutSchema}>
+          validationSchema={checkoutSchema}
+        >
           {({
             values,
             errors,
@@ -126,14 +133,16 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Profile
                   </FormLabel>
                   <Box mt={1} mb={1} position="relative">
@@ -152,7 +161,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           border: "1px solid #9e9e9e",
                           borderRadius: "50%",
                           boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                        }}>
+                        }}
+                      >
                         <Tooltip title="Cancel Profile">
                           <CancelIcon
                             style={{ fontSize: "24px", color: "#ff0000" }}
@@ -160,8 +170,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         </Tooltip>
                       </label>
                     )}
-
-                    {/* Ikon "Add" untuk memilih gambar */}
 
                     <label
                       htmlFor="imageInput"
@@ -176,7 +184,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         border: "1px solid #9e9e9e",
                         borderRadius: "50%",
                         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                      }}>
+                      }}
+                    >
                       <Tooltip title="Pilih Profile">
                         <input
                           id="imageInput"
@@ -188,10 +197,9 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                             setFieldValue("file", selectedFile);
                             const reader = new FileReader();
 
-                            // Baca file gambar yang dipilih menggunakan FileReader
                             reader.onloadend = () => {
-                              setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
-                              setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+                              setImage(reader.result);
+                              setInitialImage(true);
                             };
 
                             if (selectedFile) {
@@ -213,8 +221,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         height: "160px",
                         overflow: "hidden",
                         border: "2px solid #9e9e9e",
-                      }}>
-                      {/* Gambar ditampilkan terlebih dahulu */}
+                      }}
+                    >
                       {image === null && (
                         <img
                           src={`../../assets/user.jpg`}
@@ -226,7 +234,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         />
                       )}
 
-                      {/* Jika gambar baru dipilih melalui input file, gambar yang baru akan ditampilkan */}
                       {image && (
                         <div>
                           <img
@@ -242,7 +249,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         </div>
                       )}
 
-                      {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
                       {image === null && !initialImage && (
                         <img
                           src={`../../assets/user.jpg`}
@@ -253,7 +259,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           }}
                         />
                       )}
-                      {console.log("URL Gambar:", values.file)}
                     </div>
                   </Box>
                 </FormControl>
@@ -264,14 +269,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Name
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Name"
+                    placeholder="Masukkan Nama....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.name}
@@ -287,14 +293,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Email
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="email"
-                    placeholder="Masukkan Email"
+                    placeholder="Masukkan Email....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.email}
@@ -310,14 +317,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     No Telepon
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan No Telepon"
+                    placeholder="Masukkan No Telepon....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.phone}
@@ -333,14 +341,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
-                    Nik
+                    }}
+                  >
+                    NPK
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Nik"
+                    placeholder="Masukkan NPK....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.nik}
@@ -357,14 +366,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Username
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Username"
+                    placeholder="Masukkan Username....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.username}
@@ -380,14 +390,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Password
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="password"
-                    placeholder="Masukkan Password"
+                    type="text"
+                    placeholder="Masukkan Password....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password}
@@ -403,14 +414,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Division
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Division"
+                    placeholder="Masukkan Division....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.division}
@@ -426,14 +438,15 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Position
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Position"
+                    placeholder="Masukkan Position....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.position}
@@ -449,19 +462,20 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Role
                   </FormLabel>
                   <Select
                     fullWidth
                     name="roleId"
                     value={values.roleId}
-                    onBlur={handleBlur}
                     onChange={(event) => {
-                      handleChange(event);
+                      const { name, value } = event.target;
                       const selectedRole = dtRole.find(
-                        (item) => item.id === event.target.value
+                        (item) => item.id === value
                       );
+                      setFieldValue(name, value);
                       setFieldValue(
                         "role",
                         selectedRole ? selectedRole.name : ""
@@ -470,9 +484,12 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}>
+                    }}
+                    error={!!touched.roleId && !!errors.roleId}
+                    helperText={touched.roleId && errors.roleId}
+                  >
                     <MenuItem value="" disabled>
-                      -- Pilih Role Id --
+                      -- Pilih Role --
                     </MenuItem>
                     {dtRole.map((item) => {
                       return (
@@ -484,245 +501,32 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    Role Name
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukan Role name....."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.role}
-                    name="role"
-                    error={!!touched.role && !!errors.role}
-                    helperText={touched.role && errors.role}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    isLDAPUser
-                  </FormLabel>
-
-                  <Select
-                    fullWidth
-                    value={values.isLDAPUser}
-                    name="isLDAPUser"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    displayEmpty>
-                    <MenuItem value="" disabled>
-                      -- LDAP User --
-                    </MenuItem>
-                    <MenuItem value={true}>YES</MenuItem>
-                    <MenuItem value={false}>NO</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {/* <FormControl
+                <FormControl
                   sx={{
                     gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
                   }}
                 >
                   <FormLabel
                     sx={{
                       color: "black",
-                      marginBottom: "23px",
                       fontSize: "18px",
                       fontWeight: "bold",
                     }}
                   >
-                    Role
+                    isLDAPUser
                   </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      value="administrator"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Administrator
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Administrator bertanggung jawab untuk membuat akun
-                            pengguna baru dalam sistem. Administrator juga
-                            bertugas memberikan atau mengatur hak akses dan izin
-                            pengguna
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="mill head"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Mill Head
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Mill Head dapat memiliki akses untuk memantau dan
-                            mengawasi proses produksi di pabrik . Ini termasuk
-                            melihat data dan laporan produksi, mendapatkan
-                            informasi terkini tentang progres produksi.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="manager"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Manager
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Manager dapat memiliki hak akses untuk mengelola dan
-                            mengawasi proses produksi di pabrik. Ini meliputi
-                            memantau kinerja produksi, mengidentifikasi masalah
-                            operasional.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="supervisor"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Supervisor
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Supervisor dapat memiliki hak akses untuk mengawasi
-                            staf dan operator. mengatur jadwal kerja, dan
-                            memastikan bahwa tugas-tugas dilaksanakan dengan
-                            tepat.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="staff"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Staff
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Staff atau Operator dapat memiliki hak akses
-                            melakukan proses penimbangan kelapa sawit,
-                            memastikan kualitas produk, dan melaksanakan
-                            tugas-tugas sesuai dengan prosedur yang ditetapkan.
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl> */}
+                  <Checkbox
+                    checked={values.isLDAPUser === true}
+                    onChange={(event) => {
+                      const newValue = event.target.checked ? true : false;
+                      setFieldValue("isLDAPUser", newValue);
+                    }}
+                  />
+                </FormControl>
               </Box>
               <Box display="flex" mt={3} mb={4} justifyContent="center">
                 <Button
@@ -735,7 +539,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box mr={1} />
@@ -746,7 +551,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     color: "white",
                     textTransform: "none",
                     fontSize: "16px",
-                  }}>
+                  }}
+                >
                   Simpan
                 </Button>
               </Box>

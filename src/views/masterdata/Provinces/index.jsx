@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import { orange, blue, red, indigo, green } from "@mui/material/colors";
+import { orange, blue, red, indigo } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -58,7 +58,8 @@ const Provinces = () => {
 
   const { data: dtProvince } = useSWR(
     searchQuery ? `province?name_like=${searchQuery}` : "province",
-    fetcher, {
+    fetcher,
+    {
       refreshInterval: 2000,
     }
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, React } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -49,8 +49,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"sm"}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Tambah Data Province
         <IconButton
           sx={{
@@ -61,8 +60,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -71,8 +69,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
         <Formik
           onSubmit={handleSubmit}
           initialValues={initialValues}
-          validationSchema={checkoutSchema}
-        >
+          validationSchema={checkoutSchema}>
           {({
             values,
             errors,
@@ -89,8 +86,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -98,8 +94,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Nama
                   </FormLabel>
                   <TextField
@@ -125,8 +120,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}
-                >
+                  }}>
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -135,8 +129,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

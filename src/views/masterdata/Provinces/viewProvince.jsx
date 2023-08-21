@@ -12,21 +12,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik } from "formik";
 
-const ViewProvinces = ({
-  isViewOpen,
-  onClose,
-  dtProvince,
-}) => {
+const ViewProvinces = ({ isViewOpen, onClose, dtProvince }) => {
   return (
     <Dialog
       open={isViewOpen}
       fullWidth
       maxWidth="sm"
-      onClose={() => onClose("", false)}
-    >
+      onClose={() => onClose("", false)}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Detail Data Provinces
         <IconButton
           sx={{
@@ -37,8 +31,7 @@ const ViewProvinces = ({
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -61,8 +54,7 @@ const ViewProvinces = ({
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -70,8 +62,7 @@ const ViewProvinces = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Nama
                   </FormLabel>
 

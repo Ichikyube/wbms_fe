@@ -15,10 +15,9 @@ const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
   const userRef = useRef();
-  const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [user, setUser] = useState("");
+  const [pwd, setPwd] = useState("");
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
 
@@ -53,8 +52,8 @@ const SignIn = () => {
 
       dispatch(setCredentials({ ...response.data.user }));
       // setAuth({ user, pwd, roles, at });
-      setUser('');
-      setPwd('');
+      setUser("");
+      setPwd("");
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {

@@ -28,10 +28,6 @@ const SignIn = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
 
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,7 +61,6 @@ const SignIn = () => {
       } else {
         setErrMsg("Login Failed");
       }
-      errRef.current.focus();
       toast.error(errMsg);
     }
   };

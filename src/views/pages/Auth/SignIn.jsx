@@ -16,8 +16,6 @@ const initialValues = { username: "", password: "" };
 const SignIn = () => {
   const userRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-  const [user, setUser] = useState("");
-  const [pwd, setPwd] = useState("");
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
 
@@ -37,10 +35,9 @@ const SignIn = () => {
 
     try {
       const response = await signin(values).unwrap();
+      // Get the cookie string from the response headers
       const at = response?.data?.tokens?.access_token;
-      // const roles = response?.data?.roles;
-      Cookies.set("accessToken", at, { sameSite: "strict" });
-
+      localStorage.setItem('wbms_at', at);
       if (!response.status) {
         console.log(response.message);
         console.log(response.logs);
@@ -51,9 +48,6 @@ const SignIn = () => {
       }
 
       dispatch(setCredentials({ ...response.data.user }));
-      // setAuth({ user, pwd, roles, at });
-      setUser("");
-      setPwd("");
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {

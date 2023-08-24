@@ -33,12 +33,6 @@ const Tables = (props) => {
     floatingFilter: false,
     filter: true,
   };
-
-  useEffect(() => {
-
-
-
-  }, []);
   return (
     <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>
       <AgGridReact

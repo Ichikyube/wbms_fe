@@ -1,14 +1,24 @@
 import axios from "axios";
-
+import Cookies from "js-cookie";
 const { REACT_APP_WBMS_BACKEND_API_URL } = process.env;
-
-export const api = axios.create({
+const api = axios.create({
   baseURL: `${REACT_APP_WBMS_BACKEND_API_URL}`,
 });
 
-const endpoint = "/app/resourceslist";
+// Add an interceptor to set the 'Authorization' header
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("wbms_at");
+    console.log();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-export const getResourceslist = async () => {
-  const response = await api.get(endpoint);
-  return response.data;
-};
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default api;

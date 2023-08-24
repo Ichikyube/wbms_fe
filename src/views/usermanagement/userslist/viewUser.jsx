@@ -77,7 +77,7 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                       >
                         {/* Gambar ditampilkan terlebih dahulu */}
                         <img
-                          src={`${path}${dtuser.profile.profilePic}`}
+                          src={`${path}${dtuser.profile?.profilePic}`}
                           alt="Uploaded Preview"
                           style={{
                             width: "340px",
@@ -124,22 +124,22 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                         <tr height="50">
                           <td>Nama</td>
                           <td width="10">:</td>
-                          <td>{values.profile.name}</td>
+                          <td>{values.profile?.name}</td>
                         </tr>
                         <tr height="50">
                           <td>No Telephon</td>
                           <td width="10">:</td>
-                          <td>{values.profile.phone}</td>
+                          <td>{values.profile?.phone}</td>
                         </tr>
                         <tr height="50">
                           <td>Division</td>
                           <td width="10">:</td>
-                          <td>{values.profile.division}</td>
+                          <td>{values.profile?.division}</td>
                         </tr>
                         <tr height="50">
                           <td>Position</td>
                           <td width="10">:</td>
-                          <td>{values.profile.position}</td>
+                          <td>{values.profile?.position}</td>
                         </tr>
                         <tr>
                           <td>LDAP User</td>

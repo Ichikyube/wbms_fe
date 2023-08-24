@@ -1,4 +1,4 @@
-import { api } from "./api";
+import api from "./api";
 
 // import { getEnvInit } from "../configs";
 
@@ -19,8 +19,6 @@ import { api } from "./api";
 //   }))();
 
 // const { WBMS_SEMAI_BACKEND_URL, WBMS_SEMAI_API_KEY } = Config.ENV;
-
-
 
 const endpoint = "semai";
 

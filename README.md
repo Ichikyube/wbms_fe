@@ -1,3 +1,4 @@
+  Jika User adalah admin maka bisa menunjuk approver
   const resourcesList = [
     "BarcodeType",
     "City",

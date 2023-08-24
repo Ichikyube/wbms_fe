@@ -1,4 +1,4 @@
-import { api } from "./api";
+import api from "./api";
 
 export const endpoint = "/configs";
 
@@ -68,4 +68,3 @@ export const getISCC_SCC_MODEL = () => {
   };
   return response.data;
 };
-

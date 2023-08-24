@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { clearCredentials } from "../../slices/appSlice";
+import { clearCredentials, clearConfigs, clearSidebar } from "../../slices/appSlice";
 import { useSignoutMutation } from "../../slices/authApiSlice";
 
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
@@ -23,18 +23,19 @@ import { useContext } from "react";
 
 const AppHeaderDropdown = () => {
   const { userInfo } = useSelector((state) => state.app);
-  const { setAuth } = useContext(AuthContext);
   const [signout] = useSignoutMutation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSignout = async () => {
+    dispatch(clearCredentials());
+    dispatch(clearConfigs());
+    dispatch(clearSidebar());
+    localStorage.clear();
     try {
       const response = await signout().unwrap();
-      Cookies.remove("accessToken");
-      dispatch(clearCredentials());
-      // setAuth({});
+
       if (!response.status) {
         console.log(response.message);
         console.log(response.logs);
@@ -57,7 +58,8 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">
-          Account <strong>{userInfo?.profile ? userInfo.profile.name : null}</strong>
+          Account{" "}
+          <strong>{userInfo?.profile ? userInfo.profile.name : null}</strong>
         </CDropdownHeader>
 
         <LinkContainer to="/profile">

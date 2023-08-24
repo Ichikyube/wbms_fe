@@ -44,6 +44,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
   };
   const resourcesList = [
     "Company",
+    "Config",
     "Customer",
     "Driver",
     "Mill",
@@ -53,6 +54,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
     "StorageTank",
     "Transaction",
     "TransportVehicle",
+    "User",
     "Weighbridge",
   ];
   const [checkboxes, setCheckboxes] = useState(

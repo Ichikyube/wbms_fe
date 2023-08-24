@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ACCEPT_NAME, REJECT_NAME, BLOCK_NAME, UNDO } from "../constants";
 
 const initialState = {
   configs: localStorage.getItem("configs")
@@ -34,7 +35,6 @@ const appSlice = createSlice({
     },
     clearConfigs: (state, action) => {
       state.configs = null;
-      localStorage.removeItem("configs");
     },
     setCredentials: (state, action) => {
       state.userInfo = action.payload;
@@ -42,7 +42,6 @@ const appSlice = createSlice({
     },
     clearCredentials: (state, action) => {
       state.userInfo = null;
-      localStorage.removeItem("userInfo");
     },
     setSidebar: (state, action) => {
       state.sidebar = { ...state.sidebar, ...action.payload };
@@ -50,7 +49,6 @@ const appSlice = createSlice({
     },
     clearSidebar: (state, action) => {
       state.sidebar = null;
-      localStorage.removeItem("sidebar");
     },
     setWb: (state, action) => {
       state.wb = { ...state.wb, ...action.payload };
@@ -77,14 +75,20 @@ const appSlice = createSlice({
       state.wbTransaction = null;
       localStorage.removeItem("wbTransaction");
     },
+    selectionMode: (state, action) => {
+      state.wbTransaction = null;
+      localStorage.removeItem("wbTransaction");
+    },
   },
 });
 
 export const {
   setConfigs,
+  clearConfigs,
   setCredentials,
   clearCredentials,
   setSidebar,
+  clearSidebar,
   setWb,
   clearWb,
   setWbTransaction,

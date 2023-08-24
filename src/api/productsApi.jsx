@@ -1,4 +1,4 @@
-import { api } from "./api";
+import api from "./api";
 export const endpoint = "/products";
 
 export const getAll = async () => {

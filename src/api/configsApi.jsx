@@ -21,6 +21,10 @@ export const update = async (data) => {
   const response = await api.patch(`${endpoint}/${data.id}`, data);
   return response.data;
 };
+export const showRequests = async () => {
+  const response = await api.get("/configrequest");
+  return response.data;
+};
 
 export const deleteById = async (id) => {
   const response = await api.delete(`${endpoint}/${id}`);

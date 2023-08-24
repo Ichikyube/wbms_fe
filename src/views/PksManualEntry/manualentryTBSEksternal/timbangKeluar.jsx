@@ -23,7 +23,7 @@ import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-import GetWeightWB from "../../../components/GetWeightWB";
+import WeightWB from "../../../components/weightWB";
 
 import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
@@ -35,11 +35,60 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { getById } from "../../../api/configApi";
+import { getEnvInit } from "../../../configs";
+
+let wsClient;
 
 const tType = 1;
 
-const PksManualTBSEksternalTimbangKeluar = () => {
+const PksManualTBSEksternalTimbangKeluar = (props) => {
+  const { isDisabled } = props;
+  const { wb, configs } = useSelector((state) => state.app);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () =>
+      await getEnvInit().then((result) => {
+        // ENV = result;
+        // console.log(configs);
+
+        if (!wsClient) {
+          wsClient = new w3cwebsocket(
+            `ws://${result.WBMS_WB_IP}:${result.WBMS_WB_PORT}/GetWeight`
+          );
+
+          wsClient.onmessage = (message) => {
+            const curWb = { ...wb };
+            curWb.isStable = false;
+            curWb.weight = Number.isNaN(+message.data) ? 0 : +message.data;
+
+            if (curWb.weight !== wb.weight) {
+              curWb.lastChange = moment().valueOf();
+            } else if (
+              moment().valueOf() - wb.lastChange >
+              result.WBMS_WB_STABLE_PERIOD
+            ) {
+              curWb.isStable = true;
+            }
+
+            if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
+              curWb.canStartScalling = true;
+
+            dispatch(setWb({ ...curWb }));
+          };
+
+          wsClient.onerror = (err) => {
+            // alert(`Cannot connect to WB: ${err}`);
+            // console.log("Get Weight Component");
+            // console.log(err);
+          };
+        }
+
+        return result;
+      }))();
+  }, []);
+
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm({
@@ -82,9 +131,11 @@ const PksManualTBSEksternalTimbangKeluar = () => {
 
     let updatedProgressStatus = progressStatus;
     let updatedOriginWeighOutTimestamp = originWeighOutTimestamp;
+    let updatedOriginWeighOutKg = originWeighOutKg;
 
     if (progressStatus === 22) {
       updatedProgressStatus = 4;
+      updatedOriginWeighOutKg = wb.weight;
       updatedOriginWeighOutTimestamp = moment().toDate();
     }
 
@@ -101,7 +152,7 @@ const PksManualTBSEksternalTimbangKeluar = () => {
       transportVehiclePlateNo,
       transportVehicleSccModel,
       originWeighInKg,
-      originWeighOutKg: parseFloat(originWeighOutKg),
+      originWeighOutKg: updatedOriginWeighOutKg,
       deliveryOrderNo,
       progressStatus: updatedProgressStatus,
       qtyTbsDikirim: parseFloat(qtyTbsDikirim),
@@ -578,26 +629,8 @@ const PksManualTBSEksternalTimbangKeluar = () => {
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
-                {/* {values.progressStatus === 0 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighInKg: weightWb,
-                      }));
-                    }}
-                  />
-                )}
-                {values.progressStatus === 2 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighOutKg: weightWb,
-                      }));
-                    }}
-                  />
-                )} */}
+                <WeightWB />
+
                 <TextField
                   type="number"
                   variant="outlined"
@@ -662,8 +695,7 @@ const PksManualTBSEksternalTimbangKeluar = () => {
                     </Typography>
                   }
                   name="originWeighOutKg"
-                  value={values.originWeighOutKg}
-                  onChange={handleChange}
+                  value={wb.weight}
                 />
 
                 <TextField
@@ -768,7 +800,14 @@ const PksManualTBSEksternalTimbangKeluar = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!canSubmit || !validateForm()}
+                  disabled={
+                    values.progressStatus === 4 ||
+                    isDisabled ||
+                    !wb.isStable ||
+                    wb.weight < configs.WBMS_WB_MIN_WEIGHT
+                      ? true
+                      : false
+                  }
                 >
                   Simpan
                 </Button>

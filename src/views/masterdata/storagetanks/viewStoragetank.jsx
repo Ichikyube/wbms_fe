@@ -172,47 +172,7 @@ const EditStorageTank = ({
                     helperText={touched.shortName && errors.shortName}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Product
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    name="productId"
-                    value={values.productId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedproduct = dtProduct.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "productName",
-                        selectedproduct ? selectedproduct.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Product --
-                    </MenuItem>
-                    {dtProduct.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+               
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -238,47 +198,7 @@ const EditStorageTank = ({
                     helperText={touched.productName && errors.productName}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Site Id
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    name="siteId"
-                    value={values.siteId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedsite = dtSite.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "siteName",
-                        selectedsite ? selectedsite.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Site --
-                    </MenuItem>
-                    {dtSite.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+               
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -305,47 +225,7 @@ const EditStorageTank = ({
                   />
                 </FormControl>
 
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    stockOwner
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    name="stockOwnerId"
-                    value={values.stockOwnerId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedstockOwner = dtCompany.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "stockOwnerName",
-                        selectedstockOwner ? selectedstockOwner.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Stock Owner --
-                    </MenuItem>
-                    {dtCompany.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+             
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -372,7 +252,7 @@ const EditStorageTank = ({
                   />
                 </FormControl>
 
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

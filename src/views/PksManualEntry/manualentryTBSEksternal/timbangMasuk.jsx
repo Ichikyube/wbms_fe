@@ -23,7 +23,7 @@ import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-import GetWeightWB from "../../../components/GetWeightWB";
+import WeightWB from "../../../components/weightWB";
 
 import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
@@ -35,12 +35,60 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import * as SiteAPI from "../../../api/sitesApi";
+import { getEnvInit } from "../../../configs";
 
-const tType = 1;
 let wsClient;
 
-const PksManualTBSEksternalTimbangMasuk = () => {
+const tType = 1;
+
+const PksManualTBSEksternalTimbangMasuk = (props) => {
+  const { isDisabled } = props;
+  const { wb, configs } = useSelector((state) => state.app);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () =>
+      await getEnvInit().then((result) => {
+        // ENV = result;
+        // console.log(configs);
+
+        if (!wsClient) {
+          wsClient = new w3cwebsocket(
+            `ws://${result.WBMS_WB_IP}:${result.WBMS_WB_PORT}/GetWeight`
+          );
+
+          wsClient.onmessage = (message) => {
+            const curWb = { ...wb };
+            curWb.isStable = false;
+            curWb.weight = Number.isNaN(+message.data) ? 0 : +message.data;
+
+            if (curWb.weight !== wb.weight) {
+              curWb.lastChange = moment().valueOf();
+            } else if (
+              moment().valueOf() - wb.lastChange >
+              result.WBMS_WB_STABLE_PERIOD
+            ) {
+              curWb.isStable = true;
+            }
+
+            if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
+              curWb.canStartScalling = true;
+
+            dispatch(setWb({ ...curWb }));
+          };
+
+          wsClient.onerror = (err) => {
+            // alert(`Cannot connect to WB: ${err}`);
+            // console.log("Get Weight Component");
+            // console.log(err);
+          };
+        }
+
+        return result;
+      }))();
+  }, []);
+
   const navigate = useNavigate();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
@@ -111,6 +159,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
       tempTrans.progressStatus = 22;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
+      tempTrans.originWeighInKg = wb.weight;
     }
 
     try {
@@ -194,8 +243,8 @@ const PksManualTBSEksternalTimbangMasuk = () => {
       values.transportVehicleId &&
       values.driverId &&
       values.transporterId &&
-      values.productId &&
-      values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
+      values.productId 
+      // values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
     );
   };
 
@@ -284,32 +333,32 @@ const PksManualTBSEksternalTimbangMasuk = () => {
             >
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
-                  variant="outlined" // Variasi TextField dengan style "outlined"
-                  size="small" // Ukuran TextField kecil
-                  fullWidth // TextField akan memiliki lebar penuh
+                  variant="outlined" 
+                  size="small" 
+                  fullWidth 
                   InputLabelProps={{
                     shrink: true,
                   }}
                   sx={{
-                    mb: 2, // Margin bawah dengan jarak 2 unit
+                    mb: 2, 
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px", // Set radius border untuk bagian input
+                      borderRadius: "10px",
                     },
                   }}
                   label={
                     <>
                       <Typography
                         sx={{
-                          bgcolor: "white", // Background color teks label
-                          px: 1, // Padding horizontal teks label 1 unit
+                          bgcolor: "white", 
+                          px: 1, 
                         }}
                       >
                         Nomor BON Trip
                       </Typography>
                     </>
                   }
-                  name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
-                  value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
+                  name="bonTripNo" 
+                  value={values?.bonTripNo || ""} 
                 />
 
                 <TextField
@@ -572,57 +621,15 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   </Select>
                 </FormControl>
 
-                {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
-                {/* <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                    display: "none",
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Nama Barang
-                    </Typography>
-                  }
-                  name="productName"
-                  value={values.productName}
-                /> */}
+              
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
-                {/* {values.progressStatus === 0 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighInKg: weightWb,
-                      }));
-                    }}
+            
+                  <WeightWB
                   />
-                )}
-                {values.progressStatus === 2 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighOutKg: weightWb,
-                      }));
-                    }}
-                  />
-                )} */}
+             
+          
                 <TextField
                   type="number"
                   variant="outlined"
@@ -653,8 +660,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={values.originWeighInKg}
-                  onChange={handleChange}
+                  value={wb.weight}
                 />
                 <TextField
                   type="number"
@@ -785,12 +791,19 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   name="weightNetto"
                   value={originWeightNetto || 0}
                 />
-                <Button
+               <Button
                   variant="contained"
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!canSubmit || !validateForm()}
+                  disabled={
+                    !validateForm() ||
+                    isDisabled ||
+                    !wb.isStable ||
+                    wb.weight < configs.WBMS_WB_MIN_WEIGHT
+                      ? true
+                      : false
+                  }
                 >
                   Simpan
                 </Button>

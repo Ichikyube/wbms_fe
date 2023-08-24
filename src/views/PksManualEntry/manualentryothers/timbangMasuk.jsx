@@ -23,7 +23,7 @@ import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-import GetWeightWB from "../../../components/GetWeightWB";
+import WeightWB from "../../../components/weightWB";
 
 import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
@@ -35,10 +35,60 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
+import { getEnvInit } from "../../../configs";
 
+let wsClient;
 const tType = 1;
 
-const PksManualOthersTimbangMasuk = () => {
+const PksManualOthersTimbangMasuk = (props) => {
+  // console.clear();
+  const { isDisabled } = props;
+  const { wb, configs } = useSelector((state) => state.app);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () =>
+      await getEnvInit().then((result) => {
+        // ENV = result;
+        // console.log(configs);
+
+        if (!wsClient) {
+          wsClient = new w3cwebsocket(
+            `ws://${result.WBMS_WB_IP}:${result.WBMS_WB_PORT}/GetWeight`
+          );
+
+          wsClient.onmessage = (message) => {
+            const curWb = { ...wb };
+            curWb.isStable = false;
+            curWb.weight = Number.isNaN(+message.data) ? 0 : +message.data;
+
+            if (curWb.weight !== wb.weight) {
+              curWb.lastChange = moment().valueOf();
+            } else if (
+              moment().valueOf() - wb.lastChange >
+              result.WBMS_WB_STABLE_PERIOD
+            ) {
+              curWb.isStable = true;
+            }
+
+            if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
+              curWb.canStartScalling = true;
+
+            dispatch(setWb({ ...curWb }));
+          };
+
+          wsClient.onerror = (err) => {
+            // alert(`Cannot connect to WB: ${err}`);
+            // console.log("Get Weight Component");
+            // console.log(err);
+          };
+        }
+
+        return result;
+      }))();
+  }, []);
+
   const navigate = useNavigate();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
@@ -77,6 +127,8 @@ const PksManualOthersTimbangMasuk = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      customername,
+      customerId,
       originWeighInKg,
       deliveryOrderNo,
       progressStatus,
@@ -94,6 +146,8 @@ const PksManualOthersTimbangMasuk = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      customername,
+      customerId,
       originWeighInKg,
       deliveryOrderNo,
       progressStatus,
@@ -105,6 +159,7 @@ const PksManualOthersTimbangMasuk = () => {
       tempTrans.progressStatus = 20;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
+      tempTrans.originWeighInKg = wb.weight;
     }
 
     try {
@@ -117,7 +172,7 @@ const PksManualOthersTimbangMasuk = () => {
       );
 
       if (duplicateEntryFromAPI) {
-        toast.error(`LOADING/UNLOADING  ${transportVehiclePlateNo}.`);
+        toast.error(` ${transportVehiclePlateNo} Truk Masih di Dalam`);
         return;
       }
 
@@ -170,7 +225,7 @@ const PksManualOthersTimbangMasuk = () => {
     // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
     let cSubmit = false;
     if (values.progressStatus === 0) {
-      cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
+      // cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
     } else if (values.progressStatus === 4) {
       cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
     }
@@ -186,8 +241,8 @@ const PksManualOthersTimbangMasuk = () => {
       values.transportVehicleId &&
       values.driverId &&
       values.transporterId &&
-      values.productId &&
-      values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
+      values.productId
+      // values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT
     );
   };
 
@@ -491,7 +546,7 @@ const PksManualOthersTimbangMasuk = () => {
                   value={values.transportVehicleSccModel || "-"}
                 />
 
-                {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
@@ -502,14 +557,26 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="customer"
-                    value={values.customer || ""}
-                    displayEmpty
                     sx={{
                       borderRadius: "10px",
                       color: MenuItem ? "gray" : "black",
                     }}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedCustomer = dtCustomer.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        customername: selectedCustomer
+                          ? selectedCustomer.name
+                          : "",
+                      }));
+                    }}
+                    name="customerId"
+                    value={values.customerId || ""}
+                    displayEmpty
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Customer --
@@ -520,7 +587,7 @@ const PksManualOthersTimbangMasuk = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl> */}
+                </FormControl>
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
@@ -563,58 +630,11 @@ const PksManualOthersTimbangMasuk = () => {
                     ))}
                   </Select>
                 </FormControl>
-
-                {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
-                {/* <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                    display: "none",
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Nama Barang
-                    </Typography>
-                  }
-                  name="productName"
-                  value={values.productName}
-                /> */}
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
-                {/* {values.progressStatus === 0 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighInKg: weightWb,
-                      }));
-                    }}
-                  />
-                )}
-                {values.progressStatus === 2 && (
-                  <GetWeightWB
-                    handleSubmit={(weightWb) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        originWeighOutKg: weightWb,
-                      }));
-                    }}
-                  />
-                )} */}
+                <WeightWB />
+
                 <TextField
                   type="number"
                   variant="outlined"
@@ -645,8 +665,7 @@ const PksManualOthersTimbangMasuk = () => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={values.originWeighInKg}
-                  onChange={handleChange}
+                  value={wb.weight}
                 />
                 <TextField
                   type="number"
@@ -783,7 +802,14 @@ const PksManualOthersTimbangMasuk = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!canSubmit || !validateForm()}
+                  disabled={
+                    !validateForm() ||
+                    isDisabled ||
+                    !wb.isStable ||
+                    wb.weight < configs.WBMS_WB_MIN_WEIGHT
+                      ? true
+                      : false
+                  }
                 >
                   Simpan
                 </Button>

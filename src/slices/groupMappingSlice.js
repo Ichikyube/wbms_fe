@@ -1,8 +1,25 @@
-// groupMappingSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { apiSlice } from "./apiSlice";
+const initialState = JSON.parse(localStorage.getItem('groupMap')) || {};
 
-const initialState = JSON.parse(localStorage.getItem('groupMapping')) || {};
+export const configRequestAdminApi = apiSlice.injectEndpoints({
+  endpoints: builder => ({
+    fetchGroupMapping: builder.query({
+        query: () => `/config-requests-admin`,
+    }),
+    saveGroupMapping: builder.mutation({
+        query: (groupMapping) => ({
+            url: '/config-requests-admin',
+            method: "POST",
+            body: groupMapping,
+            mode: "cors",
+            credentials: "include",
+        }),
+    }),
+  })
+});
 
+// dispatch(saveGroupMappingToBackend(groupMapping));
 const groupMappingSlice = createSlice({
   name: "groupMapping",
   initialState,
@@ -14,5 +31,9 @@ const groupMappingSlice = createSlice({
   },
 });
 
+export const {
+  useFetchGroupMappingQuery,
+  useSaveGroupMappingMutation,
+} = configRequestAdminApi;
 export const { setGroupMapping } = groupMappingSlice.actions;
 export default groupMappingSlice.reducer;

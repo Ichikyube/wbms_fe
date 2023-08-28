@@ -1,305 +1,317 @@
-// import React, { useState, useEffect, useRef, useCallback, PureComponent } from "react";
-// import { useDispatch, useSelector } from 'react-redux'
-// import { createRequest } from './requestsActions'
-// import { approveRequest, rejectRequest } from './thunk'; // Import your thunk actions
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  PureComponent,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { cloneDeep, set } from "lodash";
+import {
+  Grid,
+  Paper,
+  Button,
+  Box,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { toast } from "react-toastify";
+import { useForm } from "../../../utils/useForm";
+import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
+import "ag-grid-enterprise";
+import { orange, blue, red, indigo, green } from "@mui/material/colors";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
+import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
+import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
+import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
+import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
+import { ModuleRegistry } from "@ag-grid-community/core";
+import * as ConfigAPI from "../../../api/configsApi";
 
-// import PropTypes from 'prop-types';
-// import { cloneDeep, set } from 'lodash';
-// import {
-//   Grid,
-//   Paper,
-//   Button,
-//   Box,
-//   IconButton,
-//   Typography,
-// } from "@mui/material";
-// import { toast } from "react-toastify";
-// import { useForm } from "../../../utils/useForm";
-// import useSWR from "swr";
-// import { orange, blue, red, indigo, green } from "@mui/material/colors";
-// import "ag-grid-enterprise";
-// import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-// import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
-// import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
-// import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
-// import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
-// import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
-// import { ModuleRegistry } from "@ag-grid-community/core";
-// import * as ConfigAPI from "../../../api/configsApi";
+import Tables from "../../../components/Tables";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import CancelIcon from "@mui/icons-material/CancelOutlined";
+import Swal from "sweetalert2";
 
-// import Tables from "../../../components/Tables";
-// import SearchIcon from "@mui/icons-material/Search";
-// import InputBase from "@mui/material/InputBase";
-// import TaskAltIcon from "@mui/icons-material/TaskAlt";
-// import CancelIcon from "@mui/icons-material/CancelOutlined";
-// import Swal from "sweetalert2";
+import {
+  useFetchRequestsQuery,
+  useApproveRequestMutation,
+  useRejectRequestMutation,
+} from "../../../slices/requestApiSlice";
 
-// import { fetchRequestList  } from "../../../slices/requestSlice";
+//cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
+//Apabila sign sudah sesuai dengan level dari config, maka kirim ubah status pada request menjadi diterima, dan status pada konfig berubah.
+//setting configpun diubah.
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  RangeSelectionModule,
+  RowGroupingModule,
+  RichSelectModule,
+]);
 
-// ModuleRegistry.registerModules([
-//   ClientSideRowModelModule,
-//   RangeSelectionModule,
-//   RowGroupingModule,
-//   RichSelectModule,
-// ]);
+const ConfigRequest = () => {
+  console.clear();
+  const dispatch = useDispatch();
+  const { data: requestList } = useFetchRequestsQuery();
+  const [approveRequest] = useApproveRequestMutation();
+  const [rejectRequest] = useRejectRequestMutation();
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
-// const ConfigRequest = () => {
-//   // console.clear();
-//   const dispatch = useDispatch();
-//   const requestList = useSelector((state) => state.request.requestList);
+  const gridRef = useRef();
+  const [isOpen, setIsOpen] = useState(false);
 
-//   const [selectedRequest, setSelectedRequest] = useState(null);
+  // search
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
-//   const handleSubmit = (requestData) => {
-//     dispatch(createRequest(requestData))
-//   }
-//   const gridRef = useRef();
-//   const [isOpen, setIsOpen] = useState(false);
+  const updateGridData = useCallback((configData) => {
+    if (gridRef.current && gridRef.current.api) {
+      gridRef.current.api.setRowData(configData);
+    }
+  }, []);
 
-//   // search
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    if (requestList) {
+      const filteredData = requestList.filter((config) => {
+        const configData = Object.values(config).join(" ").toLowerCase();
+        return configData.includes(searchQuery.toLowerCase());
+      });
+      setFilteredData(filteredData);
+    }
+  }, [searchQuery, requestList]);
 
-//   const updateGridData = useCallback((configData) => {
-//     if (gridRef.current && gridRef.current.api) {
-//       gridRef.current.api.setRowData(configData);
-//     }
-//   }, []);
+  useEffect(() => {
+    const refreshData = setInterval(() => {
+      if (filteredData.length > 0) {
+        const filteredPendingData = filteredData.filter(
+          (config) => config.status.toLowerCase() === "pending"
+        );
+        updateGridData(filteredPendingData);
+      }
+    }, 500);
 
-//   useEffect(() => {
-//     dispatch(fetchRequestList());
-//   }, [dispatch]);
+    return () => {
+      clearInterval(refreshData);
+    };
+  }, [filteredData]);
 
-//   useEffect(() => {
-//     if (requestList) {
-//       const filteredData = requestList.filter((config) => {
-//         const configData = Object.values(config).join(" ").toLowerCase();
-//         return configData.includes(searchQuery.toLowerCase());
-//       });
-//       setFilteredData(filteredData);
-//     }
-//   }, [searchQuery, requestList]);
+  const handleReject = (id) => {
+    rejectRequest({ requestId: id });
+    setSelectedRequest(null);
+  };
 
-//   useEffect(() => {
-//     const refreshData = setInterval(() => {
-//       if (filteredData.length > 0) {
-//         const filteredPendingData = filteredData.filter(
-//           (config) => config.status.toLowerCase() === "pending"
-//         );
-//         updateGridData(filteredPendingData);
-//       }
-//     }, 500);
+  const handleApprove = async (data, name) => {
+    // Tampilkan SweetAlert untuk konfirmasi
+    const result = await Swal.fire({
+      title: "Persetujuan",
+      html: `Apakah Anda yakin ingin menyetujui <span style="font-weight: bold; font-size: "30px;"> ${name} ?</span> `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+      reverseButtons: true,
+    });
 
-//     return () => {
-//       clearInterval(refreshData);
-//     };
-//   }, [filteredData]);
+    // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
+    if (result.isConfirmed) {
+      try {
+        approveRequest(data.id);
+        toast.success("Config berhasil di setujui");
+      } catch (error) {
+        console.error("Config Gagal di setujui:", error);
+        toast.error("Config Gagal di setujui ");
+      }
+    }
+  };
+  // for configRequest
+  // Show config name, description, start, end?, timeSpan, value proposed, signed button
 
+  const [columnDefs] = useState([
+    {
+      headerName: "No",
+      field: "no",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 1,
+      valueGetter: (params) => params.node.rowIndex + 1,
+    },
 
-//   const handleReject = () => {
-//     if (selectedRequest) {
-//       dispatch(rejectRequest(selectedRequest.id));
-//       setSelectedRequest(null);
-//     }
-//   };
-//   const handleApprove = async (data, name) => {
-//     // Tampilkan SweetAlert untuk konfirmasi
-//     const result = await Swal.fire({
-//       title: "Persetujuan",
-//       html: `Apakah Anda yakin ingin menyetujui <span style="font-weight: bold; font-size: "30px;"> ${name} ?</span> `,
-//       icon: "question",
-//       showCancelButton: true,
-//       confirmButtonText: "Ya",
-//       cancelButtonText: "Batal",
-//       reverseButtons: true,
-//     });
+    {
+      headerName: " Config Name",
+      field: "config.name",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 2,
+    },
 
-//     // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
-//     if (result.isConfirmed) {
-//       data.status = "APPROVED";
-//       dispatch(approveRequest(selectedRequest.id));
-//       setSelectedRequest(request)
-//       try {
-//         await ConfigAPI.update(data);
+    {
+      headerName: "Status",
+      field: "status",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 1,
+    },
 
-//         toast.success("Config berhasil di setujui");
-//       } catch (error) {
-//         console.error("Config Gagal di setujui:", error);
-//         toast.error("Config Gagal di setujui ");
-//       }
-//     }
-//   };
+    {
+      headerName: "Active Time",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+      valueGetter: (params) => {
+        const { data } = params;
+        const activeStart = new Date(data.start);
+        const activeEnd = new Date(data.end);
 
-//   const [columnDefs] = useState([
-//     {
-//       headerName: "No",
-//       field: "no",
-//       filter: true,
-//       sortable: true,
-//       hide: false,
-//       flex: 1,
-//       valueGetter: (params) => params.node.rowIndex + 1,
-//     },
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
 
-//     {
-//       headerName: " Config Name",
-//       field: "name",
-//       filter: true,
-//       sortable: true,
-//       hide: false,
-//       flex: 2,
-//     },
+        const formattedActiveStart = activeStart.toLocaleDateString(
+          "en-US",
+          options
+        );
+        const formattedActiveEnd = activeEnd.toLocaleDateString(
+          "en-US",
+          options
+        );
 
-//     {
-//       headerName: "Status",
-//       field: "status",
-//       filter: true,
-//       sortable: true,
-//       hide: false,
-//       flex: 1,
-//     },
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
+      },
+    },
+    {
+      headerName: "Action",
+      field: "id",
+      sortable: true,
+      cellRenderer: (params) => {
+        return (
+          <Box display="flex" justifyContent="center">
+            <Box //disabled={params.status === 'Accepted'}
+              width="25%"
+              display="flex"
+              m="0 3px"
+              bgcolor={green[500]}
+              borderRadius="25%"
+              justifyContent="center"
+              padding="10px 10px"
+              color="white"
+              style={{
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+              onClick={() =>handleApprove(params.data, params.data.config.name)}>
+              <TaskAltIcon sx={{ fontSize: "20px" }} />
+            </Box>
 
-//     {
-//       headerName: "Active Time",
-//       filter: true,
-//       sortable: true,
-//       hide: false,
-//       flex: 3,
-//       valueGetter: (params) => {
-//         const { data } = params;
-//         const activeStart = new Date(data.start);
-//         const activeEnd = new Date(data.end);
+            <Box //disabled={params.status === 'Rejected'}
+              width="25%"
+              display="flex"
+              m="0 3px"
+              bgcolor={red[500]}
+              borderRadius="25%"
+              padding="10px 10px"
+              justifyContent="center"
+              color="white"
+              onClick={() => handleReject(params.data, params.data.name)}
+              style={{
+                color: "white",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}>
+              <CancelIcon sx={{ fontSize: "20px" }} />
+            </Box>
+          </Box>
+        );
+      },
+    },
+  ]);
+  const defaultColDef = {
+    sortable: true,
+    resizable: true,
+    floatingFilter: false,
+    filter: true,
+  };
+  return (
+    <>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Paper
+            sx={{
+              p: 3,
+              mx: 3,
+              mb: 5,
+              mt: 2,
+              borderTop: "5px solid #000",
+              borderRadius: "10px 10px 10px 10px",
+            }}>
+            <div style={{ marginBottom: "5px" }}>
+              <Box display="flex">
+                <Typography fontSize="20px">WBMS Config Request</Typography>
+              </Box>
+              <hr sx={{ width: "100%" }} />
+              <Box display="flex" pb={1}>
+                <Box
+                  display="flex"
+                  borderRadius="5px"
+                  ml="auto"
+                  border="solid grey 1px">
+                  <InputBase
+                    sx={{ ml: 2, flex: 2, fontSize: "13px" }}
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
 
-//         const options = {
-//           year: "numeric",
-//           month: "2-digit",
-//           day: "2-digit",
-//           hour: "2-digit",
-//           minute: "2-digit",
-//           second: "2-digit",
-//         };
+                  <IconButton
+                    type="button"
+                    sx={{ p: 1 }}
+                    onClick={() => {
+                      const filteredData = requestList.filter((config) =>
+                        config.name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                      );
+                      gridRef.current.api.setRowData(filteredData);
+                    }}>
+                    <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
+                  </IconButton>
+                </Box>
+              </Box>
+            </div>
+            <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>
+              <AgGridReact
+                ref={gridRef}
+                rowData={requestList} // Row Data for Rows
+                columnDefs={columnDefs} // Column Defs for Columns
+                defaultColDef={defaultColDef} // Default Column Properties
+                animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                rowSelection="multiple" // Options - allows click selection of rows
+                // rowGroupPanelShow="always"
+                enableRangeSelection="true"
+                groupSelectsChildren="true"
+                suppressRowClickSelection="true"
+                pagination="true"
+                paginationAutoPageSize="true"
+                groupDefaultExpanded="1"
+              />
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+    </>
+  );
+};
 
-//         const formattedActiveStart = activeStart.toLocaleDateString(
-//           "en-US",
-//           options
-//         );
-//         const formattedActiveEnd = activeEnd.toLocaleDateString(
-//           "en-US",
-//           options
-//         );
-
-//         return `${formattedActiveStart} - ${formattedActiveEnd}`;
-//       },
-//     },
-//     {
-//       headerName: "Action",
-//       field: "id",
-//       sortable: true,
-//       cellRenderer: (params) => {
-//         return (
-//           <Box display="flex" justifyContent="center">
-//             <Box
-//               width="25%"
-//               display="flex"
-//               m="0 3px"
-//               bgcolor={green[500]}
-//               borderRadius="25%"
-//               justifyContent="center"
-//               padding="10px 10px"
-//               color="white"
-//               style={{
-//                 textDecoration: "none",
-//                 cursor: "pointer",
-//               }}
-//               onClick={() => handleApprove(params.data, params.data.name)}
-//             >
-//               <TaskAltIcon sx={{ fontSize: "20px" }} />
-//             </Box>
-
-//             <Box
-//               width="25%"
-//               display="flex"
-//               m="0 3px"
-//               bgcolor={red[500]}
-//               borderRadius="25%"
-//               padding="10px 10px"
-//               justifyContent="center"
-//               color="white"
-//               onClick={() => handleReject(params.data, params.data.name)}
-//               style={{
-//                 color: "white",
-//                 textDecoration: "none",
-//                 cursor: "pointer",
-//               }}
-//             >
-//               <CancelIcon sx={{ fontSize: "20px" }} />
-//             </Box>
-//           </Box>
-//         );
-//       },
-//     },
-//   ]);
-
-//   return (
-//     <>
-//       <Grid container spacing={1}>
-//         <Grid item xs={12}>
-//           <Paper
-//             sx={{
-//               p: 3,
-//               mx: 3,
-//               mb: 5,
-//               mt: 2,
-//               borderTop: "5px solid #000",
-//               borderRadius: "10px 10px 10px 10px",
-//             }}
-//           >
-//             <div style={{ marginBottom: "5px" }}>
-//               <Box display="flex">
-//                 <Typography fontSize="20px">WBMS Config Request</Typography>
-//               </Box>
-//               <hr sx={{ width: "100%" }} />
-//               <Box display="flex" pb={1}>
-//                 <Box
-//                   display="flex"
-//                   borderRadius="5px"
-//                   ml="auto"
-//                   border="solid grey 1px"
-//                 >
-//                   <InputBase
-//                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
-//                     placeholder="Search"
-//                     value={searchQuery}
-//                     onChange={(e) => setSearchQuery(e.target.value)}
-//                   />
-
-//                   <IconButton
-//                     type="button"
-//                     sx={{ p: 1 }}
-//                     onClick={() => {
-//                       const filteredData = requestList.filter((config) =>
-//                         config.name
-//                           .toLowerCase()
-//                           .includes(searchQuery.toLowerCase())
-//                       );
-//                       gridRef.current.api.setRowData(filteredData);
-//                     }}
-//                   >
-//                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
-//                   </IconButton>
-//                 </Box>
-//               </Box>
-//             </div>
-//             <Tables
-//               name={"WBMS Config Request"}    
-//               colDefs={columnDefs}
-//               gridRef={gridRef}
-//             />
-//           </Paper>
-//         </Grid>
-//       </Grid>
-//     </>
-//   );
-// };
-
-// export default ConfigRequest;
+export default ConfigRequest;

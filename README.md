@@ -1,4 +1,59 @@
   Jika User adalah admin maka bisa menunjuk approver
+  Creating a request approval feature involves several steps, including setting up the frontend and backend components, handling API requests, and managing the state. Below is a high-level overview of the process:
+
+1. **Frontend Setup:**
+
+   - Create the React components for your request approval feature, such as the request list, request details, and approval form.
+   - Use a state management library like Redux to manage the state of the requests and approvals.
+
+2. **Backend Setup:**
+
+   - Implement the necessary API endpoints for fetching requests, approving requests, and rejecting requests in your backend using a framework like Express for Node.js.
+
+3. **Redux Configuration:**
+
+   - Set up Redux reducers, actions, and thunks to manage the state of the requests and approvals.
+   - Create separate actions for fetching the request list, approving requests, and rejecting requests.
+
+4. **Fetch Request List:**
+
+   - Create a thunk action to fetch the list of requests from the backend.
+   - Dispatch the action to fetch the list of requests when the corresponding component mounts.
+
+5. **Display Request List:**
+
+   - Render the list of requests in a component, allowing users to select a request for approval or rejection.
+   - Provide buttons or options to approve or reject each request.
+
+6. **Approval Form:**
+
+   - Create a separate component for the approval form.
+   - Allow users to provide additional information or comments for their approval decision.
+
+7. **Dispatch Approval Actions:**
+
+   - Dispatch the "approve" or "reject" thunk actions when a user submits the approval form for a specific request.
+   - Pass the request ID and any relevant data to the thunk actions.
+
+8. **Backend API Endpoints:**
+
+   - Implement API endpoints for approving and rejecting requests.
+   - Update the status of the requests in the database based on the approval or rejection.
+
+9. **Update Request List:**
+
+   - After a request is approved or rejected successfully, update the state in Redux to reflect the new status.
+   - This can be done by filtering the list of requests and updating the corresponding request's status.
+
+10. **UI Feedback:**
+
+    - Provide visual feedback to users after they approve or reject a request, such as success messages or error notifications.
+
+11. **Testing:**
+
+    - Test your feature thoroughly to ensure that requests are fetched correctly, approvals are processed accurately, and the state updates as expected.
+
+Remember that this is a general overview, and the implementation details may vary based on your specific project requirements, frontend and backend technologies, and preferred coding practices. It's important to design your components and actions according to your application's structure and needs.
   const resourcesList = [
     "BarcodeType",
     "City",
@@ -346,162 +401,126 @@ const CustomAsyncPaginateComponent = ({
 
 
 
-
-
-function DynamicInputArray() {
-  const [inputValues, setInputValues] = useState(['']); // Initialize with an empty input
-
-  const handleInputChange = (index, value) => {
-    const newValues = [...inputValues];
-    newValues[index] = value;
-    setInputValues(newValues);
-  };
-
-  const addInput = () => {
-    setInputValues([...inputValues, '']);
-  };
-
-  return (
-    <div>
-      {inputValues.map((value, index) => (
-        <input
-          key={index}
-          type="text"
-          value={value}
-          onChange={(e) => handleInputChange(index, e.target.value)}
-        />
-      ))}
-      <button onClick={addInput}>Add Input</button>
-      <pre>{JSON.stringify(inputValues, null, 2)}</pre>
-    </div>
-  );
-}
-
-
-import React, { useState } from 'react';
-
-function DynamicInputArray() {
-  const [inputValues, setInputValues] = useState([]);
-
-  // Add more state variables if needed
-  // const [otherState, setOtherState] = useState(initialValue);
-
-  // ... rest of your component ...
-}
-
-
-function DynamicInputArray() {
-  // ... state setup ...
-
-  const handleInputChange = (event, index) => {
-    const newInputValues = [...inputValues];
-    newInputValues[index] = event.target.value;
-    setInputValues(newInputValues);
-  };
-
-  // ... rest of your component ...
-}
-
-
-
-function DynamicInputArray() {
-  // ... state setup ...
-
-  const handleInputChange = (event, index) => {
-    // ... handle input change ...
-  };
-
-  return (
-    <div>
-      {inputValues.map((value, index) => (
-        <input
-          key={index}
-          type="text"
-          value={value}
-          onChange={(e) => handleInputChange(e, index)}
-        />
-      ))}
-      <button>Add Input</button>
-    </div>
-  );
-}
-
-
-function DynamicInputArray() {
-  // ... state setup ...
-
-  const handleInputChange = (event, index) => {
-    // ... handle input change ...
-  };
-
-  const addInput = () => {
-    setInputValues([...inputValues, '']);
-  };
-
-  return (
-    <div>
-      {inputValues.map((value, index) => (
-        <input
-          key={index}
-          type="text"
-          value={value}
-          onChange={(e) => handleInputChange(e, index)}
-        />
-      ))}
-      <button onClick={addInput}>Add Input</button>
-    </div>
-  );
-}
-
-
-import React, { useState } from 'react';
-
-function DynamicInputArray() {
-  const [inputValues, setInputValues] = useState(['']); // Initialize with an empty input
-
-  const handleInputChange = (index, value) => {
-    const updatedValues = [...inputValues];
-    updatedValues[index] = value;
-    setInputValues(updatedValues);
-  };
-
-  const addInput = () => {
-    setInputValues([...inputValues, '']);
-  };
-
-  const removeInput = (index) => {
-    const updatedValues = inputValues.filter((_, i) => i !== index);
-    setInputValues(updatedValues);
-  };
-
-  return (
-    <div>
-      {inputValues.map((value, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => handleInputChange(index, e.target.value)}
-          />
-          <button onClick={() => removeInput(index)}>Remove</button>
-        </div>
-      ))}
-      <button onClick={addInput}>Add Input</button>
-    </div>
-  );
-}
-
-export default DynamicInputArray;
 import React from 'react';
-import DynamicInputArray from './DynamicInputArray';
+import { useAuth } from './AuthContext';
 
-function App() {
+function AuthButton() {
+  const { authenticated, login, logout } = useAuth();
+
   return (
     <div>
-      <h1>Dynamic Input Array</h1>
-      <DynamicInputArray />
+      {authenticated ? (
+        <button onClick={logout}>Logout</button>
+      ) : (
+        <button onClick={login}>Login</button>
+      )}
     </div>
   );
 }
+
+export default AuthButton;
+
+
+
+import React from 'react';
+import { Route, Navigate } from 'react-router-dom';
+
+// Fake authentication state for demonstration purposes
+const isAuthenticated = true;
+
+const AuthenticateRoute = ({ element: Element, redirectTo, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      element={
+        isAuthenticated ? (
+          <Element />
+        ) : (
+          <Navigate to={redirectTo || '/login'} replace />
+        )
+      }
+    />
+  );
+};
+
+const App = () => {
+  return (
+    <CContainer fluid>
+      <Suspense fallback={<CSpinner color="primary" />}>
+        <Routes>
+          {routes.map((route, idx) => {
+            return (
+              route.element && (
+                <AuthenticateRoute
+                  key={idx}
+                  path={route.path}
+                  exact={route.exact}
+                  name={route.name}
+                  element={route.element}
+                  redirectTo="/login" // Redirect to login if not authenticated
+                />
+              )
+            );
+          })}
+          <Route path="/" element={<Navigate to="/dashboard" />} replace />
+        </Routes>
+      </Suspense>
+    </CContainer>
+  );
+};
+
+export default App;
+
+
+
+import React from 'react';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+
+// Assume these components exist
+import Dashboard from './Dashboard';
+import LoginComponent from './LoginComponent';
+import PublicComponent from './PublicComponent';
+
+// A fake authentication state for demonstration purposes
+const isAuthenticated = true;
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      isAuthenticated ? (
+        <Redirect to="/dashboard" />
+      ) : (
+        <Redirect to="/login" />
+      )
+    }
+  />
+);
+
+const PublicRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => <Component {...props} />} />
+);
+
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <PublicRoute
+          exact
+          path="/public"
+          component={PublicComponent}
+        />
+        <PrivateRoute
+          exact
+          path="/dashboard"
+          component={Dashboard}
+        />
+        <Route exact path="/login" component={LoginComponent} />
+        {/* Fallback route if none of the above matches */}
+        <Redirect to="/public" />
+      </Switch>
+    </Router>
+  );
+};
 
 export default App;

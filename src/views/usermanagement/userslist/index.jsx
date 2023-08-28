@@ -1,32 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import {
+  useFetchGroupMappingQuery,
+  useSaveGroupMappingMutation,
+  setGroupMapping,
+} from "../../../slices/groupMappingSlice";
 import {
   setGroup,
   toggleSelectionMode,
 } from "../../../slices/selectionModeSlice";
-import {
-  addPJ1,
-  removePJ1,
-  clearSelectedPJ1,
-} from "../../../slices/selectedPJ1Slice";
-import {
-  addPJ2,
-  removePJ2,
-  clearSelectedPJ2,
-} from "../../../slices/selectedPJ2Slice";
-import {
-  addPJ3,
-  removePJ3,
-  clearSelectedPJ3,
-} from "../../../slices/selectedPJ3Slice";
-import {
-  addUser,
-  removeUser,
-  clearSelectedUsers,
-} from "../../../slices/selectedUsersSlice";
+import { addPJ1, removePJ1 } from "../../../slices/selectedPJ1Slice";
+import { addPJ2, removePJ2 } from "../../../slices/selectedPJ2Slice";
+import { addPJ3, removePJ3 } from "../../../slices/selectedPJ3Slice";
 
-import {setGroupMapping} from "../../../slices/groupMappingSlice";
 import {
   Grid,
   Paper,
@@ -81,16 +67,47 @@ ModuleRegistry.registerModules([
 const UsersList = () => {
   // console.clear();
   const gridRef = useRef();
-
+  const { userInfo } = useSelector((state) => state.app);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const selectionMode = useSelector((state) => state.selectionMode);
-  const selectedUsers = useSelector((state) => state.selectedUsers);
   const selectedPJ1 = useSelector((state) => state.selectedPJ1);
   const selectedPJ2 = useSelector((state) => state.selectedPJ2);
   const selectedPJ3 = useSelector((state) => state.selectedPJ3);
   const groupMap = useSelector((state) => state.groupMapping);
+  const [saveGroupMapping] = useSaveGroupMappingMutation();
+  const { data: groupMapping } = useFetchGroupMappingQuery();
+  useEffect(() => {
+    if (groupMapping) {
+      const { lvlMap } = groupMapping;
+      dispatch(setGroupMapping(lvlMap));
+      Object.entries(lvlMap).forEach(([userId, group]) => {
+        if (group === "PJ1") {
+          dispatch(addPJ1(userId));
+        } else if (group === "PJ2") {
+          dispatch(addPJ2(userId));
+        } else if (group === "PJ3") {
+          dispatch(addPJ3(userId));
+        }
+      });
+    }
+  }, [groupMapping, dispatch]);
+
+  useEffect(() => {
+    const groupMapping = {};
+    selectedPJ1.forEach((userId) => {
+      groupMapping[userId] = "PJ1";
+    });
+    selectedPJ2.forEach((userId) => {
+      groupMapping[userId] = "PJ2";
+    });
+    selectedPJ3.forEach((userId) => {
+      groupMapping[userId] = "PJ3";
+    });
+    dispatch(setGroupMapping(groupMapping));
+  }, [selectedPJ1, selectedPJ2, selectedPJ3, dispatch]);
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [dtRole, setDtRole] = useState([]);
@@ -164,30 +181,13 @@ const UsersList = () => {
     PJ2: "PJ2",
     PJ3: "PJ3",
   };
-  const groupMapping = {};
-  useEffect(() => {
-    selectedPJ1.forEach((userId) => {
-      groupMapping[userId] = "PJ1";
-    });
-    selectedPJ2.forEach((userId) => {
-      groupMapping[userId] = "PJ2";
-    });
-    selectedPJ3.forEach((userId) => {
-      groupMapping[userId] = "PJ3";
-    });
-    dispatch(setGroupMapping(groupMapping));
-  }, [selectedPJ1, selectedPJ2, selectedPJ3, dispatch])
-  
+
   const handleUserClick = (userId) => {
-    // if (selectedUsers.includes(userId)) {
-    //   dispatch(removeUser(userId));
-    // } else {
-    //   dispatch(addUser(userId));
     if (selectedPJ1.includes(userId)) {
       dispatch(removePJ1(userId));
-    } else if(selectedPJ2.includes(userId)) {
+    } else if (selectedPJ2.includes(userId)) {
       dispatch(removePJ2(userId));
-    } else if(selectedPJ3.includes(userId)) {
+    } else if (selectedPJ3.includes(userId)) {
       dispatch(removePJ3(userId));
     } else {
       // Add the user to the selected group based on the enum
@@ -208,7 +208,7 @@ const UsersList = () => {
   };
   const getCellBackgroundColor = (params) => {
     const userId = params.data.id;
-  
+
     if (selectedPJ1.includes(userId)) {
       return "magenta";
     } else if (selectedPJ2.includes(userId)) {
@@ -216,7 +216,7 @@ const UsersList = () => {
     } else if (selectedPJ3.includes(userId)) {
       return "indigo";
     }
-  
+
     return "none";
   };
   const cellRenderer = (params) => (
@@ -306,10 +306,10 @@ const UsersList = () => {
     </Box>
   );
   const valueGetter = (params) => {
-
-    return `${params.node.rowIndex + 1} [${groupMap[params.data.id]?groupMap[params.data.id] : ""}]`;
-  }
-    
+    return `${params.node.rowIndex + 1} ${
+      groupMap[params.data.id] ? [groupMap[params.data.id]] : ""
+    }`;
+  };
 
   const [columnDefs] = useState([
     {
@@ -388,67 +388,56 @@ const UsersList = () => {
               <Box display="flex">
                 <Typography fontSize="20px">Users List</Typography>
                 <Box display="flex" ml="auto">
-                  {selectionMode.active && (
-                    <>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "magenta",
-                          fontSize: "12px",
-                          padding: "8px 8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          marginLeft: "8px",
-                          textTransform: "none",
-                        }}
-                        onClick={() => dispatch(setGroup("PJ1"))}>
-                        Tunjuk PJ1
-                      </Button>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "purple",
-                          fontSize: "12px",
-                          padding: "8px 8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          marginLeft: "8px",
-                          textTransform: "none",
-                        }}
-                        onClick={() => dispatch(setGroup("PJ2"))}>
-                        Tunjuk PJ2
-                      </Button>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "indigo",
-                          fontSize: "12px",
-                          padding: "8px 8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          marginLeft: "8px",
-                          textTransform: "none",
-                        }}
-                        onClick={() => dispatch(setGroup("PJ3"))}>
-                        Tunjuk PJ3
-                      </Button>
-                      {/* <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: teal[300],
-                          "&:hover": { backgroundColor: teal[100] },
-                          fontSize: "12px",
-                          padding: "8px 8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          marginLeft: "8px",
-                          textTransform: "none",
-                        }}
-                        onClick={() => setPilihPJ(false)}>
-                        Selesai Memilih
-                      </Button> */}
-                    </>
-                  )}
+                  { selectionMode.active && (
+                      <>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "magenta",
+                            "&:hover": { backgroundColor: "deepPink" },
+                            fontSize: "12px",
+                            padding: "8px 8px",
+                            fontWeight: "bold",
+                            color: "white",
+                            marginLeft: "8px",
+                            textTransform: "none",
+                          }}
+                          onClick={() => dispatch(setGroup("PJ1"))}>
+                          Tunjuk PJ1
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "purple",
+                            "&:hover": { backgroundColor: "plum" },
+                            fontSize: "12px",
+                            padding: "8px 8px",
+                            fontWeight: "bold",
+                            color: "white",
+                            marginLeft: "8px",
+                            textTransform: "none",
+                          }}
+                          onClick={() => dispatch(setGroup("PJ2"))}>
+                          Tunjuk PJ2
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "indigo",
+                            "&:hover": { backgroundColor: "dodgerBlue" },
+                            fontSize: "12px",
+                            padding: "8px 8px",
+                            fontWeight: "bold",
+                            color: "white",
+                            marginLeft: "8px",
+                            textTransform: "none",
+                          }}
+                          onClick={() => dispatch(setGroup("PJ3"))}>
+                          Tunjuk PJ3
+                        </Button>
+                      </>
+                    )}
+                  { userInfo?.role === "Master Admin" && (
                   <Button
                     variant="contained"
                     sx={{
@@ -462,10 +451,11 @@ const UsersList = () => {
                       textTransform: "none",
                     }}
                     onClick={() => {
+                      if (selectionMode.active) saveGroupMapping({ groupMap });
                       dispatch(toggleSelectionMode());
                     }}>
                     {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
-                  </Button>
+                  </Button> )}
                   <Button
                     variant="contained"
                     sx={{

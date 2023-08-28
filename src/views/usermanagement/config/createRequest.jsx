@@ -1,37 +1,17 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import api from './api'
-/*
-for createRequest
-Set Start using date input
-If repeatableTrue, activate Repeat and End input
-Set Edited value. Example: manualEntry=true
-
-for configRequest
-Show config name, description, start, end?, timeSpan, value proposed, signed button
-*/
-export const createRequest = createAsyncThunk(
-    'requests/createRequest',
-    async (requestData, thunkAPI) => {
-        const response = await api.post('/requests', requestData)
-        return response.data
-    }
-)
-
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    TextField,
-    Button,
-    Box,
-    FormControl,
-    FormLabel,
-    IconButton,
-    InputLabel,
-    Autocomplete,
-    TextareaAutosize,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Button,
+  Box,
+  FormControl,
+  FormLabel,
+  IconButton,
+  InputLabel,
+  Autocomplete,
+  TextareaAutosize,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
@@ -45,42 +25,16 @@ import moment from "moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ReactRRuleGenerator from "../../../components/ReactRRuleGenerator";
 
+/*
+for createRequest
+Set Start using date input
+If repeatableTrue, activate Repeat and End input
+Set Edited value. Example: manualEntry=true
 
-const StyledTextarea = styled(TextareaAutosize)(
-  ({ theme }) => `
-  width: 320px;
-  font-family: IBM Plex Sans, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
-  padding: 12px;
-  border-radius: 12px 12px 0 12px;
-  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${
-    theme.palette.mode === "dark" ? grey[900] : grey[50]
-  };
 
-  &:hover {
-    border-color: ${blue[400]};
-  }
+*/
 
-  &:focus {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${
-      theme.palette.mode === "dark" ? blue[500] : blue[200]
-    };
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`
-);
-
-const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
+const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [rrule, setRrule] = useState(
     "DTSTART:20190301T230000Z\nFREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"
@@ -103,12 +57,13 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     values.end = moment(values.end).toDate();
 
     try {
-      await ConfigApi.update(values);
-      toast.success("Data Berhasil Diperbarui");
+      await ConfigApi.create(values);
+      // dispatch(createRequest(requestData));
+      toast.success("Data Berhasil Dibuat");
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
-      console.error("Data Gagal Diperbarui:", error);
-      toast.error("Data Gagal Diperbarui: " + error.message);
+      console.error("Data Gagal Dibuat:", error);
+      toast.error("Data Gagal Dibuat: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
       setSubmitting(false);
@@ -116,16 +71,26 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
+  useEffect(() => {
+    if (isRequestOpen)
+      setInitialValue({
+        configId: dtConfig.id,
+        name: dtConfig.name,
+        start: null,
+        end: null,
+      });
+  }, [isRequestOpen, dtConfig]);
 
+  const [initialValues, setInitialValue] = useState({});
   return (
     <Dialog
-      open={isEditOpen}
+      open={isRequestOpen}
       fullWidth
       maxWidth="md"
       onClose={() => onClose("", false)}>
       <DialogTitle
         sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
-        Edit Data Config
+        Request Use Config
         <IconButton
           sx={{
             color: "white",
@@ -143,7 +108,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       <DialogContent dividers>
         <Formik
           onSubmit={handleFormSubmit}
-          initialValues={dtConfig}
+          initialValues={initialValues}
           validationSchema={userSchema}>
           {({
             values,
@@ -180,7 +145,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     placeholder="Masukkan Nama...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={initialValues.name}
                     name="name"
                     inputProps={{ readOnly: true }}
                     sx={{ backgroundColor: "whitesmoke" }}
@@ -261,7 +226,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   />
                 </FormControl>
               </Box>
-              <div>
+              {/* <div>
                 <div className="app container">
                   <ReactRRuleGenerator
                     onChange={handleChange}
@@ -288,7 +253,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                       </div>
 
                       <div className="col-sm-8">
-                        <StyledTextarea
+                        <TextareaAutosize
                           aria-label="minimum height"
                           minRows={3}
                           placeholder="Minimum 3 rows"
@@ -316,7 +281,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 </div>
 
                 <hr className="mt-5 mb-5" />
-              </div>
+              </div> */}
               <Box display="flex" mt={2} ml={3}>
                 <Button
                   variant="contained"
@@ -347,5 +312,4 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     </Dialog>
   );
 };
-
-export default EditConfig;
+export default CreateRequestConfig;

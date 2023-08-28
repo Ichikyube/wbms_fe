@@ -13,7 +13,7 @@ export const getById = async (id) => {
 };
 
 export const create = async (data) => {
-  const response = await api.post(endpoint, data);
+  const response = await api.post(`config-requests`, data);
   return response.data;
 };
 

@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import appReducer from "./slices/appSlice";
 import wbTransactionReducer from "./slices/wbTransactionSlice";
@@ -35,4 +36,6 @@ const store = configureStore({
   devTools: true,
 });
 
+// Configure listeners for background polling and cache invalidation
+setupListeners(store.dispatch);
 export default store;

@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import "./scss/style.scss";
 import { setConfigs } from "./slices/appSlice";
 import { getEnvInit } from "./configs";
+import { AuthProvider } from "./context/AuthContext";
 // Containers
 const LayoutGuest = lazy(() => import("./layout/LayoutGuest"));
 const DefaultLayout = lazy(() => import("./layout/DefaultLayout"));
@@ -30,6 +31,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
+    <AuthProvider>
     <HashRouter>
       <Suspense fallback={loading}>
       <Routes>
@@ -43,7 +45,7 @@ const App = () => {
               name="Home Page"
               element={<Home />}
             />
-            <Route path="/home" name="Home Page" element={<Home />} />
+            <Route path="/home" exact name="Home Page" element={<Home />} />
             <Route path="/signin" name="Sign In Page" element={<SignIn />} />
           </Route>
 
@@ -51,6 +53,7 @@ const App = () => {
         </Routes>
       </Suspense>
     </HashRouter>
+    </AuthProvider>
     // </WbmsContext.Provider>
   );
 };

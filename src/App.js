@@ -1,8 +1,10 @@
 import { Suspense, lazy, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import "./scss/style.scss";
 import { setConfigs } from "./slices/appSlice";
+import { fetchConfigsData } from "./slices/requestConfigsSlice";
+import { fetchGroupMappingData } from "./slices/groupMappingSlice";
 import { getEnvInit } from "./configs";
 import { AuthProvider } from "./context/AuthContext";
 // Containers
@@ -23,36 +25,39 @@ const App = () => {
     </div>
   );
 
+  
   useEffect(() => {
     (async () =>
       await getEnvInit().then((result) => {
         dispatch(setConfigs({ ...result }));
+        dispatch(fetchGroupMappingData());
+        dispatch(fetchConfigsData());
       }))();
   }, [dispatch]);
 
   return (
     <AuthProvider>
-    <HashRouter>
-      <Suspense fallback={loading}>
-      <Routes>
-          <Route exact path="/404" name="Page 404" element={<Page404 />} />
-          <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          <Route path="/" element={<LayoutGuest />}>
-            <Route
-              index={true}
-              exact
-              path="/"
-              name="Home Page"
-              element={<Home />}
-            />
-            <Route path="/home" exact name="Home Page" element={<Home />} />
-            <Route path="/signin" name="Sign In Page" element={<SignIn />} />
-          </Route>
+      <HashRouter>
+        <Suspense fallback={loading}>
+          <Routes>
+            <Route exact path="/404" name="Page 404" element={<Page404 />} />
+            <Route exact path="/500" name="Page 500" element={<Page500 />} />
+            <Route path="/" element={<LayoutGuest />}>
+              <Route
+                index={true}
+                exact
+                path="/"
+                name="Home Page"
+                element={<Home />}
+              />
+              <Route path="/home" exact name="Home Page" element={<Home />} />
+              <Route path="/signin" name="Sign In Page" element={<SignIn />} />
+            </Route>
 
-          <Route path="*" name="WBMS" element={<DefaultLayout />}/>
-        </Routes>
-      </Suspense>
-    </HashRouter>
+            <Route path="*" name="WBMS" element={<DefaultLayout />} />
+          </Routes>
+        </Suspense>
+      </HashRouter>
     </AuthProvider>
     // </WbmsContext.Provider>
   );

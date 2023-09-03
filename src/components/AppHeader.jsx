@@ -20,7 +20,8 @@ import { AppHeaderDropdown } from "./header/index";
 import { logo } from "../assets/brand/logo";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange, deepPurple } from "@mui/material/colors";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { setSidebar } from "../slices/appSlice";
 
 const AppHeader = () => {
@@ -53,11 +54,10 @@ const AppHeader = () => {
               Transaksi WB
             </CNavLink>
           </CNavItem>
-          <CNavItem>
-            <CNavLink href="">Settings</CNavLink>
-          </CNavItem>
         </CHeaderNav>
+
         <CHeaderNav className="ms-3">
+        <ToastContainer position="top-right" autoClose={3000} /> {/* Set the notification container */}
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>

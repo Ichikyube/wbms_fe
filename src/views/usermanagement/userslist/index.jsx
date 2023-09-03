@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import _ from "lodash";
 import {
-  useFetchGroupMappingQuery,
   useSaveGroupMappingMutation,
-  setGroupMapping,
+  addPJ1,
+  addPJ2,
+  addPJ3,
+  removeUser,
+  fetchGroupMappingData,
 } from "../../../slices/groupMappingSlice";
 import {
   setGroup,
   toggleSelectionMode,
 } from "../../../slices/selectionModeSlice";
-import { addPJ1, removePJ1 } from "../../../slices/selectedPJ1Slice";
-import { addPJ2, removePJ2 } from "../../../slices/selectedPJ2Slice";
-import { addPJ3, removePJ3 } from "../../../slices/selectedPJ3Slice";
 
 import {
   Grid,
@@ -48,6 +49,8 @@ import * as UsersAPI from "../../../api/usersApi";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
+import Badge from "@mui/material/Badge";
+
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -67,46 +70,13 @@ ModuleRegistry.registerModules([
 const UsersList = () => {
   // console.clear();
   const gridRef = useRef();
-  const { userInfo } = useSelector((state) => state.app);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { userInfo } = useSelector((state) => state.app);
   const selectionMode = useSelector((state) => state.selectionMode);
-  const selectedPJ1 = useSelector((state) => state.selectedPJ1);
-  const selectedPJ2 = useSelector((state) => state.selectedPJ2);
-  const selectedPJ3 = useSelector((state) => state.selectedPJ3);
   const groupMap = useSelector((state) => state.groupMapping);
   const [saveGroupMapping] = useSaveGroupMappingMutation();
-  const { data: groupMapping } = useFetchGroupMappingQuery();
-  useEffect(() => {
-    if (groupMapping) {
-      const { lvlMap } = groupMapping;
-      dispatch(setGroupMapping(lvlMap));
-      Object.entries(lvlMap).forEach(([userId, group]) => {
-        if (group === "PJ1") {
-          dispatch(addPJ1(userId));
-        } else if (group === "PJ2") {
-          dispatch(addPJ2(userId));
-        } else if (group === "PJ3") {
-          dispatch(addPJ3(userId));
-        }
-      });
-    }
-  }, [groupMapping, dispatch]);
-
-  useEffect(() => {
-    const groupMapping = {};
-    selectedPJ1.forEach((userId) => {
-      groupMapping[userId] = "PJ1";
-    });
-    selectedPJ2.forEach((userId) => {
-      groupMapping[userId] = "PJ2";
-    });
-    selectedPJ3.forEach((userId) => {
-      groupMapping[userId] = "PJ3";
-    });
-    dispatch(setGroupMapping(groupMapping));
-  }, [selectedPJ1, selectedPJ2, selectedPJ3, dispatch]);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -183,12 +153,9 @@ const UsersList = () => {
   };
 
   const handleUserClick = (userId) => {
-    if (selectedPJ1.includes(userId)) {
-      dispatch(removePJ1(userId));
-    } else if (selectedPJ2.includes(userId)) {
-      dispatch(removePJ2(userId));
-    } else if (selectedPJ3.includes(userId)) {
-      dispatch(removePJ3(userId));
+    console.log(Object.keys(groupMap));
+    if (Object.keys(groupMap).includes(userId)) {
+      dispatch(removeUser(userId));
     } else {
       // Add the user to the selected group based on the enum
       switch (selectionMode.group) {
@@ -209,11 +176,11 @@ const UsersList = () => {
   const getCellBackgroundColor = (params) => {
     const userId = params.data.id;
 
-    if (selectedPJ1.includes(userId)) {
+    if (groupMap[userId] === "PJ1") {
       return "magenta";
-    } else if (selectedPJ2.includes(userId)) {
+    } else if (groupMap[userId] === "PJ2") {
       return "purple";
-    } else if (selectedPJ3.includes(userId)) {
+    } else if (groupMap[userId] === "PJ3") {
       return "indigo";
     }
 
@@ -306,8 +273,8 @@ const UsersList = () => {
     </Box>
   );
   const valueGetter = (params) => {
-    return `${params.node.rowIndex + 1} ${
-      groupMap[params.data.id] ? [groupMap[params.data.id]] : ""
+    return `${params.node.rowIndex + 1}   ${
+      groupMap[params.data.id] ? "[" + groupMap[params.data.id] + "]" : ""
     }`;
   };
 
@@ -318,7 +285,7 @@ const UsersList = () => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
+      flex: 1,
       valueGetter,
     },
 
@@ -354,12 +321,11 @@ const UsersList = () => {
       hide: false,
       flex: 3,
     },
-
     {
       headerName: "Action",
       field: "id",
       sortable: true,
-      cellRenderer: cellRenderer,
+      cellRenderer,
     },
   ]);
   const updatedColDefs = columnDefs.map((colDef) => {
@@ -371,6 +337,7 @@ const UsersList = () => {
     }
     return colDef;
   });
+
   return (
     <>
       <Grid container spacing={1}>
@@ -388,74 +355,150 @@ const UsersList = () => {
               <Box display="flex">
                 <Typography fontSize="20px">Users List</Typography>
                 <Box display="flex" ml="auto">
-                  { selectionMode.active && (
-                      <>
-                        <Button
-                          variant="contained"
-                          sx={{
-                            backgroundColor: "magenta",
-                            "&:hover": { backgroundColor: "deepPink" },
-                            fontSize: "12px",
-                            padding: "8px 8px",
-                            fontWeight: "bold",
-                            color: "white",
-                            marginLeft: "8px",
-                            textTransform: "none",
-                          }}
-                          onClick={() => dispatch(setGroup("PJ1"))}>
-                          Tunjuk PJ1
-                        </Button>
-                        <Button
-                          variant="contained"
-                          sx={{
-                            backgroundColor: "purple",
-                            "&:hover": { backgroundColor: "plum" },
-                            fontSize: "12px",
-                            padding: "8px 8px",
-                            fontWeight: "bold",
-                            color: "white",
-                            marginLeft: "8px",
-                            textTransform: "none",
-                          }}
-                          onClick={() => dispatch(setGroup("PJ2"))}>
-                          Tunjuk PJ2
-                        </Button>
-                        <Button
-                          variant="contained"
-                          sx={{
-                            backgroundColor: "indigo",
-                            "&:hover": { backgroundColor: "dodgerBlue" },
-                            fontSize: "12px",
-                            padding: "8px 8px",
-                            fontWeight: "bold",
-                            color: "white",
-                            marginLeft: "8px",
-                            textTransform: "none",
-                          }}
-                          onClick={() => dispatch(setGroup("PJ3"))}>
-                          Tunjuk PJ3
-                        </Button>
-                      </>
-                    )}
-                  { userInfo?.role === "Master Admin" && (
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: blue,
-                      "&:hover": { backgroundColor: lightBlue[500] },
-                      fontSize: "12px",
-                      padding: "8px 8px",
-                      fontWeight: "bold",
-                      color: "white",
-                      marginLeft: "8px",
-                      textTransform: "none",
-                    }}
-                    onClick={() => {
-                      if (selectionMode.active) saveGroupMapping({ groupMap });
-                      dispatch(toggleSelectionMode());
-                    }}>
-                    {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
-                  </Button> )}
+                  {selectionMode.active && (
+                    <>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "magenta",
+                          "&:hover": { backgroundColor: "deepPink" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ1"))}>
+                        Tunjuk PJ1
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "purple",
+                          "&:hover": { backgroundColor: "plum" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ2"))}>
+                        Tunjuk PJ2
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "indigo",
+                          "&:hover": { backgroundColor: "dodgerBlue" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ3"))}>
+                        Tunjuk PJ3
+                      </Button>
+                    </>
+                  )}
+
+                  {/* * tetapi apabila ada perbedaan, maka tampilkan daftar userMatrix approval berdasarkan group levelnya pada sweet alert dengan pertanyaan "apakah daftarnya sudah sesuai?".
+                   * Apabila memilih yes, daftar akan disimpan dalam database, jika tidak maka muncul pertanyaan "apakah masih ingin memilih atau kembali pada pilihan sebelumnya".
+                   * @returns ketika selesai memilih akan muncul alert berisi daftar user yg terdaftar sebagai approver level berapa
+                   */}
+                  {userInfo?.role === "Admin Master" ||
+                    ("Admin HC" && (
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: blue,
+                          "&:hover": { backgroundColor: lightBlue[500] },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => {
+                          if (selectionMode.active) {
+                            const selectedUser = JSON.stringify(groupMap);
+                            const lastselected =
+                              localStorage.getItem("groupMap");
+
+                            if (_.isEqual(selectedUser, lastselected)) {
+                              //Ketika selesai memilih jika pilihan sama dengan daftar pada grupmap, maka tutup feature
+                              console.log("Tidak ada perubahan");
+                              return dispatch(toggleSelectionMode());
+                            } else {
+                              const groupLevel = Object.entries(
+                                groupMap
+                              ).reduce((acc, [userId, groupName]) => {
+                                if (!acc[groupName]) {
+                                  acc[groupName] = [];
+                                }
+                                acc[groupName].push(
+                                  dtUser.find((user) => user.id === userId)
+                                    .username
+                                );
+
+                                return acc;
+                              }, {});
+                              const { PJ1, PJ2, PJ3 } = JSON.parse(
+                                JSON.stringify(groupLevel)
+                              );
+
+                              console.log(PJ2);
+                              Swal.fire({
+                                title: `PJ LVL 1 = ${PJ1},\n PJ LVL 2 = ${PJ2},\n PJ LVL 3 = ${PJ3}.\n  Apakah daftarnya sudah sesuai?`,
+                                icon: "question",
+                                showCancelButton: true,
+                                confirmButtonText: "Yes",
+                                cancelButtonText: "No",
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  console.log(
+                                    "Daftar disimpan dalam database:",
+                                    groupLevel
+                                  );
+                                  saveGroupMapping({ groupMap });
+                                  dispatch(fetchGroupMappingData());
+                                  dispatch(toggleSelectionMode());
+                                } else if (
+                                  result.dismiss === Swal.DismissReason.cancel
+                                ) {
+                                  Swal.fire({
+                                    title:
+                                      "Apakah masih ingin memilih atau kembali pada pilihan sebelumnya?",
+                                    icon: "question",
+                                    showCancelButton: true,
+                                    confirmButtonText: "Masih ingin memilih",
+                                    cancelButtonText:
+                                      "Kembali pada pilihan sebelumnya",
+                                  }).then((choiceResult) => {
+                                    if (choiceResult.isConfirmed) {
+                                      // Kode untuk membiarkan user melanjutkan memilih
+                                    } else if (
+                                      choiceResult.dismiss ===
+                                      Swal.DismissReason.cancel
+                                    ) {
+                                      console.log(
+                                        "Kembali pada pilihan sebelumnya"
+                                      );
+                                      // Kode untuk mengatur kembali pada pilihan sebelumnya
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                          } else dispatch(toggleSelectionMode());
+                        }}>
+                        {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
+                      </Button>
+                    ))}
                   <Button
                     variant="contained"
                     sx={{
@@ -525,6 +568,7 @@ const UsersList = () => {
         dtuser={selectedUser}
         dtRole={dtRole}
       />
+
       <ViewUsers
         isViewOpen={isViewOpen}
         onClose={() => setIsViewOpen(false)}

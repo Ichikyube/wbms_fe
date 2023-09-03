@@ -50,7 +50,7 @@ ModuleRegistry.registerModules([
 const tType = 1;
 
 const ReportPksTransactions = () => {
-  console.clear();
+  // console.clear();
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -253,10 +253,10 @@ const ReportPksTransactions = () => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
 
-    console.clear();
+    // console.clear();
 
     return () => {
-      console.clear();
+      // console.clear();
     };
   }, []);
 

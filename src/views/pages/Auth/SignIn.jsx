@@ -3,12 +3,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Form, Button, Row, InputGroup, Image } from "react-bootstrap";
-import Cookies from "js-cookie";
 import FormContainer from "../../../components/FormContainer";
-
+import { fetchConfigsData } from "../../../slices/requestConfigsSlice";
+import { fetchGroupMappingData } from "../../../slices/groupMappingSlice";
 import { useSigninMutation } from "../../../slices/authApiSlice";
 import { setCredentials } from "../../../slices/appSlice";
-
 import { FaUser, FaLock } from "react-icons/fa";
 
 const initialValues = { username: "", password: "" };
@@ -16,11 +15,9 @@ const initialValues = { username: "", password: "" };
 const SignIn = () => {
   const userRef = useRef();
   const [errMsg, setErrMsg] = useState("");
+  const [values, setValues] = useState(initialValues);
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
-
-  const [values, setValues] = useState(initialValues);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,7 +34,7 @@ const SignIn = () => {
       const response = await signin(values).unwrap();
       // Get the cookie string from the response headers
       const at = response?.data?.tokens?.access_token;
-      localStorage.setItem('wbms_at', at);
+      localStorage.setItem("wbms_at", at);
       if (!response.status) {
         console.log(response.message);
         console.log(response.logs);
@@ -48,6 +45,9 @@ const SignIn = () => {
       }
 
       dispatch(setCredentials({ ...response.data.user }));
+      dispatch(fetchGroupMappingData());
+      dispatch(fetchConfigsData());
+      
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {

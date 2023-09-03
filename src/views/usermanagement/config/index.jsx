@@ -40,6 +40,7 @@ ModuleRegistry.registerModules([
 ]);
 const Config = () => {
   console.clear();
+
   const gridRef = useRef();
   const { userInfo } = useSelector((state) => state.app);
   const [selectedConfig, setSelectedConfig] = useState(null);

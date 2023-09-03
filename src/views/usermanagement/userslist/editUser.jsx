@@ -25,7 +25,6 @@ import * as UserApi from "../../../api/usersApi";
 
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
-  console.log(path);
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     const {
       id,

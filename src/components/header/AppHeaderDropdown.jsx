@@ -29,10 +29,7 @@ const AppHeaderDropdown = () => {
   const dispatch = useDispatch();
 
   const handleSignout = async () => {
-    dispatch(clearCredentials());
-    dispatch(clearConfigs());
-    dispatch(clearSidebar());
-    localStorage.clear();
+
     try {
       const response = await signout().unwrap();
 
@@ -45,6 +42,10 @@ const AppHeaderDropdown = () => {
         return;
       }
       toast.success(response.message);
+      dispatch(clearCredentials());
+      dispatch(clearConfigs());
+      dispatch(clearSidebar());
+      localStorage.clear();
       navigate("/");
     } catch (err) {
       toast.error(err?.data?.message || err.error);

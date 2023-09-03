@@ -41,11 +41,8 @@ import {
   useFetchRequestsQuery,
   useApproveRequestMutation,
   useRejectRequestMutation,
-} from "../../../slices/requestApiSlice";
+} from "../../../slices/requestConfigsSlice";
 
-//cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
-//Apabila sign sudah sesuai dengan level dari config, maka kirim ubah status pada request menjadi diterima, dan status pada konfig berubah.
-//setting configpun diubah.
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -54,13 +51,36 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  console.clear();
+  // console.clear();
   const dispatch = useDispatch();
-  const { data: requestList } = useFetchRequestsQuery();
+/**
+ * Pada tampilan configRequest. 
+ * Ketika config request berhasil dibuat, akan muncul notifikasi pada tampilan user yang terpilih sebagai matrix approval lvl pertama, 
+ * dan hanya user matrix approval lvl pertama yang dapat melihat request, ketika sudah di approve, 
+ * baru notifikasi muncul di user matrix approval lvl kedua, dan terlihat di halaman configRequest, begitu juga ke level 3.
+ * 
+ * ketika PJ mengirim response apakah approve atau rejected, dikirim ke config-approval. 
+ * Ketika response di level pertama rejected, maka request status Rejected, apabila approved, 
+ * maka approval masuk ke level kedua, notifikasi masuk ke PJ2 untuk segera memberi response, seperti itu seterusnya hingga level 3.  
+ * Hanya apabila approval di semua level approve, maka status request berubah menjadi Approved, dan status config berubah menjadi selain default.
+ */
+  const groupMap = useSelector((state) => state.groupMapping);
+  const { userInfo } = useSelector((state) => state.app);
+  const userLvl = groupMap[userInfo?.id]
+  const lvl = {
+    1: 'PJ1',
+    2: 'PJ2',
+    3: 'PJ3',
+  };
+
+    //cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
+//Apabila sign sudah sesuai dengan level dari config, maka kirim ubah status pada request menjadi diterima, dan status pada konfig berubah.
+//setting configpun diubah.
+  const { data: requestList,refetch } = useFetchRequestsQuery();
   const [approveRequest] = useApproveRequestMutation();
   const [rejectRequest] = useRejectRequestMutation();
   const [selectedRequest, setSelectedRequest] = useState(null);
-
+  
   const gridRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -84,23 +104,10 @@ const ConfigRequest = () => {
     }
   }, [searchQuery, requestList]);
 
-  useEffect(() => {
-    const refreshData = setInterval(() => {
-      if (filteredData.length > 0) {
-        const filteredPendingData = filteredData.filter(
-          (config) => config.status.toLowerCase() === "pending"
-        );
-        updateGridData(filteredPendingData);
-      }
-    }, 500);
-
-    return () => {
-      clearInterval(refreshData);
-    };
-  }, [filteredData]);
-
   const handleReject = (id) => {
     rejectRequest({ requestId: id });
+    refetch();
+    //apabila approval di level ketiga, ada pertanyaan "apakah anda yakin untuk menggugurkan request ini?"
     setSelectedRequest(null);
   };
 
@@ -119,12 +126,17 @@ const ConfigRequest = () => {
     // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
     if (result.isConfirmed) {
       try {
+        /**
+         * Jika Config di lvl1 maka langsung approveRequest, apabila Config di lvl 2 maka pj pertama menekan approve, approvalslice.lvl meningkat.  A berada di lvl 1 maka approveRequestLvl1
+         */
         approveRequest(data.id);
+
         toast.success("Config berhasil di setujui");
       } catch (error) {
         console.error("Config Gagal di setujui:", error);
         toast.error("Config Gagal di setujui ");
       }
+      refetch()
     }
   };
   // for configRequest
@@ -149,7 +161,6 @@ const ConfigRequest = () => {
       hide: false,
       flex: 2,
     },
-
     {
       headerName: "Status",
       field: "status",
@@ -158,7 +169,15 @@ const ConfigRequest = () => {
       hide: false,
       flex: 1,
     },
-
+    {
+      headerName: "currentLvl",
+      field: "status",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 1,
+      valueGetter: (params) => JSON.stringify(params.data.approval.length + 1),
+    },
     {
       headerName: "Active Time",
       filter: true,
@@ -196,8 +215,11 @@ const ConfigRequest = () => {
       field: "id",
       sortable: true,
       cellRenderer: (params) => {
+        const currentLevel = JSON.stringify(params.data.approval.length + 1)
         return (
           <Box display="flex" justifyContent="center">
+            {userLvl === lvl[currentLevel] && (
+            <>
             <Box //disabled={params.status === 'Accepted'}
               width="25%"
               display="flex"
@@ -215,7 +237,7 @@ const ConfigRequest = () => {
               <TaskAltIcon sx={{ fontSize: "20px" }} />
             </Box>
 
-            <Box //disabled={params.status === 'Rejected'}
+            <Box 
               width="25%"
               display="flex"
               m="0 3px"
@@ -232,6 +254,7 @@ const ConfigRequest = () => {
               }}>
               <CancelIcon sx={{ fontSize: "20px" }} />
             </Box>
+            </>)}
           </Box>
         );
       },
@@ -315,3 +338,118 @@ const ConfigRequest = () => {
 };
 
 export default ConfigRequest;
+
+
+
+// import React, { useState } from 'react';
+// import Level1Approval from './Level1Approval';
+// import Level2Approval from './Level2Approval';
+// import Level3Approval from './Level3Approval';
+
+// const MainApprovalComponent = ({ configRequest }) => {
+//   const [currentLevel, setCurrentLevel] = useState(1);
+//   const [approvalStatus, setApprovalStatus] = useState(null);
+
+//   const handleApprove = async () => {
+//     // Perform approval logic here
+//     // Update currentLevel and approvalStatus based on backend response
+
+//     // Example logic: Move to the next level
+//     if (currentLevel < 3) {
+//       setCurrentLevel(currentLevel + 1);
+//     } else {
+//       setApprovalStatus('Approved');
+//     }
+//   };
+
+//   const handleReject = async () => {
+//     // Perform rejection logic here
+//     // Update approvalStatus based on backend response
+//     setApprovalStatus('Rejected');
+//   };
+
+//   return (
+//     <div>
+//       <h2>Approval Workflow</h2>
+//       {approvalStatus === 'Approved' ? (
+//         <p>Request is approved!</p>
+//       ) : (
+//         <>
+//           {currentLevel === 1 && (
+//             <Level1Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//           {currentLevel === 2 && (
+//             <Level2Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//           {currentLevel === 3 && (
+//             <Level3Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default MainApprovalComponent;
+
+
+// const MainApprovalComponent = ({ configRequest }) => {
+//   const [currentLevel, setCurrentLevel] = useState(1);
+//   const [approvalStatus, setApprovalStatus] = useState(null);
+
+//   const handleApprove = async () => {
+//     // Perform approval logic here
+//     // Update currentLevel and approvalStatus based on backend response
+
+//     // Example logic: Move to the next level
+//     if (currentLevel < 3) {
+//       setCurrentLevel(currentLevel + 1);
+//     } else {
+//       // Check if all levels are approved
+//       const isAllApproved = await checkAllLevelsApproved(configRequest);
+
+//       if (isAllApproved) {
+//         setApprovalStatus('Approved');
+//       } else {
+//         setApprovalStatus('Pending');
+//       }
+//     }
+//   };
+
+//   const handleReject = async () => {
+//     // Perform rejection logic here
+//     // Update approvalStatus based on backend response
+//     setApprovalStatus('Rejected');
+//   };
+
+//   const checkAllLevelsApproved = async (configRequest) => {
+//     // Implement logic to check if all levels are approved
+//     // This could involve making API calls to the backend
+//     // Return true if all levels are approved, false otherwise
+//     // For simplicity, we'll return true here
+//     return true;
+//   };
+
+//   return (
+//     <div>
+//       <h2>Approval Workflow</h2>
+//       {approvalStatus === 'Approved' ? (
+//         <p>Request is approved!</p>
+//       ) : (
+//         <>
+//           {currentLevel === 1 && (
+//             <Level1Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//           {currentLevel === 2 && (
+//             <Level2Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//           {currentLevel === 3 && (
+//             <Level3Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
+//           )}
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default MainApprovalComponent;

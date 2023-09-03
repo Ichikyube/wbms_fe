@@ -95,6 +95,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
   const [permissions, setPermissions] = useState({ resource: "", grants });
   const generateInitialValues = (permissions) => ({
     name: "",
+    description: "",
     permissions,
   });
   const [mountAttributes, setMountAttributes] = useState([]);
@@ -143,7 +144,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-
+        
         onClose("", false);
       });
   };
@@ -226,6 +227,27 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       onChange={handleChange}
                       value={values.name}
                       name="name"
+                      error={!!touched.name && !!errors.name}
+                      helperText={touched.name && errors.name}
+                    />
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}>
+                      Description
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Nama"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.description}
+                      name="description"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
                     />

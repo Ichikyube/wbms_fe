@@ -665,7 +665,8 @@ const PksManualOthersTimbangMasuk = (props) => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={wb.weight}
+                  value={values.originWeighInKg}
+                  onChange={handleChange}
                 />
                 <TextField
                   type="number"
@@ -802,14 +803,14 @@ const PksManualOthersTimbangMasuk = (props) => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={
-                    !validateForm() ||
-                    isDisabled ||
-                    !wb.isStable ||
-                    wb.weight < configs.WBMS_WB_MIN_WEIGHT
-                      ? true
-                      : false
-                  }
+                  // disabled={
+                  //   !validateForm() ||
+                  //   isDisabled ||
+                  //   !wb.isStable ||
+                  //   wb.weight < configs.WBMS_WB_MIN_WEIGHT
+                  //     ? true
+                  //     : false
+                  // }
                 >
                   Simpan
                 </Button>

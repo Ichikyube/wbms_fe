@@ -3,11 +3,11 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  PureComponent,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PropTypes from "prop-types";
-import { cloneDeep, set } from "lodash";
+// import PropTypes from "prop-types";
+// import { cloneDeep, set } from "lodash";
+// import { useForm } from "../../../utils/useForm";
 import {
   Grid,
   Paper,
@@ -17,10 +17,9 @@ import {
   Typography,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import { useForm } from "../../../utils/useForm";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import "ag-grid-enterprise";
-import { orange, blue, red, indigo, green } from "@mui/material/colors";
+import { red, green } from "@mui/material/colors";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
@@ -28,20 +27,18 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import * as ConfigAPI from "../../../api/configsApi";
-
-import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import CancelIcon from "@mui/icons-material/CancelOutlined";
 import Swal from "sweetalert2";
-
 import {
   useFetchRequestsQuery,
   useApproveRequestMutation,
   useRejectRequestMutation,
+  selectFilteredRequestConfigs
 } from "../../../slices/requestConfigsSlice";
+import { createNotificationAsync } from '../../../slices/notificationSlice';
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -51,7 +48,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  // console.clear();
+  console.clear();
   const dispatch = useDispatch();
 /**
  * Pada tampilan configRequest. 
@@ -66,6 +63,8 @@ const ConfigRequest = () => {
  */
   const groupMap = useSelector((state) => state.groupMapping);
   const { userInfo } = useSelector((state) => state.app);
+  
+  //cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
   const userLvl = groupMap[userInfo?.id]
   const lvl = {
     1: 'PJ1',
@@ -73,10 +72,14 @@ const ConfigRequest = () => {
     3: 'PJ3',
   };
 
-    //cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
-//Apabila sign sudah sesuai dengan level dari config, maka kirim ubah status pada request menjadi diterima, dan status pada konfig berubah.
-//setting configpun diubah.
-  const { data: requestList,refetch } = useFetchRequestsQuery();
+  const { data: requestList, refetch } = useFetchRequestsQuery();
+
+// function RequestConfigList({ startTime, endTime, status }) {
+//   const filteredConfigs = useSelector(state =>
+//     selectFilteredRequestConfigs(state, startTime, endTime, status)
+//   );
+// }
+
   const [approveRequest] = useApproveRequestMutation();
   const [rejectRequest] = useRejectRequestMutation();
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -88,11 +91,11 @@ const ConfigRequest = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const updateGridData = useCallback((configData) => {
+  const updateGridData = useCallback((requestList) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(configData);
+      gridRef.current.api.setRowData(requestList);
     }
-  }, []);
+  }, [requestList]);
 
   useEffect(() => {
     if (requestList) {
@@ -108,6 +111,18 @@ const ConfigRequest = () => {
     rejectRequest({ requestId: id });
     refetch();
     //apabila approval di level ketiga, ada pertanyaan "apakah anda yakin untuk menggugurkan request ini?"
+    Swal.fire({
+      title: 'Apakah Anda yakin untuk menggugurkan request ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, gugurkan',
+      cancelButtonText: 'Tidak, batalkan',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Tindakan jika pengguna menekan "Ya"
+        Swal.fire('Gugurkan!', 'Request telah digugurkan.', 'success');
+      }
+    });
     setSelectedRequest(null);
   };
 
@@ -122,26 +137,30 @@ const ConfigRequest = () => {
       cancelButtonText: "Batal",
       reverseButtons: true,
     });
-
-    // Jika pengguna menekan tombol "Ya", lanjutkan dengan perubahan status
     if (result.isConfirmed) {
       try {
-        /**
-         * Jika Config di lvl1 maka langsung approveRequest, apabila Config di lvl 2 maka pj pertama menekan approve, approvalslice.lvl meningkat.  A berada di lvl 1 maka approveRequestLvl1
-         */
-        approveRequest(data.id);
-
-        toast.success("Config berhasil di setujui");
+        await approveRequest(data.id);
+        await refetch()
       } catch (error) {
         console.error("Config Gagal di setujui:", error);
         toast.error("Config Gagal di setujui ");
       }
-      refetch()
+      await toast.success(data.approval.length+1 === data.lvlofApproval? "Config berhasil di setujui": "Request naik 1 tingkat");
+      if(data.approval.length<data.lvlofApproval) {
+        const notificationData = { message:"Seseorang menunggu persetujuan anda", isRead: false,  target: groupMap.filter(group=>group === lvl[data.approval.length+1])};
+        dispatch(createNotificationAsync(notificationData))
+        .unwrap()
+        .then((createdNotification) => {
+          console.log('Notification sended:', createdNotification);
+        })
+        .catch((error) => {
+          // Handle failure (error in creating notification)
+          console.error('Error sending notification:', error);
+        });
+      }
     }
   };
-  // for configRequest
-  // Show config name, description, start, end?, timeSpan, value proposed, signed button
-
+  // Show config name, description, start, end?, value proposed, signed button
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -152,7 +171,6 @@ const ConfigRequest = () => {
       flex: 1,
       valueGetter: (params) => params.node.rowIndex + 1,
     },
-
     {
       headerName: " Config Name",
       field: "config.name",
@@ -321,7 +339,7 @@ const ConfigRequest = () => {
                 defaultColDef={defaultColDef} // Default Column Properties
                 animateRows={true} // Optional - set to 'true' to have rows animate when sorted
                 rowSelection="multiple" // Options - allows click selection of rows
-                // rowGroupPanelShow="always"
+                // rowGroupPanelShow="always"updateGridData
                 enableRangeSelection="true"
                 groupSelectsChildren="true"
                 suppressRowClickSelection="true"
@@ -338,118 +356,3 @@ const ConfigRequest = () => {
 };
 
 export default ConfigRequest;
-
-
-
-// import React, { useState } from 'react';
-// import Level1Approval from './Level1Approval';
-// import Level2Approval from './Level2Approval';
-// import Level3Approval from './Level3Approval';
-
-// const MainApprovalComponent = ({ configRequest }) => {
-//   const [currentLevel, setCurrentLevel] = useState(1);
-//   const [approvalStatus, setApprovalStatus] = useState(null);
-
-//   const handleApprove = async () => {
-//     // Perform approval logic here
-//     // Update currentLevel and approvalStatus based on backend response
-
-//     // Example logic: Move to the next level
-//     if (currentLevel < 3) {
-//       setCurrentLevel(currentLevel + 1);
-//     } else {
-//       setApprovalStatus('Approved');
-//     }
-//   };
-
-//   const handleReject = async () => {
-//     // Perform rejection logic here
-//     // Update approvalStatus based on backend response
-//     setApprovalStatus('Rejected');
-//   };
-
-//   return (
-//     <div>
-//       <h2>Approval Workflow</h2>
-//       {approvalStatus === 'Approved' ? (
-//         <p>Request is approved!</p>
-//       ) : (
-//         <>
-//           {currentLevel === 1 && (
-//             <Level1Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//           {currentLevel === 2 && (
-//             <Level2Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//           {currentLevel === 3 && (
-//             <Level3Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//         </>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default MainApprovalComponent;
-
-
-// const MainApprovalComponent = ({ configRequest }) => {
-//   const [currentLevel, setCurrentLevel] = useState(1);
-//   const [approvalStatus, setApprovalStatus] = useState(null);
-
-//   const handleApprove = async () => {
-//     // Perform approval logic here
-//     // Update currentLevel and approvalStatus based on backend response
-
-//     // Example logic: Move to the next level
-//     if (currentLevel < 3) {
-//       setCurrentLevel(currentLevel + 1);
-//     } else {
-//       // Check if all levels are approved
-//       const isAllApproved = await checkAllLevelsApproved(configRequest);
-
-//       if (isAllApproved) {
-//         setApprovalStatus('Approved');
-//       } else {
-//         setApprovalStatus('Pending');
-//       }
-//     }
-//   };
-
-//   const handleReject = async () => {
-//     // Perform rejection logic here
-//     // Update approvalStatus based on backend response
-//     setApprovalStatus('Rejected');
-//   };
-
-//   const checkAllLevelsApproved = async (configRequest) => {
-//     // Implement logic to check if all levels are approved
-//     // This could involve making API calls to the backend
-//     // Return true if all levels are approved, false otherwise
-//     // For simplicity, we'll return true here
-//     return true;
-//   };
-
-//   return (
-//     <div>
-//       <h2>Approval Workflow</h2>
-//       {approvalStatus === 'Approved' ? (
-//         <p>Request is approved!</p>
-//       ) : (
-//         <>
-//           {currentLevel === 1 && (
-//             <Level1Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//           {currentLevel === 2 && (
-//             <Level2Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//           {currentLevel === 3 && (
-//             <Level3Approval configRequest={configRequest} onApprove={handleApprove} onReject={handleReject} />
-//           )}
-//         </>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default MainApprovalComponent;

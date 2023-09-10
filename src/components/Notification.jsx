@@ -1,44 +1,18 @@
-import React, { useState, useEffect } from "react";
-import Notification from "./Notification";
+// Notification.js
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { markNotificationAsRead } from '../slices/notificationSlice'; // Assuming you have this action defined
 
-const NotificationList = () => {
-  const [notifications, setNotifications] = useState([]);
-
-  useEffect(() => {
-    // Fetch notifications from your API here
-    // Example using fetch:
-    fetch("/api/notifications")
-      .then((response) => response.json())
-      .then((data) => setNotifications(data))
-      .catch((error) => console.error("Error fetching notifications:", error));
-  }, []);
-
-  const handleNotificationClick = async (id) => {
-    // Send a PUT request to mark notification as read
-    // Example using fetch:
-    await fetch(`/api/notifications/${id}`, {
-      method: "PUT",
-    });
-
-    // Refresh the list after marking as read
-    fetch("/api/notifications")
-      .then((response) => response.json())
-      .then((data) => setNotifications(data))
-      .catch((error) => console.error("Error fetching notifications:", error));
-  };
-
+function Notification({ message, isRead, id, onClick }) {
   return (
-    <div className="notification-list">
-      {notifications.map((notification) => (
-        <Notification
-          key={notification.id}
-          message={notification.message}
-          isReaded={notification.isReaded}
-          onClick={() => handleNotificationClick(notification.id)}
-        />
-      ))}
+    <div style={{width: "max-content", marginTop: "25px"}} 
+    className={`notification ${isRead ? 'read' : 'unread'}`}>
+      <p>{message}</p>
+      {!isRead && (
+        <button onClick={onClick}>Mark as Read</button>
+      )}
     </div>
   );
-};
+}
 
-export default NotificationList;
+export default Notification;

@@ -2,7 +2,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { clearCredentials, clearConfigs, clearSidebar } from "../../slices/appSlice";
+import {
+  clearCredentials,
+  clearConfigs,
+  clearSidebar,
+} from "../../slices/appSlice";
 import { useSignoutMutation } from "../../slices/authApiSlice";
 
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
@@ -29,7 +33,6 @@ const AppHeaderDropdown = () => {
   const dispatch = useDispatch();
 
   const handleSignout = async () => {
-
     try {
       const response = await signout().unwrap();
 
@@ -55,21 +58,22 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <Avatar sx={{ bgcolor: deepOrange[500] }}>N</Avatar>
+        <Avatar sx={{ bgcolor: deepOrange[500] }} alt={userInfo.name} src={userInfo.profilePic} />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">
           Account{" "}
-          <strong>{userInfo?.profile ? userInfo.profile.name : null}</strong>
         </CDropdownHeader>
 
         <LinkContainer to="/profile">
           <CDropdownItem id="username">
             <FaUserCircle className="me-2" />
-            Profile
+            <strong>{userInfo?.name ? userInfo.name : "Profile"}</strong>
           </CDropdownItem>
         </LinkContainer>
-
+        <CDropdownItem id="role">
+          Role: <strong>{userInfo?.role ? userInfo.role : null}</strong>
+        </CDropdownItem>
         <CDropdownDivider />
         <CDropdownItem href="#" onClick={handleSignout}>
           <FaSignOutAlt className="me-2" />

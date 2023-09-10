@@ -1,4 +1,20 @@
+  // Declare an EventSource
+const eventSource = new EventSource('http://some.url');
+// Handler for events without an event type specified
+eventSource.onmessage = (e) => {
+   // Do something - event data etc will be in e.data
+};
+// Handler for events of type 'eventType' only
+eventSource.addEventListener('eventType', (e) => {
+   // Do something - event data will be in e.data,
+   // message will be of type 'eventType'
+});
+  
+  
   Jika User adalah admin maka bisa menunjuk approver
+
+
+
   Creating a request approval feature involves several steps, including setting up the frontend and backend components, handling API requests, and managing the state. Below is a high-level overview of the process:
 
 1. **Frontend Setup:**
@@ -524,3 +540,485 @@ const App = () => {
 };
 
 export default App;
+
+
+
+
+import { WavyContainer, WavyLink } from "react-wavy-transitions";
+
+const Home = () => <div>Home</div>;
+const About = () => <div>About</div>;
+const Contact = () => <div>Contact</div>;
+
+function App() {
+  return (
+    <BrowserRouter>
+      <WavyContainer />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <WavyLink to="/" color="#ff44fd">Home</WavyLink>
+              <WavyLink to="/about" color="#8f44fd">About</WavyLink>
+              <WavyLink to="/contact" color="#2f44fd">Contact</WavyLink>
+              <Outlet />
+            </>
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="*" element={<>No Match</>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- This script got from frontendfreecode.com -->
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js'></script>
+<style>
+body {
+	padding: 30px;
+}
+h2 {
+	font-size: 18px;
+	line-height: 1em;
+	margin-bottom: 5px;
+}
+.accordion-box {
+	margin-bottom: 100px;
+}
+.accordion-list .accordion-box:last-child {
+	margin-bottom: 5px;
+}
+.accordion-label {
+	position: relative;
+	cursor: pointer;
+	display: block;
+	padding: 10px 50px 10px 10px;
+	color: #fff;
+	background-color: #222;
+}
+.accordion-content {
+	max-height: 0;
+	overflow: hidden;
+}
+.accordion-inner {
+	background-color: #eee;
+	padding: 15px;
+}
+.accordion-list.actived>.accordion-content {
+	max-height: none;
+}
+.acd-sub {
+	padding: 10px;
+}
+.acd-arrow {
+	position: absolute;
+	right: 15px;
+	top: 16px;
+	display: inline-block;
+	vertical-align: middle;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-color: transparent;
+	border-width: 8px 8px 0px 8px;
+	border-top-color: #fff;
+}
+.accordion-list.actived>.accordion-label>.acd-arrow {
+	-webkit-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+.acd-transition>.accordion-label>.acd-arrow {
+	-webkit-transition: -webkit-transform 0.3s ease;
+	transition: transform 0.3s ease;
+}
+</style>
+
+</head>
+<body>
+<div id="root"></div><div id="bcl"><a style="font-size:8pt;text-decoration:none;" href="http://www.devanswer.com">Free Frontend</a></div>
+<script>
+"use strict";
+class App extends React.Component {
+    render() {
+        return (React.createElement("div", null,
+            React.createElement("h2", null, "Only One Open"),
+            React.createElement(Accordion, { muitipleOpen: false },
+                React.createElement(AccordionList, { expanded: true, id: "1", key: "1", headTitle: "Title 1" }, "Content 1"),
+                React.createElement(AccordionList, { expanded: false, id: "2", key: "2", headTitle: "Title 2" }, "Content 2"),
+                React.createElement(AccordionList, { expanded: false, id: "3", key: "3", headTitle: "Title 3" }, "Content 3"),
+                React.createElement(AccordionList, { expanded: false, id: "4", key: "4", headTitle: "Title 4" }, "Content 4")),
+            React.createElement("h2", null, "Multiple Open"),
+            React.createElement(Accordion, { muitipleOpen: true },
+                React.createElement(AccordionList, { expanded: false, id: "1", key: "1", headTitle: "Title 1" }, "Content 1"),
+                React.createElement(AccordionList, { expanded: true, id: "2", key: "2", headTitle: "Title 2" }, "Content 2"),
+                React.createElement(AccordionList, { expanded: false, id: "3", key: "3", headTitle: "Title 3" }, "Content 3"),
+                React.createElement(AccordionList, { expanded: false, id: "4", key: "4", headTitle: "Title 4" }, "Content 4")),
+            React.createElement("h2", null, "Nested Accordion"),
+            React.createElement(Accordion, { muitipleOpen: false },
+                React.createElement(AccordionList, { expanded: true, id: "1", key: "1", headTitle: "Title 1" },
+                    "Content 1",
+                    React.createElement("br", null),
+                    React.createElement("br", null),
+                    React.createElement(Accordion, { muitipleOpen: false },
+                        React.createElement(AccordionList, { expanded: false, id: "1", key: "1", headTitle: "Nested Title 1" }, "Content 1"),
+                        React.createElement(AccordionList, { expanded: false, id: "2", key: "2", headTitle: "Nested Title 2" }, "Content 2"),
+                        React.createElement(AccordionList, { expanded: false, id: "3", key: "3", headTitle: "Nested Title 3" }, "Content 3"))),
+                React.createElement(AccordionList, { expanded: false, id: "2", key: "2", headTitle: "Title 2" }, "Content 2"))));
+    }
+}
+class Accordion extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            activedIndex: this.getID(),
+            acdTransition: false
+        };
+    }
+    getID() {
+        let expandedIndex = [];
+        let children = this.props.children;
+        React.Children.map(children, (items, i) => {
+            if (items.props.expanded) {
+                expandedIndex.push(items.props.id);
+            }
+        });
+        return expandedIndex;
+    }
+    addTransition() {
+        if (this.state.acdTransition === true) {
+            return 'acd-transition';
+        }
+        else {
+            return "";
+        }
+    }
+    handleClick(acdID) {
+        let muitipleOpen = this.props.muitipleOpen;
+        let activedList = [...this.state.activedIndex];
+        let activedItem = this.state.activedIndex.indexOf(acdID);
+        if (muitipleOpen) {
+            if (activedItem !== -1) {
+                activedList.splice(activedItem, 1);
+                this.setState({ activedIndex: activedList });
+            }
+            else {
+                this.setState({ activedIndex: [...activedList, acdID] });
+            }
+        }
+        else {
+            if (activedItem !== -1) {
+                activedList.splice(activedItem, 1);
+                this.setState({ activedIndex: activedList });
+            }
+            else {
+                this.setState({ activedIndex: [acdID] });
+            }
+        }
+        if (this.state.acdTransition === false) {
+            this.setState({ acdTransition: true });
+        }
+    }
+    isExpanded(acdID) {
+        if (this.state.activedIndex.includes(acdID)) {
+            return 'actived';
+        }
+        else {
+            return '';
+        }
+    }
+    render() {
+        let childArr = this.props.children;
+        if (childArr.length === undefined) {
+            childArr = [this.props.children];
+        }
+        const items = childArr.map((child, i) => {
+            //let newIndex = i + 1;
+            return React.cloneElement(child, {
+                isExpanded: this.isExpanded.bind(this),
+                handleClick: this.handleClick.bind(this),
+                addTransition: this.addTransition.bind(this)
+            });
+        });
+        return (React.createElement("div", { className: `accordion-box` }, items));
+    }
+}
+class AccordionList extends React.Component {
+    render() {
+        return (React.createElement("div", { className: `accordion-list ${this.props.isExpanded(this.props.id)} ${this.props.addTransition()}` },
+            React.createElement("div", { className: `accordion-label`, onClick: () => { this.props.handleClick(this.props.id); } },
+                this.props.headTitle,
+                " ",
+                React.createElement("span", { className: "acd-arrow" })),
+            React.createElement("div", { className: `accordion-content` },
+                React.createElement("div", { className: "accordion-inner" }, this.props.children))));
+    }
+}
+ReactDOM.render(React.createElement(App, null), document.getElementById('root'));
+</script>
+
+</body>
+</html>
+
+
+
+
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+
+const GuardedRoute = ({ component: Component, auth, ...rest }) => {
+  <Route
+    {...rest}
+    render={(props) =>
+      auth === true ? <Component {...props} /> : <Redirect to="/forbidden`" />
+    }
+  />;
+};
+
+export const Nav = () => {
+  return <GuardedRoute 
+    auth={true}component={() => <h1>Have Access To Nuclear Bomb Management</h1>}
+    path={'/bomb-management'}
+  />;
+};
+
+
+
+
+const Detenator = () => {
+ return (
+   <><button>Detonate Reactor</button></>
+ );
+};
+
+const verifyPermissions = (permissions, userPermissions) => {
+ let isVerified = true;
+ if (!permissions || !userPermissions) isVerified = false;
+ isVerified = permissions.every((permission) =>
+   userPermissions.includes(permission)
+ );
+ return isVerified;
+};
+
+export const Authorizer = ({ permissions, requiredPermissions, children }) => {
+ const isAuthorized = verifyPermissions(permissions, requiredPermissions);
+ if (isAuthorized) {
+   return children;
+ }
+ return (
+   <><h1>Forbidden. No permissions to access</h1></>
+ );
+};
+export const Page = ({ children }) => {
+ return (
+   <><h1>Nuclear Bomb Management</h1>
+     {children}
+     <Authorizer permissions={[]} requiredPermissions={["detonate", "president"]}>
+       ﻿<Detenator /></Authorizer></>
+ );
+};
+
+
+
+
+
+// SSEComponent.js
+
+import React, { useEffect } from 'react';
+
+function SSEComponent() {
+  useEffect(() => {
+    const eventSource = new EventSource('http://localhost:3001/sse');
+
+    eventSource.onmessage = event => {
+      console.log('Received:', event.data);
+      // Handle the received event data in your React component
+    };
+
+    eventSource.onerror = error => {
+      console.error('Error:', error);
+      // Handle SSE errors
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  return (
+    <div>
+      <h2>SSE Component</h2>
+      {/* Render your SSE data here */}
+    </div>
+  );
+}
+
+export default SSEComponent;
+
+
+
+const socket = io('http://localhost:8080');
+
+socket.on('sse', data => {
+  console.log('Received:', data);
+  // Handle the received data in your client application
+});
+
+
+
+
+
+
+import React, { useState } from 'react';
+
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
+
+  const handleLogin = async () => {
+    // Perform login request and receive the token
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      // ...
+    });
+
+    const data = await response.json();
+
+    // Save the token to localStorage
+    localStorage.setItem('token', data.token);
+    setToken(data.token);
+  };
+
+  return (
+    <div>
+      {token ? (
+        <p>Authenticated with token: {token}</p>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
+  );
+};
+
+export default App;
+
+
+
+// Assuming you have received a response from an API call
+const response = /* your API response */;
+
+// Get the cookie string from the response headers
+const cookieString = response.headers.get('Set-Cookie'); // Replace 'Set-Cookie' with the actual header name
+
+// Extract specific cookies from the cookie string
+const cookies = {};
+cookieString.split(';').forEach((cookie) => {
+  const parts = cookie.split('=');
+  cookies[parts[0].trim()] = parts[1].trim();
+});
+
+// Now you can access individual cookies
+const myCookieValue = cookies['myCookie']; // Replace 'myCookie' with your cookie name
+
+
+
+// reducers.js
+import {
+  REQUEST_APPROVAL,
+  RECEIVE_APPROVAL,
+  REQUEST_APPROVAL_ERROR,
+} from './actions';
+
+const initialState = {
+  isLoading: false,
+  approvalData: null,
+  error: null,
+};
+
+const approvalReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case REQUEST_APPROVAL:
+      return { ...state, isLoading: true, error: null };
+    case RECEIVE_APPROVAL:
+      return { ...state, isLoading: false, approvalData: action.payload };
+    case REQUEST_APPROVAL_ERROR:
+      return { ...state, isLoading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export default approvalReducer;
+// actions.js
+export const REQUEST_APPROVAL = 'REQUEST_APPROVAL';
+export const RECEIVE_APPROVAL = 'RECEIVE_APPROVAL';
+export const REQUEST_APPROVAL_ERROR = 'REQUEST_APPROVAL_ERROR';
+
+export const requestApproval = (requestData) => ({
+  type: REQUEST_APPROVAL,
+  payload: requestData,
+});
+
+export const receiveApproval = (approvalData) => ({
+  type: RECEIVE_APPROVAL,
+  payload: approvalData,
+});
+
+export const requestApprovalError = (error) => ({
+  type: REQUEST_APPROVAL_ERROR,
+  payload: error,
+});
+
+
+
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { requestApprovalAsync } from './thunks';
+
+const RequestApprovalPage = ({ requestApprovalAsync, isLoading, error }) => {
+  const [requestData, setRequestData] = useState({ /* initial data */ });
+
+  const handleRequestApproval = () => {
+    requestApprovalAsync(requestData);
+  };
+
+  return (
+    <div>
+      {/* Form for inputting approval request data */}
+      {/* Display loading indicator and error messages */}
+      <button onClick={handleRequestApproval}>Submit Approval Request</button>
+    </div>
+  );
+};
+
+const mapStateToProps = (state) => ({
+  isLoading: state.approval.isLoading,
+  error: state.approval.error,
+});
+
+const mapDispatchToProps = {
+  requestApprovalAsync,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RequestApprovalPage);
+const fetcher = async (url) => {
+  const response = await axios.get(url);
+  const eventSource = new EventSource('/api/data/stream'); // SSE endpoint
+  eventSource.onmessage = (event) => {
+    // Handle real-time updates here
+    // Update data with event.data
+  };
+  return response.data;
+};

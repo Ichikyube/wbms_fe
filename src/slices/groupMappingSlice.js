@@ -8,12 +8,16 @@ export const fetchGroupMappingData = createAsyncThunk(
   "groupMapping/fetchGroupMappingData",
   async () => {
     const response = await api.get(`/config-requests-admin`);
-    return response.data; // Assuming the query returns the group mapping data
+    return response.data; 
   }
 );
 
 export const configRequestAdminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getGroupMapping: builder.query({
+      query: () => '/config-requests-admin',
+      providesTags: (result, error, arg) => ['groupMapping',{ type: 'groupMapping', id: result.id }]
+    }),
     saveGroupMapping: builder.mutation({
       query: (groupMapping) => ({
         url: "/config-requests-admin",
@@ -22,6 +26,7 @@ export const configRequestAdminApi = apiSlice.injectEndpoints({
         mode: "cors",
         credentials: "include",
       }),
+      invalidatesTags: ['groupMapping']
     }),
   }),
 });
@@ -76,7 +81,7 @@ const groupMappingSlice = createSlice({
   },
 });
 
-export const { useSaveGroupMappingMutation } =
+export const { useGetGroupMappingQuery, useSaveGroupMappingMutation } =
   configRequestAdminApi;
 export const { addPJ1, addPJ2, addPJ3, removeUser } = groupMappingSlice.actions;
 export default groupMappingSlice.reducer;

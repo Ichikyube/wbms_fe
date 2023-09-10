@@ -17,7 +17,10 @@ import CreateRole from "../../../views/usermanagement/roles/createRole";
 import EditRole from "../../../views/usermanagement/roles/editRole";
 import ViewRole from "../../../views/usermanagement/roles/viewRole";
 import { LinkContainer } from "react-router-bootstrap";
-
+import { toast } from "react-toastify";
+import useSWR from "swr";
+import Swal from "sweetalert2";
+import * as RoleAPI from "../../../api/roleApi";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -35,11 +38,39 @@ const RoleList = () => {
   const fetcher = () => RolesAPI.getAll().then();
 
   useEffect(() => {
-    if(!isOpen)
+    if (!isOpen || !isEditOpen)
       fetcher().then((dataRole) => {
         setRoles(dataRole);
       });
-  }, [isOpen]);
+  }, [isOpen, isEditOpen]);
+
+  const deleteById = (id, name) => {
+    Swal.fire({
+      title: `Yakin Ingin Menghapus?`,
+      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
+      icon: "question",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#D80B0B",
+      cancelButtonColor: "grey",
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Hapus",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        RoleAPI.deleteById(id)
+          .then((res) => {
+            console.log("Data berhasil dihapus:", res.data);
+            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
+            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+          })
+          .catch((error) => {
+            console.error("Data Gagal dihapus:", error);
+            toast.error("Data Gagal dihapus"); // Tampilkan toast error
+            // Tangani error atau tampilkan pesan error
+          });
+      }
+    });
+  };
 
   return (
     <div style={{ paddingLeft: 120, paddingRight: 120, paddingBottom: 60 }}>
@@ -58,17 +89,14 @@ const RoleList = () => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "29vh" }}
-              >
+                style={{ width: "auto", height: "29vh" }}>
                 <h4 ml={3}>{role.name}</h4>
                 <br />
                 <h6
-                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}
-                >
+                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
                   Total users with this role: {role.users.length}
                 </h6>
                 <br />
@@ -79,8 +107,7 @@ const RoleList = () => {
                     display: "flex",
                     alignItems: "center",
                     flex: 1,
-                  }}
-                >
+                  }}>
                   {role.description}
                 </Typography>
               </div>
@@ -92,28 +119,39 @@ const RoleList = () => {
                   <Button variant="contained">View Role</Button>
                 </LinkContainer> */}
                 <Button
-                variant="contained"
+                  variant="contained"
                   style={{ textTransform: "none" }}
                   onClick={() => {
                     setSelectedRole(role);
                     setIsViewOpen(true);
-                  }}
-                >
+                  }}>
                   View Role
                 </Button>
-                {!["Administrator", "administrator", "Admin", "admin"].includes(
+                {!["adminHC", "admin_system", "adminIT"].includes(
                   role.name
                 ) && (
-                  <Button
-                    variant="outlined"
-                    style={{ textTransform: "none" }}
-                    onClick={() => {
-                      setSelectedRole(role);
-                      setIsEditOpen(true);
-                    }}
-                  >
-                    Edit Role
-                  </Button>
+                  <>
+                    <Button
+                      variant="outlined"
+                      style={{ textTransform: "none" }}
+                      onClick={() => {
+                        console.log(role)
+                        setSelectedRole(role);
+                        setIsEditOpen(true);
+                      }}>
+                      Edit Role
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      style={{ textTransform: "none" }}
+                      onClick={() => {
+                        setSelectedRole(role);
+                        deleteById(role.id, role.name);
+                        console.log(role.id);
+                      }}>
+                      Delete Role
+                    </Button>
+                  </>
                 )}
               </Box>
             </Paper>
@@ -128,12 +166,10 @@ const RoleList = () => {
               borderRadius: "10px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
               position: "relative", // Tambahkan properti posisi relatif pada Paper
-            }}
-          >
+            }}>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "34vh" }}
-            >
+              style={{ width: "auto", height: "34vh" }}>
               <Box
                 display="flex"
                 sx={{
@@ -144,8 +180,7 @@ const RoleList = () => {
                   flexDirection: "column", // Susun konten dalam kolom
                   alignItems: "center", // Posisikan konten di tengah secara horizontal
                   gap: "10px",
-                }}
-              >
+                }}>
                 <Button
                   type="submit"
                   variant="text"
@@ -157,8 +192,7 @@ const RoleList = () => {
                   }}
                   onClick={() => {
                     setIsOpen(true);
-                  }}
-                >
+                  }}>
                   <AddCircleIcon
                     sx={{
                       fontSize: "25px",
@@ -177,21 +211,27 @@ const RoleList = () => {
         </Grid>
       </Grid>
 
-      <CreateRole isOpen={isOpen} onClose={() => {setIsOpen(false);}} />
-
-      <EditRole
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtRole={selectedRole}
+      <CreateRole
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
       />
-
+      {isEditOpen && (
+        <EditRole
+          isEditOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          dtRole={selectedRole}
+        />
+      )}
 
       {isViewOpen && (
-      <ViewRole
-      isViewOpen={isViewOpen}
-      onClose={() => setIsViewOpen(false)}
-      dtRole={selectedRole}
-      />)}
+        <ViewRole
+          isViewOpen={isViewOpen}
+          onClose={() => setIsViewOpen(false)}
+          dtRole={selectedRole}
+        />
+      )}
     </div>
   );
 };

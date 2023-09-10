@@ -7,6 +7,7 @@ import {
   Paper,
   Button,
   Box,
+  Chip,
   IconButton,
   Typography,
 } from "@mui/material";
@@ -37,7 +38,6 @@ import * as RolesAPI from "../../../api/roleApi";
 import { useParams } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 
-
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -45,49 +45,10 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const ViewRole = ({dtRole, onClose, isViewOpen}) => {
+const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
   // console.clear();
   const gridRef = useRef();
-  const role = dtRole
-  console.log(role)
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
-  const updateGridData = useCallback((user) => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(user);
-    }
-  }, []);
-
-  // delete
-  const deleteById = (id, name) => {
-    Swal.fire({
-      title: `Yakin Ingin Menghapus?`,
-      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
-      icon: "question",
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonColor: "#D80B0B",
-      cancelButtonColor: "grey",
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Hapus",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        UsersAPI.deleteById(id)
-          .then((res) => {
-            console.log("Data berhasil dihapus:", res.data);
-            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
-            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
-          })
-          .catch((error) => {
-            console.error("Data Gagal dihapus:", error);
-            toast.error("Data Gagal dihapus"); // Tampilkan toast error
-            // Tangani error atau tampilkan pesan error
-          });
-      }
-    });
-  };
+  const role = dtRole;
 
   const [columnDefs] = useState([
     {
@@ -116,65 +77,18 @@ const ViewRole = ({dtRole, onClose, isViewOpen}) => {
       hide: false,
       flex: 3,
     },
-
-    {
-      headerName: "Action",
-      field: "id",
-      sortable: true,
-      cellRenderer: (params) => {
-        return (
-          <Box display="flex" justifyContent="center">
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={orange[600]}
-              borderRadius="5px"
-              justifyContent="center"
-              padding="10px 10px"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedUser(params.data);
-                setIsEditOpen(true);
-              }}
-            >
-              <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={red[800]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              onClick={() => deleteById(params.value, params.data.name)}
-              style={{
-                color: "white",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-          </Box>
-        );
-      },
-    },
   ]);
-
+  const [showGrants, setShowGrants] = useState(null);
+  const toggleGrants = (index) => {
+    setShowGrants(index === showGrants ? null : index);
+  };
   return (
     <Dialog open={isViewOpen} fullWidth maxWidth={"lg"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
-      >
-        View Roles
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
+        <pre>
+          View Role <strong>{role.name}</strong>
+        </pre>
         <IconButton
           sx={{
             color: "black",
@@ -184,68 +98,102 @@ const ViewRole = ({dtRole, onClose, isViewOpen}) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
-      <Grid container spacing={2} pl={8} pr={8}>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 3,
-              mb: 5,
-              mx: 2,
-              mt: 2,
-              borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "29vh" }}
-            >
-              <h4 ml={3}>{role.name}</h4>
-              <br />
+        <Grid container spacing={2} pl={8} pr={8}>
+          <Grid item xs={12} sm={6} md={4} lg={6}>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 3,
+                mb: 5,
+                mx: 2,
+                mt: 2,
+                borderTop: "5px solid #000",
+                borderRadius: "10px 10px 10px 10px",
+              }}>
+              <div
+                className="ag-theme-alpine"
+                style={{ width: "auto", height: "auto" }}>
+                <h4 ml={3}>{role.description}</h4>
+                <br />
+                <Box
+                  sx={{
+                    display: "flex", flexWrap: "wrap"
+                  }}>
+                  {role.permissions.map((permission, index) => (
+                    <div style={{ position: "relative" }}>
+                      <Chip
+                        key={index}
+                        label={permission.resource}
+                        variant="outlined"
+                        color="primary"
+                        style={{ margin: "4px", position: "static" }}
+                        onClick={(e, showGrants) => toggleGrants(index)}
+                      />
+                      {showGrants === index && (
+                        <Box
+                          sx={{
+                            border: 1,
+                            p: 1,
+                            bgcolor: "background.paper",
+                            position: "absolute",
+                            zIndex: 1,
+                          }}>
+                          <h6>{permission.resource}</h6>
+                          <ul>
+                            {permission.grants.map((grant, index) => (
+                              <li key={index}>
+                                {grant.action}:{grant.possession}
+                              </li>
+                            ))}
+                          </ul>
+                        </Box>
+                      )}
+                    </div>
+                  ))}
+                </Box>
+              </div>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4} lg={6}>
+            <Paper
+              sx={{
+                p: 3,
+                mb: 5,
+                mt: 2,
+                borderTop: "5px solid #000",
+                borderRadius: "10px 10px 10px 10px",
+              }}>
               <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
                 Total users with this role: {role.users.length}
               </h6>
-            </div>
-          </Paper>
+              <div
+                className="ag-theme-alpine"
+                style={{ width: "auto", height: "70vh" }}>
+                <AgGridReact
+                  ref={gridRef}
+                  rowData={role.users} // Row Data for Rows
+                  columnDefs={columnDefs} // Column Defs for Columns
+                  animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                  rowSelection="multiple" // Options - allows click selection of rows
+                  // rowGroupPanelShow="always"
+                  enableRangeSelection="true"
+                  groupSelectsChildren="true"
+                  suppressRowClickSelection="true"
+                  pagination="true"
+                  paginationAutoPageSize="true"
+                  groupDefaultExpanded="1"
+                />
+              </div>
+            </Paper>
+          </Grid>
         </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={9}>
-          <Paper
-            sx={{
-              p: 3,
-              mb: 5,
-              mt: 2,
-              borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px",
-            }}
-          >
-          <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>
-            <AgGridReact
-              ref={gridRef}
-              rowData={role.users} // Row Data for Rows
-              columnDefs={columnDefs} // Column Defs for Columns
-              animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-              rowSelection="multiple" // Options - allows click selection of rows
-              // rowGroupPanelShow="always"
-              enableRangeSelection="true"
-              groupSelectsChildren="true"
-              suppressRowClickSelection="true"
-              pagination="true"
-              paginationAutoPageSize="true"
-              groupDefaultExpanded="1"
-            />
-          </div>
-          </Paper>
-        </Grid>
-      </Grid>
       </DialogContent>
     </Dialog>
   );

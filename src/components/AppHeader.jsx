@@ -18,11 +18,12 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from "@coreui/icons";
 import { AppBreadcrumb } from "./index";
 import { AppHeaderDropdown } from "./header/index";
 import { logo } from "../assets/brand/logo";
-import Avatar from "@mui/material/Avatar";
+
 import { deepOrange, deepPurple } from "@mui/material/colors";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { setSidebar } from "../slices/appSlice";
+import NotificationList from "./NotificationList";
 
 const AppHeader = () => {
   const dispatch = useDispatch();
@@ -34,8 +35,7 @@ const AppHeader = () => {
       <CContainer fluid>
         <CHeaderToggler
           className="ps-1"
-          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}
-        >
+          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}>
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
@@ -55,9 +55,14 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
-
+        
+        <CHeaderNav>
+          <CNavItem>
+              <NotificationList />
+          </CNavItem>
+        </CHeaderNav>
         <CHeaderNav className="ms-3">
-        <ToastContainer position="top-right" autoClose={3000} /> {/* Set the notification container */}
+          {/* <ToastContainer position="top-right" autoClose={3000} />{" "} */}
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>

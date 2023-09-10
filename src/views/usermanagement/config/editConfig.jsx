@@ -94,6 +94,11 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
+  const [timeSpan, setTimeSpan] = useState(0);
+
+  const handleTimeSpanChange = (newTimeSpan) => {
+    setTimeSpan(newTimeSpan);
+  };
   /*
     for SetConfig
     Set lvlOfApproval
@@ -103,6 +108,15 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     Set repeatable checkbox
     Abort status
     */
+    const formatLifespan = (hours, minutes) => {
+      return `${hours} hours ${minutes} minutes`;
+    };
+    const initialValues = {
+      configRequestLifespan: {
+        hours: 0,
+        minutes: 0,
+      },
+    };
   return (
     <Dialog
       open={isEditOpen}
@@ -183,12 +197,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px">
-                <FormControl sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }} component="fieldset">
+                <FormControl
+                  sx={{
+                    marginBottom: "8px",
+                    color: "black",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                  }}
+                  component="fieldset">
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -221,13 +237,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     />
                   </RadioGroup>
                 </FormControl>
-                <FormControl fullWidth 
+                <FormControl
+                  fullWidth
                   sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
+                    marginBottom: "8px",
+                    color: "black",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                  }}>
                   <InputLabel id="demo-simple-select-label">
                     Default State
                   </InputLabel>
@@ -244,7 +261,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -254,8 +271,58 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     }
                     label="Is Repeatable"
                   />
-                </FormGroup>
+                </FormGroup> */}
               </Box>
+              <TextField
+                label="CONFIG REQUEST LIFESPAN"
+                name="configRequestLifespan"
+                variant="outlined"
+              />
+              <TimeSpanInput onChange={handleTimeSpanChange} />
+              <div>
+          <Typography id="hours-slider" gutterBottom>
+            Hours
+          </Typography>
+          <Field name="configRequestLifespan.hours">
+            {({ field }) => (
+              <Slider
+                {...field}
+                aria-labelledby="hours-slider"
+                valueLabelDisplay="auto"
+                step={1}
+                marks
+                min={0}
+                max={24}
+              />
+            )}
+          </Field>
+        </div>
+
+        <div>
+          <Typography id="minutes-slider" gutterBottom>
+            Minutes
+          </Typography>
+          <Field name="configRequestLifespan.minutes">
+            {({ field }) => (
+              <Slider
+                {...field}
+                aria-labelledby="minutes-slider"
+                valueLabelDisplay="auto"
+                step={1}
+                marks
+                min={0}
+                max={59}
+              />
+            )}
+          </Field>
+        </div>
+
+        <Typography>
+          Lifespan: {formatLifespan(
+            initialValues.configRequestLifespan.hours,
+            initialValues.configRequestLifespan.minutes
+          )}
+        </Typography>
               <Box display="flex" mt={2} ml={3}>
                 <Button
                   variant="contained"

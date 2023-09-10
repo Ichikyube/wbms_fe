@@ -25,6 +25,9 @@ import moment from "moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ReactRRuleGenerator from "../../../components/ReactRRuleGenerator";
 
+import {
+  useFetchRequestsQuery,
+} from "../../../slices/requestConfigsSlice";
 /*
 for createRequest
 Set Start using date input
@@ -35,6 +38,7 @@ Set Edited value. Example: manualEntry=true
 */
 
 const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
+  const { data: requestList, refetch } = useFetchRequestsQuery();
   const [isCopied, setIsCopied] = useState(false);
   const [rrule, setRrule] = useState(
     "DTSTART:20190301T230000Z\nFREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"
@@ -60,6 +64,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       await ConfigApi.create(values);
       // dispatch(createRequest(requestData));
       toast.success("Data Berhasil Dibuat");
+      refetch()
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
       console.error("Data Gagal Dibuat:", error);
@@ -79,6 +84,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
         start: null,
         end: null,
       });
+      
   }, [isRequestOpen, dtConfig]);
 
   const [initialValues, setInitialValue] = useState({});

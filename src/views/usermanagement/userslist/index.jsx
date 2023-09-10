@@ -213,7 +213,9 @@ const UsersList = () => {
           />
         </Box>
       )}
-
+      {( userInfo?.role === "adminIT" ||
+      userInfo?.role === "adminHC" ) && (
+        <>
       <Box
         width="25%"
         display="flex"
@@ -270,6 +272,7 @@ const UsersList = () => {
         }}>
         <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
       </Box>
+      </>)}
     </Box>
   );
   const valueGetter = (params) => {
@@ -277,8 +280,7 @@ const UsersList = () => {
       groupMap[params.data.id] ? "[" + groupMap[params.data.id] + "]" : ""
     }`;
   };
-
-  const [columnDefs] = useState([
+  const staffcolumn = [
     {
       headerName: "No",
       field: "no",
@@ -288,7 +290,6 @@ const UsersList = () => {
       flex: 1,
       valueGetter,
     },
-
     {
       headerName: "Nama",
       field: "username",
@@ -321,13 +322,13 @@ const UsersList = () => {
       hide: false,
       flex: 3,
     },
-    {
-      headerName: "Action",
-      field: "id",
-      sortable: true,
-      cellRenderer,
-    },
-  ]);
+  ]
+  const [columnDefs] =  useState(userInfo?.role === "adminIT" || userInfo?.role === "adminHC"? [...staffcolumn, {
+    headerName: "Action",
+    field: "id",
+    sortable: true,
+    cellRenderer,
+  },] : staffcolumn );
   const updatedColDefs = columnDefs.map((colDef) => {
     if (colDef.valueGetter) {
       colDef.valueGetter = valueGetter;
@@ -409,8 +410,8 @@ const UsersList = () => {
                    * Apabila memilih yes, daftar akan disimpan dalam database, jika tidak maka muncul pertanyaan "apakah masih ingin memilih atau kembali pada pilihan sebelumnya".
                    * @returns ketika selesai memilih akan muncul alert berisi daftar user yg terdaftar sebagai approver level berapa
                    */}
-                  {userInfo?.role === "Admin Master" ||
-                    ("Admin HC" && (
+                  {( userInfo?.role === "adminIT" ||
+                    userInfo?.role === "adminHC" ) && (
                       <Button
                         variant="contained"
                         sx={{
@@ -498,24 +499,27 @@ const UsersList = () => {
                         }}>
                         {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
                       </Button>
-                    ))}
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: blue[800],
-                      fontSize: "12px",
-                      padding: "8px 8px",
-                      fontWeight: "bold",
-                      color: "white",
-                      marginLeft: "8px",
-                      textTransform: "none",
-                    }}
-                    onClick={() => {
-                      setIsOpen(true);
-                    }}>
-                    <AddIcon sx={{ mr: "5px", fontSize: "19px" }} />
-                    Tambah User
-                  </Button>
+                    )}
+                  {( userInfo?.role === "adminIT" ||
+                    userInfo?.role === "adminHC" ) && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: blue[800],
+                        fontSize: "12px",
+                        padding: "8px 8px",
+                        fontWeight: "bold",
+                        color: "white",
+                        marginLeft: "8px",
+                        textTransform: "none",
+                      }}
+                      onClick={() => {
+                        setIsOpen(true);
+                      }}>
+                      <AddIcon sx={{ mr: "5px", fontSize: "19px" }} />
+                      Tambah User
+                    </Button>
+                  )}
                 </Box>
               </Box>
               <hr sx={{ width: "100%" }} />

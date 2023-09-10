@@ -8,7 +8,7 @@ import {
   MenuItem,
   TextField,
   Box,
-  InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
@@ -50,7 +50,7 @@ ModuleRegistry.registerModules([
 const tType = 1;
 
 const ReportPksTransactions = () => {
-  // console.clear();
+  console.clear();
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -253,17 +253,17 @@ const ReportPksTransactions = () => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
 
-    // console.clear();
+    console.clear();
 
     return () => {
-      // console.clear();
+      console.clear();
     };
   }, []);
 
   return (
     <>
       <PageHeader
-        title="Report Transaksi PKS4"
+        title="Report Transaksi PKS"
         subTitle="Page Description"
         icon={<LocalShippingIcon fontSize="large" />}
       />
@@ -361,27 +361,6 @@ const ReportPksTransactions = () => {
                   </Select>
                 </FormControl>
 
-                {/* <FormControl
-                  sx={{ ml: "10px", mt: "auto", minWidth: 150 }}
-                  size="small"
-                >
-                  <Select
-                    value={selectedStatus}
-                    onChange={Status}
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
-                    sx={{
-                      color: selectedStatus === "" ? "gray" : "inherit",
-                      fontSize: "15px",
-                    }}
-                  >
-                    <MenuItem value="">Pilih Status</MenuItem>
-                    <MenuItem value="0">TIMBANG MASUK</MenuItem>
-                    <MenuItem value="1">LOADING/UNLOADING</MenuItem>
-                    <MenuItem value="2">TIMBANG KELUAR</MenuItem>
-                    <MenuItem value="3">DATA DISPATCHED</MenuItem>
-                  </Select>
-                </FormControl> */}
                 <Box ml="auto" mt="auto">
                   <Button
                     sx={{

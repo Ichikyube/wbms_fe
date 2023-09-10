@@ -20,11 +20,22 @@ const PieCharts = () => {
   const productNames = ["CPO", "PKO", "TBS"];
   const othersName = "Other";
 
+  // Menggabungkan "TBS Internal" dan "TBS Eksternal" menjadi "TBS"
+  const combinedTBSCount = salesData.filter(
+    (transaction) =>
+      transaction.productName === "TBS Internal" ||
+      transaction.productName === "TBS Eksternal"
+  ).length;
+
   const productCount = {};
   productNames.forEach((productName) => {
-    productCount[productName] = salesData.filter(
-      (transaction) => transaction.productName === productName
-    ).length;
+    if (productName === "TBS") {
+      productCount[productName] = combinedTBSCount;
+    } else {
+      productCount[productName] = salesData.filter(
+        (transaction) => transaction.productName === productName
+      ).length;
+    }
   });
 
   const othersCount =
@@ -52,12 +63,6 @@ const PieCharts = () => {
 
   return (
     <>
-      {/* <div className="title">
-        <Typography fontSize="18px">
-          <PieChartOutlineOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
-          PieChart
-        </Typography>
-      </div> */}
       <div className="areaChart">
         <div className="chart mt-4">
           <ResponsiveContainer width="100%" height="100%">
@@ -83,5 +88,6 @@ const PieCharts = () => {
     </>
   );
 };
+
 
 export default PieCharts;

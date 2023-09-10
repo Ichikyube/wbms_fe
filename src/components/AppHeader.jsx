@@ -18,12 +18,10 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from "@coreui/icons";
 import { AppBreadcrumb } from "./index";
 import { AppHeaderDropdown } from "./header/index";
 import { logo } from "../assets/brand/logo";
-
+import Avatar from "@mui/material/Avatar";
 import { deepOrange, deepPurple } from "@mui/material/colors";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { setSidebar } from "../slices/appSlice";
-import NotificationList from "./NotificationList";
 
 const AppHeader = () => {
   const dispatch = useDispatch();
@@ -35,7 +33,8 @@ const AppHeader = () => {
       <CContainer fluid>
         <CHeaderToggler
           className="ps-1"
-          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}>
+          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}
+        >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
@@ -54,15 +53,28 @@ const AppHeader = () => {
               Transaksi WB
             </CNavLink>
           </CNavItem>
+          <CNavItem>
+            <CNavLink to="/profile" component={NavLink}>Settings</CNavLink>
+          </CNavItem>
         </CHeaderNav>
-        
         <CHeaderNav>
           <CNavItem>
-              <NotificationList />
+            <CNavLink href="#">
+              <CIcon icon={cilBell} size="lg" />
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink href="#">
+              <CIcon icon={cilList} size="lg" />
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink href="#">
+              <CIcon icon={cilEnvelopeOpen} size="lg" />
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-3">
-          {/* <ToastContainer position="top-right" autoClose={3000} />{" "} */}
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>

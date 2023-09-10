@@ -124,25 +124,18 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                   >
                     Site
                   </FormLabel>
-                  <Select
+                  <TextField
                     fullWidth
+                    variant="outlined"
                     inputProps={{ readOnly: true }}
-                    name="siteId"
-                    value={values.siteId}
+                    type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Site --
-                    </MenuItem>
-                    {dtSites.map((item) => {
-                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
-                    })}
-                  </Select>
+                    value={values.site.name}
+                    name="siteId"
+                    error={!!touched.siteId && !!errors.siteId}
+                    helperText={touched.siteId && errors.siteId}
+                  />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -155,25 +148,18 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                   >
                     Company
                   </FormLabel>
-                  <Select
+                  <TextField
                     fullWidth
+                    variant="outlined"
                     inputProps={{ readOnly: true }}
-                    name="companyId"
-                    value={values.companyId}
+                    type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Company --
-                    </MenuItem>
-                    {dtCompanies.map((item) => {
-                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
-                    })}
-                  </Select>
+                    value={values.company.name}
+                    name="companyId"
+                    error={!!touched.companyId && !!errors.companyId}
+                    helperText={touched.companyId && errors.companyId}
+                  />
                 </FormControl>
               </Box>
             </DialogContent>

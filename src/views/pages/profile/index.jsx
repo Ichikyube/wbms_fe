@@ -56,6 +56,7 @@ const Profile = () => {
   const [dtuser, setDtUser] = useState([]);
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
+  const [editedData, setEditedData] = useState({});
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -64,11 +65,19 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    UsersAPI.getById(userInfo.id).then((res) => {
-      setDtUser(res.data.user.records);
-    });
-  }, [userInfo.id]);
+    if (Object.keys(editedData).length > 0) {
+      UsersAPI.update(userInfo.id, editedData).then((res) => {
+        setDtUser(res.data.user.records);
+        setEditedData({}); // Reset editedData setelah berhasil disimpan
+      });
+    }
+  }, [editedData, userInfo.id]);
   console.log(dtuser, "data user");
+
+  const handleFormSubmit = (editedValues) => {
+    setEditedData(editedValues); // Simpan perubahan ke dalam editedData
+  };
+
   return (
     <>
       <Typography
@@ -76,7 +85,7 @@ const Profile = () => {
       >
         Profile
       </Typography>
-      <Formik initialValues={userInfo}>
+      <Formik onSubmit={handleFormSubmit} initialValues={userInfo}>
         {({
           values,
           errors,
@@ -112,7 +121,7 @@ const Profile = () => {
                     >
                       {/* Tambahkan div kontainer untuk mengatur posisi */}
                       <div style={{ position: "relative" }}>
-                        <div
+                        {/* <div
                           style={{
                             position: "absolute",
                             top: "55px",
@@ -140,7 +149,7 @@ const Profile = () => {
                               />
                             </label>
                           </Tooltip>
-                        </div>
+                        </div> */}
 
                         <div
                           style={{
@@ -168,8 +177,8 @@ const Profile = () => {
                                 src={`${path}${userInfo.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "340px",
-                                  height: "340px",
+                                  width: "200px",
+                                  height: "200px",
                                 }}
                               />
                             </div>
@@ -191,21 +200,21 @@ const Profile = () => {
                               />
                             </div>
                           )}
-
                         </div>
                       </div>
 
                       <Typography
-                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}
+                        sx={{ fontSize: "25px", fontWeight: "bold", mb: 1 }}
                       >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "15px", mb: 4 }}>
+                      <Typography sx={{ fontSize: "18px", mb: 4 }}>
                         {userInfo.role}
                       </Typography>
 
                       <Button
                         fullwidth
+                        type="submit"
                         variant="contained"
                         sx={{
                           backgroundColor: blue[700],
@@ -257,7 +266,6 @@ const Profile = () => {
                     <Box
                       display="grid"
                       margin={7}
-                      my={14.2}
                       width="75%"
                       gap="30px"
                       gridTemplateColumns="repeat(4, minmax(0, 1fr))"
@@ -294,38 +302,7 @@ const Profile = () => {
                           helperText={touched.name && errors.name}
                         />
                       </FormControl>
-                      <FormControl
-                        sx={{
-                          gridColumn: "span 4",
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FormLabel
-                          sx={{
-                            color: "black",
-                            marginBottom: "8px",
-                            fontSize: "18px",
-                            fontWeight: "bold",
-                            width: "15%",
-                          }}
-                        >
-                          Email
-                        </FormLabel>
-                        <TextField
-                          fullWidth
-                          sx={{ backgroundColor: "whitesmoke" }}
-                          type="email"
-                          placeholder=" Email"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.email}
-                          name="email"
-                          error={!!touched.email && !!errors.email}
-                          helperText={touched.email && errors.email}
-                        />
-                      </FormControl>
+
                       <FormControl
                         sx={{
                           gridColumn: "span 4",
@@ -352,6 +329,7 @@ const Profile = () => {
                           placeholder=" No Telephon"
                           onBlur={handleBlur}
                           onChange={handleChange}
+                          inputProps={{ readOnly: true }}
                           value={values.phone}
                           name="phone"
                           error={!!touched.phone && !!errors.phone}
@@ -364,7 +342,8 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <FormLabel
                           sx={{
                             color: "black",
@@ -372,7 +351,8 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}>
+                          }}
+                        >
                           Alamat
                         </FormLabel>
                         <TextField
@@ -381,10 +361,11 @@ const Profile = () => {
                           rows={4}
                           sx={{ backgroundColor: "whitesmoke" }}
                           type="text"
-                          placeholder="Alamat"
+                          placeholder="Alamat....."
                           onBlur={handleBlur}
                           onChange={handleChange}
                           value={values.alamat}
+                          inputProps={{ readOnly: true }}
                           name="alamat"
                           error={!!touched.nik && !!errors.nik}
                           helperText={touched.nik && errors.nik}

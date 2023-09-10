@@ -53,7 +53,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Tambah Data Product Group
         <IconButton
           sx={{
@@ -64,7 +65,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -72,7 +74,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
       <Formik
         onSubmit={handleSubmit}
         initialValues={initialValues}
-        validationSchema={checkoutSchema}>
+        validationSchema={checkoutSchema}
+      >
         {({
           values,
           errors,
@@ -90,7 +93,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8   minmax(0, 1fr))">
+                gridTemplateColumns="repeat(8   , minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -98,7 +102,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Nama
                   </FormLabel>
                   <TextField
@@ -120,7 +125,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     ShortDesc
                   </FormLabel>
                   <TextField
@@ -143,7 +149,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Deskripsi
                   </FormLabel>
                   <TextField
@@ -174,7 +181,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}>
+                    }}
+                  >
                     Cancel
                   </Button>
                 </Box>
@@ -184,7 +192,8 @@ const CreateProductgroups = ({ isOpen, onClose }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

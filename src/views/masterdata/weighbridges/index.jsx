@@ -57,9 +57,8 @@ const Weighbridges = () => {
 
   const { data: dtWeighbridges } = useSWR(
     searchQuery ? `Weighbridges?name_like=${searchQuery}` : "Weighbridges",
-    fetcher, {
-      refreshInterval: 2000,
-    }
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   const updateGridData = useCallback((Weighbridges) => {
@@ -141,15 +140,11 @@ const Weighbridges = () => {
     },
     {
       headerName: "Site",
-      field: "siteId",
+      field: "site.name",
       sortable: true,
       hide: false,
       flex: 2,
-      valueFormatter: (params) => {
-        const siteId = params.value;
-        const site = dtSites.find((item) => item.id === siteId);
-        return site ? site.name : "";
-      },
+    
     },
 
     {

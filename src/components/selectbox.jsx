@@ -25,27 +25,43 @@ const SelectBox = (props) => {
       return value ? { ...base } : { display: "none" };
     },
   };
+  const [len, setLen] = useState("");
+  const [opts, setOpts] = useState([]);
+  useEffect(() => {
+    if (props.length) {
+      setLen(props.length);
+    }
+  }, [props.length]);
+
+  useEffect(() => {
+    if (props.options) {
+      setOpts(props.options);
+    }
+  }, [props.options]);
+  const [selectedValues, setselectedValues] = useState(props.defaultValue);
 
   return (
     <>
-      <Select
-        isMulti
-        fullWidth
-        name={props.name}
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        classNamePrefix="select"
-        isOptionSelected={true}
-        isClearable={false}
-        isSearchable={true}
-        placeholder={props.placeholder}
-        value={props?.value || null}
-        options={props.options}
-        onChange={props.onChange}
-        components={{ ValueContainer }}
-        style={{ flex: 1, width: `${props.width}` }}
-        styles={styles}
-      />
+      {opts && opts.length > 0 && (
+        <Select
+          isMulti
+          fullWidth
+          name={props.name}
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          classNamePrefix="select"
+          isOptionSelected={true}
+          isClearable={true}
+          isSearchable={true}
+          placeholder={props.placeholder}
+          value={props.value}
+          options={opts}
+          onChange={props.onChange}
+          components={{ ValueContainer }}
+          style={{ flex: 1, width: `${props.width}` }}
+          styles={styles}
+        />
+      )}
     </>
   );
 };

@@ -54,10 +54,11 @@ const EditTransportvehicle = ({
   const UserSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
+    codeSap: yup.string().required("required"),
     productId: yup.string().required("required"),
     productName: yup.string().required("required"),
     productCode: yup.string().required("required"),
-    plateNo: yup.string().required("required").max(12),
+    plateNo: yup.string().required("required"),
     capacity: yup.number().required("required"),
     brand: yup.string().required("required"),
     model: yup.string().required("required"),
@@ -201,7 +202,7 @@ const EditTransportvehicle = ({
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -324,7 +325,7 @@ const EditTransportvehicle = ({
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

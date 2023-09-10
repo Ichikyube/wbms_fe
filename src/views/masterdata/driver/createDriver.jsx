@@ -42,7 +42,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
   const checkoutSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    nik: yup.string().required("required"),
     name: yup.string().required("required"),
     address: yup.string().required("required"),
     email: yup
@@ -51,12 +51,13 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
       .required("Email is required"),
     phone: yup.string().required("required"),
     codeSap: yup.string().required("required"),
-    licenseNo: yup.string().min(12, "Minimal 12 karakter"),
+    licenseNo: yup.string().required("required"),
     licenseED: yup.date().required("required"),
   });
   const initialValues = {
     companyId: "",
     companyName: "",
+    codeSap: "",
     nik: "",
     name: "",
     address: "",
@@ -121,13 +122,13 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    NIK
+                    NPK
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan NIK...."
+                    placeholder="Masukkan NPK...."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.nik}
@@ -276,7 +277,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -349,7 +350,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     helperText={touched.phone && errors.phone}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

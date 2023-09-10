@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography
 } from "@mui/material";
 
 const QRCodeScanner = (props) => {
@@ -55,7 +56,16 @@ const QRCodeScanner = (props) => {
             rows={4}
             id="barcode"
             name="barcode"
-            label="Please Scan QR Code"
+            label={
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+               Please Scan QR Code
+              </Typography>
+            }
             autoFocus={true}
             value={codeContent}
             onChange={onChangeBarcode}

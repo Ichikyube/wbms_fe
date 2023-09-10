@@ -38,6 +38,16 @@ const _nav = [
         name: "Report",
         to: "/reports/pks-transactions",
       },
+      {
+        component: CNavItem,
+        name: "Data Transaction",
+        to: "/data-transaction",
+      },
+      {
+        component: CNavItem,
+        name: "Backdate Template",
+        to: "/backdateTemplate",
+      },
     ],
   },
   {
@@ -176,12 +186,12 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: "Config",
+        name: "Config ",
         to: "/config",
       },
       {
         component: CNavItem,
-        name: "Config Request",
+        name: "Config Request ",
         to: "/configrequest",
       },
     ],
@@ -215,6 +225,11 @@ const _nav = [
             to: "roleslist",
           },
         ],
+      },
+      {
+        component: CNavItem,
+        name: "Permissions",
+        to: "/permissions",
       },
     ],
   },

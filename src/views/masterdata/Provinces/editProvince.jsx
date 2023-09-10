@@ -44,9 +44,11 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
       open={isEditOpen}
       fullWidth
       maxWidth="sm"
-      onClose={() => onClose("", false)}>
+      onClose={() => onClose("", false)}
+    >
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Edit Data Provinces
         <IconButton
           sx={{
@@ -57,7 +59,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -66,7 +69,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={dtProvince}
-          validationSchema={userSchema}>
+          validationSchema={userSchema}
+        >
           {({
             values,
             errors,
@@ -83,7 +87,9 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
+            
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -91,7 +97,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Nama
                   </FormLabel>
 
@@ -118,7 +125,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -127,7 +135,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

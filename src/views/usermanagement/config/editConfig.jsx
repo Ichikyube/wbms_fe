@@ -6,30 +6,24 @@ import {
   TextField,
   Button,
   Box,
+  FormControl,
+  FormLabel,
   IconButton,
   InputLabel,
   Autocomplete,
-  MenuItem,
-  Select,
-  Switch,
-  FormGroup,
-  Checkbox,
   TextareaAutosize,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { format, addDays, addHours } from "date-fns";
+import { Formik } from "formik";
 import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
-import * as ConfigApi from "../../../api/configsApi";
+import * as ConfigApi from "../../../api/configApi";
 import moment from "moment";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import ReactRRuleGenerator from "../../../components/ReactRRuleGenerator";
 
 const StyledTextarea = styled(TextareaAutosize)(
   ({ theme }) => `
@@ -66,15 +60,19 @@ const StyledTextarea = styled(TextareaAutosize)(
 );
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
-  const [isRepeatable, setIsRepeatable] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [rrule, setRrule] = useState(
+    "DTSTART:20190301T230000Z\nFREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"
+  );
 
-  const handleIsRepeatableChange = (event) => {
-    setIsRepeatable(event.target.checked);
+  const handleChange = (newRRule) => {
+    setRrule(newRRule);
+    setIsCopied(false);
   };
 
-  const userSchema = yup.object().shape({
-    // name: yup.string().required("required"),
-  });
+  const handleCopy = () => {
+    setIsCopied(true);
+  };
 
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     values.start = moment(values.start).toDate();
@@ -94,12 +92,9 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
-  const [timeSpan, setTimeSpan] = useState(0);
 
-  const handleTimeSpanChange = (newTimeSpan) => {
-    setTimeSpan(newTimeSpan);
-  };
-  /*
+  return (
+    /*
     for SetConfig
     Set lvlOfApproval
     depend on the level, add approver selector. Use input selector with autocomplete username or name
@@ -108,23 +103,15 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     Set repeatable checkbox
     Abort status
     */
-    const formatLifespan = (hours, minutes) => {
-      return `${hours} hours ${minutes} minutes`;
-    };
-    const initialValues = {
-      configRequestLifespan: {
-        hours: 0,
-        minutes: 0,
-      },
-    };
-  return (
     <Dialog
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}>
+      onClose={() => onClose("", false)}
+    >
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Edit Data Config
         <IconButton
           sx={{
@@ -135,16 +122,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={dtConfig}
-          validationSchema={userSchema}>
+        <Formik onSubmit={handleFormSubmit} initialValues={dtConfig}>
           {({
             values,
             errors,
@@ -162,7 +147,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -170,7 +156,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Config Name
                   </FormLabel>
 
@@ -190,139 +177,63 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   />
                 </FormControl>
               </Box>
-              <Box
-                display="block"
-                padding={2}
-                paddingBottom={3}
-                paddingLeft={3}
-                paddingRight={3}
-                gap="20px">
-                <FormControl
-                  sx={{
-                    marginBottom: "8px",
-                    color: "black",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  }}
-                  component="fieldset">
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    Level of Approval
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-label="Level of Approval"
-                    name="lvlOfApprvl"
-                    value={values.lvlOfApprvl}
-                    onChange={handleChange}>
-                    <FormControlLabel
-                      value={1}
-                      control={<Radio />}
-                      label="lvl 1  "
-                    />
-                    <FormControlLabel
-                      value={2}
-                      control={<Radio />}
-                      label="lvl 2"
-                    />
-                    <FormControlLabel
-                      value={3}
-                      control={<Radio />}
-                      label="lvl 3"
-                    />
-                  </RadioGroup>
-                </FormControl>
-                <FormControl
-                  fullWidth
-                  sx={{
-                    marginBottom: "8px",
-                    color: "black",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  }}>
-                  <InputLabel id="demo-simple-select-label">
-                    Default State
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    name="status"
-                    id="status-default-select"
-                    value={values.status}
-                    label="Default State"
-                    onChange={handleChange}>
-                    <MenuItem value="ACTIVE">Active</MenuItem>
-                    <MenuItem default value="DISABLED">
-                      Disabled
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-                {/* <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={isRepeatable}
-                        onChange={handleIsRepeatableChange}
-                      />
-                    }
-                    label="Is Repeatable"
-                  />
-                </FormGroup> */}
-              </Box>
-              <TextField
-                label="CONFIG REQUEST LIFESPAN"
-                name="configRequestLifespan"
-                variant="outlined"
-              />
-              <TimeSpanInput onChange={handleTimeSpanChange} />
               <div>
-          <Typography id="hours-slider" gutterBottom>
-            Hours
-          </Typography>
-          <Field name="configRequestLifespan.hours">
-            {({ field }) => (
-              <Slider
-                {...field}
-                aria-labelledby="hours-slider"
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={0}
-                max={24}
-              />
-            )}
-          </Field>
-        </div>
+                <div className="app container">
+                  <ReactRRuleGenerator
+                    onChange={handleChange}
+                    value={rrule}
+                    config={{
+                      hideStart: false,
+                    }}
+                  />
+                </div>
 
-        <div>
-          <Typography id="minutes-slider" gutterBottom>
-            Minutes
-          </Typography>
-          <Field name="configRequestLifespan.minutes">
-            {({ field }) => (
-              <Slider
-                {...field}
-                aria-labelledby="minutes-slider"
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={0}
-                max={59}
-              />
-            )}
-          </Field>
-        </div>
+                <hr className="mt-5 mb-5" />
 
-        <Typography>
-          Lifespan: {formatLifespan(
-            initialValues.configRequestLifespan.hours,
-            initialValues.configRequestLifespan.minutes
-          )}
-        </Typography>
+                <div className="container">
+                  <h5>
+                    <strong>Example handling</strong>
+                  </h5>
+
+                  <div className="px-3 pt-3 border rounded">
+                    <div className="form-group row d-flex align-items-sm-center">
+                      <div className="col-sm-2 text-sm-right">
+                        <span className="col-form-label">
+                          <strong>RRule</strong>
+                        </span>
+                      </div>
+
+                      <div className="col-sm-8">
+                        <StyledTextarea
+                          aria-label="minimum height"
+                          minRows={3}
+                          placeholder="Minimum 3 rows"
+                          className={`form-control rrule ${
+                            isCopied ? "rrule-copied" : "rrule-not-copied"
+                          }`}
+                          value={rrule}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="col-sm-2">
+                        <CopyToClipboard text={rrule} onCopy={handleCopy}>
+                          <button
+                            aria-label="Copy generated RRule"
+                            className={`btn ${
+                              isCopied ? "btn-secondary" : "btn-primary"
+                            } float-right`}
+                          >
+                            {isCopied ? "Copied" : "Copy"}
+                          </button>
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr className="mt-5 mb-5" />
+              </div>
               <Box display="flex" mt={2} ml={3}>
                 <Button
                   variant="contained"
@@ -332,7 +243,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -341,7 +253,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

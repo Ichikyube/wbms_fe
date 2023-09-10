@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useCollapse } from "react-collapsed";
+import useCollapse from "react-collapsed";
 import "./style.css";
 import { styled } from "@mui/material/styles";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
+  Checkbox,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Typography,
-  ToggleButton,
   Button,
+  RadioGroup,
+  Radio,
   FormControl,
   IconButton,
   FormLabel,
@@ -45,13 +48,12 @@ const CreateRoles = ({ isOpen, onClose }) => {
     "Driver",
     "Mill",
     "Product",
+    "Semai",
     "Site",
     "StorageTank",
     "Transaction",
     "TransportVehicle",
     "Weighbridge",
-    "User",
-    "Config"
   ];
   const [checkboxes, setCheckboxes] = useState(
     resourcesList.map((resource, index) => ({
@@ -87,24 +89,18 @@ const CreateRoles = ({ isOpen, onClose }) => {
     actionOptions.map((action, index) => ({
       action: action,
       possession: possesionList[index],
-      attributes: [],
+      attributes: [
+        {
+          attr: "",
+        },
+      ],
     }))
   );
   const [permissions, setPermissions] = useState({ resource: "", grants });
   const generateInitialValues = (permissions) => ({
     name: "",
-    description: "",
     permissions,
   });
-  const [mountAttributes, setMountAttributes] = useState([]);
-  const toggleAttr = (attrId) => {
-    if (mountAttributes.includes(attrId)) {
-      setMountAttributes(mountAttributes.filter((i) => i !== attrId));
-    } else {
-      setMountAttributes([...mountAttributes, attrId]);
-    }
-  };
-
   // Use the useEffect to update selectedResources
   useEffect(() => {
     const updatedResources = checkboxes
@@ -126,27 +122,38 @@ const CreateRoles = ({ isOpen, onClose }) => {
   }, [selectedResources, grants]);
 
   // Create
+
+  useEffect(() => {
+    const successMessage = localStorage.getItem("successMessage");
+
+    if (successMessage) {
+      // Hapus pesan dari storage web
+      localStorage.removeItem("successMessage");
+
+      // Menampilkan toast alert
+      toast.success(successMessage);
+    }
+  }, []);
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    if (!isLastStep) return next();
-    alert(JSON.stringify(data));
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
     const filteredValues = Object.fromEntries(filtered);
-    RolesAPI.create(filteredValues)
-      .then((res) => {
-        console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan");
-      })
-      .catch((error) => {
-        console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message);
-      })
-      .finally(() => {
-        setSubmitting(false);
-        resetForm();
-        
-        onClose("", false);
-      });
+    try {
+      await RolesAPI.create(filteredValues);
+      console.log("Data Berhasil Disimpan");
+      // Simpan pesan berhasil di storage web
+      localStorage.setItem("successMessage", "Data Berhasil Disimpan");
+      // Memuat ulang halaman
+      window.location.reload();
+    } catch (error) {
+      console.error("Data Gagal Disimpan:", error);
+      toast.error("Data Gagal Disimpan: " + error.message);
+    } finally {
+      setSubmitting(false);
+      resetForm();
+      onClose("", false);
+    }
   };
 
   const checkoutSchema = yup.object().shape({
@@ -154,48 +161,15 @@ const CreateRoles = ({ isOpen, onClose }) => {
   });
 
   const StyledAccordion = styled(Accordion)(({ theme }) => ({
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     color: theme.palette.text.secondary,
     transition: "max-width 0.3s ease-in-out",
   }));
-  const pageStage = useSelector(state => state.FormStage)
-  this.state = {
-    step: 1,
-    roleName: '',
-    permissions: [],
-  };
-  nextStep = () => {
-    this.setState((prevState) => ({ step: prevState.step + 1 }));
-  };
-
-  prevStep = () => {
-    this.setState((prevState) => ({ step: prevState.step - 1 }));
-  };
-
-  handleRoleNameChange = (event) => {
-    this.setState({ roleName: event.target.value });
-  };
-
-  handlePermissionsChange = (event) => {
-    const selectedPermissions = Array.from(event.target.selectedOptions, (option) => option.value);
-    this.setState({ permissions: selectedPermissions });
-  };
-
-  function updateFields(fields) {
-    setData(prev => ({ ...prev, ...fields }));
-  }
-
-  const { steps, currentStepIndex, step, isFirstStep, isLastStep, back, next } =
-    useMultiStepForm([
-      <UserForm {...data} updateFields={updateFields} />,
-      <AddressForm {...data} updateFields={updateFields} />,
-      <AccountForm {...data} updateFields={updateFields} />,
-    ]);
-
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"xl"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
+      >
         Tambah Roles
         <IconButton
           sx={{
@@ -206,7 +180,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -215,7 +190,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
           enableReinitialize
           onSubmit={handleSubmit}
           initialValues={generateInitialValues(permissions)}
-          validationSchema={checkoutSchema}>
+          validationSchema={checkoutSchema}
+        >
           {({
             values,
             errors,
@@ -227,129 +203,44 @@ const CreateRoles = ({ isOpen, onClose }) => {
             isSubmitting,
           }) => (
             <Form onSubmit={handleSubmit}>
-                        {/* When adding/removing components, update the progress bar below */}
-          <LazyLoad once>
-            <div className="progressbar">
-              <div className={pageStage===1 ? 'progress-step progress-step-active' : 'progress-step'} data-title="User"></div>
-              <div className={pageStage===2 ? 'progress-step progress-step-active' : 'progress-step'} data-title="Privacy"></div>
-              <div className={pageStage===3 ? 'progress-step progress-step-active' : 'progress-step'} data-title="Done"></div>
-            </div>
-          </LazyLoad>
-          <div style={{ position: 'absolute', top: '.5rem', right: '.5rem' }}>
-          {currentStepIndex + 1}/{steps.length}
-        </div>
-        {step}
-        <div
-          style={{
-            marginTop: '1rem',
-            display: 'flex',
-            gap: '.5rem',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {!isFirstStep && (
-            <button type="button" onClick={back}>
-              Back
-            </button>
-          )}
-          <button type="submit">{isLastStep ? 'Finish' : 'Next'}</button>
-        </div>
-          <div className="page-wrapper">
-            
-            {(pageStage === 1) && 
-              // Signup Page
-              <LazyLoad once>
-                <div className="wrap">
-                  <FormUserSignup 
-                    pageTitle={'User Form:'} // form page stage title
-                    submitButtonText={'Next'} // submit next button display text
-                    previousButton={false} // show/hide previous button
-                  />
-                </div>
-              </LazyLoad>
-            }
-
-            {(pageStage === 2) && 
-              // Privacy Page
-              <LazyLoad once>
-                <div className="wrap">
-                  <FormUserPrivacy
-                    pageTitle={'Privacy Form:'} // form page stage title
-                    submitButtonText={'Next'} // submit next button display text
-                    previousButton={true} // show/hide previous button
-                  />
-                </div>
-              </LazyLoad>
-            }
-
-            {(pageStage === 3) && 
-              // Completion Page
-              <LazyLoad once>
-                <div className="wrap">
-                  <FormUserCompleted 
-                    pageTitle={'Success!'} // form page stage title
-                    successMessage={'Please verify your email address, you should have recieved an email from us already!'} // page success message
-                  />
-                </div>
-              </LazyLoad>
-            }
-
-          </div>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  backgroundColor: "#f8f8f8",
+                  // backgroundColor: "#f8f8f8",
                   marginBottom: "20px",
-                }}>
+                }}
+              >
                 <Box
                   display="block"
                   padding={2}
                   paddingBottom={3}
                   paddingLeft={3}
                   paddingRight={3}
-                  gap="20px">
-                  <FormControl>
+                  gap="20px"
+                >
+                  <FormControl sx={{ mb: 2 }}>
                     <FormLabel
                       sx={{
                         color: "black",
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Role Name
                     </FormLabel>
                     <TextField
                       fullWidth
                       variant="outlined"
                       type="text"
+                      size="small"
                       placeholder="Masukkan Nama"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.name}
                       name="name"
-                      error={!!touched.name && !!errors.name}
-                      helperText={touched.name && errors.name}
-                    />
-                    <FormLabel
-                      sx={{
-                        color: "black",
-                        marginBottom: "8px",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                      }}>
-                      Description
-                    </FormLabel>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="text"
-                      placeholder="Masukkan Nama"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.description}
-                      name="description"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
                     />
@@ -363,7 +254,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     Select All
                   </label>
                   {checkboxes.map((checkbox) => (
-                    <div key={checkbox.id}>
+                    <div key={checkbox.id} sx={{ }}>
                       <label>
                         <input
                           type="checkbox"
@@ -387,14 +278,16 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   padding={2}
                   paddingBottom={3}
                   paddingLeft={3}
-                  paddingRight={3}>
+                  paddingRight={3}
+                >
                   <FormLabel
                     sx={{
                       color: "black",
                       fontSize: "18px",
                       fontWeight: "bold",
-                      marginBottom: "8px",
-                    }}>
+                      marginBottom: "10px",
+                    }}
+                  >
                     Master Data
                   </FormLabel>
 
@@ -405,17 +298,20 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Permissions
                   </FormLabel>
-                  <Masonry columns={3} spacing={2}>
+                  <Masonry columns={4} spacing={2}>
                     {selectedResources.map((resource, index) => (
-                      <Paper key={resource}>
+                      <Paper key={index}>
                         <StyledAccordion
+                          key={index}
                           expanded={expanded === index}
                           onChange={(e, expanded) => toggleAccordion(index)}
                           TransitionProps={{ unmountOnExit: true }}
-                          sx={{ minHeight: "15px", width: "auto" }}>
+                          sx={{ minHeight: "15px", width: "auto" }}
+                        >
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography>
                               {" "}
@@ -425,7 +321,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                 values.permissions[index]?.grants.length > 0 &&
                                 actionOptions.map(
                                   (actionOption, actionIndex) => (
-                                    <span key={actionIndex}>
+                                    <span>
                                       {values.permissions[index]?.grants[
                                         actionIndex
                                       ]?.action
@@ -454,27 +350,31 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                 backgroundColor: blue[50],
                                 marginTop: "5px",
                                 padding: "15px",
-                              }}>
+                              }}
+                            >
                               <div
                                 style={{
                                   display: "flex",
                                   justifyContent: "space-evenly",
-                                }}>
+                                }}
+                              >
                                 <label>Actions:</label>
                                 <label> Possession </label>
                               </div>
                               {actionOptions.map(
                                 (actionOption, actionIndex) => (
                                   <div
-                                    key={actionOption}
+                                    key={actionIndex}
                                     style={{
                                       display: "block",
                                       width: "100%",
-                                    }}>
+                                    }}
+                                  >
                                     <Stack
                                       direction="row"
                                       spacing={1}
-                                      alignItems="center">
+                                      alignItems="center"
+                                    >
                                       <label>
                                         <Field
                                           type="checkbox"
@@ -482,108 +382,76 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                           checked={
                                             values.permissions[index]?.grants[
                                               actionIndex
-                                            ]?.action == actionOption
+                                            ]?.action === actionOption
                                           }
-                                          onChange={(event) => {
-                                            if (event.target.checked)
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                event.target.value
-                                              );
-                                            else
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                ""
-                                              );
-                                          }}
-                                          value={actionOption}
+                                          value={
+                                            values.permissions[index]?.grants[
+                                              actionIndex
+                                            ]?.action
+                                          }
                                         />
                                         {actionOption}
                                       </label>
-                                      {values.permissions[index]?.grants[
-                                        actionIndex
-                                      ]?.action === actionOption && (
-                                        <>
-                                          <Switch
-                                            name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                            value="own"
-                                            checked={
-                                              values.permissions[index]?.grants[
-                                                actionIndex
-                                              ]?.possession === "any"
-                                            }
-                                            onChange={(event, checked) => {
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].possession`,
-                                                checked ? "any" : "own"
-                                              );
-                                            }}
-                                          />
-                                          <Typography>
-                                            {
-                                              values.permissions[index]?.grants[
-                                                actionIndex
-                                              ]?.possession
-                                            }
-                                          </Typography>
-                                          <ToggleButton
-                                            value={
-                                              values.permissions[index]?.grants[
-                                                actionIndex
-                                              ]
-                                            }
-                                            onClick={() =>
-                                              toggleAttr(
-                                                `permissions[${index}].grants[${actionIndex}].attributes`
-                                              )
-                                            }
-                                            sx={{
-                                              border: "none",
-                                              "&:hover": {
-                                                backgroundColor: "transparent",
-                                              },
-                                            }}>
-                                            <ExpandMoreIcon
-                                              style={{
-                                                transform:
-                                                  mountAttributes.includes(
-                                                    `permissions[${index}].grants[${actionIndex}].attributes`
-                                                  )
-                                                    ? "rotate(180deg)"
-                                                    : "none",
-                                              }}
-                                            />
-                                          </ToggleButton>
-                                        </>
-                                      )}
-                                    </Stack>
-                                    {mountAttributes.includes(
-                                      `permissions[${index}].grants[${actionIndex}].attributes`
-                                    ) && (
-                                      <SelectBox
-                                        name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                        onChange={(selectedOption) => {
-                                          if (
-                                            values.permissions[index] &&
-                                            values.permissions[index].grants[
-                                              actionIndex
-                                            ]
-                                          ) {
-                                            setFieldValue(
-                                              `permissions[${index}].grants[${actionIndex}].attributes`,
-                                              selectedOption.map(({value})=>({attr:value}))
-                                            );
-                                          }
-                                        }}
-                                        placeholder="Hide Attributes: "
-                                        value={
+                                      <Switch
+                                        name={`permissions[${index}].grants[${actionIndex}].possession`}
+                                        value="own"
+                                        checked={
                                           values.permissions[index]?.grants[
                                             actionIndex
-                                          ]?.attributes.map(({attr})=>({value:attr,label:attr})) || null
+                                          ]?.possession === "any"
                                         }
-                                        options={attrOptions[resource]}
+                                        onChange={(event, checked) => {
+                                          setFieldValue(
+                                            `permissions[${index}].grants[${actionIndex}].possession`,
+                                            checked ? "any" : "own"
+                                          );
+                                        }}
                                       />
-                                    )}
+                                      <Typography>
+                                        {
+                                          values.permissions[index]?.grants[
+                                            actionIndex
+                                          ]?.possession
+                                        }
+                                      </Typography>
+                                    </Stack>
+                                    <Accordion>
+                                      <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                        id={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                      >
+                                        <Typography>
+                                          hidden attributes
+                                        </Typography>
+                                      </AccordionSummary>
+                                      <AccordionDetails>
+                                        {attrOptions[resource] && (
+                                          <SelectBox
+                                            name={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                            onChange={(event) => {
+                                              if (
+                                                values.permissions[index] &&
+                                                values.permissions[index]
+                                                  ?.grants[actionIndex]
+                                              ) {
+                                                event.forEach((options, i) =>
+                                                  setFieldValue(
+                                                    `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
+                                                    options.value
+                                                  )
+                                                );
+                                              }
+                                            }}
+                                            placeholder="Hide Attributes: "
+                                            length={
+                                              attrOptions[resource]?.length
+                                            }
+                                            options={attrOptions[resource]}
+                                          />
+                                        )}
+                                      </AccordionDetails>
+                                    </Accordion>
                                   </div>
                                 )
                               )}
@@ -606,7 +474,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box mr={1} />
@@ -618,7 +487,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     color: "white",
                     textTransform: "none",
                     fontSize: "16px",
-                  }}>
+                  }}
+                >
                   Simpan
                 </Button>
               </Box>

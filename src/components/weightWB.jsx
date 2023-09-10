@@ -3,61 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { w3cwebsocket } from "websocket";
 import moment from "moment";
-
+import { useWeighbridge } from "../common/hooks";
 import { getEnvInit } from "../configs";
 import { setWb } from "../slices/appSlice";
 
-let wsClient;
 
-const WeightWB = (props) => {
-  const { isDisabled, handleSubmit } = props;
 
-  const { wb, configs } = useSelector((state) => state.app);
+const WeightWB = () => {
+  const [weighbridge] = useWeighbridge();
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (async () =>
-      await getEnvInit().then((result) => {
-        // ENV = result;
-        console.log(configs);
-
-        if (!wsClient) {
-          wsClient = new w3cwebsocket(
-            `ws://${result.WBMS_WB_IP}:${result.WBMS_WB_PORT}/GetWeight`
-          );
-
-          wsClient.onmessage = (message) => {
-            const curWb = { ...wb };
-            curWb.isStable = false;
-            curWb.weight = Number.isNaN(+message.data) ? 0 : +message.data;
-
-            if (curWb.weight !== wb.weight) {
-              curWb.lastChange = moment().valueOf();
-            } else if (
-              moment().valueOf() - wb.lastChange >
-              result.WBMS_WB_STABLE_PERIOD
-            ) {
-              curWb.isStable = true;
-            }
-
-            if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
-              curWb.canStartScalling = true;
-
-            dispatch(setWb({ ...curWb }));
-          };
-
-          wsClient.onerror = (err) => {
-            // alert(`Cannot connect to WB: ${err}`);
-            // console.log("Get Weight Component");
-            // console.log(err);
-          };
-        }
-
-        return result;
-      }))();
-  }, []);
-
+ 
   return (
     <>
       <TextField
@@ -86,7 +41,7 @@ const WeightWB = (props) => {
           </>
         }
         disabled={true}
-        value={wb.weight}
+        value={weighbridge.getWeight()}
       />
 
       {/* <Button

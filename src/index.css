@@ -29,13 +29,13 @@ code {
 
   /* Set margin pada halaman untuk menyesuaikan dengan margin pada kertas */
   body {
-    margin: 0;
+    margin: 10px;
     padding: 10px;
   }
 }
 .custom-datetimepicker .MuiInputBase-root {
   font-size: 14px;
-  width: 145px;
+  width: 180px;
   margin-right: 10px;
   height: 38px;
 }
@@ -44,7 +44,7 @@ code {
   font-weight: bold;
 }
 .title.text-center.mb-4 span {
-  color:#2d93e7;
+  color: #2d93e7;
 }
 .listItemStyle {
   font-size: 16px; /* Ukuran teks */
@@ -53,3 +53,34 @@ code {
   list-style-type: square; /* Menghapus latar belakang bulat */
 }
 
+.nota-text {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: -0.5px;
+  color: black;
+}
+.areaChart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  .chart {
+    width: 100%;
+    height: 320px;
+  }
+}
+
+.grafik {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.filter {
+  margin-right: 10px;
+  margin-top: 7px;
+}
+.grid-cell-centered {
+  text-align: center;
+}

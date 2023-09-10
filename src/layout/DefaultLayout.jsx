@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import {
   AppContent,
   AppSidebar,
@@ -16,8 +17,10 @@ const DefaultLayout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("userinfo:", userInfo);
     if (!userInfo) navigate("/home");
   }, []);
+
   return (
     <div>
       <ToastContainer />

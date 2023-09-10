@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef, React } from "react";
+import { useState, React } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  Checkbox,
-  Typography,
+  InputAdornment,
   Button,
   Box,
   FormControl,
@@ -14,6 +12,7 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { Formik } from "formik";
@@ -43,7 +42,9 @@ const EditPassword = ({ isOpen, onClose }) => {
   };
 
   const initialValues = {
-    name: "",
+    password: "",
+    passwordNew: "",
+    confirmPassword: "",
   };
 
   const checkoutSchema = yup.object().shape({
@@ -61,6 +62,12 @@ const EditPassword = ({ isOpen, onClose }) => {
       .required("Konfirmasi password harus diisi")
       .oneOf([yup.ref("password"), null], "Password tidak cocok"),
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"sm"}>
@@ -119,14 +126,21 @@ const EditPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="medium"
                     variant="outlined"
-                    type="password"
-                    placeholder="Masukkan Password Lama"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukan Password ..."
                     value={values.password}
+                    onChange={handleChange}
                     name="password"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={togglePasswordVisibility}>
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                     error={!!touched.password && !!errors.password}
                     helperText={touched.password && errors.password}
                   />
@@ -144,13 +158,11 @@ const EditPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="medium"
                     variant="outlined"
-                    type="password"
-                    placeholder="Masukkan Password Baru"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    type="text"
+                    placeholder="Masukan Password Baru ..."
                     value={values.passwordNew}
+                    onChange={handleChange}
                     name="passwordNew"
                     error={!!touched.passwordNew && !!errors.passwordNew}
                     helperText={touched.passwordNew && errors.passwordNew}
@@ -169,13 +181,11 @@ const EditPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="medium"
                     variant="outlined"
-                    type="password"
-                    placeholder="Masukkan Ulang Password Baru"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    type="text"
+                    placeholder="Confirm Password ..."
                     value={values.confirmPassword}
+                    onChange={handleChange}
                     name="confirmPassword"
                     error={
                       !!touched.confirmPassword && !!errors.confirmPassword

@@ -457,9 +457,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ readOnly: true }}
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
+                    IconComponent={() => null} // Menyembunyikan ikon dropdown
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator --
@@ -487,9 +485,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ readOnly: true }}
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
+                    IconComponent={() => null} // Menyembunyikan ikon dropdown
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator Transporter --
@@ -507,7 +503,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Pilih SiteOperator
+                   SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"
@@ -518,9 +514,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ readOnly: true }}
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
+                    IconComponent={() => null} // Menyembunyikan ikon dropdown
                   >
                     <MenuItem value="" disabled>
                       -- Pilih SiteOperator --
@@ -549,9 +543,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ readOnly: true }}
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
+                    IconComponent={() => null} // Menyembunyikan ikon dropdown
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Estate --

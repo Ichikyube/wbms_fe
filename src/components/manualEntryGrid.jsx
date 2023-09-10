@@ -37,6 +37,7 @@ const ManualEntryGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
+      flex: 2,
     },
     {
       headerName: "No Pol",

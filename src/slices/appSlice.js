@@ -75,6 +75,10 @@ const appSlice = createSlice({
       state.wbTransaction = null;
       localStorage.removeItem("wbTransaction");
     },
+    selectionMode: (state, action) => {
+      state.wbTransaction = null;
+      localStorage.removeItem("wbTransaction");
+    },
   },
 });
 

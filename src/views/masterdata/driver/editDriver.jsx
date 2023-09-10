@@ -25,7 +25,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
   const userSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 Karakter"),
+    nik: yup.string().required("required"),
     name: yup.string().required("required"),
     address: yup.string().required("required"),
     email: yup
@@ -34,7 +34,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
       .required("Email is required"),
     phone: yup.string().required("required"),
     codeSap: yup.string().required("required"),
-    licenseNo: yup.string().min(12, "Minimal 12 Karakter"),
+    licenseNo: yup.string(),
     licenseED: yup.date().required("required"),
   });
 
@@ -113,13 +113,13 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    NIK
+                    NPK
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan NIK...."
+                    placeholder="Masukkan NPK...."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.nik}
@@ -269,7 +269,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -342,7 +342,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                     helperText={touched.phone && errors.phone}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

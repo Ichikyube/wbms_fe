@@ -1,8 +1,10 @@
 import React, { Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { CContainer, CSpinner } from "@coreui/react";
+
 // routes config
 import routes from "../routes";
+
 const AppContent = () => {
   return (
     <CContainer fluid>
@@ -21,7 +23,7 @@ const AppContent = () => {
               )
             );
           })}
-          <Route path="/" exact element={<Navigate to="dashboard" replace />} />
+          <Route path="/" element={<Navigate to="dashboard" replace />} />
         </Routes>
       </Suspense>
     </CContainer>

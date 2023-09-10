@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
-import { Grid, Paper, Button, Menu, MenuItem } from "@mui/material";
+import { Grid, Paper, Button, Menu, MenuItem, Box } from "@mui/material";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-
 import * as TransactionAPI from "../../../api/transactionApi";
 import { Link } from "react-router-dom";
 import PageHeader from "../../../components/PageHeader";
@@ -19,7 +18,6 @@ import ProgressStatus from "../../../components/ProgressStatus";
 import TransactionGrid from "../../../components/TransactionGrid";
 
 const tType = 1;
-let wsClient;
 
 const PksTransaction = () => {
   const { configs, wb, wbTransaction } = useSelector((state) => state.app);
@@ -65,67 +63,64 @@ const PksTransaction = () => {
   }, [wbTransaction]);
 
   useEffect(() => {
-    const curWb = { ...wb };
-    curWb.weight = wbms.weight;
-    curWb.isStable = false;
-
-    if (curWb.weight !== wb.weight) {
-      curWb.lastChange = moment().valueOf();
-    } else if (
-      moment().valueOf() - wb.lastChange >
-      configs.WBMS_WB_STABLE_PERIOD
-    ) {
-      curWb.isStable = true;
-    }
-
-    if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
-      curWb.canStartScalling = true;
-
-    dispatch(setWb({ ...curWb }));
+    // const curWb = { ...wb };
+    // curWb.weight = wbms.weight;
+    // curWb.isStable = false;
+    // if (curWb.weight !== wb.weight) {
+    //   curWb.lastChange = moment().valueOf();
+    // } else if (
+    //   moment().valueOf() - wb.lastChange >
+    //   configs.WBMS_WB_STABLE_PERIOD
+    // ) {
+    //   curWb.isStable = true;
+    // }
+    // if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
+    //   curWb.canStartScalling = true;
+    // dispatch(setWb({ ...curWb }));
   }, [wbms]);
 
   useEffect(() => {
-    console.clear();
-
-    if (!wsClient) {
-      wsClient = new w3cwebsocket(
-        `ws://${configs.WBMS_WB_IP}:${configs.WBMS_WB_PORT}/GetWeight`
-      );
-
-      wsClient.onmessage = (message) => {
-        const _wbms = { ...wbms };
-
-        _wbms.weight = Number.isNaN(+message.data) ? 0 : +message.data;
-
-        setWbms({ ..._wbms });
-      };
-
-      wsClient.onerror = (err) => {
-        // alert(`Cannot connect to WB: ${err}`);
-        // console.log("Get Weight Component");
-        // console.log(err);
-      };
-    }
-
-    return () => {
-      console.log("Page PKS Transaction Closed");
-      wsClient.close();
-      wsClient = null;
-      dispatch(clearWb());
-      console.clear();
-    };
+    // console.clear();
+    // if (!wsClient) {
+    //   wsClient = new w3cwebsocket(
+    //     `ws://${configs.WBMS_WB_IP}:${configs.WBMS_WB_PORT}/GetWeight`
+    //   );
+    //   wsClient.onmessage = (message) => {
+    //     const _wbms = { ...wbms };
+    //     _wbms.weight = Number.isNaN(+message.data) ? 0 : +message.data;
+    //     setWbms({ ..._wbms });
+    //   };
+    //   wsClient.onerror = (err) => {
+    //     // alert(`Cannot connect to WB: ${err}`);
+    //     // console.log("Get Weight Component");
+    //     // console.log(err);
+    //   };
+    // }
+    // return () => {
+    //   console.log("Page PKS Transaction Closed");
+    //   wsClient.close();
+    //   wsClient = null;
+    //   dispatch(clearWb());
+    //   console.clear();
+    // };
   }, []);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorE2, setAnchorE2] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleFormClick = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setAnchorE2(null);
   };
 
+  
   return (
     <>
       <PageHeader
@@ -148,47 +143,88 @@ const PksTransaction = () => {
               </Paper>
             </Grid>
             <Grid item xs={12}>
-              <Button
-                variant="contained"
-                onClick={handleClick}
-                style={{ width: "10vh", fontSize: "13px", borderRadius: "10%" }}
-              >
-                New
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem
-                  component={Link}
-                  to="/pks-transaction-ManualEntry-CpoPko"
-                  onClick={handleClose}
+              <Box display="flex">
+                <Button
+                  variant="contained"
+                  onClick={handleClick}
+                  style={{
+                    width: "10vh",
+                    fontSize: "13px",
+                    borderRadius: "10%",
+                  }}
                 >
-                  CPO / PKO
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/pks-transaction-ManualEntry-TBSInternal"
-                  onClick={handleClose}
+                  New
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
                 >
-                  TBS Internal
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/pks-transaction-ManualEntry-TBSEksternal"
-                  onClick={handleClose}
+                  <MenuItem
+                    component={Link}
+                    to="/pks-ManualEntry-TBSInternal-TimbangMasuk"
+                    onClick={handleClose}
+                  >
+                    TBS Internal
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/pks-ManualEntry-TBSEksternal-TimbangMasuk"
+                    onClick={handleClose}
+                  >
+                    TBS Eksternal
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/pks-ManualEntry-Others-TimbangMasuk"
+                    onClick={handleClose}
+                  >
+                    Lainnya
+                  </MenuItem>
+                </Menu>
+
+                <Box sx={{ ml: 1 }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleFormClick}
+                    style={{
+                      width: "10vh",
+                      fontSize: "13px",
+                      borderRadius: "10%",
+                    }}
+                  >
+                    Form
+                  </Button>
+                  <Menu
+                  anchorEl={anchorE2}
+                  open={Boolean(anchorE2)}
+                  onClose={handleClose}
                 >
-                  TBS Eksternal
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/pks-transaction-ManualEntry-Others"
-                  onClick={handleClose}
-                >
-                  Lainnya
-                </MenuItem>
-              </Menu>
+                  <MenuItem
+                    component={Link}
+                    to="/backdateFormTBSInternal"
+                    onClick={handleClose}
+                  >
+                    TBS Internal
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/backdateFormTBSEksternal"
+                    onClick={handleClose}
+                  >
+                    TBS Eksternal
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/backdateFormOthers"
+                    onClick={handleClose}
+                  >
+                    Lainnya
+                  </MenuItem>
+                </Menu>
+                </Box>
+              </Box>
+
               <Paper sx={{ p: 2, mt: 1 }}>
                 <TransactionGrid tType={tType} />
               </Paper>

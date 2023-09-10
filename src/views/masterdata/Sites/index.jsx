@@ -58,6 +58,7 @@ const Sites = () => {
   const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () => SitesAPI.getAll().then((res) => res.data.site.records);
+  const syncSemai = () => SitesAPI.syncSemai();
 
   useEffect(() => {
     CitiesAPI.getAll().then((res) => {
@@ -76,7 +77,7 @@ const Sites = () => {
   const { data: dtSites } = useSWR(
     searchQuery ? `sites?name_like=${searchQuery}` : "sites",
     fetcher,
-    { refreshInterval: 100 }
+    { refreshInterval: 1000 }
   );
 
   const updateGridData = useCallback((Sites) => {
@@ -548,6 +549,7 @@ const Sites = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
+                        onClick={syncSemai}
                       >
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync

@@ -168,38 +168,7 @@ const ViewSites = ({
                     helperText={touched.shortName && errors.shortName}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Company
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="companyId"
-                    value={values.companyId}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{ readOnly: true }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Company --
-                    </MenuItem>
-                    {dtCompanies.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+        
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -223,6 +192,31 @@ const ViewSites = ({
                     name="companyName"
                     error={!!touched.companyName && !!errors.companyName}
                     helperText={touched.companyName && errors.companyName}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Source Site Name
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    inputProps={{ readOnly: true }}
+                    type="text"
+                    placeholder="Masukkan Source Site Name...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.sourceSiteName}
+                    name="sourceSiteName"
+                    error={!!touched.sourceSiteName && !!errors.sourceSiteName}
+                    helperText={touched.sourceSiteName && errors.sourceSiteName}
                   />
                 </FormControl>
 
@@ -254,62 +248,9 @@ const ViewSites = ({
                     })}
                   </Select>
                 </FormControl>
-                <br />
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Source Site
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="sourceSiteId"
-                    value={values.sourceSiteId}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{ readOnly: true }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Source Site --
-                    </MenuItem>
-                    {dtSite.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Source Site Name
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    inputProps={{ readOnly: true }}
-                    type="text"
-                    placeholder="Masukkan Source Site Name...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.sourceSiteName}
-                    name="sourceSiteName"
-                    error={!!touched.sourceSiteName && !!errors.sourceSiteName}
-                    helperText={touched.sourceSiteName && errors.sourceSiteName}
-                  />
-                </FormControl>
+               
+               <br />
+               
 
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -409,6 +350,7 @@ const ViewSites = ({
                     onChange={handleChange}
                     displayEmpty
                     inputProps={{ readOnly: true }}
+                    IconComponent={() => null} 
                   >
                     <MenuItem value="" disabled>
                       Pilih Mill

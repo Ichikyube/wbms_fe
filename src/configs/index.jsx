@@ -1,4 +1,4 @@
-import * as ConfigAPI from "../api/configsApi";
+import * as ConfigAPI from "../api/configApi";
 
 const sccModel = {
   0: "None",

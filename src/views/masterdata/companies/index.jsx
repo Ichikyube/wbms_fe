@@ -87,9 +87,8 @@ const Companies = () => {
 
   const { data: dtCompany } = useSWR(
     searchQuery ? `companies?name_like=${searchQuery}` : "companies",
-    fetcher, {
-      refreshInterval: 2000,
-    }
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   //filter

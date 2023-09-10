@@ -28,7 +28,7 @@ const EditSites = ({
   dtCity,
 }) => {
   const userSchema = yup.object().shape({
-    sourceSiteName: yup.string().required("required"),
+    // sourceSiteName: yup.string().required("required"),
     companyName: yup.string().required("required"),
     code: yup.string().required("required"),
     codeSap: yup.string().required("required"),
@@ -237,9 +237,6 @@ const EditSites = ({
                       );
                     }}
                     displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Company --
@@ -253,7 +250,7 @@ const EditSites = ({
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -268,7 +265,7 @@ const EditSites = ({
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Company Name"
+                    placeholder="Masukan Company Name....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.companyName}
@@ -287,43 +284,12 @@ const EditSites = ({
                       fontWeight: "bold",
                     }}
                   >
-                    City
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="cityId"
-                    value={values.cityId}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih City --
-                    </MenuItem>
-                    {dtCity.map((item) => {
-                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
-                    })}
-                  </Select>
-                </FormControl>
-                <br />
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
                     Source Site
                   </FormLabel>
                   <Select
                     fullWidth
                     name="sourceSiteId"
-                    value={values.sourceSiteId}
+                    value={values.sourceSiteId || ""}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -336,9 +302,6 @@ const EditSites = ({
                       );
                     }}
                     displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Source Site --
@@ -350,7 +313,7 @@ const EditSites = ({
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -374,7 +337,33 @@ const EditSites = ({
                     helperText={touched.sourceSiteName && errors.sourceSiteName}
                   />
                 </FormControl>
-
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    City
+                  </FormLabel>
+                  <Select
+                    fullWidth
+                    name="cityId"
+                    value={values.cityId || ""}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    displayEmpty
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih City --
+                    </MenuItem>
+                    {dtCity.map((item) => {
+                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -450,11 +439,12 @@ const EditSites = ({
                       touched.solarCalibration && errors.solarCalibration
                     }
                   />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       marginBottom: "8px",
-                      marginTop: "20px",
                       fontSize: "16px",
                       fontWeight: "bold",
                     }}
@@ -469,9 +459,6 @@ const EditSites = ({
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
                   >
                     <MenuItem value="" disabled>
                       Pilih Mill
@@ -494,7 +481,7 @@ const EditSites = ({
                   <TextField
                     fullWidth
                     multiline
-                    rows={6}
+                    rows={4}
                     variant="outlined"
                     type="text"
                     placeholder="Masukkan Description...."

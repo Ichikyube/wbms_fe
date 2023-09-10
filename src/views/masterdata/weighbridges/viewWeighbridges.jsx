@@ -124,22 +124,18 @@ const ViewWeighbridges = ({ isViewOpen, onClose, dtSites, dtWeighbridges }) => {
                   >
                     Site
                   </FormLabel>
-                  <Select
+                  <TextField
                     fullWidth
+                    variant="outlined"
                     inputProps={{ readOnly: true }}
-                    name="siteId"
-                    value={values.siteId}
+                    type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Site --
-                    </MenuItem>
-                    {dtSites.map((item) => {
-                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
-                    })}
-                  </Select>
+                    value={values.site.name}
+                    name="siteId"
+                    error={!!touched.siteId && !!errors.siteId}
+                    helperText={touched.siteId && errors.siteId}
+                  />
                 </FormControl>
               </Box>
             </form>

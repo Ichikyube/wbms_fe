@@ -28,24 +28,24 @@ const SelectBox = (props) => {
 
   return (
     <>
-      <Select
-        isMulti
-        fullWidth
-        name={props.name}
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        classNamePrefix="select"
-        isOptionSelected={true}
-        isClearable={false}
-        isSearchable={true}
-        placeholder={props.placeholder}
+        <Select
+          isMulti
+          fullWidth
+          name={props.name}
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          classNamePrefix="select"
+          isOptionSelected={true}
+          isClearable={true}
+          isSearchable={true}
+          placeholder={props.placeholder}
         value={props?.value || null}
         options={props.options}
-        onChange={props.onChange}
-        components={{ ValueContainer }}
-        style={{ flex: 1, width: `${props.width}` }}
-        styles={styles}
-      />
+          onChange={props.onChange}
+          components={{ ValueContainer }}
+          style={{ flex: 1, width: `${props.width}` }}
+          styles={styles}
+        />
     </>
   );
 };

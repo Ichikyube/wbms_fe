@@ -47,39 +47,46 @@ const AreaCharts = () => {
   };
 
   const filteredData =
-    selectedProduct !== "All"
-      ? salesData.filter(
-          (transaction) =>
-            transaction.productName === selectedProduct ||
-            (selectedProduct === "Other" &&
-              !["CPO", "PKO", "TBS"].includes(transaction.productName))
-        )
-      : salesData;
+  selectedProduct !== "All"
+    ? salesData.filter(
+        (transaction) =>
+          (selectedProduct === "TBS" &&
+            ["TBS Internal", "TBS Eksternal"].includes(transaction.productName)) ||
+          (selectedProduct === "Other" &&
+            !["CPO", "PKO", "TBS Internal", "TBS Eksternal"].includes(transaction.productName)) ||
+          (selectedProduct !== "TBS" && selectedProduct !== "Other" &&
+            transaction.productName === selectedProduct)
+      )
+    : salesData;
 
-  const productNames = ["CPO", "PKO", "TBS", "Other"];
 
-  const monthlyData = monthNames.map((monthName, monthIndex) => {
-    const monthTotal = { name: monthName };
+const productNames = ["CPO", "PKO", "TBS", "Other"];
 
-    productNames.forEach((productName) => {
-      monthTotal[productName] = 0;
-    });
+const monthlyData = monthNames.map((monthName, monthIndex) => {
+  const monthTotal = { name: monthName };
 
-    const monthTransactions = filteredData.filter(
-      (transaction) =>
-        new Date(transaction.originWeighOutTimestamp).getMonth() === monthIndex
-    );
-
-    monthTransactions.forEach((transaction) => {
-      if (productNames.includes(transaction.productName)) {
-        monthTotal[transaction.productName] += 1;
-      } else {
-        monthTotal["Other"] += 1;
-      }
-    });
-
-    return monthTotal;
+  productNames.forEach((productName) => {
+    monthTotal[productName] = 0;
   });
+
+  const monthTransactions = filteredData.filter(
+    (transaction) =>
+      new Date(transaction.originWeighOutTimestamp).getMonth() === monthIndex
+  );
+
+  monthTransactions.forEach((transaction) => {
+    if (transaction.productName === "TBS Internal" || transaction.productName === "TBS Eksternal") {
+      monthTotal["TBS"] += 1;
+    } else if (productNames.includes(transaction.productName)) {
+      monthTotal[transaction.productName] += 1;
+    } else {
+      monthTotal["Other"] += 1;
+    }
+  });
+
+  return monthTotal;
+});
+
 
   // Fill in missing months with zero transactions
   for (let i = 0; i < 12; i++) {
@@ -148,7 +155,7 @@ const AreaCharts = () => {
               <YAxis />
 
               <Tooltip />
-              <Legend iconType="square" />
+              <Legend />
               <Area
                 type="monotone"
                 dataKey="CPO"

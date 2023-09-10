@@ -114,47 +114,7 @@ const ViewTransportvehicle = ({
                     helperText={touched.codeSap && errors.codeSap}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Company
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    name="companyId"
-                    value={values.companyId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedCompany = dtCompanies.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "companyName",
-                        selectedCompany ? selectedCompany.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Company --
-                    </MenuItem>
-                    {dtCompanies.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+               
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -241,47 +201,7 @@ const ViewTransportvehicle = ({
                     helperText={touched.licenseED && errors.licenseED}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Product
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    name="productId"
-                    value={values.productId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedproduct = dtProduct.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "productName",
-                        selectedproduct ? selectedproduct.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Product --
-                    </MenuItem>
-                    {dtProduct.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+             
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{

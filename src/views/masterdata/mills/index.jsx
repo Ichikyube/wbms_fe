@@ -42,7 +42,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Mills = () => {
-  console.clear();
+  // console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -60,9 +60,8 @@ const Mills = () => {
 
   const { data: dtMills } = useSWR(
     searchQuery ? `mills?name_like=${searchQuery}` : "mills",
-    fetcher, {
-      refreshInterval: 2000,
-    }
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
   const updateGridData = useCallback((Mills) => {
@@ -85,9 +84,7 @@ const Mills = () => {
     SiteAPI.getAll().then((res) => {
       setDtSites(res.data.site.records);
     });
-  }, []);
 
-  useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompanies(res.data.company.records);
     });
@@ -144,6 +141,14 @@ const Mills = () => {
     {
       headerName: "Nama",
       field: "name",
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
+    {
+      headerName: "Site",
+      field: "site.name",
+      filter: true,
       sortable: true,
       hide: false,
       flex: 3,
@@ -226,12 +231,16 @@ const Mills = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{  p: 3,
+          <Paper
+            sx={{
+              p: 3,
               mx: 3,
               mb: 5,
               mt: 2,
               borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px", }}>
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Mill</Typography>
@@ -274,8 +283,8 @@ const Mills = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtCompanies.filter((companies) =>
-                        companies.name
+                      const filteredData = dtMills.filter((MilldtMills) =>
+                        MilldtMills.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );

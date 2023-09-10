@@ -18,7 +18,7 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from "@coreui/icons";
 import { AppBreadcrumb } from "./index";
 import { AppHeaderDropdown } from "./header/index";
 import { logo } from "../assets/brand/logo";
-
+import Avatar from "@mui/material/Avatar";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +35,8 @@ const AppHeader = () => {
       <CContainer fluid>
         <CHeaderToggler
           className="ps-1"
-          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}>
+          onClick={() => dispatch(setSidebar({ show: !sidebar.show }))}
+        >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
@@ -54,8 +55,10 @@ const AppHeader = () => {
               Transaksi WB
             </CNavLink>
           </CNavItem>
+          <CNavItem>
+            <CNavLink to="/profile" component={NavLink}>Settings</CNavLink>
+          </CNavItem>
         </CHeaderNav>
-        
         <CHeaderNav>
           <CNavItem>
               <NotificationList />

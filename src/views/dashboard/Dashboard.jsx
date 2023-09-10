@@ -12,6 +12,8 @@ const Dashboard = () => {
   const [OtherProduct, setOtherProduct] = useState(0);
 
   useEffect(() => {
+    const lowerCaseProductName = (productName) => productName.toLowerCase();
+
     TransactionAPI.getAll()
       .then((res) => res.records)
       .then((transactions) => {
@@ -27,7 +29,9 @@ const Dashboard = () => {
         setPKOProduct(PKOProduct.length);
         // Filter transaksi berdasarkan produk "TBS"
         const TBSProduct = transactions.filter(
-          (transaction) => transaction.productName === "TBS"
+          (transaction) =>
+            lowerCaseProductName(transaction.productName) === "tbs internal" ||
+            lowerCaseProductName(transaction.productName) === "tbs eksternal"
         );
         setTBSProduct(TBSProduct.length);
         // Filter transaksi berdasarkan produk "Other"
@@ -35,9 +39,16 @@ const Dashboard = () => {
           (transaction) =>
             transaction.productName !== "CPO" &&
             transaction.productName !== "PKO" &&
-            transaction.productName !== "TBS"
+            !(
+              lowerCaseProductName(transaction.productName) ===
+                "tbs internal" ||
+              lowerCaseProductName(transaction.productName) === "tbs eksternal"
+            )
         );
         setOtherProduct(OtherProduct.length);
+
+        const totalTBS = TBSProduct.length;
+        setTBSProduct(totalTBS);
       })
       .catch((error) => console.error("Error fetching province data:", error));
   }, []);
@@ -144,20 +155,16 @@ const Dashboard = () => {
           </Box>
           <BarChartIcon sx={{ fontSize: 90, color: "#b71c1c", mr: 2 }} />
         </Box>
-        <Box gridColumn="span 8" pt={3} >
-          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius:"10px" }}>
-            <div
-              style={{ width: "auto", height: "45vh" }}
-            >
+        <Box gridColumn="span 8" pt={3}>
+          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
+            <div style={{ width: "auto", height: "45vh" }}>
               <AreaCharts />
             </div>
           </Paper>
         </Box>
-        <Box gridColumn="span 4" pt={3} >
-          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius:"10px" }}>
-            <div
-              style={{ width: "auto", height: "45vh" }}
-            >
+        <Box gridColumn="span 4" pt={3}>
+          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
+            <div style={{ width: "auto", height: "45vh" }}>
               <PieCharts />
             </div>
           </Paper>

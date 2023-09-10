@@ -56,6 +56,8 @@ const App = () => {
 
             <Route path="*" name="WBMS" element={<DefaultLayout />} />
           </Routes>
+            {/* <div>Weight on weighbridge: {weighbridge.getWeight()}</div>
+        <div>isStable on weighbridge: {weighbridge.isStable().toString()}</div> */}
         </Suspense>
       </HashRouter>
     </AuthProvider>

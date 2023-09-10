@@ -561,7 +561,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Pilih SiteOperator
+                    SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"

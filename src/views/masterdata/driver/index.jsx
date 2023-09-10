@@ -141,7 +141,7 @@ const Driver = () => {
     {
       field: "nik",
       sortable: true,
-      headerName: "NIK",
+      headerName: "NPK",
       flex: 2,
     },
     {
@@ -183,24 +183,9 @@ const Driver = () => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
+      flex: true,
     },
-    {
-      headerName: "Phone",
-      field: "phone",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 2,
-    },
-    {
-      headerName: "Email",
-      field: "email",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 2,
-    },
+
     {
       field: "refType",
       headerName: "Source Data",

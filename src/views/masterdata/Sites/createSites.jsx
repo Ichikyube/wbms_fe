@@ -38,14 +38,14 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
   };
 
   const checkoutSchema = yup.object().shape({
-    sourceSiteName: yup.string().required("required"),
+    // sourceSiteName: yup.string().required("required"),
     companyName: yup.string().required("required"),
     code: yup.string().required("required"),
     codeSap: yup.string().required("required"),
     shortName: yup.string().required("required"),
     description: yup.string().required("required"),
     name: yup.string().required("required"),
-    // companyId: yup.string().required("required"),
+    companyId: yup.string().required("required"),
     cityId: yup.string().required("required"),
     solarCalibration: yup.number().required("required"),
     latitude: yup.number().required("required"),
@@ -53,7 +53,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
     isMill: yup.boolean().required(""),
   });
   const initialValues = {
-    sourceSiteName: "",
+    // sourceSiteName: "",
     companyName: "",
     code: "",
     codeSap: "",
@@ -63,7 +63,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
     latitude: "",
     longitude: "",
     isMill: "",
-    // companyId: "",
+    companyId: "",
     cityId: "",
     solarCalibration: "",
   };
@@ -224,7 +224,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   </FormLabel>
                   <Select
                     fullWidth
-                    name="companyName"
+                    name="companyId"
                     value={values.companyId}
                     onBlur={handleBlur}
                     onChange={(event) => {
@@ -254,7 +254,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -269,7 +269,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Company Name"
+                    placeholder="Masukan Company Name....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.companyName}
@@ -279,37 +279,6 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   />
                 </FormControl>
 
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    City
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="cityId"
-                    value={values.cityId}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih City --
-                    </MenuItem>
-                    {dtCity.map((item) => {
-                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
-                    })}
-                  </Select>
-                </FormControl>
-                <br />
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -351,7 +320,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -375,7 +344,36 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     helperText={touched.sourceSiteName && errors.sourceSiteName}
                   />
                 </FormControl>
-
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    City
+                  </FormLabel>
+                  <Select
+                    fullWidth
+                    name="cityId"
+                    value={values.cityId}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih City --
+                    </MenuItem>
+                    {dtCity.map((item) => {
+                      return <MenuItem value={item.id}>{item.name}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -451,11 +449,12 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                       touched.solarCalibration && errors.solarCalibration
                     }
                   />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       marginBottom: "8px",
-                      marginTop: "20px",
                       fontSize: "16px",
                       fontWeight: "bold",
                     }}
@@ -495,7 +494,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   <TextField
                     fullWidth
                     multiline
-                    rows={6}
+                    rows={4}
                     variant="outlined"
                     type="text"
                     placeholder="Masukkan Description...."

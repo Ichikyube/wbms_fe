@@ -24,7 +24,7 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
     name: yup.string().required("required"),
     provinceId: yup.string().required("required"),
   });
-  console.log(dtCity)
+
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       await CitiesApi.update(values);
@@ -47,9 +47,11 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
       open={isEditOpen}
       fullWidth
       maxWidth="sm"
-      onClose={() => onClose("", false)}>
+      onClose={() => onClose("", false)}
+    >
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Edit Data City
         <IconButton
           sx={{
@@ -60,7 +62,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -69,7 +72,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={dtCity}
-          validationSchema={checkoutSchema}>
+          validationSchema={checkoutSchema}
+        >
           {({
             values,
             errors,
@@ -86,7 +90,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -94,7 +99,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Name
                   </FormLabel>
                   <TextField
@@ -117,7 +123,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Province
                   </FormLabel>
                   <Select
@@ -126,7 +133,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                     value={values.provinceId}
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty>
+                    displayEmpty
+                  >
                     <MenuItem value="" disabled>
                       Pilih Province
                     </MenuItem>
@@ -147,7 +155,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -156,7 +165,8 @@ const EditCities = ({ isEditOpen, onClose, dtCity, dtProvinces }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

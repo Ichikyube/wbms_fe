@@ -19,7 +19,7 @@ const Header = () => {
             <Navbar.Brand>Weighbridge Management System</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          {/* <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <>
                 <LinkContainer to="/signin">
@@ -29,7 +29,7 @@ const Header = () => {
                 </LinkContainer>
               </>
             </Nav>
-          </Navbar.Collapse>
+          </Navbar.Collapse> */}
         </Container>
       </Navbar>
     </header>

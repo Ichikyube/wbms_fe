@@ -67,7 +67,7 @@ const CreateSites = ({ isViewOpen, onClose, dtCompanies, dtDriver }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    NIK
+                    NPK
                   </FormLabel>
                   <TextField
                     fullWidth
@@ -183,47 +183,7 @@ const CreateSites = ({ isViewOpen, onClose, dtCompanies, dtDriver }) => {
                     helperText={touched.licenseED && errors.licenseED}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Company
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="companyId"
-                    inputProps={{ readOnly: true }}
-                    value={values.companyId}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      const selectedCompany = dtCompanies.find(
-                        (item) => item.id === event.target.value
-                      );
-                      setFieldValue(
-                        "companyName",
-                        selectedCompany ? selectedCompany.name : ""
-                      );
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Company --
-                    </MenuItem>
-                    {dtCompanies.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+             
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -297,7 +257,7 @@ const CreateSites = ({ isViewOpen, onClose, dtCompanies, dtDriver }) => {
                     helperText={touched.phone && errors.phone}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

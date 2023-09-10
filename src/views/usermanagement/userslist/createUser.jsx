@@ -13,8 +13,9 @@ import {
   TextField,
   Tooltip,
   Checkbox,
-  Typography,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -23,10 +24,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as UsersAPI from "../../../api/usersApi";
+import moment from "moment";
 
 const CreateUsers = ({ isOpen, onClose, dtRole }) => {
-  // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    values.doB = moment(values.doB).toDate();
+
     UsersAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -57,6 +60,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     division: "",
     phone: "",
     roleId: "",
+    doB: "",
+    alamat: "",
     isLDAPUser: false,
   };
 
@@ -71,13 +76,9 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     division: yup.string().required("required"),
     position: yup.string().required("required"),
     phone: yup.string().required("required"),
-    password: yup
-      .string()
-      .required("Kata sandi harus diisi")
-      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    roleId: yup.mixed().required("required"),
-    isLDAPUser: yup.mixed().required("required"),
+    doB: yup.date().required("required"),
+    alamat: yup.string(),
+    roleId: yup.string().required("required"),
     file: yup.mixed().required("Gambar wajib diisi"),
   });
 
@@ -87,6 +88,12 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   const handleResetImage = () => {
     setImage(null); // Reset state "image" menjadi null untuk menghapus gambar yang dipilih
     setInitialImage(false); // Set initialImage menjadi false karena gambar telah dihapus
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -397,12 +404,20 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Password....."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukan Password ..."
                     value={values.password}
+                    onChange={handleChange}
                     name="password"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={togglePasswordVisibility}>
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                     error={!!touched.password && !!errors.password}
                     helperText={touched.password && errors.password}
                   />
@@ -455,6 +470,57 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     helperText={touched.position && errors.position}
                   />
                 </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Tanggal Lahir
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="date"
+                    placeholder="Masukkan Tanggal Lahir..."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.doB}
+                    name="doB"
+                    error={!!touched.doB && !!errors.doB}
+                    helperText={touched.doB && errors.doB}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Alamat
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    multiline
+                    rows={4}
+                    placeholder="Masukkan alamat....."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.alamat}
+                    name="alamat"
+                    error={!!touched.alamat && !!errors.alamat}
+                    helperText={touched.alamat && errors.alamat}
+                  />
+                </FormControl>
+
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{

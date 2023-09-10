@@ -8,9 +8,11 @@ import {
   DialogContent,
   DialogTitle,
   Table,
+  IconButton,
   Typography,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import CloseIcon from "@mui/icons-material/Close";
 
 const BonTripPrint = (props) => {
   const { dtTrans, isDisable } = props;
@@ -64,7 +66,22 @@ const BonTripPrint = (props) => {
         Print Bontrip
       </Button>
       <Dialog open={isOpen} fullWidth maxWidth={"md"}>
-        <DialogTitle>Print Bontrip</DialogTitle>
+        <DialogTitle>
+          Print Bontrip
+          <IconButton
+            sx={{
+              color: "black",
+              position: "absolute",
+              right: "10px",
+              top: "15px",
+            }}
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent dividers>
           <form ref={formRef}>
             <Box display="flex">
@@ -120,11 +137,10 @@ const BonTripPrint = (props) => {
                     </tr>
                     <tr>
                       <td height="30" width="100">
-                        Dikirim ke
+                        Dikirim Ke
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">
-                        {" "}
                         {dtTrans.destinationSiteName}
                       </td>
                     </tr>
@@ -376,30 +392,25 @@ const BonTripPrint = (props) => {
                 </Typography>
               </Box>
             </Box>
-            <Box class="print-button">
-              <ReactToPrint
-                trigger={() => (
-                  <Button variant="contained" color="success">
-                    Print PKS4 Transaction
-                  </Button>
-                )}
-                content={() => formRef.current}
-                documentTitle="Print"
-                pageStyle="print"
-              />
-            </Box>
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setIsOpen(false);
-              // onClose("", false);
-            }}
-          >
-            Cancel
-          </Button>
+          <Box class="print-button" sx={{ p: 2, mr: 1 }}>
+            <ReactToPrint
+              trigger={() => (
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ textTransform: "none" }}
+                >
+                  Print PKS Transaction
+                </Button>
+              )}
+              content={() => formRef.current}
+              documentTitle="Print"
+              pageStyle="print"
+            />
+          </Box>
         </DialogActions>
       </Dialog>
     </>

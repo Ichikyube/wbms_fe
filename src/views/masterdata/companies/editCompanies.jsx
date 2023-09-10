@@ -536,7 +536,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Pilih SiteOperator
+                   SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"

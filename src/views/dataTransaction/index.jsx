@@ -243,7 +243,6 @@ const DataTransaction = () => {
             mt: 2,
             borderTop: "5px solid #000",
             borderRadius: "10px 10px 10px 10px",
-<<<<<<< HEAD
           }}>
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
@@ -251,27 +250,6 @@ const DataTransaction = () => {
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
-<<<<<<< HEAD
-=======
-              {/* <Button
-                color="success"
-                variant="contained"
-                sx={{
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                  padding: "12px 12px",
-                  color: "white",
-                }}
-                onClick={() => {
-                  gridRef.current.api.exportDataAsExcel();
-                }}
-              >
-                <FileDownloadOutlinedIcon
-                  sx={{ mr: "5px", fontSize: "17px" }}
-                />
-                Export Excel
-              </Button> */}
->>>>>>> fthn
               <Box
                 display="flex"
                 borderRadius="5px"

@@ -91,7 +91,11 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
     actionOptions.map((action, index) => ({
       action: action,
       possession: possesionList[index],
-      attributes: [],
+      attributes: [
+        {
+          attr: "",
+        },
+      ],
     }))
   );
 
@@ -145,7 +149,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
 
     //   setPermissions(...selectedPermissions, ...selectedResources);
     // }
-
+    if(!selectedTemplate)  setPermissions(selectedResources.map((resource) => ({ resource, grants })));
     setAttrOptions(
       Object.keys(dtAttrJson)
         .filter((resource) => selectedResources.includes(resource))
@@ -325,11 +329,15 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                         <MenuItem value="" disabled>
                           -- Pilih Role Template --
                         </MenuItem>
+                        <MenuItem value="" >
+                          ---Kosongkan---
+                        </MenuItem>
                         {dtRoles.map((item) => (
                           <MenuItem key={item.id} value={item.id}>
                             {item.name}
                           </MenuItem>
                         ))}
+
                       </Select>
                     </FormControl>
                     <label>

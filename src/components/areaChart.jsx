@@ -10,7 +10,7 @@ import {
   Legend,
 } from "recharts";
 import { Select, MenuItem, FormControl, Typography } from "@mui/material";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/DataSaverOffOutlined";
+import SsidChartOutlinedIcon from "@mui/icons-material/SsidChartOutlined";
 import * as TransactionAPI from "../api/transactionApi";
 import "../index.css";
 
@@ -47,46 +47,52 @@ const AreaCharts = () => {
   };
 
   const filteredData =
-  selectedProduct !== "All"
-    ? salesData.filter(
-        (transaction) =>
-          (selectedProduct === "TBS" &&
-            ["TBS Internal", "TBS Eksternal"].includes(transaction.productName)) ||
-          (selectedProduct === "Other" &&
-            !["CPO", "PKO", "TBS Internal", "TBS Eksternal"].includes(transaction.productName)) ||
-          (selectedProduct !== "TBS" && selectedProduct !== "Other" &&
-            transaction.productName === selectedProduct)
-      )
-    : salesData;
+    selectedProduct !== "All"
+      ? salesData.filter(
+          (transaction) =>
+            (selectedProduct === "TBS" &&
+              ["TBS Internal", "TBS Eksternal"].includes(
+                transaction.productName
+              )) ||
+            (selectedProduct === "Other" &&
+              !["CPO", "PKO", "TBS Internal", "TBS Eksternal"].includes(
+                transaction.productName
+              )) ||
+            (selectedProduct !== "TBS" &&
+              selectedProduct !== "Other" &&
+              transaction.productName === selectedProduct)
+        )
+      : salesData;
 
+  const productNames = ["CPO", "PKO", "TBS", "Other"];
 
-const productNames = ["CPO", "PKO", "TBS", "Other"];
+  const monthlyData = monthNames.map((monthName, monthIndex) => {
+    const monthTotal = { name: monthName };
 
-const monthlyData = monthNames.map((monthName, monthIndex) => {
-  const monthTotal = { name: monthName };
+    productNames.forEach((productName) => {
+      monthTotal[productName] = 0;
+    });
 
-  productNames.forEach((productName) => {
-    monthTotal[productName] = 0;
+    const monthTransactions = filteredData.filter(
+      (transaction) =>
+        new Date(transaction.originWeighOutTimestamp).getMonth() === monthIndex
+    );
+
+    monthTransactions.forEach((transaction) => {
+      if (
+        transaction.productName === "TBS Internal" ||
+        transaction.productName === "TBS Eksternal"
+      ) {
+        monthTotal["TBS"] += 1;
+      } else if (productNames.includes(transaction.productName)) {
+        monthTotal[transaction.productName] += 1;
+      } else {
+        monthTotal["Other"] += 1;
+      }
+    });
+
+    return monthTotal;
   });
-
-  const monthTransactions = filteredData.filter(
-    (transaction) =>
-      new Date(transaction.originWeighOutTimestamp).getMonth() === monthIndex
-  );
-
-  monthTransactions.forEach((transaction) => {
-    if (transaction.productName === "TBS Internal" || transaction.productName === "TBS Eksternal") {
-      monthTotal["TBS"] += 1;
-    } else if (productNames.includes(transaction.productName)) {
-      monthTotal[transaction.productName] += 1;
-    } else {
-      monthTotal["Other"] += 1;
-    }
-  });
-
-  return monthTotal;
-});
-
 
   // Fill in missing months with zero transactions
   for (let i = 0; i < 12; i++) {
@@ -107,7 +113,7 @@ const monthlyData = monthNames.map((monthName, monthIndex) => {
     <div className="grafik">
       <div className="title">
         <Typography fontSize="18px">
-          <PieChartOutlineOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
+          <SsidChartOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
           Sales
         </Typography>
       </div>
@@ -128,7 +134,10 @@ const monthlyData = monthNames.map((monthName, monthIndex) => {
             borderRadius: "10px",
           }}
         >
-          <MenuItem value="All">-- Pilih Product --</MenuItem>
+          <MenuItem value="All">Pilih Semua</MenuItem>
+          <MenuItem value="All" hidden>
+            -- Pilih Product --
+          </MenuItem>
           <MenuItem value="CPO">CPO</MenuItem>
           <MenuItem value="PKO">PKO</MenuItem>
           <MenuItem value="TBS">TBS</MenuItem>

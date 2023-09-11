@@ -240,7 +240,7 @@ const PksManualOthersTimbangMasuk = () => {
   return (
     <>
       <PageHeader
-        title="Transaksi PKS"
+        title="Transaksi Others PKS"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}

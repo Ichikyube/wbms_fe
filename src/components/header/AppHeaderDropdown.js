@@ -74,7 +74,6 @@ const AppHeaderDropdown = () => {
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">
           Account
-          {/* <strong>{userInfo?.profile ? userInfo.profile.name : null}</strong> */}
         </CDropdownHeader>
 
         <LinkContainer to="/profile">

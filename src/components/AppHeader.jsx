@@ -26,7 +26,7 @@ import { setSidebar } from "../slices/appSlice";
 const AppHeader = () => {
   const dispatch = useDispatch();
   const { sidebar } = useSelector((state) => state.app);
-  // const sidebarShow = useSelector((state) => state.sidebarShow);
+  const { userInfo } = useSelector((state) => state.app);
 
   return (
     <CHeader position="sticky" className="mb-4">
@@ -54,7 +54,9 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink to="/profile" component={NavLink}>Settings</CNavLink>
+            <CNavLink to="/profile" component={NavLink}>
+              Settings
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
@@ -63,17 +65,22 @@ const AppHeader = () => {
               <CIcon icon={cilBell} size="lg" />
             </CNavLink>
           </CNavItem>
-          <CNavItem>
+          {/* <CNavItem>
             <CNavLink href="#">
               <CIcon icon={cilList} size="lg" />
             </CNavLink>
-          </CNavItem>
+          </CNavItem> */}
           <CNavItem>
             <CNavLink href="#">
               <CIcon icon={cilEnvelopeOpen} size="lg" />
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
+        <hr
+          className="mx-3"
+          style={{ height: "15px", borderLeft: "2px solid grey" }}
+        />
+        {userInfo.name}
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />
         </CHeaderNav>

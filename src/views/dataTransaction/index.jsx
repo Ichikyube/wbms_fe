@@ -46,14 +46,19 @@ const tType = 1;
 
 const DataTransaction = () => {
   const navigate = useNavigate();
-
-  const handleCellClick = (params) => {
-    const Id = params.data.id;
-    navigate(`/edit-data-Transaction/${Id}`);
-  };
-
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
+  };
+
+  const handleCellClick = (params) => {
+    const productName = params.data.productName.toLowerCase();
+
+    if (productName === "cpo" || productName === "pko") {
+      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
+    } else {
+      const Id = params.data.id;
+      navigate(`/edit-data-Transaction/${Id}`);
+    }
   };
 
   const deleteById = (id, bonTripNo) => {
@@ -253,24 +258,6 @@ const DataTransaction = () => {
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
-              {/* <Button
-                color="success"
-                variant="contained"
-                sx={{
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                  padding: "12px 12px",
-                  color: "white",
-                }}
-                onClick={() => {
-                  gridRef.current.api.exportDataAsExcel();
-                }}
-              >
-                <FileDownloadOutlinedIcon
-                  sx={{ mr: "5px", fontSize: "17px" }}
-                />
-                Export Excel
-              </Button> */}
               <Box
                 display="flex"
                 borderRadius="5px"

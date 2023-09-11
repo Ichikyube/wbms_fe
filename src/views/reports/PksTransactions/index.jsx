@@ -50,7 +50,7 @@ ModuleRegistry.registerModules([
 const tType = 1;
 
 const ReportPksTransactions = () => {
-  console.clear();
+  // console.clear();
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -170,7 +170,6 @@ const ReportPksTransactions = () => {
   const [selectedPlateNo, setSelectedPlateNo] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState("");
 
   const Product = (event) => {
     setSelectedProduct(event.target.value);
@@ -192,7 +191,7 @@ const ReportPksTransactions = () => {
   };
 
   const filteredTransactions = useMemo(() => {
-    let filteredData = dtTransactions;
+    let filteredData = dtTransactions || [];
 
     if (selectedProduct !== "") {
       filteredData = filteredData.filter(
@@ -228,14 +227,6 @@ const ReportPksTransactions = () => {
       });
     }
 
-    if (selectedStatus !== "") {
-      filteredData = filteredData.filter(
-        (transaction) =>
-          transaction.progressStatus.toLowerCase() ===
-          selectedStatus.toLowerCase()
-      );
-    }
-
     return filteredData;
   }, [
     dtTransactions,
@@ -244,7 +235,6 @@ const ReportPksTransactions = () => {
     selectedPlateNo,
     selectedStartDate,
     selectedEndDate,
-    selectedStatus,
   ]);
 
   const today = dayjs();
@@ -253,10 +243,10 @@ const ReportPksTransactions = () => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
 
-    console.clear();
+    // console.clear();
 
     return () => {
-      console.clear();
+      // console.clear();
     };
   }, []);
 
@@ -310,7 +300,10 @@ const ReportPksTransactions = () => {
                       fontSize: "15px",
                     }}
                   >
-                    <MenuItem value="">Pilih Product</MenuItem>
+                    <MenuItem value="">Pilih Semua</MenuItem>
+                    <MenuItem value="" hidden>
+                      Pilih Product
+                    </MenuItem>
                     {dtProduct.map((item) => (
                       <MenuItem key={item.id} value={item.name}>
                         {item.name}
@@ -333,7 +326,10 @@ const ReportPksTransactions = () => {
                       fontSize: "15px",
                     }}
                   >
-                    <MenuItem value="">Pilih No Pol</MenuItem>
+                    <MenuItem value="">Pilih Semua</MenuItem>
+                    <MenuItem value="" hidden>
+                      Pilih No Pol
+                    </MenuItem>
                     {dtTransportVehicle.map((item) => (
                       <MenuItem key={item.id} value={item.plateNo}>
                         {item.plateNo}
@@ -352,7 +348,10 @@ const ReportPksTransactions = () => {
                       fontSize: "15px",
                     }}
                   >
-                    <MenuItem value="">Pilih Vendor</MenuItem>
+                    <MenuItem value="">Pilih Semua</MenuItem>
+                    <MenuItem value="" hidden>
+                      Pilih Vendor
+                    </MenuItem>
                     {dttransporterCompany.map((item) => (
                       <MenuItem key={item.id} value={item.name}>
                         {item.name}

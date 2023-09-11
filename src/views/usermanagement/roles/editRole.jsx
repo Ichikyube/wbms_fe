@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useCollapse } from "react-collapsed";
@@ -31,9 +31,8 @@ import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RoleAPI from "../../../api/roleApi";
-import SelectBox from "../../../components/selectbox";
 import { dtAttrJson } from "../../../data/attributeListObj";
-
+const SelectBox = lazy(() => import("../../../components/selectbox"));
 const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   const [expanded, setExpanded] = useState(null);
   const role = dtRole;
@@ -52,14 +51,16 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
     "TransportVehicle",
     "Weighbridge",
     "User",
-    "Config"
+    "Config",
   ];
 
   const [checkboxes, setCheckboxes] = useState(
     resourcesList.map((res, index) => ({
       id: index,
       label: res,
-      checked: role.permissions.map(({resource})=>resource).includes(res)? true : false,
+      checked: role.permissions.map(({ resource }) => resource).includes(res)
+        ? true
+        : false,
     }))
   );
   const [selectedResources, setSelectedResources] = useState([]);
@@ -75,17 +76,31 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   };
   const actionOptions = ["read", "create", "update", "delete"];
   const adjustValues = {
-    id:role.id,
+    id: role.id,
     name: role.name,
     description: role.description,
-    permissions: role.permissions.map(({resource, grants})=>({
-      resource, 
+    permissions: role.permissions.map(({ resource, grants }) => ({
+      resource,
       roleId: role.id,
-      grants: actionOptions.map((actionOption, index) => ({
-        action: grants[grants.map(({action})=>action).indexOf(actionOption)].action,
-        possession: grants[grants.map(({action})=>action).indexOf(actionOption)].possession,
-        attributes: grants[grants.map(({action})=>action).indexOf(actionOption)].attributes.map(({attr})=>({attr})).filter(({attr})=>attr !== "")
-      }))
+      grants: actionOptions.map((actionOption, index) => {
+        const grant = grants[grants.map(({ action }) => action).indexOf(actionOption)];
+    
+        if (grant) {
+          return {
+            action: grant.action,
+            possession: grant.possession,
+            attributes: grant.attributes
+              .filter(({ attr }) => attr !== "")
+              .map((attr) => ({ value: attr, label: attr })),
+          };
+        } else {
+          return {
+            action: '', // or some default value if action is empty
+            possession: '', // or some default value if possession is empty
+            attributes: [], // or an empty array if attributes are empty
+          };
+        }
+      }),
     })),
   };
   const inValues = _.mergeWith({}, adjustValues, role, (objValue, srcValue) => {
@@ -95,7 +110,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
     }
     return undefined; // Default behavior to let _.merge handle the merge
   });
-  const {users, isDeleted, userCreated, ...initialValues} = inValues;
+  const { users, isDeleted, userCreated, ...initialValues } = inValues;
   const [mountAttributes, setMountAttributes] = useState([]);
   const toggleAttr = (attrId) => {
     if (mountAttributes.includes(attrId)) {
@@ -114,13 +129,17 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   }, [checkboxes]);
 
   const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
-    const filteredPerm = values.permissions.filter(permission=>selectedResources.includes(permission.resource));
-    const updatedPermissions = [...filteredPerm];
+    const updatedPermissions = values.permissions.filter((permission) =>
+      selectedResources.includes(permission.resource)
+    );
+    const { id, name, description } = values;
     values = {
-      ...values,
+      id,
+      name,
+      description,
       permissions: updatedPermissions,
     };
-    console.log(values)
+    console.log(values);
     RoleAPI.update(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -147,8 +166,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   return (
     <Dialog open={isEditOpen} fullWidth maxWidth={"xl"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
-      >
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
         Edit Roles
         <IconButton
           sx={{
@@ -159,17 +177,13 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-        >
+        <Formik onSubmit={handleFormSubmit} initialValues={initialValues}>
           {({
             values,
             errors,
@@ -266,7 +280,6 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                   paddingBottom={3}
                   paddingLeft={3}
                   paddingRight={3}>
-
                   <FormLabel
                     sx={{
                       color: "black",
@@ -291,18 +304,17 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                               <strong>{resource}</strong>
                               <br />
                               {expanded !== index &&
-                                values.permissions[index].grants.map(
-                                  (a, i) => (
-                                    <span key={i}>
-                                      {values.permissions[index].grants[i].action}
-                                      <span style={{ fontSize: "10px" }}>
-                                        {
-                                          values.permissions[index].grants[i].possession
-                                        }{" "}
-                                      </span>
+                                values.permissions[index].grants.map((a, i) => (
+                                  <span key={i}>
+                                    {values.permissions[index].grants[i].action}
+                                    <span style={{ fontSize: "10px" }}>
+                                      {
+                                        values.permissions[index].grants[i]
+                                          .possession
+                                      }{" "}
                                     </span>
-                                  )
-                                )}
+                                  </span>
+                                ))}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -340,31 +352,47 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           type="checkbox"
                                           name={`permissions[${index}].grants[${actionIndex}].action`}
                                           checked={
-                                            values.permissions[index].grants[actionIndex].action === actionOption? true:false
+                                            values.permissions[index].grants[
+                                              actionIndex
+                                            ].action === actionOption
+                                              ? true
+                                              : false
                                           }
                                           onChange={(event) => {
                                             if (event.target.checked)
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                event.target.value
-                                              );
+                                              setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
+                                                action: event.target.value,
+                                                possession: "own",
+                                                attributes: []
+                                              });
                                             else
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].action`,
-                                                ""
-                                              );
+                                            setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
+                                              action: "",
+                                              possession: "",
+                                              attributes: []
+                                            });
                                           }}
                                           value={actionOption}
                                         />
                                         {actionOption}
                                       </label>
-                                      {values.permissions[index].grants[actionIndex].action === actionOption && (
+                                      {values.permissions[index].grants[
+                                        actionIndex
+                                      ].action === actionOption && (
                                         <>
                                           <Switch
                                             name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                            value={values.permissions[index].grants[actionIndex].possession}
+                                            value={
+                                              values.permissions[index].grants[
+                                                actionIndex
+                                              ].possession
+                                            }
                                             checked={
-                                              values.permissions[index].grants[actionIndex].possession === "any"? true:false
+                                              values.permissions[index].grants[
+                                                actionIndex
+                                              ].possession === "any"
+                                                ? true
+                                                : false
                                             }
                                             onChange={(event, checked) => {
                                               setFieldValue(
@@ -425,15 +453,20 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           ) {
                                             setFieldValue(
                                               `permissions[${index}].grants[${actionIndex}].attributes`,
-                                              selectedOption
+                                              selectedOption.map(
+                                                ({ value }) => ({ attr: value })
+                                              )
                                             );
                                           }
                                         }}
                                         placeholder="Hide Attributes: "
                                         value={
-                                          values.permissions[index].grants[
+                                          values.permissions[index]?.grants[
                                             actionIndex
-                                          ]?.attributes || null
+                                          ]?.attributes.map(({ attr }) => ({
+                                            value: attr,
+                                            label: attr,
+                                          })) || null
                                         }
                                         options={attrOptions[resource]}
                                       />

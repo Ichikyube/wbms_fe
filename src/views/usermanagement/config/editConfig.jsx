@@ -14,7 +14,9 @@ import {
   Switch,
   FormGroup,
   Checkbox,
+  Slider,
   TextareaAutosize,
+  Typography
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import Radio from "@mui/material/Radio";
@@ -30,7 +32,7 @@ import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configsApi";
 import moment from "moment";
-
+import TimeSpanInput from "../../../components/TimeSpanInput";
 const StyledTextarea = styled(TextareaAutosize)(
   ({ theme }) => `
   width: 320px;

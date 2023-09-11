@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   active: false,
-  group: "PJ1",
+  group: null,
 };
 
 const selectionModeSlice = createSlice({

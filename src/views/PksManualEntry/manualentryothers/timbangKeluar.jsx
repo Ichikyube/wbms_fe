@@ -23,12 +23,10 @@ import { Link } from "react-router-dom";
 import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
-import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
 import WeightWB from "../../../components/weightWB";
 
 import BonTripTBS from "../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../api/transactionApi";
-import Config from "../../../configs";
 import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
@@ -36,8 +34,6 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { getById } from "../../../api/configApi";
-import { getEnvInit } from "../../../configs";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 

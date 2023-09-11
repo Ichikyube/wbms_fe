@@ -14,6 +14,27 @@ eventSource.addEventListener('eventType', (e) => {
   Jika User adalah admin maka bisa menunjuk approver
 
 
+node export_swagger.js
+
+
+<!-- Add these lines to your Swagger UI HTML file -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+parameters:
+  - in: query
+    name: date
+    description: Select a date
+    required: true
+    schema:
+      type: string
+      format: date
+
+
+$(document).ready(function(){
+    $('#date').datepicker();
+});
+
 
   Creating a request approval feature involves several steps, including setting up the frontend and backend components, handling API requests, and managing the state. Below is a high-level overview of the process:
 

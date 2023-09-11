@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { apiSlice } from "./apiSlice";
+import apiSlice from "./apiSlice";
 import api from "../api/api";
 
 const initialState = localStorage.getItem("groupMap") === undefined? JSON.parse(localStorage.getItem("groupMap")) : {};

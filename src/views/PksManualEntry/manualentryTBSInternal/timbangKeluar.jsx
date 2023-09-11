@@ -34,8 +34,6 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { getById } from "../../../api/configApi";
-import { getEnvInit } from "../../../configs";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 const tType = 1;

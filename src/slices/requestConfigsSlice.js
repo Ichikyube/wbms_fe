@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { apiSlice } from "./apiSlice";
+import apiSlice from "./apiSlice";
 import api from "../api/api";
 
 

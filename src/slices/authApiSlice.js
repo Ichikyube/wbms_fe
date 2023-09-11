@@ -1,5 +1,4 @@
-import { apiSlice } from "./apiSlice";
-import Cookies from "js-cookie";
+import apiSlice from "./apiSlice";
 
 const API_URL = "/auth";
 

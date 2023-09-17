@@ -21,7 +21,7 @@ import * as CompaniesAPI from "../../api/companiesApi";
 import * as DriverAPI from "../../api/driverApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CustomerAPI from "../../api/customerApi";
-import { useConfig } from "../../common/hooks";
+import { useConfig } from "../../configs";
 import * as SiteAPI from "../../api/sitesApi";
 import TBSInternal from "./dataTBSInternal";
 import TBSEksternal from "./dataTBSEksternal";
@@ -236,8 +236,7 @@ const EditDataTransaksi = () => {
                 sx={{
                   bgcolor: "white",
                   px: 2,
-                }}
-              >
+                }}>
                 Edit Transaksi
               </InputLabel>
               <Select
@@ -247,8 +246,7 @@ const EditDataTransaksi = () => {
                 value={selectedOption}
                 onChange={(event) => {
                   setSelectedOption(event.target.value);
-                }}
-              >
+                }}>
                 {/* TBS INTERNAL */}
 
                 {(selectedOption === "TbsInternal" ||
@@ -296,8 +294,7 @@ const EditDataTransaksi = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               {/* TBS INTERNAL */}
 
               {selectedOption === "TbsInternal" && (

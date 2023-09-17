@@ -3,8 +3,8 @@ import { w3cwebsocket } from "websocket";
 import moment from "moment";
 
 // import { getEnvInit } from "../configs";
-import { useConfig } from "../hooks";
-import { appSlice } from "../../slices/app/appSlice";
+import { useConfig } from "../configs";
+import { appSlice } from "../slices/app/appSlice";
 const { setWb } = appSlice.actions;
 
 let wsClient;
@@ -22,7 +22,9 @@ export const useWeighbridge = () => {
   // console.log("Config from weighbridge hook:", configs);
 
   if (configs?.ENV?.WBMS_WB_IP && !wsClient) {
-    wsClient = new w3cwebsocket(`ws://${configs?.ENV?.WBMS_WB_IP}:${configs?.ENV?.WBMS_WB_PORT}/GetWeight`);
+    wsClient = new w3cwebsocket(
+      `ws://${configs?.ENV?.WBMS_WB_IP}:${configs?.ENV?.WBMS_WB_PORT}/GetWeight`
+    );
 
     wsClient.onmessage = (message) => {
       const wb = localStorage.getItem("app")
@@ -48,7 +50,8 @@ export const useWeighbridge = () => {
         curWb.isStable = true;
       }
 
-      if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing) curWb.canStartScalling = true;
+      if (curWb.weight === 0 && curWb.isStable && !curWb.onProcessing)
+        curWb.canStartScalling = true;
 
       dispatch(setWb({ ...curWb }));
     };

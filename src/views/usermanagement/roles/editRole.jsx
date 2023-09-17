@@ -31,7 +31,7 @@ import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RoleAPI from "../../../api/roleApi";
-import { dtAttrJson } from "../../../data/attributeListObj";
+import { dtAttrJson } from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
 const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   const [expanded, setExpanded] = useState(null);

@@ -36,7 +36,7 @@ import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 import { getEnvInit } from "../../../configs";
 
-import { useWeighbridge, useConfig } from "../../../common/hooks";
+import { useWeighbridge, useConfig } from "../../../configs";
 
 const tType = 1;
 
@@ -269,8 +269,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -286,8 +285,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined"
@@ -308,8 +306,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -337,8 +334,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         No. DO/NPB
                       </Typography>
                     </>
@@ -351,8 +347,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nomor Polisi
                   </InputLabel>
 
@@ -396,8 +391,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Supir
                   </InputLabel>
 
@@ -435,8 +429,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -490,8 +483,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
@@ -503,8 +495,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Jenis Barang
                   </InputLabel>
 
@@ -542,8 +533,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Customer
                   </InputLabel>
 
@@ -607,8 +597,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight IN
                     </Typography>
                   }
@@ -639,8 +628,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight OUT
                     </Typography>
                   }
@@ -672,8 +660,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -704,8 +691,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Lainnya
                     </Typography>
                   }
@@ -736,8 +722,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL
                     </Typography>
                   }
@@ -755,8 +740,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                     weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
                       ? true
                       : false
-                  }
-                >
+                  }>
                   Simpan
                 </Button>
                 <BonTripPrint
@@ -798,8 +782,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Qty TBS Dikirim
                     </Typography>
                   }
@@ -831,8 +814,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Qty TBS Dikembalikan
                     </Typography>
                   }
@@ -864,8 +846,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan
                     </Typography>
                   }

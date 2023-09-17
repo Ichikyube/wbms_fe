@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiSlice from "./apiSlice";
 import api from "../api/api";
 
-const initialState = localStorage.getItem("groupMap") === undefined? JSON.parse(localStorage.getItem("groupMap")) : {};
+const initialState = JSON.parse(localStorage.getItem("groupMap")) || {};
 
 export const fetchGroupMappingData = createAsyncThunk(
   "groupMapping/fetchGroupMappingData",
@@ -14,9 +14,19 @@ export const fetchGroupMappingData = createAsyncThunk(
 
 export const configRequestAdminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getGroupMapping: builder.query({
+    fetchGroupMappingData: builder.query({
       query: () => '/config-requests-admin',
-      providesTags: (result, error, arg) => ['groupMapping',{ type: 'groupMapping', id: result.id }]
+      providesTags: (result, error, arg) => ['groupMapping'],
+      onQueryStarted: (arg, { dispatch, getState, context }) => {
+        console.log("getting user matrix approval list")
+      },
+      onQueryFulfilled: (arg, { dispatch, getState, context }) => {
+        console.log(arg.data)
+        const {lvlMap} = arg.data;
+        dispatch(getGroupmap(lvlMap));
+
+
+      },
     }),
     saveGroupMapping: builder.mutation({
       query: (groupMapping) => ({
@@ -35,6 +45,12 @@ const groupMappingSlice = createSlice({
   name: "groupMapping",
   initialState,
   reducers: {
+    getGroupmap: (state, action) => {
+      console.log(action.payload)
+      // localStorage.setItem("configs", JSON.stringify(state.configs));
+      //       localStorage.setItem("groupMap", JSON.stringify(lvlMap));
+      // state = lvlMap;
+    },
     addPJ1: (state, action) => {
       const userId = action.payload;
       state[userId] = "PJ1"
@@ -65,23 +81,9 @@ const groupMappingSlice = createSlice({
     //   return (state.length = 0);
     // },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchGroupMappingData.fulfilled, (state, action) => {
-      const {lvlMap} = action.payload;
-
-      localStorage.setItem("groupMap", JSON.stringify(lvlMap));
-      return state = lvlMap; // Set the fetched data as the initial state
-    });
-    builder.addCase(fetchGroupMappingData.rejected, (state, action) => {
-      const {lvlMap} = action.payload;
-
-      localStorage.setItem("groupMap", JSON.stringify(lvlMap));
-      return state = lvlMap; // Set the fetched data as the initial state
-    });
-  },
 });
 
-export const { useGetGroupMappingQuery, useSaveGroupMappingMutation } =
+export const { useFetchGroupMappingDataQuery, useSaveGroupMappingMutation } =
   configRequestAdminApi;
-export const { addPJ1, addPJ2, addPJ3, removeUser } = groupMappingSlice.actions;
+export const { getGroupmap, addPJ1, addPJ2, addPJ3, removeUser } = groupMappingSlice.actions;
 export default groupMappingSlice.reducer;

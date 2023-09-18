@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ACCEPT_NAME, REJECT_NAME, BLOCK_NAME, UNDO } from "../constants";
 
 const initialState = {
   configs: localStorage.getItem("configs")
@@ -72,10 +71,6 @@ const appSlice = createSlice({
       );
     },
     clearWbTransaction: (state, action) => {
-      state.wbTransaction = null;
-      localStorage.removeItem("wbTransaction");
-    },
-    selectionMode: (state, action) => {
       state.wbTransaction = null;
       localStorage.removeItem("wbTransaction");
     },

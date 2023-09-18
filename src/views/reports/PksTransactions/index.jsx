@@ -144,7 +144,8 @@ const ReportPksTransactions = () => {
     () => ({
       cellRendererParams: {
         suppressCount: true,
-        checkbox: true,
+      
+        
       },
       field: "bonTripNo",
       width: 300,
@@ -156,6 +157,7 @@ const ReportPksTransactions = () => {
     TransactionAPI.searchMany({
       where: {
         tType,
+        isDeleted: false,
         progressStatus: { notIn: [1, 20, 21, 22] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -172,14 +174,18 @@ const ReportPksTransactions = () => {
   const [selectedEndDate, setSelectedEndDate] = useState(null);
 
   const Product = (event) => {
-    setSelectedProduct(event.target.value);
+    const newValue = event.target.value || "";
+    setSelectedProduct(newValue);
   };
 
   const Plateno = (event) => {
-    setSelectedPlateNo(event.target.value);
+    const newValue = event.target.value || "";
+    setSelectedPlateNo(newValue);
   };
+
   const Vendor = (event) => {
-    setSelectedVendor(event.target.value);
+    const newValue = event.target.value || "";
+    setSelectedVendor(newValue);
   };
 
   const StartDate = (date) => {
@@ -286,78 +292,77 @@ const ReportPksTransactions = () => {
                   </DemoItem>
                 </LocalizationProvider>
 
-                <FormControl
-                  sx={{ mt: "auto", mr: 1.5, minWidth: 150 }}
-                  size="small"
-                >
-                  <Select
+                <FormControl sx={{ mt: "auto", minWidth: 190 }} size="small">
+                  <Autocomplete
                     value={selectedProduct}
-                    onChange={Product}
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
+                    onChange={(event, newValue) => {
+                      Product({ target: { value: newValue } });
+                    }}
+                    options={dtProduct.map((item) => item.name)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Pilih Product"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
                     sx={{
                       color: selectedProduct === "" ? "gray" : "black",
                       fontSize: "15px",
+                      mt: "auto",
+                      mr: 1.5,
+                      minWidth: 150,
                     }}
-                  >
-                    <MenuItem value="">Pilih Semua</MenuItem>
-                    <MenuItem value="" hidden>
-                      Pilih Product
-                    </MenuItem>
-                    {dtProduct.map((item) => (
-                      <MenuItem key={item.id} value={item.name}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
                 </FormControl>
 
-                <FormControl
-                  sx={{ mt: "auto", mr: 1.5, minWidth: 150 }}
-                  size="small"
-                >
-                  <Select
-                    value={selectedPlateNo} // Gunakan selectedPlateNo sebagai nilai value
-                    onChange={Plateno} // Gunakan Plateno sebagai handler perubahan
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
+                <FormControl sx={{ mt: "auto", minWidth: 190 }} size="small">
+                  <Autocomplete
+                    value={selectedPlateNo}
+                    onChange={(event, newValue) => {
+                      Plateno({ target: { value: newValue } });
+                    }}
+                    options={dtTransportVehicle.map((item) => item.plateNo)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Pilih No Pol"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
                     sx={{
                       color: selectedPlateNo === "" ? "gray" : "black",
                       fontSize: "15px",
+                      mt: "auto",
+                      mr: 1.5,
+                      minWidth: 150,
                     }}
-                  >
-                    <MenuItem value="">Pilih Semua</MenuItem>
-                    <MenuItem value="" hidden>
-                      Pilih No Pol
-                    </MenuItem>
-                    {dtTransportVehicle.map((item) => (
-                      <MenuItem key={item.id} value={item.plateNo}>
-                        {item.plateNo}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
                 </FormControl>
-                <FormControl sx={{ mt: "auto", minWidth: 150 }} size="small">
-                  <Select
+                <FormControl sx={{ mt: "auto", minWidth: 190 }} size="small">
+                  <Autocomplete
                     value={selectedVendor}
-                    onChange={Vendor}
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
+                    onChange={(event, newValue) => {
+                      Vendor({ target: { value: newValue } });
+                    }}
+                    options={dttransporterCompany.map((item) => item.name)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Pilih Vendor"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
                     sx={{
                       color: selectedVendor === "" ? "gray" : "black",
                       fontSize: "15px",
+                      mt: "auto",
+                      minWidth: 150,
                     }}
-                  >
-                    <MenuItem value="">Pilih Semua</MenuItem>
-                    <MenuItem value="" hidden>
-                      Pilih Vendor
-                    </MenuItem>
-                    {dttransporterCompany.map((item) => (
-                      <MenuItem key={item.id} value={item.name}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
                 </FormControl>
 
                 <Box ml="auto" mt="auto">

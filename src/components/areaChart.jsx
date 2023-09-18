@@ -162,22 +162,21 @@ const AreaCharts = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
-
               <Tooltip />
               <Legend />
-              <Area
-                type="monotone"
-                dataKey="CPO"
-                stackId="1"
-                stroke="rgb(27, 170, 218)"
-                fill="rgb(27, 170, 218)"
-              />
               <Area
                 type="monotone"
                 dataKey="PKO"
                 stackId="1"
                 stroke="rgb(9, 170, 9)"
                 fill="rgb(9, 170, 9)"
+              />
+              <Area
+                type="monotone"
+                dataKey="CPO"
+                stackId="1"
+                stroke="rgb(27, 170, 218)"
+                fill="rgb(27, 170, 218)"
               />
               <Area
                 type="monotone"

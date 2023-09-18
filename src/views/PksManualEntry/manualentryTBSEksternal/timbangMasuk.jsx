@@ -117,7 +117,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
     };
 
     if (tempTrans.progressStatus === 0) {
-      tempTrans.progressStatus = 22;
+      tempTrans.progressStatus = 1;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.originWeighInKg = weighbridge.getWeight();
@@ -129,7 +129,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
       const duplicateEntryFromAPI = transactionsFromAPI.some(
         (item) =>
           item.transportVehiclePlateNo === transportVehiclePlateNo &&
-          [20, 21, 22].includes(item.progressStatus)
+          [1].includes(item.progressStatus)
       );
 
       if (duplicateEntryFromAPI) {
@@ -138,9 +138,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
       }
 
       if (
-        tempTrans.progressStatus === 20 ||
-        tempTrans.progressStatus === 21 ||
-        tempTrans.progressStatus === 22
+        tempTrans.progressStatus === 1
       ) {
         const results = await TransactionAPI.create({ ...tempTrans });
 

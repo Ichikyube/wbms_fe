@@ -52,8 +52,13 @@ const DataTransaction = () => {
 
   const handleCellClick = (params) => {
     const productName = params.data.productName.toLowerCase();
+    const progressStatus = params.data.progressStatus;
 
-    if (productName === "cpo" || productName === "pko") {
+    if (
+      progressStatus === 1 &&
+      productName !== "cpo" &&
+      productName !== "pko"
+    ) {
       toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
     } else {
       const Id = params.data.id;
@@ -61,7 +66,12 @@ const DataTransaction = () => {
     }
   };
 
-  const deleteById = (id, bonTripNo) => {
+  const deleteById = (id, bonTripNo, productName) => {
+    if (productName === "cpo" || productName === "pko") {
+      toast.warning("Tidak dapat menghapus transaksi CPO atau PKO");
+      return; // Exit the function early without performing deletion
+    }
+
     Swal.fire({
       title: `Hapus Transaksi !!!`,
       html: `<span style="font-weight: bold; font-size: 28px;">"${bonTripNo}"</span>`,
@@ -167,7 +177,13 @@ const DataTransaction = () => {
               borderRadius="5px"
               padding="7px 5px "
               color="white"
-              onClick={() => deleteById(params.value, params.data.bonTripNo)}
+              onClick={() =>
+                deleteById(
+                  params.value,
+                  params.data.bonTripNo,
+                  params.data.productName.toLowerCase()
+                )
+              }
               style={{
                 color: "white",
                 textDecoration: "none",
@@ -208,6 +224,7 @@ const DataTransaction = () => {
     TransactionAPI.searchMany({
       where: {
         tType,
+        isDeleted: false,
         progressStatus: { notIn: [20, 21, 22, 1] },
       },
       orderBy: { bonTripNo: "desc" },

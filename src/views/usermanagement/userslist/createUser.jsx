@@ -586,7 +586,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     isLDAPUser
                   </FormLabel>
                   <Checkbox
-                    checked={values.isLDAPUser}
+                    checked={values.isLDAPUser === true}
                     onChange={(event) => {
                       const newValue = event.target.checked ? true : false;
                       setFieldValue("isLDAPUser", newValue);

@@ -114,7 +114,7 @@ const PksManualOthersTimbangMasuk = () => {
     };
 
     if (tempTrans.progressStatus === 0) {
-      tempTrans.progressStatus = 20;
+      tempTrans.progressStatus = 1;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.originWeighInKg = weighbridge.getWeight();
@@ -126,7 +126,7 @@ const PksManualOthersTimbangMasuk = () => {
       const duplicateEntryFromAPI = transactionsFromAPI.some(
         (item) =>
           item.transportVehiclePlateNo === transportVehiclePlateNo &&
-          [20, 21, 22].includes(item.progressStatus)
+          [1].includes(item.progressStatus)
       );
 
       if (duplicateEntryFromAPI) {
@@ -134,11 +134,7 @@ const PksManualOthersTimbangMasuk = () => {
         return;
       }
 
-      if (
-        tempTrans.progressStatus === 20 ||
-        tempTrans.progressStatus === 21 ||
-        tempTrans.progressStatus === 22
-      ) {
+      if (tempTrans.progressStatus === 1) {
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {
@@ -316,7 +312,6 @@ const PksManualOthersTimbangMasuk = () => {
                   name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
                   value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
                 />
-
                 <TextField
                   variant="outlined"
                   size="small"
@@ -458,7 +453,7 @@ const PksManualOthersTimbangMasuk = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                           sx={{
+                        sx={{
                           "& .MuiOutlinedInput-root": {
                             borderRadius: "10px",
                           },
@@ -470,7 +465,6 @@ const PksManualOthersTimbangMasuk = () => {
                     )}
                   />
                 </FormControl>
-
                 <TextField
                   variant="outlined"
                   size="small"
@@ -500,8 +494,6 @@ const PksManualOthersTimbangMasuk = () => {
                   name="transportVehicleSccModel"
                   value={values.transportVehicleSccModel || "-"}
                 />
-
-      
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
@@ -540,7 +532,8 @@ const PksManualOthersTimbangMasuk = () => {
                       />
                     )}
                   />
-                </FormControl>          <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                </FormControl>{" "}
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink

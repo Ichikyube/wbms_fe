@@ -16,7 +16,7 @@ export const configRequestAdminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     fetchGroupMappingData: builder.query({
       query: () => '/config-requests-admin',
-      providesTags: (result, error, arg) => ['groupMapping'],
+      providesTags: ['groupMapping'],
       onQueryStarted: (arg, { dispatch, getState, context }) => {
         console.log("getting user matrix approval list")
       },

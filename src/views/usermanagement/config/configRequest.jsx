@@ -48,7 +48,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  console.clear();
+  // console.clear();
   const dispatch = useDispatch();
 /**
  * Pada tampilan configRequest. 

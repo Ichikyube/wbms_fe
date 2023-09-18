@@ -16,7 +16,7 @@ import {
   Checkbox,
   Slider,
   TextareaAutosize,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import Radio from "@mui/material/Radio";
@@ -110,15 +110,15 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     Set repeatable checkbox
     Abort status
     */
-    const formatLifespan = (hours, minutes) => {
-      return `${hours} hours ${minutes} minutes`;
-    };
-    const initialValues = {
-      configRequestLifespan: {
-        hours: 0,
-        minutes: 0,
-      },
-    };
+  const formatLifespan = (hours, minutes) => {
+    return `${hours} hours ${minutes} minutes`;
+  };
+  const initialValues = {
+    configRequestLifespan: {
+      hours: 0,
+      minutes: 0,
+    },
+  };
   return (
     <Dialog
       open={isEditOpen}
@@ -263,68 +263,17 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                {/* <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={isRepeatable}
-                        onChange={handleIsRepeatableChange}
-                      />
-                    }
-                    label="Is Repeatable"
-                  />
-                </FormGroup> */}
+                <InputLabel id="demo-simple-select-label">LIFESPAN</InputLabel>
+                <TimeSpanInput onChange={handleTimeSpanChange} />
+
+                {/* <Typography>
+                  Lifespan:{" "}
+                  {formatLifespan(
+                    initialValues.configRequestLifespan.hours,
+                    initialValues.configRequestLifespan.minutes
+                  )}
+                </Typography> */}
               </Box>
-              <TextField
-                label="CONFIG REQUEST LIFESPAN"
-                name="configRequestLifespan"
-                variant="outlined"
-              />
-              <TimeSpanInput onChange={handleTimeSpanChange} />
-              <div>
-          <Typography id="hours-slider" gutterBottom>
-            Hours
-          </Typography>
-          <Field name="configRequestLifespan.hours">
-            {({ field }) => (
-              <Slider
-                {...field}
-                aria-labelledby="hours-slider"
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={0}
-                max={24}
-              />
-            )}
-          </Field>
-        </div>
-
-        <div>
-          <Typography id="minutes-slider" gutterBottom>
-            Minutes
-          </Typography>
-          <Field name="configRequestLifespan.minutes">
-            {({ field }) => (
-              <Slider
-                {...field}
-                aria-labelledby="minutes-slider"
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={0}
-                max={59}
-              />
-            )}
-          </Field>
-        </div>
-
-        <Typography>
-          Lifespan: {formatLifespan(
-            initialValues.configRequestLifespan.hours,
-            initialValues.configRequestLifespan.minutes
-          )}
-        </Typography>
               <Box display="flex" mt={2} ml={3}>
                 <Button
                   variant="contained"

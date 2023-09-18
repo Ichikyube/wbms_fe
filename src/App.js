@@ -7,7 +7,7 @@ import { fetchConfigsData } from "./slices/requestConfigsSlice";
 import { fetchGroupMappingData } from "./slices/groupMappingSlice";
 import { getEnvInit } from "./configs";
 import { AuthProvider } from "./context/AuthContext";
-
+import { useFetchGroupMappingDataQuery } from "./slices/groupMappingSlice";
 // Containers
 const LayoutGuest = lazy(() => import("./layout/LayoutGuest"));
 const DefaultLayout = lazy(() => import("./layout/DefaultLayout"));
@@ -20,13 +20,13 @@ const Page500 = lazy(() => import("./views/pages/page500/Page500"));
 
 const App = () => {
   const dispatch = useDispatch();
-
+  const { data, error, isLoading } = useFetchGroupMappingDataQuery();
   useEffect(() => {
     (async () =>
       await getEnvInit().then((result) => {
         dispatch(setConfigs({ ...result }));
         dispatch(fetchConfigsData());
-        dispatch(fetchGroupMappingData());
+        // dispatch(fetchGroupMappingData());
       }))();
   }, [dispatch]);
 

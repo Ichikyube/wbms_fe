@@ -23,6 +23,7 @@ const TimeSpanInput = ({ onChange }) => {
         value={hours}
         onChange={handleHoursChange}
         min="0"
+        max="23"
         placeholder="Hours"
       />
       <span>hours</span>

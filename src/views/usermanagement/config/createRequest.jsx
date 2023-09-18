@@ -33,8 +33,6 @@ for createRequest
 Set Start using date input
 If repeatableTrue, activate Repeat and End input
 Set Edited value. Example: manualEntry=true
-
-
 */
 
 const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {

@@ -12,6 +12,10 @@ const initialState = {
   zeroLock: "",
   stableLock: "",
   backDatedForm: "",
+  //minimumWeight nilai INT
+  //waktu stableLockTime nilai INT
+  //BONTRIP nilai Object {PGS:<NAMA>,millHead:<NAMA}
+  //
   // backDatedTemplate: "",
   // manualEntryWB: "",
   // manualBackdatedForm: "",

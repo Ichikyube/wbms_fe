@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 const Config = () => {
-  console.clear();
+  // console.clear();
 
   const gridRef = useRef();
   const { userInfo } = useSelector((state) => state.app);

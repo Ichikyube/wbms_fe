@@ -13,7 +13,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import { AppSidebarNav } from "./AppSidebarNav";
 
 // sidebar nav config
-import navigation from "../_nav";
+import _nav from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
 
@@ -47,7 +47,7 @@ const AppSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={navigation} />
+          <AppSidebarNav items={_nav} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler

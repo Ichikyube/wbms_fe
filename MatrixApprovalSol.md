@@ -1,5 +1,3 @@
-apabila sudah ada config request pada hari itu maka tidak bisa dibuat lagi untuk waktu tersebut
-if in configRequest already have data with the same schedule date then return request failed
 
 kita asumsikan user tidak akan mengubah-ubah date pada sistem komputernya
    Pada komponen dengan temporary config, buat state bernama <configItem> dan array yang diambil berdasarkan storage item"tempConfig", tempConfig ini diambil dari memfetch config. tempConfig.include(<configItem>) apabila true maka component active.
@@ -74,7 +72,7 @@ Keep in mind that while `Cache-Control` headers can improve performance, they sh
 
 
 
-
+GetTim
 
 
 Buat Notifikasi + add message

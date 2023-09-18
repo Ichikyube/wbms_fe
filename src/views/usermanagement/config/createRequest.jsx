@@ -59,8 +59,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
     values.end = moment(values.end).toDate();
 
     try {
-      await ConfigApi.create(values);
-      // dispatch(createRequest(requestData));
+      dispatch(createRequest(requestData));
       toast.success("Data Berhasil Dibuat");
       refetch()
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan

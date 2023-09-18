@@ -55,7 +55,8 @@ const UsersList = () => {
 
   useEffect(() => {
     RoleAPI.getAll().then((res) => {
-      setDtRole(res);
+      console.log(res)
+      setDtRole(res.data.roles.records);
     });
   }, []);
 
@@ -115,7 +116,135 @@ const UsersList = () => {
     });
   };
 
-  const [columnDefs] = useState([
+  const handleUserClick = (userId) => {
+    console.log(Object.keys(groupMap));
+    if (Object.keys(groupMap).includes(userId)) {
+      dispatch(removeUser(userId));
+    } else {
+      // Add the user to the selected group based on the enum
+      switch (selectionMode.group) {
+        case Group.PJ1:
+          dispatch(addPJ1(userId));
+          break;
+        case Group.PJ2:
+          dispatch(addPJ2(userId));
+          break;
+        case Group.PJ3:
+          dispatch(addPJ3(userId));
+          break;
+        default:
+          break;
+      }
+    }
+  };
+  const getCellBackgroundColor = (params) => {
+    const userId = params.data.id;
+
+    if (groupMap[userId] === "PJ1") {
+      return "magenta";
+    } else if (groupMap[userId] === "PJ2") {
+      return "purple";
+    } else if (groupMap[userId] === "PJ3") {
+      return "indigo";
+    }
+
+    return "none";
+  };
+  const cellRenderer = (params) => (
+    <Box display="flex" justifyContent="center">
+      {selectionMode.active && (
+        <Box
+          width="25%"
+          display="flex"
+          m="0 3px"
+          bgcolor={indigo[700]}
+          borderRadius="5px"
+          padding="10px 10px"
+          justifyContent="center"
+          color="white"
+          onClick={() => handleUserClick(params.data.id)}
+          style={{
+            background: getCellBackgroundColor(params),
+            textDecoration: "none",
+            cursor: "pointer",
+          }}>
+          <FaceIcon
+            sx={{
+              color: "white",
+              fontSize: "20px",
+              "&:hover": { color: "blue" },
+            }}
+          />
+        </Box>
+      )}
+      {(userInfo?.role === "adminIT" || userInfo?.role === "admin_HC") && (
+        <>
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={indigo[700]}
+            borderRadius="5px"
+            padding="10px 10px"
+            justifyContent="center"
+            color="white"
+            style={{
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setSelectedUser(params.data);
+              setIsViewOpen(true);
+            }}>
+            <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={orange[600]}
+            borderRadius="5px"
+            justifyContent="center"
+            padding="10px 10px"
+            color="white"
+            style={{
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setSelectedUser(params.data);
+              setIsEditOpen(true);
+            }}>
+            <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
+
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={red[800]}
+            borderRadius="5px"
+            padding="10px 10px"
+            justifyContent="center"
+            color="white"
+            onClick={() => deleteById(params.value, params.data.name)}
+            style={{
+              color: "white",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}>
+            <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
+        </>
+      )}
+    </Box>
+  );
+  const valueGetter = (params) => {
+    return `${params.node.rowIndex + 1}   ${
+      groupMap[params.data.id] ? "[" + groupMap[params.data.id] + "]" : ""
+    }`;
+  };
+  const staffcolumn = [
     {
       headerName: "No",
       field: "no",
@@ -158,78 +287,29 @@ const UsersList = () => {
       hide: false,
       flex: 3,
     },
-
-    {
-      headerName: "Action",
-      field: "id",
-      sortable: true,
-      cellRenderer: (params) => {
-        return (
-          <Box display="flex" justifyContent="center">
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={indigo[700]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedUser(params.data);
-                setIsViewOpen(true);
-              }}
-            >
-              <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={orange[600]}
-              borderRadius="5px"
-              justifyContent="center"
-              padding="10px 10px"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedUser(params.data);
-                setIsEditOpen(true);
-              }}
-            >
-              <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={red[800]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              onClick={() => deleteById(params.value, params.data.profile.name)}
-              style={{
-                color: "white",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-          </Box>
-        );
-      },
-    },
-  ]);
+  ];
+  const [columnDefs] = useState(
+    userInfo?.role === "adminIT" || userInfo?.role === "admin_HC"
+      ? [
+          ...staffcolumn,
+          {
+            headerName: "Action",
+            field: "id",
+            sortable: true,
+            cellRenderer,
+          },
+        ]
+      : staffcolumn
+  );
+  const updatedColDefs = columnDefs.map((colDef) => {
+    if (colDef.valueGetter) {
+      colDef.valueGetter = valueGetter;
+    }
+    if (colDef.cellRenderer) {
+      colDef.cellRenderer = cellRenderer;
+    }
+    return colDef;
+  });
 
   return (
     <>
@@ -249,24 +329,170 @@ const UsersList = () => {
               <Box display="flex">
                 <Typography fontSize="20px">Users List</Typography>
                 <Box display="flex" ml="auto">
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: blue[800],
-                      fontSize: "12px",
-                      padding: "8px 8px",
-                      fontWeight: "bold",
-                      color: "white",
-                      marginLeft: "8px",
-                      textTransform: "none",
-                    }}
-                    onClick={() => {
-                      setIsOpen(true);
-                    }}
-                  >
-                    <AddIcon sx={{ mr: "5px", fontSize: "19px" }} />
-                    Tambah User
-                  </Button>
+                  {selectionMode.active && (
+                    <>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "magenta",
+                          "&:hover": { backgroundColor: "deepPink" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ1"))}>
+                        Tunjuk PJ1
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "purple",
+                          "&:hover": { backgroundColor: "plum" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ2"))}>
+                        Tunjuk PJ2
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "indigo",
+                          "&:hover": { backgroundColor: "dodgerBlue" },
+                          fontSize: "12px",
+                          padding: "8px 8px",
+                          fontWeight: "bold",
+                          color: "white",
+                          marginLeft: "8px",
+                          textTransform: "none",
+                        }}
+                        onClick={() => dispatch(setGroup("PJ3"))}>
+                        Tunjuk PJ3
+                      </Button>
+                    </>
+                  )}
+
+                  {/* * tetapi apabila ada perbedaan, maka tampilkan daftar userMatrix approval berdasarkan group levelnya pada sweet alert dengan pertanyaan "apakah daftarnya sudah sesuai?".
+                   * Apabila memilih yes, daftar akan disimpan dalam database, jika tidak maka muncul pertanyaan "apakah masih ingin memilih atau kembali pada pilihan sebelumnya".
+                   * @returns ketika selesai memilih akan muncul alert berisi daftar user yg terdaftar sebagai approver level berapa
+                   */}
+                  {(userInfo?.role === "adminIT" ||
+                    userInfo?.role === "admin_HC") && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: blue,
+                        "&:hover": { backgroundColor: lightBlue[500] },
+                        fontSize: "12px",
+                        padding: "8px 8px",
+                        fontWeight: "bold",
+                        color: "white",
+                        marginLeft: "8px",
+                        textTransform: "none",
+                      }}
+                      onClick={() => {
+                        if (selectionMode.active) {
+                          const selectedUser = JSON.stringify(groupMap);
+                          const lastselected = localStorage.getItem("groupMap");
+
+                          if (_.isEqual(selectedUser, lastselected)) {
+                            //Ketika selesai memilih jika pilihan sama dengan daftar pada grupmap, maka tutup feature
+                            console.log("Tidak ada perubahan");
+                            return dispatch(toggleSelectionMode());
+                          } else {
+                            const groupLevel = Object.entries(groupMap).reduce(
+                              (acc, [userId, groupName]) => {
+                                if (!acc[groupName]) {
+                                  acc[groupName] = [];
+                                }
+                                acc[groupName].push(
+                                  dtUser.find((user) => user.id === userId)
+                                    .username
+                                );
+
+                                return acc;
+                              },
+                              {}
+                            );
+                            const { PJ1, PJ2, PJ3 } = JSON.parse(
+                              JSON.stringify(groupLevel)
+                            );
+
+                            console.log(PJ2);
+                            Swal.fire({
+                              title: `PJ LVL 1 = ${PJ1},\n PJ LVL 2 = ${PJ2},\n PJ LVL 3 = ${PJ3}.\n  Apakah daftarnya sudah sesuai?`,
+                              icon: "question",
+                              showCancelButton: true,
+                              confirmButtonText: "Yes",
+                              cancelButtonText: "No",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                console.log(
+                                  "Daftar disimpan dalam database:",
+                                  groupLevel
+                                );
+                                saveGroupMapping({ groupMap });
+                                dispatch(fetchGroupMappingData());
+                                dispatch(toggleSelectionMode());
+                              } else if (
+                                result.dismiss === Swal.DismissReason.cancel
+                              ) {
+                                Swal.fire({
+                                  title:
+                                    "Apakah masih ingin memilih atau kembali pada pilihan sebelumnya?",
+                                  icon: "question",
+                                  showCancelButton: true,
+                                  confirmButtonText: "Masih ingin memilih",
+                                  cancelButtonText:
+                                    "Kembali pada pilihan sebelumnya",
+                                }).then((choiceResult) => {
+                                  if (choiceResult.isConfirmed) {
+                                    // Kode untuk membiarkan user melanjutkan memilih
+                                  } else if (
+                                    choiceResult.dismiss ===
+                                    Swal.DismissReason.cancel
+                                  ) {
+                                    console.log(
+                                      "Kembali pada pilihan sebelumnya"
+                                    );
+                                    // Kode untuk mengatur kembali pada pilihan sebelumnya
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        } else dispatch(toggleSelectionMode());
+                      }}>
+                      {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
+                    </Button>
+                  )}
+                  {(userInfo?.role === "adminIT" ||
+                    userInfo?.role === "admin_HC") && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: blue[800],
+                        fontSize: "12px",
+                        padding: "8px 8px",
+                        fontWeight: "bold",
+                        color: "white",
+                        marginLeft: "8px",
+                        textTransform: "none",
+                      }}
+                      onClick={() => {
+                        setIsOpen(true);
+                      }}>
+                      <AddIcon sx={{ mr: "5px", fontSize: "19px" }} />
+                      Tambah User
+                    </Button>
+                  )}
                 </Box>
               </Box>
               <hr sx={{ width: "100%" }} />

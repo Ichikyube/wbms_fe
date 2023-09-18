@@ -36,7 +36,7 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { useWeighbridge, useConfig } from "../../../common/hooks";
+import { useWeighbridge, useConfig } from "../../../configs";
 
 const tType = 1;
 
@@ -268,8 +268,7 @@ const PksManualOthersTimbangMasuk = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -285,8 +284,7 @@ const PksManualOthersTimbangMasuk = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined" // Variasi TextField dengan style "outlined"
@@ -307,8 +305,7 @@ const PksManualOthersTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white", // Background color teks label
                           px: 1, // Padding horizontal teks label 1 unit
-                        }}
-                      >
+                        }}>
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -316,7 +313,6 @@ const PksManualOthersTimbangMasuk = () => {
                   name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
                   value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
                 />
-
                 <TextField
                   variant="outlined"
                   size="small"
@@ -337,8 +333,7 @@ const PksManualOthersTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         No. DO/NPB
                       </Typography>
                     </>
@@ -351,8 +346,7 @@ const PksManualOthersTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nomor Polisi
                   </InputLabel>
 
@@ -396,8 +390,7 @@ const PksManualOthersTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Supir
                   </InputLabel>
 
@@ -435,8 +428,7 @@ const PksManualOthersTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -458,7 +450,7 @@ const PksManualOthersTimbangMasuk = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                           sx={{
+                        sx={{
                           "& .MuiOutlinedInput-root": {
                             borderRadius: "10px",
                           },
@@ -491,8 +483,7 @@ const PksManualOthersTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
@@ -500,14 +491,11 @@ const PksManualOthersTimbangMasuk = () => {
                   name="transportVehicleSccModel"
                   value={values.transportVehicleSccModel || "-"}
                 />
-
-      
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Jenis Barang
                   </InputLabel>
 
@@ -540,12 +528,12 @@ const PksManualOthersTimbangMasuk = () => {
                       />
                     )}
                   />
-                </FormControl>          <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                </FormControl>{" "}
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Customer
                   </InputLabel>
 
@@ -609,8 +597,7 @@ const PksManualOthersTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight IN
                     </Typography>
                   }
@@ -641,8 +628,7 @@ const PksManualOthersTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight OUT
                     </Typography>
                   }
@@ -674,8 +660,7 @@ const PksManualOthersTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -706,8 +691,7 @@ const PksManualOthersTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Lainnya
                     </Typography>
                   }
@@ -738,8 +722,7 @@ const PksManualOthersTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL
                     </Typography>
                   }
@@ -758,8 +741,7 @@ const PksManualOthersTimbangMasuk = () => {
                     weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
                       ? true
                       : false
-                  }
-                >
+                  }>
                   Simpan
                 </Button>
                 <BonTripTBS

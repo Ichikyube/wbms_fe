@@ -30,7 +30,7 @@ import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { useConfig } from "../../../common/hooks";
+import { useConfig } from "../../../configs";
 import * as SiteAPI from "../../../api/sitesApi";
 
 const tType = 1;
@@ -243,8 +243,7 @@ const BackdateFormTBSInternal = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -260,8 +259,7 @@ const BackdateFormTBSInternal = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined"
@@ -282,8 +280,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -311,8 +308,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         No. DO/NPB
                       </Typography>
                     </>
@@ -325,8 +321,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nomor Polisi
                   </InputLabel>
                   <Autocomplete
@@ -369,8 +364,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Supir
                   </InputLabel>
                   <Autocomplete
@@ -407,8 +401,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -462,8 +455,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
@@ -475,8 +467,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Jenis Barang
                   </InputLabel>
                   <Autocomplete
@@ -513,8 +504,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Customer
                   </InputLabel>
 
@@ -553,8 +543,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Asal
                   </InputLabel>
 
@@ -609,8 +598,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Qty TBS
                       </Typography>
                     </>
@@ -646,8 +634,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight IN
                     </Typography>
                   }
@@ -679,8 +666,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight OUT
                     </Typography>
                   }
@@ -713,8 +699,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -745,8 +730,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Lainnya
                     </Typography>
                   }
@@ -777,8 +761,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL
                     </Typography>
                   }
@@ -790,8 +773,7 @@ const BackdateFormTBSInternal = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!validateForm() || values.progressStatus === 4}
-                >
+                  disabled={!validateForm() || values.progressStatus === 4}>
                   Simpan
                 </Button>
                 <BonTripTBS
@@ -828,8 +810,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Tanggal Weight IN
                     </Typography>
                   }
@@ -856,8 +837,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Tanggal Weight OUT
                     </Typography>
                   }

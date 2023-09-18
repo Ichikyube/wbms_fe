@@ -38,6 +38,41 @@ ModuleRegistry.registerModules([
 
 const ConfigRequest = () => {
   // console.clear();
+  const dispatch = useDispatch();
+/**
+ * Pada tampilan configRequest. 
+ * Ketika config request berhasil dibuat, akan muncul notifikasi pada tampilan user yang terpilih sebagai matrix approval lvl pertama, 
+ * dan hanya user matrix approval lvl pertama yang dapat melihat request, ketika sudah di approve, 
+ * baru notifikasi muncul di user matrix approval lvl kedua, dan terlihat di halaman configRequest, begitu juga ke level 3.
+ * 
+ * ketika PJ mengirim response apakah approve atau rejected, dikirim ke config-approval. 
+ * Ketika response di level pertama rejected, maka request status Rejected, apabila approved, 
+ * maka approval masuk ke level kedua, notifikasi masuk ke PJ2 untuk segera memberi response, seperti itu seterusnya hingga level 3.  
+ * Hanya apabila approval di semua level approve, maka status request berubah menjadi Approved, dan status config berubah menjadi selain default.
+ */
+  const groupMap = useSelector((state) => state.groupMapping);
+  const { userInfo } = useSelector((state) => state.app);
+  
+  //cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
+  const userLvl = groupMap[userInfo?.id]
+  const lvl = {
+    1: 'PJ1',
+    2: 'PJ2',
+    3: 'PJ3',
+  };
+
+  const { data: requestList, refetch } = useFetchRequestsQuery();
+
+// function RequestConfigList({ startTime, endTime, status }) {
+//   const filteredConfigs = useSelector(state =>
+//     selectFilteredRequestConfigs(state, startTime, endTime, status)
+//   );
+// }
+
+  const [approveRequest] = useApproveRequestMutation();
+  const [rejectRequest] = useRejectRequestMutation();
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);

@@ -33,7 +33,8 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 const Config = () => {
-  console.clear();
+  // console.clear();
+
   const gridRef = useRef();
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);

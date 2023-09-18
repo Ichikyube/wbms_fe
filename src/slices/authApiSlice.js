@@ -1,5 +1,4 @@
 import apiSlice from "./apiSlice";
-import Cookies from "js-cookie";
 
 const API_URL = "/auth";
 const token = Cookies.get("at");

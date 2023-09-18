@@ -48,7 +48,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
         onClose("", false);
       });
   };
-
+  console.log(dtRole)
   const initialValues = {
     name: "",
     username: "",

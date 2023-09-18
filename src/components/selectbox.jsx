@@ -42,7 +42,6 @@ const SelectBox = (props) => {
 
   return (
     <>
-      {opts && opts.length > 0 && (
         <Select
           isMulti
           fullWidth
@@ -54,14 +53,13 @@ const SelectBox = (props) => {
           isClearable={true}
           isSearchable={true}
           placeholder={props.placeholder}
-          value={props.value}
-          options={opts}
+        value={props?.value || null}
+        options={props.options}
           onChange={props.onChange}
           components={{ ValueContainer }}
           style={{ flex: 1, width: `${props.width}` }}
           styles={styles}
         />
-      )}
     </>
   );
 };

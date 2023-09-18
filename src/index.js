@@ -2,8 +2,9 @@ import "core-js";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 
-import App from "./app";
-import store from "./app/store";
+import App from "./App";
+import store from "./store";
+import { AuthProvider } from './components/Auth/context/authProvider';
 
 // import "@fontsource/roboto/300.css";
 // import "@fontsource/roboto/400.css";

@@ -12,7 +12,6 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as RolesAPI from "../../../api/roleApi";
-import * as UserAPI from "../../../api/usersApi";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { toast } from "react-toastify";
@@ -33,7 +32,6 @@ ModuleRegistry.registerModules([
 const RoleList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [roles, setRoles] = useState([]);
-  const [dtUser, setDtUser] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -54,7 +52,7 @@ const RoleList = () => {
       icon: "question",
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonColor: "#D80B0B",
+      confirmButtonColor: "#1976d2",
       cancelButtonColor: "grey",
       cancelButtonText: "Cancel",
       confirmButtonText: "Hapus",
@@ -76,14 +74,6 @@ const RoleList = () => {
           });
       }
     });
-    UserAPI.getAll().then((res) => {
-      setDtUser(res.data.user.records);
-    });
-  }, []);
-
-  const getTotalUsersWithRole = (roleName) => {
-    const usersWithRole = dtUser.filter((user) => user.role === roleName);
-    return usersWithRole.length;
   };
   return (
     <div style={{ paddingLeft: 120, paddingRight: 120, paddingBottom: 60 }}>
@@ -96,40 +86,56 @@ const RoleList = () => {
             <Paper
               variant="outlined"
               sx={{
+                width: "100%",
+                height: "100%",
                 p: 4,
                 borderRadius: "10px 10px 10px 10px",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                overflow: "hidden", // Hide overflowing content
               }}
             >
+              <div style={{ padding: "0 15px" }}>
+                <h4>{role.name}</h4>
+                <br />
+                <h6 sx={{ fontWeight: "bold", color: "grey" }}>
+                  Total users with this role: {role.users.length}
+                </h6>
+              </div>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "29vh" }}
+                style={{ width: "auto", maxHeight: "19vh", overflow: "auto" }}
               >
-                <h4 ml={3}>{role.name}</h4>
-                <br />
-                <h6
-                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}
-                >
-                  Total users with this role: {getTotalUsersWithRole(role.name)}
-                </h6>
-                <br />
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    color: "gray",
-                    display: "flex",
-                    alignItems: "center",
-                    flex: 1,
-                  }}
-                >
-                  {role.description}
-                </Typography>
+                {role.permissions.map((permission, index) => (
+                  <div key={index}>
+                    <Typography
+                      sx={{
+                        fontSize: "13px",
+                        color: "gray",
+                        my: 1,
+                      }}
+                    >
+                      {permission.resource}
+                    </Typography>
+                    <ul>
+                      {permission.grants.map((grant, index) => (
+                        <li key={index}>
+                          {grant.action}:{grant.possession}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-              <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
-       
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                gap="15px"
+                mt={2}
+                sx={{ overflow: "auto" }}
+              >
                 <Button
                   variant="contained"
                   style={{ textTransform: "none" }}
@@ -174,6 +180,8 @@ const RoleList = () => {
           <Paper
             variant="outlined"
             sx={{
+              width: "100%",
+              height: "100%",
               p: 4,
               borderRadius: "10px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
@@ -247,12 +255,21 @@ const RoleList = () => {
         onClose={() => setIsEditOpen(false)}
         dtRole={selectedRole}
       />
+      {isEditOpen && (
+        <EditRole
+          isEditOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          dtRole={selectedRole}
+        />
+      )}
 
-      <ViewRole
-        isViewOpen={isViewOpen}
-        onClose={() => setIsViewOpen(false)}
-        dtRole={selectedRole}
-      />
+      {isViewOpen && (
+        <ViewRole
+          isViewOpen={isViewOpen}
+          onClose={() => setIsViewOpen(false)}
+          dtRole={selectedRole}
+        />
+      )}
     </div>
   );
 };

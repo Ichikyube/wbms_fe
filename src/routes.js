@@ -3,31 +3,36 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
-const BackdateFormTBSEksternal = lazy(() => import("./views/backdate/backdateFormTBSEksternal"));
-const BackdateFormTBSInternal = lazy(() => import("./views/backdate/backdateFormTBSInternal"));
-const BackdateFormOthers = lazy(() => import("./views/backdate/backdateFormOthers"));
-const BackdateTemplate = lazy(() => import("./views/backdate/backdateTemplate"));
-const EditDataTransaction = lazy(() => import("./views/dataTransaction/editDataTransaksi"));
+const BackdateFormTBSEksternal = lazy(() =>
+  import("./views/backdate/backdateFormTBSEksternal")
+);
+const BackdateFormTBSInternal = lazy(() =>
+  import("./views/backdate/backdateFormTBSInternal")
+);
+const BackdateFormOthers = lazy(() =>
+  import("./views/backdate/backdateFormOthers")
+);
+const BackdateTemplate = lazy(() =>
+  import("./views/backdate/backdateTemplate")
+);
+const EditDataTransaction = lazy(() =>
+  import("./views/dataTransaction/editDataTransaksi")
+);
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
 const PksManualOthersTB = lazy(() =>
   import("./views/PksManualEntry/manualentryothers/timbangMasuk")
 );
-const PksManualOthersTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryothers/timbangKeluar")
+const PksManualTimbangKeluar = lazy(() =>
+  import("./views/PksManualEntry/timbangKeluar")
 );
 const PksManualTbsInternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
 );
-const PksManualTbsInternalTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSInternal/timbangKeluar")
-);
+
 const PksManualTbsEksternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
-);
-const PksManualTbsEksternalTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSEksternal/timbangKeluar")
 );
 
 const Cities = lazy(() => import("./views/masterdata/cities"));
@@ -50,56 +55,11 @@ const Transportvehicle = lazy(() =>
 );
 const UsersList = lazy(() => import("./views/usermanagement/userslist"));
 const RolesList = lazy(() => import("./views/usermanagement/roles"));
+const Permission = lazy(() => import("./views/usermanagement/Permissions"));
 const ConfigRequest = lazy(() =>
   import("./views/usermanagement/config/configRequest")
 );
 const Config = lazy(() => import("./views/usermanagement/config"));
-
-// Base
-// const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-// const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
-// const Cards = React.lazy(() => import('./views/base/cards/Cards'))
-// const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
-// const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
-// const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'))
-// const Navs = React.lazy(() => import('./views/base/navs/Navs'))
-// const Paginations = React.lazy(() => import('./views/base/paginations/Paginations'))
-// const Placeholders = React.lazy(() => import('./views/base/placeholders/Placeholders'))
-// const Popovers = React.lazy(() => import('./views/base/popovers/Popovers'))
-// const Progress = React.lazy(() => import('./views/base/progress/Progress'))
-// const Spinners = React.lazy(() => import('./views/base/spinners/Spinners'))
-// const Tables = React.lazy(() => import('./views/base/tables/Tables'))
-// const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
-
-// Buttons
-// const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
-// const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
-// const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
-
-//Forms
-// const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
-// const FloatingLabels = React.lazy(() => import('./views/forms/floating-labels/FloatingLabels'))
-// const FormControl = React.lazy(() => import('./views/forms/form-control/FormControl'))
-// const InputGroup = React.lazy(() => import('./views/forms/input-group/InputGroup'))
-// const Layout = React.lazy(() => import('./views/forms/layout/Layout'))
-// const Range = React.lazy(() => import('./views/forms/range/Range'))
-// const Select = React.lazy(() => import('./views/forms/select/Select'))
-// const Validation = React.lazy(() => import('./views/forms/validation/Validation'))
-
-// const Charts = React.lazy(() => import('./views/charts/Charts'))
-
-// Icons
-// const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'))
-// const Flags = React.lazy(() => import('./views/icons/flags/Flags'))
-// const Brands = React.lazy(() => import('./views/icons/brands/Brands'))
-
-// Notifications
-// const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
-// const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
-// const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
-// const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
-
-// const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -116,12 +76,6 @@ const routes = [
     element: PksManualOthersTB,
     exact: true,
   },
-  {
-    path: "/pks-ManualEntry-Others-TimbangKeluar/:id",
-    name: "PKS  Manual Entry Others",
-    element: PksManualOthersTK,
-    exact: true,
-  },
 
   {
     path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
@@ -129,22 +83,18 @@ const routes = [
     element: PksManualTbsInternal,
     exact: true,
   },
-  {
-    path: "/pks-ManualEntry-TBSInternal-TimbangKeluar/:id",
-    name: "PKS  Manual Entry TBS Internal",
-    element: PksManualTbsInternalTK,
-    exact: true,
-  },
+
   {
     path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
     name: "PKS  Manual Entry TBS Eksternal",
     element: PksManualTbsEksternal,
     exact: true,
   },
+
   {
-    path: "/pks-ManualEntry-TBSEksternal-TimbangKeluar/:id",
-    name: "PKS  Manual Entry TBS Eksternal",
-    element: PksManualTbsEksternalTK,
+    path: "/pks-ManualEntry-TimbangKeluar/:id",
+    name: "PKS  Manual Entry",
+    element: PksManualTimbangKeluar,
     exact: true,
   },
 
@@ -290,7 +240,6 @@ const routes = [
     name: "Config ",
     element: Config,
   },
-
 ];
 
 export default routes;

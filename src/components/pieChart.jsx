@@ -65,7 +65,7 @@ const PieCharts = () => {
     <>
       <div className="areaChart">
         <div className="chart mt-4">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="80%">
             <PieChart>
               <Tooltip />
               <Legend iconType="square" />
@@ -75,7 +75,7 @@ const PieCharts = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
+                outerRadius={85}
                 label={({ name, percent }) =>
                   `${name} ${(percent * 100).toFixed(2)}%`
                 }
@@ -88,6 +88,5 @@ const PieCharts = () => {
     </>
   );
 };
-
 
 export default PieCharts;

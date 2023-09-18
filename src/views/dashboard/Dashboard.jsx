@@ -4,6 +4,7 @@ import * as TransactionAPI from "../../api/transactionApi";
 import AreaCharts from "../../components/areaChart";
 import PieCharts from "../../components/pieChart";
 import BarChartIcon from "@mui/icons-material/EqualizerOutlined";
+import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
 
 const Dashboard = () => {
   const [CPOProduct, setCPOProduct] = useState(0);
@@ -66,7 +67,6 @@ const Dashboard = () => {
         gridAutoRows="140px"
         gap="20px"
       >
-        {/* ROWS 1 */}
         <Box
           gridColumn="span 3"
           display="flex"
@@ -165,6 +165,13 @@ const Dashboard = () => {
         <Box gridColumn="span 4" pt={3}>
           <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
             <div style={{ width: "auto", height: "45vh" }}>
+              <div className="title" >
+                <Typography fontSize="18px" mb={3}>
+                  <PieChartOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
+                  Sales Chart
+                </Typography>
+              </div>
+              <hr />
               <PieCharts />
             </div>
           </Paper>

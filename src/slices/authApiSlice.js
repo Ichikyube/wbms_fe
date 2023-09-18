@@ -1,7 +1,6 @@
 import apiSlice from "./apiSlice";
 
 const API_URL = "/auth";
-const token = Cookies.get("at");
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,9 +16,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
     signout: builder.mutation({
       query: () => ({
         url: `${API_URL}/signout`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         method: "POST",
         mode: "cors",
         credentials: "include",

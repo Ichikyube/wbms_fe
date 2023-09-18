@@ -6,8 +6,6 @@ import {
   TextField,
   Button,
   Box,
-  FormControl,
-  FormLabel,
   IconButton,
   InputLabel,
   Autocomplete,
@@ -20,11 +18,16 @@ import {
   TextareaAutosize,
   Typography,
 } from "@mui/material";
+import { Formik, Form, Field } from "formik";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { format, addDays, addHours } from "date-fns";
-import { Formik } from "formik";
 import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configApi";
@@ -65,19 +68,15 @@ const StyledTextarea = styled(TextareaAutosize)(
 );
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
-  const [isCopied, setIsCopied] = useState(false);
-  const [rrule, setRrule] = useState(
-    "DTSTART:20190301T230000Z\nFREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"
-  );
+  const [isRepeatable, setIsRepeatable] = useState(false);
 
-  const handleChange = (newRRule) => {
-    setRrule(newRRule);
-    setIsCopied(false);
+  const handleIsRepeatableChange = (event) => {
+    setIsRepeatable(event.target.checked);
   };
 
-  const handleCopy = () => {
-    setIsCopied(true);
-  };
+  const userSchema = yup.object().shape({
+    // name: yup.string().required("required"),
+  });
 
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     values.start = moment(values.start).toDate();
@@ -97,6 +96,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
+  const [timeSpan, setTimeSpan] = useState(0);
 
     /*
     for SetConfig
@@ -121,11 +121,9 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}
-    >
+      onClose={() => onClose("", false)}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Edit Data Config
         <IconButton
           sx={{
@@ -136,14 +134,16 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik onSubmit={handleFormSubmit} initialValues={dtConfig}>
+        <Formik
+          onSubmit={handleFormSubmit}
+          initialValues={dtConfig}
+          validationSchema={userSchema}>
           {({
             values,
             errors,
@@ -161,8 +161,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -170,8 +169,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Config Name
                   </FormLabel>
 
@@ -282,8 +280,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}
-                >
+                  }}>
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -292,8 +289,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

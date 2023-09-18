@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
   Paper,
@@ -9,6 +10,7 @@ import {
 } from "@mui/material";
 import useSWR from "swr";
 import { blue, yellow } from "@mui/material/colors";
+import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -21,9 +23,13 @@ import * as React from "react";
 import * as ConfigAPI from "../../../api/configApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
+import CreateIcon from "@mui/icons-material/Create";
+import ModeIcon from "@mui/icons-material/Mode";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
+import CreateRequestConfig from "../../../views/usermanagement/config/createRequest";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import Swal from "sweetalert2";
 ModuleRegistry.registerModules([
@@ -36,20 +42,19 @@ const Config = () => {
   // console.clear();
 
   const gridRef = useRef();
+  const { userInfo } = useSelector((state) => state.app);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);
 
   // search
   const [searchQuery, setSearchQuery] = useState("");
-
   const { data: dtConfigs } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
-
   //filter
   const updateGridData = useCallback((config) => {
     if (gridRef.current && gridRef.current.api) {
@@ -67,15 +72,6 @@ const Config = () => {
     }
   }, [searchQuery, dtConfigs, updateGridData]);
 
-  // {
-  //   "name": "string",
-  //   "value": "string",
-  //   "type": "string",
-  //   "status": "ACTIVE",
-  //   "activeStart": "2023-08-06T09:53:03.504Z",
-  //   "activeEnd": "2023-08-06T09:53:03.504Z",
-  //   "siteId": "string"
-  // }
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -104,7 +100,7 @@ const Config = () => {
       flex: 2,
     },
     {
-      headerName: "Lvl of Approval",
+      headerName: "ApprovalLvl",
       field: "lvlOfApprvl",
       filter: true,
       sortable: true,
@@ -129,11 +125,11 @@ const Config = () => {
       cellClass: "grid-cell-centered",
       valueGetter: (params) => {
         const { data } = params;
-        if(data.status == "ACTIVE") return "Always"
-        else if(data.status === "DISABLED") return "-"
+        if (data.status == "ACTIVE") return "Always";
+        else if (data.status === "DISABLED") return "-";
         // const activeStart = new Date(data.start);
         // const activeEnd = new Date(data.end);
-    
+
         // const options = {
         //   year: 'numeric',
         //   month: '2-digit',
@@ -142,16 +138,13 @@ const Config = () => {
         //   minute: '2-digit',
         //   second: '2-digit'
         // };
-        
+
         // const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
         // const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
-    
+
         // return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
-    
-    
-
     {
       headerName: "Action",
       field: "id",
@@ -161,23 +154,32 @@ const Config = () => {
           <Box display="flex" justifyContent="center">
             <Box
               display="flex"
-              m="0 3px"
               bgcolor={yellow[900]}
-              borderRadius="15%"
+              borderRadius="5px"
               justifyContent="center"
               textAlign="center"
-              padding="7px"
               alignItems="center"
               color="white"
+              width="25%"
+              padding="7px 7px"
               style={{
                 textDecoration: "none",
                 cursor: "pointer",
               }}
               onClick={() => {
                 setSelectedConfig(params.data);
-                setIsEditOpen(true);
-              }}
-            > <DriveFileRenameOutlineOutlinedIcon />
+                if (userInfo?.role.toLowerCase().includes("admin"))
+                  setIsEditOpen(true);
+                else setIsRequestOpen(true);
+              }}>
+              {" "}
+              {userInfo?.role.toLowerCase().includes("admin") ? (
+                <DriveFileRenameOutlineIcon
+                  sx={{ ontSize: "20px", "&:hover": { color: "blue" } }}
+                />
+              ) : (
+                <LiveHelpOutlinedIcon sx={{ mr: "3px", fontSize: "19px" }} />
+              )}
             </Box>
           </Box>
         );
@@ -197,8 +199,7 @@ const Config = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">WBMS Config </Typography>
@@ -209,8 +210,7 @@ const Config = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -228,8 +228,7 @@ const Config = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>
@@ -247,6 +246,11 @@ const Config = () => {
       <EditDataConfig
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
+        dtConfig={selectedConfig}
+      />
+      <CreateRequestConfig
+        isRequestOpen={isRequestOpen}
+        onClose={() => setIsRequestOpen(false)}
         dtConfig={selectedConfig}
       />
     </>

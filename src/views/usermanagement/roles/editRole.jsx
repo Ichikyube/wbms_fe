@@ -8,21 +8,28 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  Checkbox,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Typography,
+  ToggleButton,
   Button,
-  Box,
   FormControl,
   IconButton,
   FormLabel,
+  Stack,
+  Switch,
   TextField,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Masonry from "@mui/lab/Masonry";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { Formik } from "formik";
+import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
-import { grey } from "@mui/material/colors";
+import { grey, blue } from "@mui/material/colors";
 import * as RoleAPI from "../../../api/roleApi";
 import { dtAttrJson } from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
@@ -151,12 +158,13 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
       });
   };
 
-  const userSchema = yup.object().shape({
-    name: yup.string().required("required"),
-  });
-
+  const StyledAccordion = styled(Accordion)(({ theme }) => ({
+    backgroundColor: "#fff",
+    color: theme.palette.text.secondary,
+    transition: "max-width 0.3s ease-in-out",
+  }));
   return (
-    <Dialog open={isEditOpen} fullWidth maxWidth={"md"}>
+    <Dialog open={isEditOpen} fullWidth maxWidth={"xl"}>
       <DialogTitle
         sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
         Edit Roles
@@ -183,8 +191,10 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
+            isSubmitting,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
               <Box
                 sx={{
                   display: "flex",
@@ -273,12 +283,12 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                   <FormLabel
                     sx={{
                       color: "black",
+                      marginTop: "25px",
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}
-                  >
-                    Role Name
+                    }}>
+                    Permissions
                   </FormLabel>
                   <Masonry columns={3} spacing={2}>
                     {selectedResources.map((resource, index) => (
@@ -483,24 +493,23 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}
-                >
+                  }}>
                   Cancel
                 </Button>
                 <Box mr={1} />
                 <Button
+                  disabled={isSubmitting}
                   type="submit"
                   variant="contained"
                   sx={{
                     color: "white",
                     textTransform: "none",
                     fontSize: "16px",
-                  }}
-                >
+                  }}>
                   Simpan
                 </Button>
               </Box>
-            </form>
+            </Form>
           )}
         </Formik>
       </DialogContent>

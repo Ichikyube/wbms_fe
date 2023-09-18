@@ -1,21 +1,18 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useCollapse from "react-collapsed";
+import { useCollapse } from "react-collapsed";
 import "./style.css";
 import { styled } from "@mui/material/styles";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  Checkbox,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Typography,
+  ToggleButton,
   Button,
-  RadioGroup,
-  Radio,
   FormControl,
   Select,
   MenuItem,
@@ -49,7 +46,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
     "Driver",
     "Mill",
     "Product",
-    "Semai",
     "Site",
     "StorageTank",
     "Transaction",
@@ -165,19 +161,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   }, [selectedResources]);
 
   // Create
-
-  useEffect(() => {
-    const successMessage = localStorage.getItem("successMessage");
-
-    if (successMessage) {
-      // Hapus pesan dari storage web
-      localStorage.removeItem("successMessage");
-
-      // Menampilkan toast alert
-      toast.success(successMessage);
-    }
-  }, []);
-
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
@@ -194,7 +177,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-
         onClose("", false);
       });
   };
@@ -204,7 +186,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   });
 
   const StyledAccordion = styled(Accordion)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    backgroundColor: "#fff",
     color: theme.palette.text.secondary,
     transition: "max-width 0.3s ease-in-out",
   }));
@@ -354,7 +336,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                             {item.name}
                           </MenuItem>
                         ))}
-
                       </Select>
                     </FormControl>
                     <label>

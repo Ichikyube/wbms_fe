@@ -10,14 +10,12 @@ const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
   const userRef = useRef();
-  const {login} = useAuth();
+  const { login } = useAuth();
   const [values, setValues] = useState(initialValues);
-
 
   useEffect(() => {
     userRef.current.focus();
   }, []);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,12 +43,6 @@ const SignIn = () => {
     setShowPassword(!showPassword);
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <div className="min-vh-100 d-flex flex-row align-items-center">
       <FormContainer>
@@ -66,8 +58,7 @@ const SignIn = () => {
           </p>
           <p
             className="title text-center mb-4 "
-            style={{ fontSize: "48px", fontWeight: "bold" }}
-          >
+            style={{ fontSize: "48px", fontWeight: "bold" }}>
             <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
@@ -109,8 +100,7 @@ const SignIn = () => {
             <Button
               type="submit"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-            >
+              style={{ fontSize: "20px", fontWeight: "bold" }}>
               LOGIN
             </Button>
           </Row>

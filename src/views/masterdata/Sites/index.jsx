@@ -141,7 +141,6 @@ const Sites = () => {
       sortable: true,
       flex: 2,
     },
-
     {
       headerName: "SAP Code",
       field: "codeSap",

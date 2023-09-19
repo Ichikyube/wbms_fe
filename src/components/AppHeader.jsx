@@ -13,24 +13,22 @@ import {
   CNavItem,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from "@coreui/icons";
+import { cilMenu } from "@coreui/icons";
 
 import { AppBreadcrumb } from "./index";
 import { AppHeaderDropdown } from "./header/index";
-import { logo } from "../assets/brand/logo";
-import Avatar from "@mui/material/Avatar";
-import { deepOrange, deepPurple } from "@mui/material/colors";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setSidebar } from "../slices/appSlice";
 import NotificationList from "./NotificationList";
+import { useAuth } from "../context/AuthContext";
 
 const AppHeader = () => {
   const dispatch = useDispatch();
   const { sidebar } = useSelector((state) => state.app);
   // const sidebarShow = useSelector((state) => state.sidebarShow);
-
+  const {userInfo} = useAuth();
   return (
+    userInfo && (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
         <CHeaderToggler
@@ -56,7 +54,9 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink to="/profile" component={NavLink}>Settings</CNavLink>
+            <CNavLink to="/profile" component={NavLink}>
+              Settings
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
@@ -64,8 +64,12 @@ const AppHeader = () => {
               <NotificationList />
           </CNavItem>
         </CHeaderNav>
+        <hr
+          className="mx-3"
+          style={{ height: "15px", borderLeft: "2px solid grey" }}
+        />
+        <span style={{}}><strong>{userInfo?.name ? userInfo.name : null}</strong></span>
         <CHeaderNav className="ms-3">
-          {/* <ToastContainer position="top-right" autoClose={3000} />{" "} */}
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
@@ -73,7 +77,7 @@ const AppHeader = () => {
       <CContainer fluid>
         <AppBreadcrumb />
       </CContainer>
-    </CHeader>
+    </CHeader>)
   );
 };
 

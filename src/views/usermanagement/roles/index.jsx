@@ -130,7 +130,7 @@ const RoleList = () => {
                   }}>
                   View Role
                 </Button>
-                {!["adminHC", "admin_system", "adminIT"].includes(
+                {!["admin_HC", "admin_system", "adminIT"].includes(
                   role.name
                 ) && (
                   <>
@@ -138,7 +138,7 @@ const RoleList = () => {
                       variant="outlined"
                       style={{ textTransform: "none" }}
                       onClick={() => {
-                        console.log(role)
+                        console.log(role);
                         setSelectedRole(role);
                         setIsEditOpen(true);
                       }}>

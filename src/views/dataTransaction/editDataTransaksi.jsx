@@ -5,9 +5,10 @@ import {
   FormControl,
   Paper,
   Box,
-  InputLabel,
-  MenuItem,
-  Select,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -21,7 +22,7 @@ import * as CompaniesAPI from "../../api/companiesApi";
 import * as DriverAPI from "../../api/driverApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CustomerAPI from "../../api/customerApi";
-import { useConfig } from "../../common/hooks";
+import { useConfig } from "../../configs";
 import * as SiteAPI from "../../api/sitesApi";
 import TBSInternal from "./dataTBSInternal";
 import TBSEksternal from "./dataTBSEksternal";
@@ -230,64 +231,71 @@ const EditDataTransaksi = () => {
       <Grid container spacing={3}>
         <Grid item xs={1.7}>
           <Paper elevation={2} sx={{ p: 2 }}>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel
-                id="select-label"
-                sx={{
-                  bgcolor: "white",
-                  px: 2,
-                }}
+            <FormControl component="fieldset">
+              <FormLabel
+                component="legend"
+                sx={{ fontWeight: "bold", fontSize: "17px" }}
               >
                 Edit Transaksi
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                size="large"
+              </FormLabel>
+              <RadioGroup
+                aria-label="edit-transaksi"
+                name="edit-transaksi"
                 value={selectedOption}
                 onChange={(event) => {
                   setSelectedOption(event.target.value);
-                }}
-              >
+                }}>
                 {/* TBS INTERNAL */}
-
                 {(selectedOption === "TbsInternal" ||
                   selectedOption === "BeratTanggalTbsInternal") && (
-                  <MenuItem value="TbsInternal">TBS Internal</MenuItem>
-                )}
-                {(selectedOption === "BeratTanggalTbsInternal" ||
-                  selectedOption === "TbsInternal") && (
-                  <MenuItem value="BeratTanggalTbsInternal">
-                    Berat & Tanggal
-                  </MenuItem>
+                  <>
+                    <FormControlLabel
+                      value="TbsInternal"
+                      control={<Radio />}
+                      label="TBS Internal"
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalTbsInternal"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
                 )}
 
                 {/* TBS EKSTERNAL */}
-
                 {(selectedOption === "TbsEksternal" ||
                   selectedOption === "BeratTanggalTbsEksternal") && (
-                  <MenuItem value="TbsEksternal">TBS Eksternal</MenuItem>
-                )}
-                {(selectedOption === "BeratTanggalTbsEksternal" ||
-                  selectedOption === "TbsEksternal") && (
-                  <MenuItem value="BeratTanggalTbsEksternal">
-                    Berat & Tanggal
-                  </MenuItem>
+                  <>
+                    <FormControlLabel
+                      value="TbsEksternal"
+                      control={<Radio />}
+                      label="TBS Eksternal"
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalTbsEksternal"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
                 )}
 
                 {/* OTHERS */}
-
                 {(selectedOption === "Others" ||
                   selectedOption === "BeratTanggalOthers") && (
-                  <MenuItem value="Others">Others</MenuItem>
+                  <>
+                    <FormControlLabel
+                      value="Others"
+                      control={<Radio />}
+                      label="Others"
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalOthers"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
                 )}
-                {(selectedOption === "BeratTanggalOthers" ||
-                  selectedOption === "Others") && (
-                  <MenuItem value="BeratTanggalOthers">
-                    Berat & Tanggal
-                  </MenuItem>
-                )}
-              </Select>
+              </RadioGroup>
             </FormControl>
           </Paper>
         </Grid>
@@ -296,8 +304,7 @@ const EditDataTransaksi = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               {/* TBS INTERNAL */}
 
               {selectedOption === "TbsInternal" && (

@@ -48,7 +48,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  console.clear();
+  // console.clear();
   const dispatch = useDispatch();
 /**
  * Pada tampilan configRequest. 
@@ -204,9 +204,9 @@ const ConfigRequest = () => {
       flex: 3,
       valueGetter: (params) => {
         const { data } = params;
-        const activeStart = new Date(data.start);
-        const activeEnd = new Date(data.end);
-
+        const activeStart = new Date(data.schedule);
+        const activeEnd = new Date(new Date(data.schedule).getTime() + data.config.lifespan);
+        console.log(data.schedule)
         const options = {
           year: "numeric",
           month: "2-digit",

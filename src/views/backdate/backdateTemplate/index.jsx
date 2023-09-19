@@ -77,17 +77,6 @@ const BackdateTemplate = () => {
   };
 
   const handleSave = () => {
-    const isValidData = uploadedData.every((rowData) => {
-      return !isNaN(rowData.tType); // Pastikan tType adalah angka
-    });
-
-    if (!isValidData) {
-      toast.error(
-        "Data contains invalid tType values. Please check your data."
-      );
-      return;
-    }
-
     TransactionAPI.create(uploadedData)
       .then(() => {
         setIsFileUploaded(true);
@@ -144,15 +133,21 @@ const BackdateTemplate = () => {
   const formattedDate = selectedDate.format("YYMMDD");
   const [bonTripNo, setBonTripNo] = useState("");
 
+  // Gunakan useState untuk melacak nomor increment
+  const [increment, setIncrement] = useState(1);
+
   useEffect(() => {
     const generateBonTripNo = () => {
-      return `P041${formattedDate}${Math.floor(
-        100000 + Math.random() * 900000
-      )}`;
+      // Format nomor increment menjadi 4 digit dengan leading zeros
+      const formattedIncrement = String(increment).padStart(4, "0");
+      return `P049${formattedDate}${formattedIncrement}`;
     };
 
     const generatedBonTripNo = generateBonTripNo();
     setBonTripNo(generatedBonTripNo);
+
+    // Tingkatkan nilai increment setiap kali Anda menghasilkan nomor baru
+    setIncrement(increment + 0);
   }, [formattedDate]);
 
   const processUploadedData = (csvData) => {
@@ -179,8 +174,9 @@ const BackdateTemplate = () => {
       ...row,
       id: index,
       tType: 1,
-      bonTripNo: `P041${formattedDate}${Math.floor(
-        100000 + Math.random() * 900000
+      bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
+        4,
+        "0"
       )}`,
     }));
 

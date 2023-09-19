@@ -32,7 +32,7 @@ import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
-import { dtAttrJson } from "../../../data/attributeListObj";
+import { dtAttrJson } from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
 const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   const [expanded, setExpanded] = useState(null);
@@ -177,7 +177,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-
         onClose("", false);
       });
   };
@@ -337,7 +336,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                             {item.name}
                           </MenuItem>
                         ))}
-
                       </Select>
                     </FormControl>
                     <label>

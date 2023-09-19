@@ -1,32 +1,17 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+
 import { Form, Button, Row, InputGroup, Image } from "react-bootstrap";
 import Cookies from "js-cookie";
 import FormContainer from "../../../components/FormContainer";
-import { fetchConfigsData } from "../../../slices/requestConfigsSlice";
-import { fetchGroupMappingData } from "../../../slices/groupMappingSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useSigninMutation } from "../../../slices/authApiSlice";
-import { setCredentials } from "../../../slices/appSlice";
-
 import { FaUser, FaLock } from "react-icons/fa";
-
+import { useAuth } from "../../../context/AuthContext";
 const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
   const userRef = useRef();
-  const [errMsg, setErrMsg] = useState("");
-  const { userInfo } = useSelector((state) => state.app);
-  const [signin] = useSigninMutation();
-
+  const { login } = useAuth();
   const [values, setValues] = useState(initialValues);
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
     userRef.current.focus();
@@ -34,42 +19,7 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await signin(values).unwrap();
-      // Get the cookie string from the response headers
-
-      console.log("response from signin:", response);
-
-      const at = response?.data?.tokens?.access_token;
-      localStorage.setItem("wbms_at", at);
-      
-      if (!response.status) {
-        console.log(response.message);
-        console.log(response.logs);
-
-        toast.error(response.message);
-
-        return;
-      }
-
-      dispatch(setCredentials({ ...response.data.user }));
-      dispatch(fetchGroupMappingData());
-      dispatch(fetchConfigsData());
-      
-      navigate(from, { replace: true });
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
-      } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg("Login Failed");
-      }
-      toast.error(errMsg);
-    }
+    login(values);
   };
 
   const handleInputChange = (e, type = 1) => {
@@ -86,12 +36,6 @@ const SignIn = () => {
       });
     }
   };
-
-  useEffect(() => {
-    if (userInfo) navigate("/dashboard");
-
-    return () => {};
-  }, [navigate, userInfo]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -114,8 +58,7 @@ const SignIn = () => {
           </p>
           <p
             className="title text-center mb-4 "
-            style={{ fontSize: "48px", fontWeight: "bold" }}
-          >
+            style={{ fontSize: "48px", fontWeight: "bold" }}>
             <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
@@ -157,8 +100,7 @@ const SignIn = () => {
             <Button
               type="submit"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-            >
+              style={{ fontSize: "20px", fontWeight: "bold" }}>
               LOGIN
             </Button>
           </Row>

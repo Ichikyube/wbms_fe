@@ -31,7 +31,7 @@ import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
 import SelectBox from "../../../components/selectbox";
-import { dtAttrJson } from "../../../data/attributeListObj";
+import { dtAttrJson } from "../../../constants/attributeListObj";
 import { useMultiStepForm } from "./hooks/useMultiForm";
 
 const FirstForm = lazy(() => import("./forms/role"));

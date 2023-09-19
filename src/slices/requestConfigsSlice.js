@@ -6,17 +6,17 @@ import api from "../api/api";
 
 // get initial value by fetch and put the value to localStorage.
 const initialState = {
-  start: null,
-  end: null,
   status: null,
   zeroLock: "",
-  stableLock: "",
-  backDatedForm: "",
-  // backDatedTemplate: "",
+  stableLock: "",  //waktu stableLockTime nilai INT
+  backDatedForm: "",  // backDatedTemplate: "",
+  //minimumWeight nilai INT
   // manualEntryWB: "",
   // manualBackdatedForm: "",
   // editTransactionMinusWeightAndDate: "",
   // editTransactionFullForm: "",
+  //BONTRIP nilai Object {PGS:<NAMA>,millHead:<NAMA}
+  //
   error: null,
 };
 /**

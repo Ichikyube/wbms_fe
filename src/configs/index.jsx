@@ -1,4 +1,8 @@
-import * as ConfigAPI from "../api/configsApi";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetENVQuery } from "../slices/configApiSlice";
+import * as ConfigAPI from "../api/configApi";
+export * from "./Weighbridge";
+
 
 const sccModel = {
   0: "None",
@@ -87,5 +91,26 @@ const Config = {
 };
 
 getEnvInit();
+
+export const useConfig = () => {
+  const { data: EnvData, isLoading, isSuccess } = useGetENVQuery();
+
+  const configs = {
+    ENV: {},
+
+    WB_TRANSACTION_URL_MAPPING: WbTransactionUrlMapping,
+
+    PKS_PROGRESS_STATUS: pksProgressStatus,
+    T30_PROGRESS_STATUS: t30ProgressStatus,
+    BULKING_PROGRESS_STATUS: bulkingProgressStatus,
+    SCC_MODEL: sccModel,
+  };
+
+  if (!isLoading && isSuccess) {
+    if (EnvData?.status) configs.ENV = { ...EnvData.data.ENV };
+  }
+
+  return [configs];
+};
 
 export default Config;

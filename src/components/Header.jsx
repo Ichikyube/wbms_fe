@@ -1,6 +1,13 @@
+import { useSelector, useDispatch } from "react-redux";
+// import { Navbar, Nav, Container, NavDropdown, Badge } from 'react-bootstrap';
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import { toast } from "react-toastify";
 
+import { clearCredentials } from "../slices/appSlice";
+import { useSignoutMutation } from "../slices/authApiSlice";
+import Cookies from "js-cookie";
 import { FaSignInAlt } from "react-icons/fa";
 
 

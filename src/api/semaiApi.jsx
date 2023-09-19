@@ -20,6 +20,8 @@ import api from "./api";
 
 // const { WBMS_SEMAI_BACKEND_URL, WBMS_SEMAI_API_KEY } = Config.ENV;
 
+
+
 const endpoint = "semai";
 
 // export const decodeQrcode = async (data) => {

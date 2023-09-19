@@ -20,7 +20,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/configsApi";
+import * as ConfigAPI from "../../../api/configApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
 import CreateIcon from "@mui/icons-material/Create";
@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 const Config = () => {
-  console.clear();
+  // console.clear();
 
   const gridRef = useRef();
   const { userInfo } = useSelector((state) => state.app);
@@ -243,11 +243,12 @@ const Config = () => {
           </Paper>
         </Grid>
       </Grid>
+      {isEditOpen && (
       <EditDataConfig
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         dtConfig={selectedConfig}
-      />
+      />)}
       <CreateRequestConfig
         isRequestOpen={isRequestOpen}
         onClose={() => setIsRequestOpen(false)}

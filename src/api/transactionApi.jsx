@@ -194,6 +194,10 @@ export const InitialData = {
   returnWeighOutOperatorName: "",
   returnWeighOutTimestamp: null,
 
+  qtyTbs: 0,
+  qtyTbsDikirim: 0,
+  qtyTbsDikembalikan: 0,
+
   currentSeal1: "",
   currentSeal2: "",
   currentSeal3: "",

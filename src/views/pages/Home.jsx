@@ -1,6 +1,6 @@
 import { Container, Card, Button, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-
+import { ToastContainer } from "react-toastify";
 const Home = () => {
   return (
     <div className="min-vh-100 d-flex flex-row align-items-center">

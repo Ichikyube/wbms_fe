@@ -46,17 +46,32 @@ const tType = 1;
 
 const DataTransaction = () => {
   const navigate = useNavigate();
-
-  const handleCellClick = (params) => {
-    const Id = params.data.id;
-    navigate(`/edit-data-Transaction/${Id}`);
-  };
-
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
 
-  const deleteById = (id, bonTripNo) => {
+  const handleCellClick = (params) => {
+    const productName = params.data.productName.toLowerCase();
+    const progressStatus = params.data.progressStatus;
+
+    if (
+      progressStatus === 1 &&
+      productName !== "cpo" &&
+      productName !== "pko"
+    ) {
+      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
+    } else {
+      const Id = params.data.id;
+      navigate(`/edit-data-Transaction/${Id}`);
+    }
+  };
+
+  const deleteById = (id, bonTripNo, productName) => {
+    if (productName === "cpo" || productName === "pko") {
+      toast.warning("Tidak dapat menghapus transaksi CPO atau PKO");
+      return; // Exit the function early without performing deletion
+    }
+
     Swal.fire({
       title: `Hapus Transaksi !!!`,
       html: `<span style="font-weight: bold; font-size: 28px;">"${bonTripNo}"</span>`,
@@ -162,7 +177,13 @@ const DataTransaction = () => {
               borderRadius="5px"
               padding="7px 5px "
               color="white"
-              onClick={() => deleteById(params.value, params.data.bonTripNo)}
+              onClick={() =>
+                deleteById(
+                  params.value,
+                  params.data.bonTripNo,
+                  params.data.productName.toLowerCase()
+                )
+              }
               style={{
                 color: "white",
                 textDecoration: "none",
@@ -203,6 +224,7 @@ const DataTransaction = () => {
     TransactionAPI.searchMany({
       where: {
         tType,
+        isDeleted: false,
         progressStatus: { notIn: [20, 21, 22, 1] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -253,24 +275,6 @@ const DataTransaction = () => {
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
-              {/* <Button
-                color="success"
-                variant="contained"
-                sx={{
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                  padding: "12px 12px",
-                  color: "white",
-                }}
-                onClick={() => {
-                  gridRef.current.api.exportDataAsExcel();
-                }}
-              >
-                <FileDownloadOutlinedIcon
-                  sx={{ mr: "5px", fontSize: "17px" }}
-                />
-                Export Excel
-              </Button> */}
               <Box
                 display="flex"
                 borderRadius="5px"

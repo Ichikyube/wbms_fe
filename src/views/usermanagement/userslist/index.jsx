@@ -86,7 +86,7 @@ const UsersList = () => {
 
   useEffect(() => {
     RoleAPI.getAll().then((res) => {
-      setDtRole(res);
+      setDtRole(res.data.roles.records);
     });
   }, []);
 
@@ -213,66 +213,66 @@ const UsersList = () => {
           />
         </Box>
       )}
-      {( userInfo?.role === "adminIT" ||
-      userInfo?.role === "adminHC" ) && (
+      {(userInfo?.role === "adminIT" || userInfo?.role === "admin_HC") && (
         <>
-      <Box
-        width="25%"
-        display="flex"
-        m="0 3px"
-        bgcolor={indigo[700]}
-        borderRadius="5px"
-        padding="10px 10px"
-        justifyContent="center"
-        color="white"
-        style={{
-          textDecoration: "none",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          setSelectedUser(params.data);
-          setIsViewOpen(true);
-        }}>
-        <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
-      </Box>
-      <Box
-        width="25%"
-        display="flex"
-        m="0 3px"
-        bgcolor={orange[600]}
-        borderRadius="5px"
-        justifyContent="center"
-        padding="10px 10px"
-        color="white"
-        style={{
-          textDecoration: "none",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          setSelectedUser(params.data);
-          setIsEditOpen(true);
-        }}>
-        <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
-      </Box>
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={indigo[700]}
+            borderRadius="5px"
+            padding="10px 10px"
+            justifyContent="center"
+            color="white"
+            style={{
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setSelectedUser(params.data);
+              setIsViewOpen(true);
+            }}>
+            <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={orange[600]}
+            borderRadius="5px"
+            justifyContent="center"
+            padding="10px 10px"
+            color="white"
+            style={{
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setSelectedUser(params.data);
+              setIsEditOpen(true);
+            }}>
+            <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
 
-      <Box
-        width="25%"
-        display="flex"
-        m="0 3px"
-        bgcolor={red[800]}
-        borderRadius="5px"
-        padding="10px 10px"
-        justifyContent="center"
-        color="white"
-        onClick={() => deleteById(params.value, params.data.name)}
-        style={{
-          color: "white",
-          textDecoration: "none",
-          cursor: "pointer",
-        }}>
-        <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
-      </Box>
-      </>)}
+          <Box
+            width="25%"
+            display="flex"
+            m="0 3px"
+            bgcolor={red[800]}
+            borderRadius="5px"
+            padding="10px 10px"
+            justifyContent="center"
+            color="white"
+            onClick={() => deleteById(params.value, params.data.name)}
+            style={{
+              color: "white",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}>
+            <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
+          </Box>
+        </>
+      )}
     </Box>
   );
   const valueGetter = (params) => {

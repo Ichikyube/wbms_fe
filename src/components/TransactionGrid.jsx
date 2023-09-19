@@ -31,19 +31,16 @@ const TransactionGrid = (props) => {
   const gridRef = useRef();
 
   const handleCellClick = (params) => {
+    const productName = params.data.productName.toLowerCase();
     const progressStatus = params.data.progressStatus;
-    const Id = params.data.id; 
 
     if (
-      progressStatus === 20 ||
-      progressStatus === 21 ||
-      progressStatus === 22
+      progressStatus === 1 &&
+      productName !== "cpo" &&
+      productName !== "pko"
     ) {
-      navigate(
-        `/pks-ManualEntry-${progressStatus === 20 ? "Others-" : ""}${
-          progressStatus === 21 ? "TBSInternal-" : ""
-        }${progressStatus === 22 ? "TBSEksternal-" : ""}TimbangKeluar/${Id}`
-      );
+      const Id = params.data.id;
+      navigate(`/pks-ManualEntry-TimbangKeluar/${Id}`);
     }
   };
 
@@ -54,7 +51,7 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
+      flex: true,
       onCellClicked: handleCellClick,
       cellStyle: { cursor: "pointer" },
     },
@@ -65,15 +62,15 @@ const TransactionGrid = (props) => {
       onCellClicked: handleCellClick,
       cellStyle: { cursor: "pointer" },
     },
-    // {
-    //   headerName: "Status",
-    //   field: "progressStatus",
-    //   cellClass: "progressStatus",
-    //   valueFormatter: statusFormatter,
-    //   enableRowGroup: true,
-    //   rowGroup: true,
-    //   hide: true,
-    // },
+    {
+      headerName: "Status",
+      field: "progressStatus",
+      cellClass: "progressStatus",
+      valueFormatter: statusFormatter,
+      enableRowGroup: true,
+      rowGroup: true,
+      hide: true,
+    },
 
     {
       headerName: "DO No",
@@ -112,6 +109,8 @@ const TransactionGrid = (props) => {
         checkbox: true,
       },
       field: "bonTripNo",
+      cellStyle: { cursor: "pointer" },
+      onCellClicked: handleCellClick,
       width: 300,
     }),
     []

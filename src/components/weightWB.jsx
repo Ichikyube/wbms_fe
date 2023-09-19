@@ -3,11 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { w3cwebsocket } from "websocket";
 import moment from "moment";
-import { useWeighbridge } from "../common/hooks";
+import { useWeighbridge } from "../configs";
 import { getEnvInit } from "../configs";
 import { setWb } from "../slices/appSlice";
-
-
 
 const WeightWB = () => {
   const [weighbridge] = useWeighbridge();
@@ -34,8 +32,7 @@ const WeightWB = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               WB WEIGHT
             </Typography>
           </>

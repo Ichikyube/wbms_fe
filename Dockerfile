@@ -1,6 +1,5 @@
 FROM node:lts AS development
-
-
+ENV CI=false
 # set working directory
 WORKDIR /app
 

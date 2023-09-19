@@ -33,7 +33,7 @@ const PksManualTbsInternal = lazy(() =>
 
 const PksManualTbsEksternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
-);src/views/masterdata/provinces
+);
 
 const Cities = lazy(() => import("./views/masterdata/cities"));
 const Provinces = lazy(() => import("./views/masterdata/provinces"));

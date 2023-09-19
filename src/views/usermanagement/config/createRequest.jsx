@@ -22,7 +22,6 @@ import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
 import moment from "moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import ReactRRuleGenerator from "../../../components/ReactRRuleGenerator";
 import {
   useFetchRequestsQuery, useCreateRequestMutation
 } from "../../../slices/requestConfigsSlice";

@@ -27,6 +27,6 @@ EXPOSE 3000
 # start app
 CMD ["npm", "start"]
 
-FROM nginx:1.13-alpine
-
-COPY --from=builder /code/build /usr/share/nginx/html
+FROM nginx:stable-alpine
+COPY ./docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html

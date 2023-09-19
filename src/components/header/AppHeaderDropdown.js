@@ -35,7 +35,6 @@ const AppHeaderDropdown = () => {
             }}
           />
         </Avatar>
-        <span style={{position:"absolute", top:"32px"}}><strong>{userInfo?.name ? userInfo.name : null}</strong></span>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">

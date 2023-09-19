@@ -1,4 +1,4 @@
-
+syncronize master data product with semai
 kita asumsikan user tidak akan mengubah-ubah date pada sistem komputernya
    Pada komponen dengan temporary config, buat state bernama <configItem> dan array yang diambil berdasarkan storage item"tempConfig", tempConfig ini diambil dari memfetch config. tempConfig.include(<configItem>) apabila true maka component active.
    fetch config.status filter hanya yang status tidak sama dengan default. Apabila date.now melampaui nilai end maka status kembali ke default, start menjadi kosong, end menjadi kosong.

@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from '@reduxjs/toolkit/query/react';
-import logger from 'redux-logger'
 import appReducer from "./slices/appSlice";
 import wbTransactionReducer from "./slices/wbTransactionSlice";
 import apiSlice from "./slices/apiSlice";
@@ -20,7 +19,7 @@ const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware, logger),
+    getDefaultMiddleware().concat(apiSlice.middleware),
   devTools: true,
 });
 

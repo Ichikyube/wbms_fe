@@ -243,11 +243,12 @@ const Config = () => {
           </Paper>
         </Grid>
       </Grid>
+      {isEditOpen && (
       <EditDataConfig
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         dtConfig={selectedConfig}
-      />
+      />)}
       <CreateRequestConfig
         isRequestOpen={isRequestOpen}
         onClose={() => setIsRequestOpen(false)}

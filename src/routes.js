@@ -55,7 +55,6 @@ const Transportvehicle = lazy(() =>
 );
 const UsersList = lazy(() => import("./views/usermanagement/userslist"));
 const RolesList = lazy(() => import("./views/usermanagement/roles"));
-const Permission = lazy(() => import("./views/usermanagement/Permissions"));
 const ConfigRequest = lazy(() =>
   import("./views/usermanagement/config/configRequest")
 );

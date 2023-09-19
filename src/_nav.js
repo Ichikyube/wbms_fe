@@ -226,11 +226,6 @@ const _nav = [
           },
         ],
       },
-      {
-        component: CNavItem,
-        name: "Permissions List",
-        to: "/permissions",
-      },
     ],
   },
 ];

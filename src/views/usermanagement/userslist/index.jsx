@@ -86,7 +86,6 @@ const UsersList = () => {
 
   useEffect(() => {
     RoleAPI.getAll().then((res) => {
-      console.log(res)
       setDtRole(res.data.roles.records);
     });
   }, []);

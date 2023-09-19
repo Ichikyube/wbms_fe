@@ -52,7 +52,7 @@ const RoleList = () => {
       icon: "question",
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonColor: "#1976d2",
+      confirmButtonColor: "#D80B0B",
       cancelButtonColor: "grey",
       cancelButtonText: "Cancel",
       confirmButtonText: "Hapus",
@@ -86,64 +86,48 @@ const RoleList = () => {
             <Paper
               variant="outlined"
               sx={{
-                width: "100%",
-                height: "100%",
                 p: 4,
                 borderRadius: "10px 10px 10px 10px",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                overflow: "hidden", // Hide overflowing content
-              }}
-            >
-              <div style={{ padding: "0 15px" }}>
-                <h4>{role.name}</h4>
-                <br />
-                <h6 sx={{ fontWeight: "bold", color: "grey" }}>
-                  Total users with this role: {role.users.length}
-                </h6>
-              </div>
+              }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", maxHeight: "19vh", overflow: "auto" }}
-              >
-                {role.permissions.map((permission, index) => (
-                  <div key={index}>
-                    <Typography
-                      sx={{
-                        fontSize: "13px",
-                        color: "gray",
-                        my: 1,
-                      }}
-                    >
-                      {permission.resource}
-                    </Typography>
-                    <ul>
-                      {permission.grants.map((grant, index) => (
-                        <li key={index}>
-                          {grant.action}:{grant.possession}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                style={{ width: "auto", height: "29vh" }}>
+                <h4 ml={3}>{role.name}</h4>
+                <br />
+                <h6
+                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
+                  Total users with this role: {role.users.length}
+                </h6>
+                <br />
+                <Typography
+                  sx={{
+                    fontSize: "15px",
+                    color: "gray",
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                  }}>
+                  {role.description}
+                </Typography>
               </div>
-              <Box
-                display="flex"
-                justifyContent="flex-start"
-                gap="15px"
-                mt={2}
-                sx={{ overflow: "auto" }}
-              >
+              <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
+                {/* <LinkContainer
+                  to={`/viewrole/${role.id}`}
+                  sx={{ textDecoration: "none", textTransform: "none" }}
+                >
+                  <Button variant="contained">View Role</Button>
+                </LinkContainer> */}
                 <Button
                   variant="contained"
                   style={{ textTransform: "none" }}
                   onClick={() => {
                     setSelectedRole(role);
                     setIsViewOpen(true);
-                  }}
-                >
+                  }}>
                   View Role
                 </Button>
                 {!["admin_HC", "admin_system", "adminIT"].includes(
@@ -180,18 +164,14 @@ const RoleList = () => {
           <Paper
             variant="outlined"
             sx={{
-              width: "100%",
-              height: "100%",
               p: 4,
               borderRadius: "10px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
               position: "relative", // Tambahkan properti posisi relatif pada Paper
-            }}
-          >
+            }}>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "34vh" }}
-            >
+              style={{ width: "auto", height: "34vh" }}>
               <Box
                 display="flex"
                 sx={{
@@ -202,8 +182,7 @@ const RoleList = () => {
                   flexDirection: "column", // Susun konten dalam kolom
                   alignItems: "center", // Posisikan konten di tengah secara horizontal
                   gap: "10px",
-                }}
-              >
+                }}>
                 <Button
                   type="submit"
                   variant="text"
@@ -215,8 +194,7 @@ const RoleList = () => {
                   }}
                   onClick={() => {
                     setIsOpen(true);
-                  }}
-                >
+                  }}>
                   <AddCircleIcon
                     sx={{
                       fontSize: "25px",
@@ -241,19 +219,6 @@ const RoleList = () => {
           setIsOpen(false);
         }}
         dtRoles={roles}
-      />
-      {isEditOpen && (
-        <EditRole
-          isEditOpen={isEditOpen}
-          onClose={() => setIsEditOpen(false)}
-          dtRole={selectedRole}
-        />
-      )}
-
-      <EditRole
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtRole={selectedRole}
       />
       {isEditOpen && (
         <EditRole

@@ -1,40 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import InputNumber from "rc-input-number";
+import "./styles/lifespanInput.css";
+const TimeSpanInput = ({ onChange, initialHours, initialMinutes }) => {
+  const [hours, setHours] = useState(initialHours);
+  const [minutes, setMinutes] = useState(initialMinutes);
 
-const TimeSpanInput = ({ onChange }) => {
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-
-  const handleHoursChange = (e) => {
-    const newHours = parseInt(e.target.value);
-    setHours(newHours);
-    onChange(newHours * 60 + minutes);
+  const handleHoursChange = (val) => {
+    const newHours = parseInt(val);
+    setHours(newHours >= 0 ? newHours : 0);
+    onChange(newHours * 60 * 60 + minutes * 60);
   };
 
-  const handleMinutesChange = (e) => {
-    const newMinutes = parseInt(e.target.value);
-    setMinutes(newMinutes);
-    onChange(hours * 60 + newMinutes);
+  const handleMinutesChange = (val) => {
+    const newMinutes = parseInt(val);
+    setMinutes(newMinutes >= 0 ? newMinutes : 0);
+    onChange(hours * 60 * 60 + newMinutes * 60);
   };
 
+  // const calculateTotalSeconds = () => {
+  //   return hours * 3600 + minutes * 60;
+  // };
   return (
     <div>
-      <input
-        type="number"
+      <InputNumber
         value={hours}
         onChange={handleHoursChange}
         min="0"
         max="23"
-        placeholder="Hours"
+        name="Hours"
+        // disabled={disabled}
+        // readOnly={readOnly}
+        // keyboard={keyboard}
       />
+
       <span>hours</span>
-      <input
-        type="number"
+      <InputNumber
         value={minutes}
         onChange={handleMinutesChange}
         min="0"
         max="59"
-        placeholder="Minutes"
+        name="Minutes"
+        // placeholder="Hours"
+        // disabled={disabled}
+        // readOnly={readOnly}
+        // keyboard={keyboard}
       />
+
       <span>minutes</span>
     </div>
   );

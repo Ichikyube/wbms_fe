@@ -117,7 +117,7 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                               color: "#388e3c",
                             }}
                           >
-                            {values.role}
+                            {values.userRole.name}
                           </Box>
                         </td>
                       </tr>

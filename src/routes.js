@@ -1,64 +1,64 @@
 import { lazy } from "react";
 
-const Dashboard = lazy(() => import("views/dashboard/Dashboard"));
-const PksTransaction = lazy(() => import("views/pages/PksTransaction"));
-const DataTransaction = lazy(() => import("views/dataTransaction"));
+const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
+const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
+const DataTransaction = lazy(() => import("./views/dataTransaction"));
 const BackdateFormTBSEksternal = lazy(() =>
-  import("views/backdate/backdateFormTBSEksternal")
+  import("./views/backdate/backdateFormTBSEksternal")
 );
 const BackdateFormTBSInternal = lazy(() =>
-  import("views/backdate/backdateFormTBSInternal")
+  import("./views/backdate/backdateFormTBSInternal")
 );
 const BackdateFormOthers = lazy(() =>
-  import("views/backdate/backdateFormOthers")
+  import("./views/backdate/backdateFormOthers")
 );
 const BackdateTemplate = lazy(() =>
-  import("views/backdate/backdateTemplate")
+  import("./views/backdate/backdateTemplate")
 );
 const EditDataTransaction = lazy(() =>
-  import("views/dataTransaction/editDataTransaksi")
+  import("./views/dataTransaction/editDataTransaksi")
 );
 const ReportPksTransactions = lazy(() =>
-  import("views/reports/PksTransactions")
+  import("./views/reports/PksTransactions")
 );
 const PksManualOthersTB = lazy(() =>
-  import("views/PksManualEntry/manualentryothers/timbangMasuk")
+  import("./views/PksManualEntry/manualentryothers/timbangMasuk")
 );
 const PksManualTimbangKeluar = lazy(() =>
-  import("views/PksManualEntry/timbangKeluar")
+  import("./views/PksManualEntry/timbangKeluar")
 );
 const PksManualTbsInternal = lazy(() =>
-  import("views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
+  import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
 );
 
 const PksManualTbsEksternal = lazy(() =>
-  import("views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
+  import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
 );
 
-const Cities = lazy(() => import("views/masterdata/cities"));
-const Provinces = lazy(() => import("views/masterdata/provinces"));
-const Sites = lazy(() => import("views/masterdata/sites"));
-const Companies = lazy(() => import("views/masterdata/companies"));
-const BarcodeTypes = lazy(() => import("views/masterdata/barcodetypes"));
-const CustomerTypes = lazy(() => import("views/masterdata/customertypes"));
-const CustomerGroups = lazy(() => import("views/masterdata/customergroups"));
-const Customers = lazy(() => import("views/masterdata/customers"));
-const Mills = lazy(() => import("views/masterdata/mills"));
-const Weighbridges = lazy(() => import("views/masterdata/weighbridges"));
-const Productgroups = lazy(() => import("views/masterdata/productgroups"));
-const Products = lazy(() => import("views/masterdata/products"));
-const StorageTank = lazy(() => import("views/masterdata/storagetanks"));
-const Driver = lazy(() => import("views/masterdata/driver"));
-const Profile = lazy(() => import("views/pages/profile"));
+const Cities = lazy(() => import("./views/masterdata/cities"));
+const Provinces = lazy(() => import("./views/masterdata/provinces"));
+const Sites = lazy(() => import("./views/masterdata/sites"));
+const Companies = lazy(() => import("./views/masterdata/companies"));
+const BarcodeTypes = lazy(() => import("./views/masterdata/barcodetypes"));
+const CustomerTypes = lazy(() => import("./views/masterdata/customertypes"));
+const CustomerGroups = lazy(() => import("./views/masterdata/customergroups"));
+const Customers = lazy(() => import("./views/masterdata/customers"));
+const Mills = lazy(() => import("./views/masterdata/mills"));
+const Weighbridges = lazy(() => import("./views/masterdata/weighbridges"));
+const Productgroups = lazy(() => import("./views/masterdata/productgroups"));
+const Products = lazy(() => import("./views/masterdata/products"));
+const StorageTank = lazy(() => import("./views/masterdata/storagetanks"));
+const Driver = lazy(() => import("./views/masterdata/driver"));
+const Profile = lazy(() => import("./views/pages/profile"));
 const Transportvehicle = lazy(() =>
-  import("views/masterdata/transportvehicles")
+  import("./views/masterdata/transportvehicles")
 );
-const UsersList = lazy(() => import("views/usermanagement/userslist"));
-const RolesList = lazy(() => import("views/usermanagement/roles"));
+const UsersList = lazy(() => import("./views/usermanagement/userslist"));
+const RolesList = lazy(() => import("./views/usermanagement/roles"));
 const ConfigRequest = lazy(() =>
-  import("views/usermanagement/config/configRequest")
+  import("./views/usermanagement/config/configRequest")
 );
-const Config = lazy(() => import("views/usermanagement/config"));
+const Config = lazy(() => import("./views/usermanagement/config"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },

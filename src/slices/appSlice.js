@@ -41,6 +41,7 @@ const appSlice = createSlice({
     },
     clearCredentials: (state, action) => {
       state.userInfo = null;
+      document.cookie.clear("rt")
     },
     setSidebar: (state, action) => {
       state.sidebar = { ...state.sidebar, ...action.payload };

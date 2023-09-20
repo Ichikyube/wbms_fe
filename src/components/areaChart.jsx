@@ -63,7 +63,7 @@ const AreaCharts = () => {
               transaction.productName === selectedProduct)
         )
       : salesData;
-
+  console.log(filteredData)
   const productNames = ["CPO", "PKO", "TBS", "Other"];
 
   const monthlyData = monthNames.map((monthName, monthIndex) => {

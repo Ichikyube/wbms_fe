@@ -60,7 +60,7 @@ const ConfigRequest = lazy(() =>
 );
 const Config = lazy(() => import("./views/usermanagement/config"));
 
-const routes = [
+const routesList = [
   { path: "/", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
   {
@@ -241,4 +241,4 @@ const routes = [
   },
 ];
 
-export default routes;
+export default routesList;

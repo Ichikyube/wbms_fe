@@ -58,7 +58,9 @@ export function AuthProvider({ children }) {
       // Get the cookie string from the response headers
       console.log("response from signin:", response);
       const at = response?.data?.tokens?.access_token;
+      const rt = response?.data?.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
+      document.cookie = 'rt=' + rt + '; HttpOnly; SameSite=Lax';
       dispatch(setCredentials({ ...response.data.user }));
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response.data.user.name}`)

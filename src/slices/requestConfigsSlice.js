@@ -4,24 +4,42 @@ import apiSlice from "./apiSlice";
 import api from "../api/api";
 
 
+  /**
+   * filter request config yang approve atau filter config yang active di context matrixapproval
+   * cek value dari config tersebut 
+   */
+  /**
+   * filter request config yang approve atau 
+   * filter config yang( active/yang status tidak sama dengan default) di context matrixapproval taruh pada array tempConfig yang disimpan di storage item
+   * Pada komponen dengan temporary config, buat state bernama <configItem>
+   * tempConfig.include(<configItem>) apabila true maka component active. 
+   * 
+   * Apabila date.now melampaui nilai end maka status kembali ke default, start menjadi kosong, end menjadi kosong.
+   * **Checking if the Feature is Active**:
+   * Remember to adjust the date and time formats to match your specific requirements and the way dates are handled in your application.
+   *  Once you have `activationTime` and `expirationTime` defined, you can use them to determine if the feature is currently active or not.
+   */
+  // apabila status configRequest approve maka kirim scedhule to config start, update status config menjadi kebalikan default, nilai end menjadi start ditambah livespan.
+/*
+ * di FrontEnd, apabila status configRequest active maka status config adalah kebalikan dari status config default
+ */
+
 // get initial value by fetch and put the value to localStorage.
 const initialState = {
-  status: null,
   zeroLock: "",
-  stableLock: "",  //waktu stableLockTime nilai INT
-  backDatedForm: "",  // backDatedTemplate: "",
-  //minimumWeight nilai INT
-  // manualEntryWB: "",
-  // manualBackdatedForm: "",
-  // editTransactionMinusWeightAndDate: "",
-  // editTransactionFullForm: "",
-  //BONTRIP nilai Object {PGS:<NAMA>,millHead:<NAMA}
+  stableLock_period: "3000",  //waktu stableLockTime nilai INT
+  backDatedForm: "disabled",  // backDatedTemplate: "",
+  minimumWeight: "1", //nilai INT
+  portWB: "9001",
+  manualEntryWB: "disabled",
+  manualBackdatedForm: "disabled",
+  editTransactionMinusWeightAndDate: "disabled",
+  editTransactionFullForm: "disabled",
+  signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}
   //
   error: null,
 };
-/**
- * di FrontEnd, apabila status configRequest active maka status config adalah kebalikan dari status config default
- */
+
 const requestConfigSlice = createSlice({
   name: "requestConfig",
   initialState,

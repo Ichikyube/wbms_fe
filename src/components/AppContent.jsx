@@ -7,12 +7,16 @@ import {
   useLocation,
 } from "react-router-dom";
 import { CContainer, CSpinner } from "@coreui/react";
-import { UserMatrixContextProvider } from "../context/UserMatrixContext";
 import { useAuth } from "../context/AuthContext";
 // routes config
-import routes from "../routes";
+import routesList from "../routes";
 
 const AppContent = () => {
+  const routes = routesList.filter(item=>!item.name.includes("Backdate") )
+  //apabila backdate tidak aktif maka filter backdate
+  //buat filter disini juga buat route sesuai hak akses
+  //role user apa, apakah juga terdaftar sebagai penanggung jawab usermatrix
+  //hanya user yang melakukan request yang bisa menggunakan temporari konfig.
   const navigate = useNavigate();
   const { userInfo } = useAuth();
   useEffect(() => {
@@ -21,12 +25,10 @@ const AppContent = () => {
     }
   }, [navigate, userInfo]);
 
-  //role user apa, apakah juga terdaftar sebagai penanggung jawab usermatrix
-  //hanya user yang melakukan request yang bisa menggunakan temporari konfig.
   return (
     <CContainer fluid>
       <Suspense fallback={<CSpinner color="primary" />}>
-        <UserMatrixContextProvider>
+
           <Routes>
             {routes.map((route, idx) => {
               return (
@@ -43,7 +45,6 @@ const AppContent = () => {
             })}
             <Route path="/" exact element={<Navigate to="dashboard" replace />} />
           </Routes>
-        </UserMatrixContextProvider>
       </Suspense>
     </CContainer>
   );

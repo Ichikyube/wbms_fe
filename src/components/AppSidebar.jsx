@@ -13,13 +13,46 @@ import "simplebar-react/dist/simplebar.min.css";
 import { AppSidebarNav } from "./AppSidebarNav";
 
 // sidebar nav config
-import _nav from "../_nav";
+import NavList from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
 
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
 
+/**
+ * Jembatan Timbang
+    PKS
+    R ead(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
+
+    T30
+     Read(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
+
+    Labanan
+      Read(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
+
+
+    MasterData
+      Read, Create, Edit, Delete
+
+    User 
+      Create, Edit, Delete
+
+    Role
+      Create, Edit, Delete
+
+    Config
+    E dit, Read, Create Request
+ */
+
+
+
+
+  //apabila backdate tidak aktif maka filter backdate
+  NavList.forEach((parent) =>{
+    if(parent.items)
+    parent.items = parent.items.filter((item) => item.name !== "Backdate Template")
+  });
   const dispatch = useDispatch();
 
   return (
@@ -29,8 +62,7 @@ const AppSidebar = () => {
       visible={sidebar.show}
       onVisibleChange={(visible) => {
         dispatch(setSidebar({ show: visible }));
-      }}
-    >
+      }}>
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <img
           alt="DSN Logo"
@@ -46,8 +78,9 @@ const AppSidebar = () => {
         />
       </CSidebarBrand>
       <CSidebarNav>
+        ionvsrenvbsren
         <SimpleBar>
-          <AppSidebarNav items={_nav} />
+          <AppSidebarNav items={NavList} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler

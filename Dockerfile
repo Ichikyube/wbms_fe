@@ -6,7 +6,7 @@ WORKDIR /app
 # install app dependencies
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
-COPY .env .env
+COPY .env /app/.env
 RUN npm ci
 COPY . /app
 
@@ -27,5 +27,5 @@ EXPOSE 3000
 # start app
 CMD ["npm", "start"]
 
-FROM nginx:stable-alpine
+FROM nginx:1.13-alpine
 COPY --from=builder /app/build /usr/share/nginx/html

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CSidebar,
@@ -6,12 +6,12 @@ import {
   CSidebarNav,
   CSidebarToggler,
 } from "@coreui/react";
-
+import { useMatrix } from "../context/UserMatrixContext";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
 import { AppSidebarNav } from "./AppSidebarNav";
-
+import { backdateTemplateNav } from "../_nav";
 // sidebar nav config
 import NavList from "../_nav";
 
@@ -19,8 +19,8 @@ import { setSidebar } from "../slices/appSlice";
 
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
-
-/**
+  const { backdatedTemplate } = useMatrix();
+  /**
  * Jembatan Timbang
     PKS
     R ead(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
@@ -45,21 +45,23 @@ const AppSidebar = () => {
     E dit, Read, Create Request
  */
 
-
-
-
+  useEffect(() => {
+    if (backdatedTemplate) NavList[2].items.push(backdateTemplateNav);
+  }, [backdatedTemplate]);
   //apabila backdate tidak aktif maka filter backdate
-  NavList.forEach((parent) =>{
-    if(parent.items)
-    parent.items = parent.items.filter((item) => item.name !== "Backdate Template")
-  });
+  // NavList.forEach((parent) => {
+  //   if (parent.items)
+  //     parent.items = parent.items.filter(
+  //       (item) => item.name !== "Backdate Template"
+  //     );
+  // });
   const dispatch = useDispatch();
 
   return (
     <CSidebar
       position="fixed"
-      unfoldable={sidebar.unfoldable}
-      visible={sidebar.show}
+      unfoldable={sidebar?.unfoldable}
+      visible={sidebar?.show}
       onVisibleChange={(visible) => {
         dispatch(setSidebar({ show: visible }));
       }}>
@@ -78,7 +80,6 @@ const AppSidebar = () => {
         />
       </CSidebarBrand>
       <CSidebarNav>
-        ionvsrenvbsren
         <SimpleBar>
           <AppSidebarNav items={NavList} />
         </SimpleBar>

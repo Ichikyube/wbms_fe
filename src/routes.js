@@ -70,34 +70,6 @@ const routesList = [
     exact: true,
   },
   {
-    path: "/pks-ManualEntry-Others-TimbangMasuk",
-    name: "PKS  Manual Entry Others",
-    element: PksManualOthersTB,
-    exact: true,
-  },
-
-  {
-    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Internal",
-    element: PksManualTbsInternal,
-    exact: true,
-  },
-
-  {
-    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Eksternal",
-    element: PksManualTbsEksternal,
-    exact: true,
-  },
-
-  {
-    path: "/pks-ManualEntry-TimbangKeluar/:id",
-    name: "PKS  Manual Entry",
-    element: PksManualTimbangKeluar,
-    exact: true,
-  },
-
-  {
     path: "/reports/pks-transactions",
     name: "Report PKS Transactions",
     element: ReportPksTransactions,
@@ -106,36 +78,6 @@ const routesList = [
     path: "/data-transaction",
     name: "Data Transaction",
     element: DataTransaction,
-    exact: true,
-  },
-  {
-    path: "/backdateFormTBSEksternal",
-    name: "Backdate Form TBSEksternal",
-    element: BackdateFormTBSEksternal,
-    exact: true,
-  },
-  {
-    path: "/backdateFormTBSInternal",
-    name: "Backdate Form TBSInternal",
-    element: BackdateFormTBSInternal,
-    exact: true,
-  },
-  {
-    path: "/backdateFormOthers",
-    name: "Backdate Form Others",
-    element: BackdateFormOthers,
-    exact: true,
-  },
-  {
-    path: "/backdateTemplate",
-    name: "Backdate Template",
-    element: BackdateTemplate,
-    exact: true,
-  },
-  {
-    path: "/edit-data-Transaction/:id",
-    name: "Edit Data Transaction",
-    element: EditDataTransaction,
     exact: true,
   },
   {
@@ -163,7 +105,6 @@ const routesList = [
     name: "Master Data Site",
     element: Sites,
   },
-
   {
     path: "/md/customertype",
     name: "Master Data Customer Type",
@@ -238,6 +179,69 @@ const routesList = [
     path: "/config",
     name: "Config ",
     element: Config,
+  },
+];
+
+export const backdateFormRoutes = [
+  {
+    path: "/backdateFormTBSEksternal",
+    name: "Backdate Form TBSEksternal",
+    element: BackdateFormTBSEksternal,
+    exact: true,
+  },
+  {
+    path: "/backdateFormTBSInternal",
+    name: "Backdate Form TBSInternal",
+    element: BackdateFormTBSInternal,
+    exact: true,
+  },
+  {
+    path: "/backdateFormOthers",
+    name: "Backdate Form Others",
+    element: BackdateFormOthers,
+    exact: true,
+  },
+];
+export const backdateTemplateRoute = {
+  path: "/backdateTemplate",
+  name: "Backdate Template",
+  element: BackdateTemplate,
+  exact: true,
+};
+
+export const editTransactionRoute = [
+  {
+    path: "/edit-data-Transaction/:id",
+    name: "Edit Data Transaction",
+    element: EditDataTransaction,
+    exact: true,
+  },
+];
+
+export const manualEntryRoutes = [
+  {
+    path: "/pks-ManualEntry-Others-TimbangMasuk",
+    name: "PKS  Manual Entry Others",
+    element: PksManualOthersTB,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
+    name: "PKS  Manual Entry TBS Internal",
+    element: PksManualTbsInternal,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
+    name: "PKS  Manual Entry TBS Eksternal",
+    element: PksManualTbsEksternal,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-TimbangKeluar/:id",
+    name: "PKS  Manual Entry",
+    element: PksManualTimbangKeluar,
+    exact: true,
   },
 ];
 

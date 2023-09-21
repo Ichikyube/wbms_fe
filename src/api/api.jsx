@@ -37,7 +37,7 @@ api.interceptors.response.use((response) => {
         api.defaults.headers.common['Authorization'] = `Bearer ${at}`;
         config.headers.Authorization = `Bearer ${at}`;
         return axios(config);
-      } else {
+      } else if(localStorage.getItem("wbms_at")) {
         localStorage.clear();
         window.location.reload();
       }

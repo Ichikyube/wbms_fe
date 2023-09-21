@@ -16,6 +16,7 @@ import PageHeader from "../../../components/PageHeader";
 import QRCodeScanner from "../../../components/QRCodeScanner";
 import ProgressStatus from "../../../components/ProgressStatus";
 import TransactionGrid from "../../../components/TransactionGrid";
+import { useMatrix } from "../../../context/UserMatrixContext";
 
 const tType = 1;
 
@@ -27,7 +28,7 @@ const PksTransaction = () => {
 
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
-
+  const { backDatedForm } = useMatrix();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -60,7 +61,7 @@ const PksTransaction = () => {
     if (!wbTransaction) {
       dispatch(setWb({ onProcessing: false }));
     } else dispatch(setWb({ onProcessing: true, canStartScalling: false }));
-  }, [wbTransaction]);
+  }, [wbTransaction, dispatch]);
 
   useEffect(() => {
     // const curWb = { ...wb };
@@ -120,7 +121,6 @@ const PksTransaction = () => {
     setAnchorE2(null);
   };
 
-  
   return (
     <>
       <PageHeader
@@ -151,77 +151,67 @@ const PksTransaction = () => {
                     width: "10vh",
                     fontSize: "13px",
                     borderRadius: "10%",
-                  }}
-                >
+                  }}>
                   New
                 </Button>
                 <Menu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
+                  onClose={handleClose}>
                   <MenuItem
                     component={Link}
                     to="/pks-ManualEntry-TBSInternal-TimbangMasuk"
-                    onClick={handleClose}
-                  >
+                    onClick={handleClose}>
                     TBS Internal
                   </MenuItem>
                   <MenuItem
                     component={Link}
                     to="/pks-ManualEntry-TBSEksternal-TimbangMasuk"
-                    onClick={handleClose}
-                  >
+                    onClick={handleClose}>
                     TBS Eksternal
                   </MenuItem>
                   <MenuItem
                     component={Link}
                     to="/pks-ManualEntry-Others-TimbangMasuk"
-                    onClick={handleClose}
-                  >
+                    onClick={handleClose}>
                     Lainnya
                   </MenuItem>
                 </Menu>
 
                 <Box sx={{ ml: 1 }}>
-                  <Button
+                  <Button disabled={!backDatedForm} 
                     variant="contained"
                     onClick={handleFormClick}
                     style={{
                       width: "10vh",
                       fontSize: "13px",
                       borderRadius: "10%",
-                    }}
-                  >
+                    }}>
                     Form
                   </Button>
                   <Menu
-                  anchorEl={anchorE2}
-                  open={Boolean(anchorE2)}
-                  onClose={handleClose}
-                >
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormTBSInternal"
-                    onClick={handleClose}
-                  >
-                    TBS Internal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormTBSEksternal"
-                    onClick={handleClose}
-                  >
-                    TBS Eksternal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormOthers"
-                    onClick={handleClose}
-                  >
-                    Lainnya
-                  </MenuItem>
-                </Menu>
+                    anchorEl={anchorE2}
+                    open={Boolean(anchorE2)}
+                    onClose={handleClose}>
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormTBSInternal"
+                      onClick={handleClose}>
+                      TBS Internal
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormTBSEksternal"
+                      onClick={handleClose}>
+                      TBS Eksternal
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormOthers"
+                      onClick={handleClose}>
+                      Lainnya
+                    </MenuItem>
+                  </Menu>
                 </Box>
               </Box>
 

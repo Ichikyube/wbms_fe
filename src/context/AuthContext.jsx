@@ -10,7 +10,9 @@ import {
   clearConfigs,
   clearSidebar,
 } from "./../slices/appSlice";
-
+import { getEnvInit } from "../configs";
+import { fetchConfigsData } from "../slices/requestConfigsSlice";
+import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import {
   useSigninMutation,
   useSignoutMutation,
@@ -55,6 +57,12 @@ export function AuthProvider({ children }) {
         );
         return;
       }
+      (async () =>
+      await getEnvInit().then((result) => {
+        dispatch(setConfigs({ ...result }));
+        dispatch(fetchConfigsData());
+        dispatch(fetchGroupMappingData());
+      }))();
       // Get the cookie string from the response headers
       console.log("response from signin:", response);
       const at = response?.data?.tokens?.access_token;
@@ -96,7 +104,7 @@ export function AuthProvider({ children }) {
       }
       navigate("/");
       setToastmssg(response.message);
-      // dispatch(clearSidebar());
+      dispatch(clearSidebar());
       dispatch(clearCredentials());
       dispatch(clearConfigs());
     } catch (err) {

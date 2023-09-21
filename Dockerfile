@@ -1,31 +1,22 @@
-FROM node:lts AS development
-ENV CI=false
+# pull official base image
+FROM node:13.12.0-alpine
+
+# Declaring env
+ENV NODE_ENV development
+
 # set working directory
 WORKDIR /app
 
 # install app dependencies
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-COPY .env .env
-RUN npm ci
-COPY . .
+COPY package.json ./
+COPY package-lock.json ./
+COPY .env ./.env
+RUN npm install --silent
 
-CMD [ "npm", "start" ]
+COPY . ./
 
-FROM development AS builder
-
-RUN npm run build
-
-FROM development as dev-envs
-RUN <<EOF
-apt-get update
-apt-get install -y --no-install-recommends git
-EOF
 # Make port 3000 available to the world outside this container
 EXPOSE 3000
 
 # start app
 CMD ["npm", "start"]
-
-FROM nginx:1.13-alpine
-COPY --from=builder /app/build /usr/share/nginx/html

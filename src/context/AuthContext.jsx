@@ -60,7 +60,10 @@ export function AuthProvider({ children }) {
       const at = response?.data?.tokens?.access_token;
       const rt = response?.data?.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
-      document.cookie = 'rt=' + rt + '; HttpOnly; SameSite=Lax';
+      document.cookie = 'rt=' + rt + ';SameSite=Lax';
+      console.log(rt)
+      const x = document.cookie
+      console.log(x)
       dispatch(setCredentials({ ...response.data.user }));
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response.data.user.name}`)

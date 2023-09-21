@@ -26,22 +26,27 @@ api.interceptors.response.use((response) => {
   return response;
 }, async (error) => {
     if (error.response.status === 401 && !refresh) {
-        refresh = true;
-        const rt =  getCookie("at");
-        const response = await api.post('/auth/refresh', rt, {withCredentials: true});
-        if (response.status === 200) {
-          console.log(response)
-          localStorage.setItem("wbms_at", response.data['token']);
-          api.defaults.headers.common['Authorization'] = `Bearer ${response.data['token']}`;
-
-          return axios(error.config);
-        }
+      refresh = true;
+      const rt =  getCookie("rt");
+      const response = await api.post('/auth/refresh', rt, {withCredentials: true});
+      if (response.status === 200) {
+        const at = response.data.data.tokens['access_token']
+        localStorage.setItem("wbms_at", at);
+        document.cookie = 'rt=' + response.data.data.tokens['refresh_token'] + '; SameSite=Lax';
+        const config = error.config;
+        api.defaults.headers.common['Authorization'] = `Bearer ${at}`;
+        config.headers.Authorization = `Bearer ${at}`;
+        return axios(config);
+      } else {
+        localStorage.clear();
+        window.location.reload();
+      }
     }
     refresh = false;
     return error;
 });
 
-function getCookie(name) {
+export function getCookie(name) {
   const cookies = document.cookie.split(';');
   for (const cookie of cookies) {
     const [key, value] = cookie.split('=');

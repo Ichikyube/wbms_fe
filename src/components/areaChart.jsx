@@ -48,7 +48,7 @@ const AreaCharts = () => {
 
   const filteredData =
     selectedProduct !== "All"
-      ? salesData.filter(
+      ? salesData?.filter(
           (transaction) =>
             (selectedProduct === "TBS" &&
               ["TBS Internal", "TBS Eksternal"].includes(
@@ -63,7 +63,7 @@ const AreaCharts = () => {
               transaction.productName === selectedProduct)
         )
       : salesData;
-  console.log(filteredData)
+
   const productNames = ["CPO", "PKO", "TBS", "Other"];
 
   const monthlyData = monthNames.map((monthName, monthIndex) => {

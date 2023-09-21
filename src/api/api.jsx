@@ -29,6 +29,7 @@ api.interceptors.response.use((response) => {
       refresh = true;
       const rt =  getCookie("rt");
       const response = await api.post('/auth/refresh', rt, {withCredentials: true});
+
       if (response.status === 200) {
         const at = response.data.data.tokens['access_token']
         localStorage.setItem("wbms_at", at);

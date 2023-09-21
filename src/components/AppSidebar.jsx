@@ -48,13 +48,7 @@ const AppSidebar = () => {
   useEffect(() => {
     if (backdatedTemplate) NavList[2].items.push(backdateTemplateNav);
   }, [backdatedTemplate]);
-  //apabila backdate tidak aktif maka filter backdate
-  // NavList.forEach((parent) => {
-  //   if (parent.items)
-  //     parent.items = parent.items.filter(
-  //       (item) => item.name !== "Backdate Template"
-  //     );
-  // });
+
   const dispatch = useDispatch();
 
   return (

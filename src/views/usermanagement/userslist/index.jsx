@@ -45,11 +45,10 @@ import AddIcon from "@mui/icons-material/Add";
 import FaceIcon from "@mui/icons-material/Face";
 import * as React from "react";
 import * as UsersAPI from "../../../api/usersApi";
-
+import { useAuth } from "../../../context/AuthContext";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
 
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
@@ -73,7 +72,7 @@ const UsersList = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const { userInfo } = useSelector((state) => state.app);
+  const { userInfo } = useAuth();
   const selectionMode = useSelector((state) => state.selectionMode);
   const groupMap = useSelector((state) => state.groupMapping);
   const [saveGroupMapping] = useSaveGroupMappingMutation();
@@ -322,13 +321,20 @@ const UsersList = () => {
       hide: false,
       flex: 3,
     },
-  ]
-  const [columnDefs] =  useState(userInfo?.role === "adminIT" || userInfo?.role === "adminHC"? [...staffcolumn, {
-    headerName: "Action",
-    field: "id",
-    sortable: true,
-    cellRenderer,
-  },] : staffcolumn );
+  ];
+  const [columnDefs] = useState(
+    userInfo?.role === "adminIT" || userInfo?.role === "admin_HC"
+      ? [
+          ...staffcolumn,
+          {
+            headerName: "Action",
+            field: "id",
+            sortable: true,
+            cellRenderer,
+          },
+        ]
+      : staffcolumn
+  );
   const updatedColDefs = columnDefs.map((colDef) => {
     if (colDef.valueGetter) {
       colDef.valueGetter = valueGetter;
@@ -410,34 +416,32 @@ const UsersList = () => {
                    * Apabila memilih yes, daftar akan disimpan dalam database, jika tidak maka muncul pertanyaan "apakah masih ingin memilih atau kembali pada pilihan sebelumnya".
                    * @returns ketika selesai memilih akan muncul alert berisi daftar user yg terdaftar sebagai approver level berapa
                    */}
-                  {( userInfo?.role === "adminIT" ||
-                    userInfo?.role === "adminHC" ) && (
-                      <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: blue,
-                          "&:hover": { backgroundColor: lightBlue[500] },
-                          fontSize: "12px",
-                          padding: "8px 8px",
-                          fontWeight: "bold",
-                          color: "white",
-                          marginLeft: "8px",
-                          textTransform: "none",
-                        }}
-                        onClick={() => {
-                          if (selectionMode.active) {
-                            const selectedUser = JSON.stringify(groupMap);
-                            const lastselected =
-                              localStorage.getItem("groupMap");
+                  {(userInfo?.role === "adminIT" ||
+                    userInfo?.role === "admin_HC") && (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: blue,
+                        "&:hover": { backgroundColor: lightBlue[500] },
+                        fontSize: "12px",
+                        padding: "8px 8px",
+                        fontWeight: "bold",
+                        color: "white",
+                        marginLeft: "8px",
+                        textTransform: "none",
+                      }}
+                      onClick={() => {
+                        if (selectionMode.active) {
+                          const selectedUser = JSON.stringify(groupMap);
+                          const lastselected = localStorage.getItem("groupMap");
 
-                            if (_.isEqual(selectedUser, lastselected)) {
-                              //Ketika selesai memilih jika pilihan sama dengan daftar pada grupmap, maka tutup feature
-                              console.log("Tidak ada perubahan");
-                              return dispatch(toggleSelectionMode());
-                            } else {
-                              const groupLevel = Object.entries(
-                                groupMap
-                              ).reduce((acc, [userId, groupName]) => {
+                          if (_.isEqual(selectedUser, lastselected)) {
+                            //Ketika selesai memilih jika pilihan sama dengan daftar pada grupmap, maka tutup feature
+                            console.log("Tidak ada perubahan");
+                            return dispatch(toggleSelectionMode());
+                          } else {
+                            const groupLevel = Object.entries(groupMap).reduce(
+                              (acc, [userId, groupName]) => {
                                 if (!acc[groupName]) {
                                   acc[groupName] = [];
                                 }
@@ -447,61 +451,63 @@ const UsersList = () => {
                                 );
 
                                 return acc;
-                              }, {});
-                              const { PJ1, PJ2, PJ3 } = JSON.parse(
-                                JSON.stringify(groupLevel)
-                              );
+                              },
+                              {}
+                            );
+                            const { PJ1, PJ2, PJ3 } = JSON.parse(
+                              JSON.stringify(groupLevel)
+                            );
 
-                              console.log(PJ2);
-                              Swal.fire({
-                                title: `PJ LVL 1 = ${PJ1},\n PJ LVL 2 = ${PJ2},\n PJ LVL 3 = ${PJ3}.\n  Apakah daftarnya sudah sesuai?`,
-                                icon: "question",
-                                showCancelButton: true,
-                                confirmButtonText: "Yes",
-                                cancelButtonText: "No",
-                              }).then((result) => {
-                                if (result.isConfirmed) {
-                                  console.log(
-                                    "Daftar disimpan dalam database:",
-                                    groupLevel
-                                  );
-                                  saveGroupMapping({ groupMap });
-                                  dispatch(fetchGroupMappingData());
-                                  dispatch(toggleSelectionMode());
-                                } else if (
-                                  result.dismiss === Swal.DismissReason.cancel
-                                ) {
-                                  Swal.fire({
-                                    title:
-                                      "Apakah masih ingin memilih atau kembali pada pilihan sebelumnya?",
-                                    icon: "question",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Masih ingin memilih",
-                                    cancelButtonText:
-                                      "Kembali pada pilihan sebelumnya",
-                                  }).then((choiceResult) => {
-                                    if (choiceResult.isConfirmed) {
-                                      // Kode untuk membiarkan user melanjutkan memilih
-                                    } else if (
-                                      choiceResult.dismiss ===
-                                      Swal.DismissReason.cancel
-                                    ) {
-                                      console.log(
-                                        "Kembali pada pilihan sebelumnya"
-                                      );
-                                      // Kode untuk mengatur kembali pada pilihan sebelumnya
-                                    }
-                                  });
-                                }
-                              });
-                            }
-                          } else dispatch(toggleSelectionMode());
-                        }}>
-                        {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
-                      </Button>
-                    )}
-                  {( userInfo?.role === "adminIT" ||
-                    userInfo?.role === "adminHC" ) && (
+                            console.log(PJ2);
+                            Swal.fire({
+                              title: `PJ LVL 1 = ${PJ1},\n PJ LVL 2 = ${PJ2},\n PJ LVL 3 = ${PJ3}.\n  Apakah daftarnya sudah sesuai?`,
+                              icon: "question",
+                              showCancelButton: true,
+                              confirmButtonText: "Yes",
+                              cancelButtonText: "No",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                console.log(
+                                  "Daftar disimpan dalam database:",
+                                  groupLevel
+                                );
+                                saveGroupMapping({ groupMap });
+                                dispatch(fetchGroupMappingData());
+                                dispatch(toggleSelectionMode());
+                              } else if (
+                                result.dismiss === Swal.DismissReason.cancel
+                              ) {
+                                Swal.fire({
+                                  title:
+                                    "Apakah masih ingin memilih atau kembali pada pilihan sebelumnya?",
+                                  icon: "question",
+                                  showCancelButton: true,
+                                  confirmButtonText: "Masih ingin memilih",
+                                  cancelButtonText:
+                                    "Kembali pada pilihan sebelumnya",
+                                }).then((choiceResult) => {
+                                  if (choiceResult.isConfirmed) {
+                                    // Kode untuk membiarkan user melanjutkan memilih
+                                  } else if (
+                                    choiceResult.dismiss ===
+                                    Swal.DismissReason.cancel
+                                  ) {
+                                    console.log(
+                                      "Kembali pada pilihan sebelumnya"
+                                    );
+                                    // Kode untuk mengatur kembali pada pilihan sebelumnya
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        } else dispatch(toggleSelectionMode());
+                      }}>
+                      {selectionMode.active ? "Selesai Memilih" : "Pilih PJ"}
+                    </Button>
+                  )}
+                  {(userInfo?.role === "adminIT" ||
+                    userInfo?.role === "admin_HC") && (
                     <Button
                       variant="contained"
                       sx={{

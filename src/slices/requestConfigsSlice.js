@@ -4,12 +4,8 @@ import api from "../api/api";
 
 
   /**
-   * filter request config yang approve atau filter config yang active di context matrixapproval
-   * cek value dari config tersebut 
-   */
-  /**
-   * filter request config yang approve atau 
-   * filter config yang( active/yang status tidak sama dengan default) di context matrixapproval taruh pada array tempConfig yang disimpan di storage item
+   * filter config yang( active/yang status tidak sama dengan default) di context matrixapproval 
+   * taruh pada array tempConfig yang disimpan di storage item
    * Pada komponen dengan temporary config, buat state bernama <configItem>
    * tempConfig.include(<configItem>) apabila true maka component active. 
    * 
@@ -22,51 +18,43 @@ import api from "../api/api";
 /*
  * di FrontEnd, apabila status configRequest active maka status config adalah kebalikan dari status config default
  */
-
+// zeroLock: "",
+// stableLock_period: "3000",  //waktu stableLockTime nilai INT
+// backDatedForm: "disabled",  // backDatedTemplate: "",
+// minimumWeight: "1", //nilai INT
+// portWB: "9001",
+// manualEntryWB: "disabled",
+// manualBackdatedForm: "disabled",
+// editTransactionMinusWeightAndDate: "disabled",
+// editTransactionFullForm: "disabled",
+// signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}
 // get initial value by fetch and put the value to localStorage.
 const initialState = {
-  zeroLock: "",
-  stableLock_period: "3000",  //waktu stableLockTime nilai INT
-  backDatedForm: "disabled",  // backDatedTemplate: "",
-  minimumWeight: "1", //nilai INT
-  portWB: "9001",
-  manualEntryWB: "disabled",
-  manualBackdatedForm: "disabled",
-  editTransactionMinusWeightAndDate: "disabled",
-  editTransactionFullForm: "disabled",
-  signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}
-  //
-  error: null,
+  backDatedForm: false,
+  manualEntryWB: false,
+  backdatedTemplate: false,
+  editTransaction: false,
 };
 
 const requestConfigSlice = createSlice({
   name: "requestConfig",
   initialState,
   reducers: {
-    updateRequestConfig: (state, action) => {
-      return { ...state, ...action.payload };
+    setBackDatedForm: (state, action) => {
+      state.backDatedForm = action.payload;
     },
-    addRequestConfig: (state, action) => {
-      state.push(action.payload);
+    setManualEntryWB: (state, action) => {
+      state.manualEntryWB = action.payload;
     },
-    editRequestConfig: (state, action) => {
-      state.Name = state.Name.map((items) =>
-        items.id === action.payload.id
-          ? { ...items, status: "Accepted" }
-          : items
-      );
+    setBackdatedTemplate: (state, action) => {
+      state.backdatedTemplate = action.payload;
     },
-    removeRequestConfig: (state, action) => {
-      state.Name = state.Name.map((items) =>
-        items.id === action.payload.id
-          ? { ...items, status: "Rejected" }
-          : items
-      );
+    setEditTransaction: (state, action) => {
+      state.editTransaction = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfigsData.fulfilled, (state, { payload }) => {
-      // console.log("nah" + payload);
       state.user = payload[0];
       state.zeroLock = payload[1];
       state.stableLock = payload[3];
@@ -79,7 +67,6 @@ const requestConfigSlice = createSlice({
     });
   },
 });
-
 
 export const fetchConfigsData = createAsyncThunk(
   "requestConfigs/fetchConfigsData",
@@ -111,6 +98,13 @@ export const handleApproval = createAsyncThunk(
 
 export const configRequestApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getActiveConfigsToday: builder.query({
+      query: () => 'configs/active-today', 
+      async onQueryCompleted(response, api) {
+        // Save the response data to local storage
+        localStorage.setItem('activeConfigsToday', JSON.stringify(response.data));
+      },
+    }),
     fetchRequests: builder.query({
       query: () => "config-requests",
       pollingInterval: 1000, // Every 5 seconds
@@ -142,16 +136,15 @@ export const configRequestApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetActiveConfigsTodayQuery,
   useFetchRequestsQuery,
   useCreateRequestMutation,
   useApproveRequestMutation,
   useRejectRequestMutation,
 } = configRequestApi;
-export const { addRequestConfig, editRequestConfig, removeRequestConfig } =
-  requestConfigSlice.actions;
-export default requestConfigSlice.reducer;
 export const selectRequestConfigs = (state) => state.requestConfig;
-
+export const { setBackDatedForm, setManualEntryWB, setBackdatedTemplate, setEditTransaction } = requestConfigSlice.actions;
+export default requestConfigSlice.reducer;
 export const selectFilteredRequestConfigs = (
   state,
   startTime,

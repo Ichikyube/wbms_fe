@@ -17,7 +17,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
-    const rt = getCookie("rt");
     console.log("Sending refresh token.");
     // send refresh token to get new access token
     const refreshResult = await baseQuery(
@@ -25,14 +24,13 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         url: "/auth/refresh",
         method: "POST",
         mode: "cors",
-        credentials: "include",
-        body: rt,
+        credentials: "include"
       },
       api,
       extraOptions
     );
+    console.log(refreshResult.data)
     if (refreshResult?.data) {
-      console.log(refreshResult.data)
       const at = refreshResult.data.data.tokens["access_token"];
       const rt = refreshResult.data.data.tokens["refresh_token"];
       localStorage.setItem("wbms_at", at);

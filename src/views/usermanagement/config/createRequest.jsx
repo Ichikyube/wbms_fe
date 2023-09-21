@@ -44,9 +44,9 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
     values.schedule = moment(values.schedule).toDate();
 
     try {
-      createRequest(values);
+      await createRequest(values);
+      await refetch();
       toast.success("Data Berhasil Dibuat");
-      refetch()
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
       console.error("Data Gagal Dibuat:", error);
@@ -54,6 +54,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       // Tangani error atau tampilkan pesan error
     } finally {
       setSubmitting(false);
+      refetch();
       resetForm();
       onClose("", false);
     }

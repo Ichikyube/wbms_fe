@@ -108,8 +108,6 @@ const ConfigRequest = () => {
   }, [searchQuery, requestList]);
 
   const handleReject = (id) => {
-    rejectRequest({ requestId: id });
-    refetch();
     //apabila approval di level ketiga, ada pertanyaan "apakah anda yakin untuk menggugurkan request ini?"
     Swal.fire({
       title: 'Apakah Anda yakin untuk menggugurkan request ini?',
@@ -117,16 +115,20 @@ const ConfigRequest = () => {
       showCancelButton: true,
       confirmButtonText: 'Ya, gugurkan',
       cancelButtonText: 'Tidak, batalkan',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         // Tindakan jika pengguna menekan "Ya"
         Swal.fire('Gugurkan!', 'Request telah digugurkan.', 'success');
+        await rejectRequest(id);
+        await refetch();
       }
-    });
+    }).then(refetch());
     setSelectedRequest(null);
+    refetch();
   };
 
   const handleApprove = async (data, name) => {
+    console.log(data)
     // Tampilkan SweetAlert untuk konfirmasi
     const result = await Swal.fire({
       title: "Persetujuan",
@@ -140,17 +142,21 @@ const ConfigRequest = () => {
     if (result.isConfirmed) {
       try {
         await approveRequest(data.id);
-        await refetch()
+        await refetch();
+
+        console.log(data)
+        await toast.success((data.approval.length+1) >= data.config.lvlOfApprvl? "Permintaan telah di setujui": "Request naik 1 tingkat");
+        await refetch();
       } catch (error) {
         console.error("Config Gagal di setujui:", error);
         toast.error("Config Gagal di setujui ");
       }
-      await toast.success(data.approval.length+1 === data.lvlofApproval? "Config berhasil di setujui": "Request naik 1 tingkat");
-      if(data.approval.length<data.lvlofApproval) {
+      if(data.approval.length<data.config.lvlOfApprvl) {
         const notificationData = { message:"Seseorang menunggu persetujuan anda", isRead: false,  target: groupMap.filter(group=>group === lvl[data.approval.length+1])};
         dispatch(createNotificationAsync(notificationData))
         .unwrap()
         .then((createdNotification) => {
+          
           console.log('Notification sended:', createdNotification);
         })
         .catch((error) => {
@@ -158,6 +164,7 @@ const ConfigRequest = () => {
           console.error('Error sending notification:', error);
         });
       }
+      console.log(data.approval.length+1)
     }
   };
   // Show config name, description, start, end?, value proposed, signed button
@@ -206,7 +213,7 @@ const ConfigRequest = () => {
         const { data } = params;
         const activeStart = new Date(data.schedule);
         const activeEnd = new Date(new Date(data.schedule).getTime() + data.config.lifespan);
-        console.log(data.schedule)
+
         const options = {
           year: "numeric",
           month: "2-digit",
@@ -264,7 +271,7 @@ const ConfigRequest = () => {
               padding="10px 10px"
               justifyContent="center"
               color="white"
-              onClick={() => handleReject(params.data, params.data.name)}
+              onClick={() => handleReject(params.data.id)}
               style={{
                 color: "white",
                 textDecoration: "none",

@@ -4,11 +4,11 @@ ENV CI=false
 WORKDIR /app
 
 # install app dependencies
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-COPY .env /app/.env
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY .env .env
 RUN npm ci
-COPY . /app
+COPY . .
 
 CMD [ "npm", "start" ]
 

@@ -30,7 +30,7 @@ export const deleteById = async (id) => {
 export const getEnv = async () => {
   const response = await api.get("configs/env");
 
-  return response.data.data?.ENV;
+  return response.data?.data?.ENV;
 };
 
 export const getVA_SCC_MODEL = () => {

@@ -1,36 +1,5 @@
 import api from "./api";
 
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async function (error) {
-    const originalRequest = error.config;
-    if (error.response.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const response = await refreshAccessToken();
-      console.log(response);
-      // axios.defaults.headers.common["Authorization"] = "Bearer " + access_token;
-      return api(originalRequest);
-    }
-    return Promise.reject(error);
-  }
-);
-
-const refreshAccessToken = async () => {
-  const response = await api.get(`auth/refresh`).catch((error) => {
-    return {
-      status: false,
-      message: error.message,
-      data: {
-        error: error,
-      },
-    };
-  });
-
-  return response.data;
-};
-
 export const endpoint = "transactions";
 
 export const getAll = async () => {

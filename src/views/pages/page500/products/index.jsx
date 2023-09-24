@@ -43,7 +43,7 @@ const Products = () => {
             },
           }
         );
-        const data = await response.json();
+        const data = await response?.json();
         console.log(data);
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           () => {
@@ -105,20 +105,17 @@ const Products = () => {
               width="100%"
               display="flex"
               m="0 3px"
-    
               borderRadius="5px"
               padding="10px 10px"
               justifyContent="center"
-              color="white"
-            >
+              color="white">
               <a
                 href={`products/view/${id}`}
                 style={{
                   color: "white",
                   textDecoration: "none",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <Box>
                   <VisibilityOutlinedIcon />
                 </Box>
@@ -128,16 +125,13 @@ const Products = () => {
               width="100%"
               display="flex"
               m="0 3px"
-            
               borderRadius="5px"
               padding="10px 10px"
               justifyContent="center"
-              color="white"
-            >
+              color="white">
               <a
                 href={`products/edit/${id}`}
-                style={{ color: "white", textDecoration: "none" }}
-              >
+                style={{ color: "white", textDecoration: "none" }}>
                 <Box>
                   <EditIcon />
                 </Box>
@@ -148,7 +142,6 @@ const Products = () => {
               width="100%"
               display="flex"
               m="0 3px"
-             
               borderRadius="5px"
               padding="10px 10px"
               justifyContent="center"
@@ -158,8 +151,7 @@ const Products = () => {
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <DeleteIcon />
             </Box>
           </Box>
@@ -189,27 +181,20 @@ const Products = () => {
           "& .MuiDataGrid-root": {
             border: "none",
           },
-          "& .MuiDataGrid-columnHeaders": {
-        
-          },
-          "& .MuiDataGrid-footerContainer": {
-          
-          },
-        }}
-      >
+          "& .MuiDataGrid-columnHeaders": {},
+          "& .MuiDataGrid-footerContainer": {},
+        }}>
         <Box display="flex" marginBottom="8px">
           <Box display="flex" class="create">
             <Button
               sx={{
-             
                 fontSize: "14px",
                 fontWeight: "bold",
                 padding: "10px 10px",
                 color: "white",
               }}
               href={`/products/create`}
-              type="submit"
-            >
+              type="submit">
               <AddBoxOutlinedIcon sx={{ mr: "5px" }} />
               Create Products
             </Button>

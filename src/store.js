@@ -1,20 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from '@reduxjs/toolkit/query/react';
+import { setupListeners } from "@reduxjs/toolkit/query/react";
 import appReducer from "./slices/appSlice";
 import wbTransactionReducer from "./slices/wbTransactionSlice";
 import apiSlice from "./slices/apiSlice";
 import selectionModeReducer from "./slices/selectionModeSlice";
 import groupMappingReducer from "./slices/groupMappingSlice";
-import requestConfigreducer from "./slices/requestConfigsSlice";
-import notificationReducer from './slices/notificationSlice';
-
+import tempConfigReducer from "./slices/tempConfigSlice";
+import notificationReducer from "./slices/notificationSlice";
 const store = configureStore({
   reducer: {
     app: appReducer,
     wbTransaction: wbTransactionReducer,
     selectionMode: selectionModeReducer,
     groupMapping: groupMappingReducer,
-    requestConfigs: requestConfigreducer,
+    tempConfigs: tempConfigReducer,
     notifications: notificationReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },

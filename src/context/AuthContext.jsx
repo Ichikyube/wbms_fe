@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
+import { fetchConfigsData } from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";
 import {
   setCredentials,
@@ -11,8 +11,7 @@ import {
   clearSidebar,
 } from "./../slices/appSlice";
 import { getEnvInit } from "../configs";
-import { fetchConfigsData } from "../slices/requestConfigsSlice";
-import { fetchGroupMappingData } from "../slices/groupMappingSlice";
+
 import {
   useSigninMutation,
   useSignoutMutation,
@@ -44,37 +43,35 @@ export function AuthProvider({ children }) {
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
-      console.log(response);
-      if (!response.status) {
-        console.log(response.message);
-        console.log(response.logs);
+
+      if (!response?.status) {
+        console.log(response?.message);
+        console.log(response?.logs);
 
         await toast.promise(
           new Promise((resolve) => setTimeout(resolve, 500)),
           {
-            error: response.message,
+            error: response?.message,
           }
         );
         return;
       }
       (async () =>
-      await getEnvInit().then((result) => {
-        dispatch(setConfigs({ ...result }));
-        dispatch(fetchConfigsData());
-        dispatch(fetchGroupMappingData());
-      }))();
+        await getEnvInit().then((result) => {
+          dispatch(setConfigs({ ...result }));
+          dispatch(fetchConfigsData());
+          //dispatch(fetchGroupMappingData());
+        }))();
       // Get the cookie string from the response headers
       console.log("response from signin:", response);
       const at = response?.data?.tokens?.access_token;
       const rt = response?.data?.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
-      document.cookie = 'rt=' + rt + ';SameSite=Lax';
-      console.log(rt)
-      const x = document.cookie
-      console.log(x)
-      dispatch(setCredentials({ ...response.data.user }));
+      document.cookie = "rt=" + rt + ";SameSite=Lax";
+
+      dispatch(setCredentials({ ...response?.data.user }));
       navigate(from, { replace: true });
-      // setToastmssg(`Selamat datang ${response.data.user.name}`)
+      // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -91,19 +88,19 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       const response = await signout().unwrap();
-      if (!response.status) {
-        console.log(response.message);
-        console.log(response.logs);
+      if (!response?.status) {
+        console.log(response?.message);
+        console.log(response?.logs);
         await toast.promise(
           new Promise((resolve) => setTimeout(resolve, 500)),
           {
-            error: response.message,
+            error: response?.message,
           }
         );
         return;
       }
       navigate("/");
-      setToastmssg(response.message);
+      setToastmssg(response?.message);
       dispatch(clearSidebar());
       dispatch(clearCredentials());
       dispatch(clearConfigs());
@@ -118,10 +115,9 @@ export function AuthProvider({ children }) {
     setToastmssg("");
   }, [toastmssg]);
   useEffect(() => {
-
     if (userInfo && (route === "/signin" || route === "/")) {
       navigate(from);
-    } 
+    }
   }, [userInfo, route, navigate, from]);
 
   return (

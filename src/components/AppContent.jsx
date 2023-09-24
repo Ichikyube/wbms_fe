@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { CContainer, CSpinner } from "@coreui/react";
 import { useAuth } from "../context/AuthContext";
@@ -8,38 +9,36 @@ import routesList, {
   backdateFormRoutes,
   backdateTemplateRoute,
   editTransactionRoute,
-  manualEntryRoutes
+  manualEntryRoutes,
 } from "../routes";
 
 const AppContent = () => {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
-  const {
-    backDatedForm,
-    backdatedTemplate,
-    editTransaction,
-    manualEntryWB,
-  } = useMatrix();
+  const { backDatedForm, backDatedTemplate, editTransaction, manualEntryWB } =
+    useMatrix;
 
   const ConfigList = {
     backDatedForm,
-    backdatedTemplate,
+    backDatedTemplate,
     editTransaction,
     manualEntryWB,
   };
   const ConfigMap = {
     backDatedForm: backdateFormRoutes,
-    backdatedTemplate: backdateTemplateRoute,
+    backDatedTemplate: backdateTemplateRoute,
     editTransaction: editTransactionRoute,
     manualEntryWB: manualEntryRoutes,
   };
   const [routes, setRoutes] = useState(routesList);
   useEffect(() => {
-    const tempConfigList = Object.keys(ConfigList).filter(key => ConfigList[key]);
-    console.log(tempConfigList)
+    const tempConfigList = Object.keys(ConfigList).filter(
+      (key) => ConfigList[key]
+    );
+
     // Filter the keys in ConfigMap based on tempConfigList
     const includedConfigMap = Object.keys(ConfigMap)
-      .filter(key => tempConfigList.includes(key))
+      .filter((key) => tempConfigList.includes(key))
       .reduce((acc, key) => {
         acc[key] = ConfigMap[key];
         return acc;
@@ -50,9 +49,8 @@ const AppContent = () => {
 
     // Assuming `routeList` is an existing array of routes
     setRoutes(routesList.concat(newRoutes));
-   
   }, ConfigList);
-  console.log(routes)
+
   //apabila backdate tidak aktif maka filter backdate
   //buat filter disini juga buat route sesuai hak akses
   //role user apa, apakah juga terdaftar sebagai penanggung jawab usermatrix

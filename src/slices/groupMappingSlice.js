@@ -8,7 +8,7 @@ export const fetchGroupMappingData = createAsyncThunk(
   "groupMapping/fetchGroupMappingData",
   async () => {
     const response = await api.get(`/config-requests-admin`);
-    return response.data;
+    return response?.data;
   }
 );
 
@@ -80,10 +80,10 @@ const groupMappingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchGroupMappingData.fulfilled, (state, action) => {
-      const {lvlMap} = action.payload;
+      const { lvlMap } = action.payload;
 
       localStorage.setItem("groupMap", JSON.stringify(lvlMap));
-      return state = lvlMap; // Set the fetched data as the initial state
+      return (state = lvlMap); // Set the fetched data as the initial state
     });
   },
 });

@@ -28,7 +28,7 @@ const PksTransaction = () => {
 
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
-  const { backDatedForm } = useMatrix();
+  const { backDatedForm } = useSelector((state) => state.tempConfigs);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,18 +38,18 @@ const PksTransaction = () => {
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
-      if (!response.status) {
-        return toast.error(response.message);
+      if (!response?.status) {
+        return toast.error(response?.message);
       }
 
       console.log(
-        `vStatus: ${response.data.transaction.vehicleStatus}, dStatus:${response.data.transaction.deliveryStatus}.`
+        `vStatus: ${response?.data.transaction.vehicleStatus}, dStatus:${response?.data.transaction.deliveryStatus}.`
       );
 
-      // setWbPksTransaction(response.data.transaction);
-      dispatch(setWbTransaction({ ...response.data.transaction }));
+      // setWbPksTransaction(response?.data.transaction);
+      dispatch(setWbTransaction({ ...response?.data.transaction }));
 
-      navigate(response.data.urlPath);
+      navigate(response?.data.urlPath);
     } else if (readEnter) {
       return toast.error(
         "Tidak dapat membaca QR Code atau QR Code tidak valid..."
@@ -179,7 +179,8 @@ const PksTransaction = () => {
                 </Menu>
 
                 <Box sx={{ ml: 1 }}>
-                  <Button disabled={!backDatedForm} 
+                  <Button
+                    disabled={!backDatedForm}
                     variant="contained"
                     onClick={handleFormClick}
                     style={{

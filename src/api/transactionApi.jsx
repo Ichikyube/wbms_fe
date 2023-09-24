@@ -13,12 +13,12 @@ export const getAll = async () => {
     };
   });
 
-  return response.data;
+  return response?.data;
 };
 
 export const getById = async (id) => {
   const response = await api.get(`${endpoint}/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 export const searchMany = async (query) => {
@@ -31,7 +31,7 @@ export const searchMany = async (query) => {
 
 export const searchFirst = async (query) => {
   const response = await api.post(`${endpoint}/search-first`, query);
-  return response.data;
+  return response?.data;
 };
 
 export const openCreateByQrcodeSemai = async (data) => {
@@ -44,30 +44,30 @@ export const openCreateByQrcodeSemai = async (data) => {
 
 export const searchByQR = async (query) => {
   const response = await api.post(`${endpoint}/search-qr`, query);
-  return response.data;
+  return response?.data;
 };
 
 export const getByPlateNo = async (query) => {
   const response = await api.get(`${endpoint}/getByPlateNo`, {
     params: { ...query },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const create = async (data) => {
   const response = await api.post(`${endpoint}`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const update = async (data) => {
   const response = await api.patch(`${endpoint}/${data?.id}`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const deleteById = async (id) => {
   const response = await api.delete(`${endpoint}/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 export const InitialData = {

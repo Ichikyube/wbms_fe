@@ -44,17 +44,17 @@ const PksTransaction = () => {
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
-      if (!response.status) {
-        return toast.error(response.message);
+      if (!response?.status) {
+        return toast.error(response?.message);
       }
 
       console.log(
-        `vStatus: ${response.data.transaction.vehicleStatus}, dStatus:${response.data.transaction.deliveryStatus}.`
+        `vStatus: ${response?.data.transaction.vehicleStatus}, dStatus:${response?.data.transaction.deliveryStatus}.`
       );
 
-      setWbPksTransaction(response.data.transaction);
+      setWbPksTransaction(response?.data.transaction);
 
-      navigate(response.data.urlPath);
+      navigate(response?.data.urlPath);
     } else if (readEnter) {
       return toast.error(
         "Tidak dapat membaca QR Code atau QR Code tidak valid..."
@@ -109,8 +109,7 @@ const PksTransaction = () => {
             <Paper sx={{ p: 2, mx: 1 }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "40vh" }}
-              >
+                style={{ width: "auto", height: "40vh" }}>
                 <TransactionGrid tType={tType} />
               </div>
             </Paper>

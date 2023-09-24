@@ -66,7 +66,7 @@ const PksManualOthersTimbangMasuk = () => {
   const fetchTransactionsFromAPI = async () => {
     try {
       const response = await TransactionAPI.getAll({});
-      return response.records;
+      return response?.records;
     } catch (error) {
       // Tangani error jika permintaan gagal
       console.error("Error fetching transactions:", error);

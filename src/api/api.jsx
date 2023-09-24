@@ -22,35 +22,43 @@ api.interceptors.request.use(
   }
 );
 // Add an interceptor to refresh token when it's expired
-api.interceptors.response.use((response) => {
-  return response;
-}, async (error) => {
-    if (error.response.status === 401 && !refresh) {
+api.interceptors.response?.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (error.response?.status === 401 && !refresh) {
       refresh = true;
-      const rt =  getCookie("rt");
-      const response = await api.post('/auth/refresh', rt, {withCredentials: true});
+      const rt = getCookie("rt");
+      const response = await api.post("/auth/refresh", rt, {
+        withCredentials: true,
+      });
 
-      if (response.status === 200) {
-        const at = response.data.data.tokens['access_token']
+      if (response?.status === 200) {
+        const at = response?.data?.data.tokens["access_token"];
         localStorage.setItem("wbms_at", at);
-        document.cookie = 'rt=' + response.data.data.tokens['refresh_token'] + '; SameSite=Lax';
+        document.cookie =
+          "rt=" +
+          response?.data?.data.tokens["refresh_token"] +
+          "; SameSite=Lax";
         const config = error.config;
-        api.defaults.headers.common['Authorization'] = `Bearer ${at}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
         config.headers.Authorization = `Bearer ${at}`;
         return axios(config);
-      } else if(localStorage.getItem("wbms_at")) {
+      } else if (localStorage.getItem("wbms_at")) {
         localStorage.clear();
         window.location.reload();
       }
     }
     refresh = false;
     return error;
-});
+  }
+);
 
 export function getCookie(name) {
-  const cookies = document.cookie.split(';');
+  const cookies = document.cookie.split(";");
   for (const cookie of cookies) {
-    const [key, value] = cookie.split('=');
+    const [key, value] = cookie.split("=");
     if (key === name) {
       return value;
     }

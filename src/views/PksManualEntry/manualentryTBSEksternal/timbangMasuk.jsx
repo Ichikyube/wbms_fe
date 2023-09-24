@@ -65,7 +65,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
   const fetchTransactionsFromAPI = async () => {
     try {
       const response = await TransactionAPI.getAll({});
-      return response.records;
+      return response?.records;
     } catch (error) {
       // Tangani error jika permintaan gagal
       console.error("Error fetching transactions:", error);
@@ -137,9 +137,7 @@ const PksManualTBSEksternalTimbangMasuk = () => {
         return;
       }
 
-      if (
-        tempTrans.progressStatus === 1
-      ) {
+      if (tempTrans.progressStatus === 1) {
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {

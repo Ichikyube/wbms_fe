@@ -19,7 +19,8 @@ import { setSidebar } from "../slices/appSlice";
 
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
-  const { backdatedTemplate } = useMatrix();
+  const { backDatedTemplate } = useSelector((state) => state.tempConfigs);
+  const navSet = new Set(NavList);
   /**
  * Jembatan Timbang
     PKS
@@ -46,8 +47,9 @@ const AppSidebar = () => {
  */
 
   useEffect(() => {
-    if (backdatedTemplate) NavList[2].items.push(backdateTemplateNav);
-  }, [backdatedTemplate]);
+    if (backDatedTemplate)
+      NavList[2].items = [...NavList[2].items, backdateTemplateNav];
+  }, [backDatedTemplate]);
 
   const dispatch = useDispatch();
 

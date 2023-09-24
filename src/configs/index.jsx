@@ -107,7 +107,7 @@ export const useConfig = () => {
   };
 
   if (!isLoading && isSuccess) {
-    if (EnvData?.status) configs.ENV = { ...EnvData.data.ENV };
+    if (EnvData?.status) configs.ENV = { ...EnvData?.data?.ENV };
   }
 
   return [configs];

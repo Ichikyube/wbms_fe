@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { Formik } from "formik";
 import useSWR from "swr";
 import { green } from "@mui/material/colors";
@@ -84,6 +84,7 @@ const ReportPksTransactions = () => {
       hide: false,
     },
     { headerName: "No Pol", field: "transportVehiclePlateNo", filter: true },
+    { headerName: "Tanggal", field: "originWeighOutTimestamp", filter: true },
     {
       headerName: "Status",
       field: "progressStatus",
@@ -144,8 +145,6 @@ const ReportPksTransactions = () => {
     () => ({
       cellRendererParams: {
         suppressCount: true,
-      
-        
       },
       field: "bonTripNo",
       width: 300,
@@ -189,11 +188,13 @@ const ReportPksTransactions = () => {
   };
 
   const StartDate = (date) => {
-    setSelectedStartDate(date);
+    // Menggabungkan tanggal yang dipilih dengan jam 00:00:00
+    setSelectedStartDate(dayjs(date).startOf("day"));
   };
 
   const EndDate = (date) => {
-    setSelectedEndDate(date);
+    // Menggabungkan tanggal yang dipilih dengan jam 23:59:59
+    setSelectedEndDate(dayjs(date).endOf("day"));
   };
 
   const filteredTransactions = useMemo(() => {
@@ -248,12 +249,6 @@ const ReportPksTransactions = () => {
   useEffect(() => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
-
-    // console.clear();
-
-    return () => {
-      // console.clear();
-    };
   }, []);
 
   return (
@@ -271,7 +266,7 @@ const ReportPksTransactions = () => {
               <Box display="flex">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoItem label="Dari Tanggal">
-                    <DatePicker
+                    <DateTimePicker
                       className="custom-datetimepicker"
                       maxDate={today}
                       value={selectedStartDate}
@@ -281,7 +276,7 @@ const ReportPksTransactions = () => {
                     />
                   </DemoItem>
                   <DemoItem label="Sampai Tanggal">
-                    <DatePicker
+                    <DateTimePicker
                       className="custom-datetimepicker"
                       maxDate={today}
                       value={selectedEndDate}

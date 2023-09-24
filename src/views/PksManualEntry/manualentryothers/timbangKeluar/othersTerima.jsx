@@ -11,48 +11,41 @@ import {
   Typography,
   Paper,
   Box,
-  Autocomplete,
+  Select,
+  MenuItem,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
-import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { useForm } from "../../../utils/useForm";
-import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-import WeightWB from "../../../components/weightWB";
-import * as SiteAPI from "../../../api/sitesApi";
-import BonTripTBS from "../../../components/BonTripTBS";
-import * as TransactionAPI from "../../../api/transactionApi";
-import Config from "../../../configs";
-import ManualEntryGrid from "../../../components/manualEntryGrid";
-import PageHeader from "../../../components/PageHeader";
-import * as ProductAPI from "../../../api/productsApi";
-import * as CompaniesAPI from "../../../api/companiesApi";
-import * as DriverAPI from "../../../api/driverApi";
-import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
-import * as CustomerAPI from "../../../api/customerApi";
-import { getById } from "../../../api/configApi";
-import { getEnvInit } from "../../../configs";
+import { useForm } from "../../../../utils/useForm";
+import WeightWB from "../../../../components/weightWB";
+import BonTripTBS from "../../../../components/BonTripTBS";
+import * as TransactionAPI from "../../../../api/transactionApi";
+import * as ProductAPI from "../../../../api/productsApi";
+import * as CompaniesAPI from "../../../../api/companiesApi";
+import * as DriverAPI from "../../../../api/driverApi";
+import * as TransportVehicleAPI from "../../../../api/transportvehicleApi";
+import * as CustomerAPI from "../../../../api/customerApi";
 
-import { useWeighbridge, useConfig } from "../../../common/hooks";
+import { useWeighbridge, useConfig } from "../../../../common/hooks";
+
 const tType = 1;
 
-const PksManualTBSInternalTimbangKeluar = () => {
-  const [weighbridge] = useWeighbridge();
+const TimbangKeluarOthersTerima = () => {
   const [configs] = useConfig();
+  const [weighbridge] = useWeighbridge();
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const { id } = useParams();
+
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
-  const [canSubmit, setCanSubmit] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -76,8 +69,6 @@ const PksManualTBSInternalTimbangKeluar = () => {
       transportVehicleId,
       transportVehiclePlateNo,
       transportVehicleSccModel,
-      originSiteId,
-      originSiteName,
       customerName,
       customerId,
       originWeighInKg,
@@ -86,14 +77,13 @@ const PksManualTBSInternalTimbangKeluar = () => {
       progressStatus,
       originWeighInTimestamp,
       originWeighOutTimestamp,
-      qtyTbs,
     } = values;
 
     let updatedProgressStatus = progressStatus;
     let updatedOriginWeighOutTimestamp = originWeighOutTimestamp;
     let updatedOriginWeighOutKg = originWeighOutKg;
 
-    if (progressStatus === 21) {
+    if (progressStatus === 20) {
       updatedProgressStatus = 4;
       updatedOriginWeighOutKg = weighbridge.getWeight();
       updatedOriginWeighOutTimestamp = moment().toDate();
@@ -110,16 +100,13 @@ const PksManualTBSInternalTimbangKeluar = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
-      originSiteId,
-      originSiteName,
+      transportVehicleSccModel,
       customerName,
       customerId,
-      transportVehicleSccModel,
       originWeighInKg,
       originWeighOutKg: updatedOriginWeighOutKg,
       deliveryOrderNo,
       progressStatus: updatedProgressStatus,
-      qtyTbs,
       originWeighInTimestamp,
       originWeighOutTimestamp: updatedOriginWeighOutTimestamp,
     };
@@ -157,37 +144,41 @@ const PksManualTBSInternalTimbangKeluar = () => {
     fetchData();
   }, [id]);
 
+  // const [canSubmit, setCanSubmit] = useState(false);
+
+  // useEffect(() => {
+  //   let cSubmit = false;
+
+  //   if (values.progressStatus === 20) {
+  //     if (values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT) {
+  //       cSubmit = true;
+  //     }
+  //   } else if (values.progressStatus === 4) {
+  //     if (values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT)
+  //       cSubmit = false;
+  //   }
+
+  //   setCanSubmit(cSubmit);
+  // }, [values]);
+
   useEffect(() => {
-    // ... (kode useEffect yang sudah ada)
-
-    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-    let cSubmit = false;
-    if (values.progressStatus === 0) {
-      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 21) {
-      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    }
-    setCanSubmit(cSubmit);
-  }, [values]);
-
-  useEffect(() => {
-    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
-
     if (
       values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
+      weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
     ) {
       setOriginWeightNetto(0);
     } else {
       let total =
-        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
+        Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
         values.potonganWajib -
         values.potonganLain;
       setOriginWeightNetto(total);
     }
-  }, [values]);
+  }, [values, weighbridge]);
 
   const validateForm = () => {
+    // Implementasikan aturan validasi Anda di sini
+    // Kembalikan true jika semua kolom yang dibutuhkan terisi, jika tidak, kembalikan false
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
@@ -195,8 +186,6 @@ const PksManualTBSInternalTimbangKeluar = () => {
       values.driverId &&
       values.transporterId &&
       values.productId &&
-      values.originSiteId &&
-      values.qtyTbs &&
       values.customerId
     );
   };
@@ -212,7 +201,6 @@ const PksManualTBSInternalTimbangKeluar = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -233,42 +221,40 @@ const PksManualTBSInternalTimbangKeluar = () => {
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
     });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
-    });
   }, []);
 
   return (
     <>
       <FormControl sx={{ gridColumn: "span 4" }}>
         <TextField
-          variant="outlined" // Variasi TextField dengan style "outlined"
-          size="small" // Ukuran TextField kecil
-          fullWidth // TextField akan memiliki lebar penuh
+          variant="outlined"
+          size="small"
+          fullWidth
           InputLabelProps={{
             shrink: true,
           }}
           sx={{
-            mb: 2, // Margin bawah dengan jarak 2 unit
+            mb: 2,
             "& .MuiOutlinedInput-root": {
-              borderRadius: "10px", // Set radius border untuk bagian input
+              borderRadius: "10px",
             },
           }}
           label={
             <>
               <Typography
                 sx={{
-                  bgcolor: "white", // Background color teks label
-                  px: 1, // Padding horizontal teks label 1 unit
+                  bgcolor: "white",
+                  px: 1,
                 }}
               >
                 Nomor BON Trip
               </Typography>
             </>
           }
-          name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
-          value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
+          name="bonTripNo"
+          value={values?.bonTripNo || ""}
         />
+
         <TextField
           variant="outlined"
           size="small"
@@ -432,6 +418,7 @@ const PksManualTBSInternalTimbangKeluar = () => {
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Jenis Barang
           </InputLabel>
+
           <Autocomplete
             id="select-label"
             options={dtProduct}
@@ -495,74 +482,11 @@ const PksManualTBSInternalTimbangKeluar = () => {
             )}
           />
         </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Asal
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtSite}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtSite.find((item) => item.id === values.originSiteId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                originSiteId: newValue ? newValue.id : "",
-                originSiteName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Asal --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
-        <TextField
-          variant="outlined"
-          size="small"
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          placeholder="Masukkan Jumlah Janjang"
-          sx={{
-            my: 2,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-            },
-          }}
-          label={
-            <>
-              <Typography
-                sx={{
-                  bgcolor: "white",
-                  px: 1.5,
-                }}
-              >
-                Qty TBS
-              </Typography>
-            </>
-          }
-          name="qtyTbs"
-          value={values.qtyTbs}
-          onChange={handleChange}
-        />
       </FormControl>
 
       <FormControl sx={{ gridColumn: "span 4" }}>
         <WeightWB />
+
         <TextField
           type="number"
           variant="outlined"
@@ -574,11 +498,12 @@ const PksManualTBSInternalTimbangKeluar = () => {
               borderRadius: "10px",
             },
           }}
-          InputLabelProps={{
-            shrink: true,
-          }}
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+            readOnly: true,
+          }}
+          InputLabelProps={{
+            shrink: true,
           }}
           label={
             <Typography
@@ -591,7 +516,7 @@ const PksManualTBSInternalTimbangKeluar = () => {
             </Typography>
           }
           name="originWeighInKg"
-          value={values.originWeighInKg || 0}
+          value={values.originWeighInKg}
         />
         <TextField
           type="number"
@@ -606,6 +531,9 @@ const PksManualTBSInternalTimbangKeluar = () => {
           }}
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+          }}
+          InputLabelProps={{
+            shrink: true,
           }}
           label={
             <Typography
@@ -620,6 +548,7 @@ const PksManualTBSInternalTimbangKeluar = () => {
           name="originWeighOutKg"
           value={weighbridge.getWeight()}
         />
+
         <TextField
           type="number"
           variant="outlined"
@@ -633,6 +562,9 @@ const PksManualTBSInternalTimbangKeluar = () => {
           }}
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+          }}
+          InputLabelProps={{
+            shrink: true,
           }}
           label={
             <Typography
@@ -661,6 +593,9 @@ const PksManualTBSInternalTimbangKeluar = () => {
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
+          InputLabelProps={{
+            shrink: true,
+          }}
           label={
             <Typography
               sx={{
@@ -679,14 +614,14 @@ const PksManualTBSInternalTimbangKeluar = () => {
           variant="outlined"
           size="small"
           fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
           sx={{
             my: 2,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
+          }}
+          InputLabelProps={{
+            shrink: true,
           }}
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
@@ -701,17 +636,18 @@ const PksManualTBSInternalTimbangKeluar = () => {
               TOTAL
             </Typography>
           }
-          name="weightNetto"
+          name="WeightNetto"
           value={originWeightNetto}
         />
+
         <Button
           variant="contained"
           fullWidth
           sx={{ mt: 2 }}
           onClick={handleSubmit}
           disabled={
-            values.progressStatus === 4 ||
             !validateForm() ||
+            values.progressStatus === 4 ||
             !weighbridge.isStable() ||
             weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
               ? true
@@ -737,4 +673,4 @@ const PksManualTBSInternalTimbangKeluar = () => {
   );
 };
 
-export default PksManualTBSInternalTimbangKeluar;
+export default TimbangKeluarOthersTerima;

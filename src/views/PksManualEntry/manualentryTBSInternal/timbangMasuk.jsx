@@ -142,9 +142,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
         return;
       }
 
-      if (
-        tempTrans.progressStatus === 1
-      ) {
+      if (tempTrans.progressStatus === 1) {
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {

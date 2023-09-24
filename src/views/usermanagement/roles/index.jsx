@@ -110,16 +110,15 @@ const RoleList = () => {
               >
                 {role.permissions.map((permission, index) => (
                   <div key={index}>
-                    <Typography
+                   
+                    <ul> <Typography
                       sx={{
-                        fontSize: "13px",
+                        fontSize: "15px",
                         color: "gray",
-                        my: 1,
                       }}
                     >
                       {permission.resource}
                     </Typography>
-                    <ul>
                       {permission.grants.map((grant, index) => (
                         <li key={index}>
                           {grant.action}:{grant.possession}

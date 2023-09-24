@@ -24,32 +24,29 @@ const UserMatrixContextProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   const tempConfigs = useSelector((state) => state.tempConfigs);
+  const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
   const [currentMinute, setCurrentMinute] = useState(null);
-  console.log(tempConfigs);
 
-  // configState.forEach(config => {
-  //   state[config] = configsByKey[config]?.value || state[config];
-  // });
-  // const initialState =
-  // const configsByKey = _.keyBy(tempConfigs, "name");
-  // const configState = payload.map((config) => config.name);
-
-  // configState.forEach(config => {
-  //   state[config] = configsByKey[config]?.value || state[config];
-  // });'zeroLock', value: '0', start: null, end: null
-
-  // const {
-  //   backDatedForm: WB2,
-  //   manualEntryWB: WB3,
-  //   backdatedTemplate: WB4,
-  //   editTransaction: WB5,
-  // } = tempConfigs.tempConfigDt;
-  // const [backDatedFormConfig, setBackDatedForm] = useState(WB2);
-  // const [manualEntryWBConfig, setManualEntryWB] = useState(WB3);
-  // const [backdatedTemplateConfig, setBackdatedTemplate] = useState(WB4);
-  // const [editTransactionConfig, seteditTransaction] = useState(WB5);
-
+  const {
+    manualEntryWB: WB2,
+    editTransaction: WB3,
+    backdatedTemplate: WB4,
+    backDatedForm: WB5,
+  } = tempConfigs.tempConfigDt;
+  const [backDatedForm, setBackDatedForm] = useState(
+    WB5 ? WB5 : WB5?.defaultVal
+  );
+  const [manualEntryWB, setManualEntryWB] = useState(
+    WB2 ? WB2 : WB2?.defaultVal
+  );
+  const [backdatedTemplate, setBackdatedTemplate] = useState(
+    WB4 ? WB4 : WB4?.defaultVal
+  );
+  const [editTransaction, seteditTransaction] = useState(
+    WB3 ? WB3 : WB3?.defaultVal
+  );
+  console.log(tempConfigs.tempConfigDt);
   const configCallback = useCallback(() => {
     dispatch(fetchGroupMappingData());
     dispatch(fetchActiveConfigsData());
@@ -64,13 +61,13 @@ const UserMatrixContextProvider = ({ children }) => {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
+      setCurrentTime(now);
       setCurrentHour(hours);
       setCurrentMinute(minutes);
     }, 1000);
 
-    // Clear the interval on component unmount
     return () => clearInterval(interval);
-  }, []); 
+  }, []);
 
   useEffect(() => {
     console.log(currentHour);
@@ -78,24 +75,21 @@ const UserMatrixContextProvider = ({ children }) => {
   useEffect(() => {
     console.log(currentMinute);
   }, [currentMinute]);
-  // useEffect(() => {
-  //   if(tempConfigs){
-  //     const configsNames = tempConfigs.map(obj => obj.name);
-  //     const configState = tempConfigs.map((config) => config.defaultVal);
-  //   }
-  // }, [tempConfigs])
+  useEffect(() => {
+    if (backdatedTemplate && currentTime >= WB4.start)
+      setBackdatedTemplate(WB4.tempValue);
+    console.log(backdatedTemplate);
+    // if (currentTime >= WB4.end) backdatedTemplate = WB4.defaultValue;
+  }, [backdatedTemplate, currentTime, WB4]);
 
-
-
-  //   if (backDatedForm)
-  //   backDatedForm =
-  //     currentHour >= backDatedFormConfig.start
-  //       ? backDatedFormConfig.value
-  //       : backDatedFormConfig.defaultValue;
-  // if (currentTime >= backDatedFormConfig.end)
-  //   backDatedForm.value = backDatedFormConfig.defaultValue;
   return (
-    <UserMatrixContext.Provider value={{}}>
+    <UserMatrixContext.Provider
+      value={{
+        manualEntryWB,
+        editTransaction,
+        backdatedTemplate,
+        backDatedForm,
+      }}>
       {children}
     </UserMatrixContext.Provider>
   );

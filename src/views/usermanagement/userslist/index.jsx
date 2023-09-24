@@ -67,7 +67,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const UsersList = () => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);

@@ -19,32 +19,8 @@ import { setSidebar } from "../slices/appSlice";
 
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
-  const { backDatedTemplate } = useSelector((state) => state.tempConfigs);
-  const navSet = new Set(NavList);
-  /**
- * Jembatan Timbang
-    PKS
-    R ead(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
+  const { backDatedTemplate } = useMatrix();
 
-    T30
-     Read(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
-
-    Labanan
-      Read(Report), Create(Transaction), Edit(Transaction), Delete(Transaction)
-
-
-    MasterData
-      Read, Create, Edit, Delete
-
-    User 
-      Create, Edit, Delete
-
-    Role
-      Create, Edit, Delete
-
-    Config
-    E dit, Read, Create Request
- */
 
   useEffect(() => {
     if (backDatedTemplate)

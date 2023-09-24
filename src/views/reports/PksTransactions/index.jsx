@@ -50,7 +50,7 @@ ModuleRegistry.registerModules([
 const tType = 1;
 
 const ReportPksTransactions = () => {
-  // console.clear();
+  console.clear();
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -144,8 +144,6 @@ const ReportPksTransactions = () => {
     () => ({
       cellRendererParams: {
         suppressCount: true,
-      
-        
       },
       field: "bonTripNo",
       width: 300,
@@ -249,10 +247,10 @@ const ReportPksTransactions = () => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
 
-    // console.clear();
+    console.clear();
 
     return () => {
-      // console.clear();
+      console.clear();
     };
   }, []);
 
@@ -376,8 +374,7 @@ const ReportPksTransactions = () => {
                     }}
                     onClick={() => {
                       gridRef.current.api.exportDataAsExcel();
-                    }}
-                  >
+                    }}>
                     <FileDownloadOutlinedIcon
                       sx={{ mr: "5px", fontSize: "17px" }}
                     />
@@ -388,8 +385,7 @@ const ReportPksTransactions = () => {
             </div>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "70vh" }}
-            >
+              style={{ width: "auto", height: "70vh" }}>
               <AgGridReact
                 ref={gridRef}
                 rowData={filteredTransactions} // Row Data for Rows

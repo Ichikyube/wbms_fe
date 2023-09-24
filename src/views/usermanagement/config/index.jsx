@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 const Config = () => {
-  // console.clear();
+  console.clear();
 
   const gridRef = useRef();
   const { userInfo } = useSelector((state) => state.app);
@@ -244,11 +244,12 @@ const Config = () => {
         </Grid>
       </Grid>
       {isEditOpen && (
-      <EditDataConfig
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtConfig={selectedConfig}
-      />)}
+        <EditDataConfig
+          isEditOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          dtConfig={selectedConfig}
+        />
+      )}
       <CreateRequestConfig
         isRequestOpen={isRequestOpen}
         onClose={() => setIsRequestOpen(false)}

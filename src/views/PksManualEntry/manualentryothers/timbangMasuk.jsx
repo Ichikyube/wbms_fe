@@ -41,7 +41,7 @@ import { useWeighbridge, useConfig } from "../../../configs";
 const tType = 1;
 
 const PksManualOthersTimbangMasuk = () => {
-  // console.clear();
+  console.clear();
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
 

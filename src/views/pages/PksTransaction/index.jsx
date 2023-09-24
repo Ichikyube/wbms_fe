@@ -81,7 +81,7 @@ const PksTransaction = () => {
   }, [wbms]);
 
   useEffect(() => {
-    // console.clear();
+    console.clear();
     // if (!wsClient) {
     //   wsClient = new w3cwebsocket(
     //     `ws://${configs.WBMS_WB_IP}:${configs.WBMS_WB_PORT}/GetWeight`

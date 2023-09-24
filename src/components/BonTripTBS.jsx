@@ -11,11 +11,13 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
 
 const BonTripTBS = (props) => {
   const { dtTrans, isDisable } = props;
+  const { userInfo } = useSelector((state) => state.app);
   const [isOpen, setIsOpen] = useState(false);
 
   const formRef = useRef();
@@ -140,9 +142,7 @@ const BonTripTBS = (props) => {
                         Asal
                       </td>
                       <td width="10">:</td>
-                      <td className="nota-text">
-                        {dtTrans.originSiteName}
-                      </td>
+                      <td className="nota-text">{dtTrans.originSiteName}</td>
                     </tr>
                     <tr>
                       <td height="30" width="100">
@@ -179,9 +179,7 @@ const BonTripTBS = (props) => {
                         Jenis Barang
                       </td>
                       <td width="10">:</td>
-                      <td className="nota-text">
-                        {dtTrans.productName}
-                      </td>
+                      <td className="nota-text">{dtTrans.productName}</td>
                     </tr>
                     <tr>
                       <td height="25" width="100">
@@ -307,7 +305,7 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Dibuat,
@@ -318,7 +316,7 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Diketahui,
@@ -329,7 +327,7 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Disetujui,
@@ -341,7 +339,18 @@ const BonTripTBS = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                          padding: "40px",
+                          padding: "23px",
+                          fontFamily: "Courier New",
+                        }}
+                      >
+                        {userInfo.name}
+                      </td>
+                      <td
+                        style={{
+                          borderCollapse: "collapse",
+                          border: "1px solid black",
+                          color: "grey",
+                          fontFamily: "Courier New",
                         }}
                       ></td>
                       <td
@@ -349,13 +358,7 @@ const BonTripTBS = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                        }}
-                      ></td>
-                      <td
-                        style={{
-                          borderCollapse: "collapse",
-                          border: "1px solid black",
-                          color: "grey",
+                          fontFamily: "Courier New",
                         }}
                       ></td>
                     </tr>
@@ -364,7 +367,7 @@ const BonTripTBS = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Operator Timbang
@@ -373,7 +376,7 @@ const BonTripTBS = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         PGS
@@ -382,7 +385,7 @@ const BonTripTBS = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Mill Head

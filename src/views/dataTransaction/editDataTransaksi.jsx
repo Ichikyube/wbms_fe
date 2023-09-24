@@ -22,11 +22,12 @@ import * as CompaniesAPI from "../../api/companiesApi";
 import * as DriverAPI from "../../api/driverApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CustomerAPI from "../../api/customerApi";
-import { useConfig } from "../../configs";
+import { useConfig } from "../../common/hooks";
 import * as SiteAPI from "../../api/sitesApi";
 import TBSInternal from "./dataTBSInternal";
 import TBSEksternal from "./dataTBSEksternal";
-import Others from "./dataOthers";
+import OthersTerima from "./othersTerima";
+import OthersKirim from "./othersKirim";
 import BeratTanggal from "./beratTanggal";
 
 const EditDataTransaksi = () => {
@@ -43,14 +44,19 @@ const EditDataTransaksi = () => {
           setValues({
             ...dataById.record,
           });
-          // Set selectedOption berdasarkan productName dari data yang diambil
           const productName = dataById.record.productName;
+          const destinationSiteId = dataById.record.destinationSiteId;
+
           if (productName === "TBS Internal") {
             setSelectedOption("TbsInternal");
           } else if (productName === "TBS Eksternal") {
             setSelectedOption("TbsEksternal");
           } else {
-            setSelectedOption("Others"); // Default ke "Others" jika productName bukan "TBS Internal" atau "TBS Eksternal"
+            if (destinationSiteId) {
+              setSelectedOption("OthersKirim");
+            } else {
+              setSelectedOption("OthersTerima");
+            }
           }
         }
       } catch (error) {
@@ -102,6 +108,8 @@ const EditDataTransaksi = () => {
       qtyTbsDikembalikan,
       originWeighInTimestamp,
       transportVehicleSccModel,
+      destinationSiteId,
+      destinationSiteName,
     } = values;
 
     const tempTrans = {
@@ -129,6 +137,8 @@ const EditDataTransaksi = () => {
       originWeighInTimestamp: moment(originWeighInTimestamp).toDate(),
       originWeighOutTimestamp: moment(originWeighOutTimestamp).toDate(),
       transportVehicleSccModel,
+      destinationSiteId,
+      destinationSiteName,
     };
 
     try {
@@ -168,13 +178,12 @@ const EditDataTransaksi = () => {
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
-      values.transportVehicleId &&
-      values.driverId &&
-      values.transporterId &&
-      values.productId &&
-      values.customerId &&
-      values.originWeighInTimestamp &&
-      values.originWeighOutTimestamp &&
+      // values.transportVehicleId &&
+      // values.driverId &&
+      // values.transporterId &&
+      // values.productId &&
+      // values.originWeighInTimestamp &&
+      // values.originWeighOutTimestamp &&
       values.originWeighInKg > 0 &&
       values.originWeighOutKg > 0
     );
@@ -244,7 +253,8 @@ const EditDataTransaksi = () => {
                 value={selectedOption}
                 onChange={(event) => {
                   setSelectedOption(event.target.value);
-                }}>
+                }}
+              >
                 {/* TBS INTERNAL */}
                 {(selectedOption === "TbsInternal" ||
                   selectedOption === "BeratTanggalTbsInternal") && (
@@ -279,17 +289,34 @@ const EditDataTransaksi = () => {
                   </>
                 )}
 
-                {/* OTHERS */}
-                {(selectedOption === "Others" ||
-                  selectedOption === "BeratTanggalOthers") && (
+                {/* OTHERS TERIMA */}
+                {(selectedOption === "OthersTerima" ||
+                  selectedOption === "BeratTanggalOthersTerima") && (
                   <>
                     <FormControlLabel
-                      value="Others"
+                      value="OthersTerima"
                       control={<Radio />}
-                      label="Others"
+                      label="Others Terima"
                     />
                     <FormControlLabel
-                      value="BeratTanggalOthers"
+                      value="BeratTanggalOthersTerima"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
+                )}
+
+                {/* OTHERS KIRIM*/}
+                {(selectedOption === "OthersKirim" ||
+                  selectedOption === "BeratTanggalOthersKirim") && (
+                  <>
+                    <FormControlLabel
+                      value="OthersKirim"
+                      control={<Radio />}
+                      label="Others Kirim"
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalOthersKirim"
                       control={<Radio />}
                       label="Berat & Tanggal"
                     />
@@ -304,7 +331,8 @@ const EditDataTransaksi = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
               {/* TBS INTERNAL */}
 
               {selectedOption === "TbsInternal" && (
@@ -345,10 +373,10 @@ const EditDataTransaksi = () => {
                 />
               )}
 
-              {/* OTHERS */}
+              {/* OTHERS TERIMA */}
 
-              {selectedOption === "Others" && (
-                <Others
+              {selectedOption === "OthersTerima" && (
+                <OthersTerima
                   values={values}
                   handleChange={handleChange}
                   handleSubmit={handleSubmit}
@@ -363,11 +391,31 @@ const EditDataTransaksi = () => {
                 />
               )}
 
+              {/* OTHERS KIRIM */}
+
+              {selectedOption === "OthersKirim" && (
+                <OthersKirim
+                  values={values}
+                  handleChange={handleChange}
+                  handleSubmit={handleSubmit}
+                  setValues={setValues}
+                  handleClose={handleClose}
+                  dtCompany={dtCompany}
+                  dtTransportVehicle={dtTransportVehicle}
+                  validateForm={validateForm}
+                  dtProduct={dtProduct}
+                  dtCustomer={dtCustomer}
+                  dtDriver={dtDriver}
+                  dtSite={dtSite}
+                />
+              )}
+
               {/* BERAT DAN TANGGAL */}
 
               {(selectedOption === "BeratTanggalTbsInternal" ||
                 selectedOption === "BeratTanggalTbsEksternal" ||
-                selectedOption === "BeratTanggalOthers") && (
+                selectedOption === "BeratTanggalOthersTerima" ||
+                selectedOption === "BeratTanggalOthersKirim") && (
                 <BeratTanggal
                   values={values}
                   handleChange={handleChange}

@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { Formik } from "formik";
 import useSWR from "swr";
 import { green } from "@mui/material/colors";
@@ -50,7 +50,7 @@ ModuleRegistry.registerModules([
 const tType = 1;
 
 const ReportPksTransactions = () => {
-  console.clear();
+  // console.clear();
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -84,6 +84,7 @@ const ReportPksTransactions = () => {
       hide: false,
     },
     { headerName: "No Pol", field: "transportVehiclePlateNo", filter: true },
+    { headerName: "Tanggal", field: "originWeighOutTimestamp", filter: true },
     {
       headerName: "Status",
       field: "progressStatus",
@@ -187,11 +188,13 @@ const ReportPksTransactions = () => {
   };
 
   const StartDate = (date) => {
-    setSelectedStartDate(date);
+    // Menggabungkan tanggal yang dipilih dengan jam 00:00:00
+    setSelectedStartDate(dayjs(date).startOf("day"));
   };
 
   const EndDate = (date) => {
-    setSelectedEndDate(date);
+    // Menggabungkan tanggal yang dipilih dengan jam 23:59:59
+    setSelectedEndDate(dayjs(date).endOf("day"));
   };
 
   const filteredTransactions = useMemo(() => {
@@ -246,12 +249,6 @@ const ReportPksTransactions = () => {
   useEffect(() => {
     setSelectedStartDate(today);
     setSelectedEndDate(today);
-
-    console.clear();
-
-    return () => {
-      console.clear();
-    };
   }, []);
 
   return (
@@ -269,7 +266,7 @@ const ReportPksTransactions = () => {
               <Box display="flex">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoItem label="Dari Tanggal">
-                    <DatePicker
+                    <DateTimePicker
                       className="custom-datetimepicker"
                       maxDate={today}
                       value={selectedStartDate}
@@ -279,7 +276,7 @@ const ReportPksTransactions = () => {
                     />
                   </DemoItem>
                   <DemoItem label="Sampai Tanggal">
-                    <DatePicker
+                    <DateTimePicker
                       className="custom-datetimepicker"
                       maxDate={today}
                       value={selectedEndDate}
@@ -374,7 +371,8 @@ const ReportPksTransactions = () => {
                     }}
                     onClick={() => {
                       gridRef.current.api.exportDataAsExcel();
-                    }}>
+                    }}
+                  >
                     <FileDownloadOutlinedIcon
                       sx={{ mr: "5px", fontSize: "17px" }}
                     />
@@ -385,7 +383,8 @@ const ReportPksTransactions = () => {
             </div>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "70vh" }}>
+              style={{ width: "auto", height: "70vh" }}
+            >
               <AgGridReact
                 ref={gridRef}
                 rowData={filteredTransactions} // Row Data for Rows

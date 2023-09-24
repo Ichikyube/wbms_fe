@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Grid, Typography, Paper, Box, TextField } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Paper,
+  Box,
+  TextField,
+  FormControl,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import moment from "moment";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,17 +19,11 @@ import { useForm } from "../../utils/useForm";
 import * as TransactionAPI from "../../api/transactionApi";
 import PageHeader from "../../components/PageHeader";
 import ManualEntryGrid from "../../components/manualEntryGrid";
-import * as ProductAPI from "../../api/productsApi";
-import * as CompaniesAPI from "../../api/companiesApi";
-import * as DriverAPI from "../../api/driverApi";
-import * as TransportVehicleAPI from "../../api/transportvehicleApi";
-import * as CustomerAPI from "../../api/customerApi";
 import { useConfig } from "../../common/hooks";
-import * as SiteAPI from "../../api/sitesApi";
 import TimbangKeluarTBSInternal from "../PksManualEntry/manualentryTBSInternal/timbangKeluar";
 import TimbangKeluarTBSEksternal from "../PksManualEntry/manualentryTBSEksternal/timbangKeluar";
-import TimbangKeluarOthers from "../PksManualEntry/manualentryothers/timbangKeluar";
-import BeratTanggal from "../dataTransaction/beratTanggal";
+import OthersKirim from "../PksManualEntry/manualentryothers/timbangKeluar/othersKirim";
+import OthersTerima from "../PksManualEntry/manualentryothers/timbangKeluar/othersTerima";
 
 const tType = 1;
 
@@ -29,6 +33,7 @@ const TimbangKeluar = () => {
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
+  const [others, setOthers] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,14 +44,19 @@ const TimbangKeluar = () => {
           setValues({
             ...dataById.record,
           });
-          // Set selectedOption berdasarkan productName dari data yang diambil
           const productName = dataById.record.productName;
+          const destinationSiteId = dataById.record.destinationSiteId;
+
           if (productName === "TBS Internal") {
             setSelectedOption("TbsInternal");
           } else if (productName === "TBS Eksternal") {
             setSelectedOption("TbsEksternal");
           } else {
-            setSelectedOption("Others"); // Default ke "Others" jika productName bukan "TBS Internal" atau "TBS Eksternal"
+            if (destinationSiteId) {
+              setSelectedOption("OthersKirim");
+            } else {
+              setSelectedOption("OthersTerima");
+            }
           }
         }
       } catch (error) {
@@ -111,11 +121,7 @@ const TimbangKeluar = () => {
             >
               {/* TBS INTERNAL */}
 
-              {selectedOption === "TbsInternal" && (
-                <>
-                  <TimbangKeluarTBSInternal />
-                </>
-              )}
+              {selectedOption === "TbsInternal" && <TimbangKeluarTBSInternal />}
 
               {/* TBS EKSTERNAL */}
 
@@ -123,9 +129,13 @@ const TimbangKeluar = () => {
                 <TimbangKeluarTBSEksternal />
               )}
 
-              {/* OTHERS */}
+              {/* OTHERS TERIMA */}
 
-              {selectedOption === "Others" && <TimbangKeluarOthers />}
+              {selectedOption === "OthersTerima" && <OthersTerima />}
+
+              {/* OTHERS KIRIM */}
+
+              {selectedOption === "OthersKirim" && <OthersKirim />}
             </Box>
           </Paper>
         </Grid>

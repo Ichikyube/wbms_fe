@@ -19,27 +19,21 @@ import {
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
-import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { useForm } from "../../../utils/useForm";
-import WeightWB from "../../../components/weightWB";
+import { useForm } from "../../../../utils/useForm";
+import WeightWB from "../../../../components/weightWB";
+import BonTripTBS from "../../../../components/BonTripTBS";
+import * as TransactionAPI from "../../../../api/transactionApi";
+import * as ProductAPI from "../../../../api/productsApi";
+import * as CompaniesAPI from "../../../../api/companiesApi";
+import * as DriverAPI from "../../../../api/driverApi";
+import * as TransportVehicleAPI from "../../../../api/transportvehicleApi";
+import * as CustomerAPI from "../../../../api/customerApi";
 
-import BonTripTBS from "../../../components/BonTripTBS";
-import * as TransactionAPI from "../../../api/transactionApi";
-import ManualEntryGrid from "../../../components/manualEntryGrid";
-import PageHeader from "../../../components/PageHeader";
-import * as ProductAPI from "../../../api/productsApi";
-import * as CompaniesAPI from "../../../api/companiesApi";
-import * as DriverAPI from "../../../api/driverApi";
-import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
-import * as CustomerAPI from "../../../api/customerApi"; 
-
-import { useWeighbridge, useConfig } from "../../../configs";
+import { useWeighbridge, useConfig } from "../../../../common/hooks";
 
 const tType = 1;
 
-const PksManualOthersTimbangKeluar = () => {
+const TimbangKeluarOthersTerima = () => {
   const [configs] = useConfig();
   const [weighbridge] = useWeighbridge();
 
@@ -420,41 +414,6 @@ const PksManualOthersTimbangKeluar = () => {
           name="transportVehicleSccModel"
           value={values.transportVehicleSccModel || "-"}
         />
-
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Customer
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtCustomer}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtCustomer.find((item) => item.id === values.customerId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                customerId: newValue ? newValue.id : "",
-                customerName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Customer --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Jenis Barang
@@ -483,6 +442,40 @@ const PksManualOthersTimbangKeluar = () => {
                   },
                 }}
                 placeholder="-- Pilih Barang --"
+                variant="outlined"
+                size="small"
+              />
+            )}
+          />
+        </FormControl>
+        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
+            Customer
+          </InputLabel>
+
+          <Autocomplete
+            id="select-label"
+            options={dtCustomer}
+            getOptionLabel={(option) => option.name}
+            value={
+              dtCustomer.find((item) => item.id === values.customerId) || null
+            }
+            onChange={(event, newValue) => {
+              setValues((prevValues) => ({
+                ...prevValues,
+                customerId: newValue ? newValue.id : "",
+                customerName: newValue ? newValue.name : "",
+              }));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "10px",
+                  },
+                }}
+                placeholder="-- Pilih Customer --"
                 variant="outlined"
                 size="small"
               />
@@ -680,4 +673,4 @@ const PksManualOthersTimbangKeluar = () => {
   );
 };
 
-export default PksManualOthersTimbangKeluar;
+export default TimbangKeluarOthersTerima;

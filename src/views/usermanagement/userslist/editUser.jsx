@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -224,7 +224,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             }}
                             style={{ display: "none" }}
                           />
-                          <AddCircleIcon
+                          <EditIcon
                             style={{ fontSize: "24px", color: "#3f51b5" }}
                           />
                         </Tooltip>

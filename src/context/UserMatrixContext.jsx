@@ -8,11 +8,12 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { fetchActiveConfigsData } from "../slices/tempConfigSlice";
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
+import _ from "lodash";
 
 const UserMatrixContext = createContext({
   backDatedForm: false,
   manualEntryWB: false,
-  backdatedTemplate: false,
+  backDatedTemplate: false,
   editTransaction: false,
 });
 
@@ -27,26 +28,26 @@ const UserMatrixContextProvider = ({ children }) => {
   const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
   const [currentMinute, setCurrentMinute] = useState(null);
-
+  const configObject = Object.assign({}, ...tempConfigs.tempConfigDt);
   const {
     manualEntryWB: WB2,
     editTransaction: WB3,
-    backdatedTemplate: WB4,
+    backDatedTemplate: WB4,
     backDatedForm: WB5,
-  } = tempConfigs.tempConfigDt;
+  } = configObject;
   const [backDatedForm, setBackDatedForm] = useState(
     WB5 ? WB5 : WB5?.defaultVal
   );
   const [manualEntryWB, setManualEntryWB] = useState(
     WB2 ? WB2 : WB2?.defaultVal
   );
-  const [backdatedTemplate, setBackdatedTemplate] = useState(
+  const [backDatedTemplate, setBackdatedTemplate] = useState(
     WB4 ? WB4 : WB4?.defaultVal
   );
   const [editTransaction, seteditTransaction] = useState(
     WB3 ? WB3 : WB3?.defaultVal
   );
-  console.log(tempConfigs.tempConfigDt);
+  console.log(configObject);
   const configCallback = useCallback(() => {
     dispatch(fetchGroupMappingData());
     dispatch(fetchActiveConfigsData());
@@ -76,18 +77,18 @@ const UserMatrixContextProvider = ({ children }) => {
     console.log(currentMinute);
   }, [currentMinute]);
   useEffect(() => {
-    if (backdatedTemplate && currentTime >= WB4.start)
+    if (backDatedTemplate && currentTime >= WB4.start)
       setBackdatedTemplate(WB4.tempValue);
-    console.log(backdatedTemplate);
-    // if (currentTime >= WB4.end) backdatedTemplate = WB4.defaultValue;
-  }, [backdatedTemplate, currentTime, WB4]);
+    console.log(backDatedTemplate);
+    // if (currentTime >= WB4.end) backDatedTemplate = WB4.defaultValue;
+  }, [backDatedTemplate, currentTime, WB4]);
 
   return (
     <UserMatrixContext.Provider
       value={{
         manualEntryWB,
         editTransaction,
-        backdatedTemplate,
+        backDatedTemplate,
         backDatedForm,
       }}>
       {children}

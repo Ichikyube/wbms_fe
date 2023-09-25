@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
-import _ from "lodash";
+
 // zeroLock: "",
 // stableLockPeriod: "3000",  //waktu stableLockTime nilai INT
 // minimumWeight: "1", //nilai INT

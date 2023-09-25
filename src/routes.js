@@ -22,7 +22,7 @@ const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
 const PksManualOthersTB = lazy(() =>
-  import("./views/PksManualEntry/manualentryothers/timbangMasuk")
+  import("./views/PksManualEntry/manualentryothers")
 );
 const PksManualTimbangKeluar = lazy(() =>
   import("./views/PksManualEntry/timbangKeluar")

@@ -19,17 +19,17 @@ import {
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useForm } from "../../../../utils/useForm";
-import WeightWB from "../../../../components/weightWB";
-import BonTripTBS from "../../../../components/BonTripTBS";
-import * as TransactionAPI from "../../../../api/transactionApi";
-import * as ProductAPI from "../../../../api/productsApi";
-import * as CompaniesAPI from "../../../../api/companiesApi";
-import * as DriverAPI from "../../../../api/driverApi";
-import * as TransportVehicleAPI from "../../../../api/transportvehicleApi";
-import * as CustomerAPI from "../../../../api/customerApi";
+import { useForm } from "../../../utils/useForm";
+import WeightWB from "../../../components/weightWB";
+import BonTripTBS from "../../../components/BonTripTBS";
+import * as TransactionAPI from "../../../api/transactionApi";
+import * as ProductAPI from "../../../api/productsApi";
+import * as CompaniesAPI from "../../../api/companiesApi";
+import * as DriverAPI from "../../../api/driverApi";
+import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
+import * as CustomerAPI from "../../../api/customerApi";
 
-import { useWeighbridge, useConfig } from "../../../../common/hooks";
+import { useWeighbridge, useConfig } from "../../../common/hooks";
 
 const tType = 1;
 

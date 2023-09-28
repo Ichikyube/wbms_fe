@@ -1,0 +1,58 @@
+/**
+ * Root element
+ */
+ .timescape {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    width: fit-content;
+    border: 1px solid #b2b2b2;
+    padding: 5px;
+    user-select: none;
+    border-radius: 10px;
+  }
+  
+  .timescape:focus-within {
+    outline: 1px solid #8f47d4;
+    border-color: #8f47d4;
+  }
+  
+  /**
+   * Date and time input elements
+   */
+  .timescape input {
+    /* This is an important style, as it ensures that the inputs have
+    the same width regardless of the number of characters they contain. */
+    font-variant-numeric: tabular-nums;
+    height: fit-content;
+    width: fit-content;
+    /* These are handled by the `:focus` selector */
+    border: none;
+    outline: none;
+    cursor: default;
+    user-select: none;
+    box-sizing: content-box;
+    /* For touch devices where input fields are not set to readonly */
+    caret-color: transparent;
+  
+    /* For the calculation of the input width these are important */
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+  
+  .timescape input:focus {
+    background-color: #8f47d4;
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px;
+  }
+  
+  /**
+   * Separator elements
+   */
+  .timescape .separator {
+    font-size: 80%;
+    color: #8c8c8c;
+    margin: 0;
+  }

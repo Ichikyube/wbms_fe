@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CSidebar,
@@ -16,16 +16,23 @@ import { backdateTemplateNav } from "../_nav";
 import NavList from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
-
+const access = ['Base',...Object.keys(JSON.parse(localStorage.getItem("userAccess")))];
+NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
   const { backDatedTemplate } = useMatrix();
-
-
+  const [tempAdded, setTempAdded] = useState(false);
+  const navList = NavList.filter(item => access.includes(item.resource));
+  
   useEffect(() => {
-    if (backDatedTemplate)
-      NavList[2].items = [...NavList[2].items, backdateTemplateNav];
-  }, [backDatedTemplate]);
+    if (backDatedTemplate && !tempAdded) {
+      setTempAdded(true);
+      navList[2].items = [...navList[2].items, backdateTemplateNav];
+    } else if (!backDatedTemplate && tempAdded) {
+      setTempAdded(false);
+      navList[2].items = navList[2].items.filter(item => item.name !== "Backdate Template");
+    }
+  }, [backDatedTemplate, tempAdded]);
 
   const dispatch = useDispatch();
 
@@ -53,7 +60,7 @@ const AppSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={NavList} />
+          <AppSidebarNav items={navList} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler

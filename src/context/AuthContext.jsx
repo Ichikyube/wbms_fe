@@ -18,7 +18,7 @@ import {
 } from "./../slices/authApiSlice";
 
 const AuthContext = createContext({
-  userInfo: null,
+  isAuth: false,
   login: () => {},
   logout: () => {},
 });
@@ -29,6 +29,8 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }) {
   const { userInfo } = useSelector((state) => state.app);
+  const token = localStorage.getItem("wbms_at");
+  const isAuth = userInfo && token;  
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -40,36 +42,30 @@ export function AuthProvider({ children }) {
   const [signout] = useSignoutMutation();
 
   const route = location.pathname;
+
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
-
-      if (!response?.status) {
-        console.log(response?.message);
-        console.log(response?.logs);
-
-        await toast.promise(
-          new Promise((resolve) => setTimeout(resolve, 500)),
-          {
-            error: response?.message,
-          }
-        );
+      const { status, message, logs, data } = response || {};
+      if (!status) {
+        console.log(message);
+        console.log(logs);
+        await toast.promise(Promise.resolve(), { error: message });
         return;
       }
-      (async () =>
+      (async () => {
+        await dispatch(fetchConfigsData());
         await getEnvInit().then((result) => {
           dispatch(setConfigs({ ...result }));
-          dispatch(fetchConfigsData());
-          //dispatch(fetchGroupMappingData());
-        }))();
+        })})();
+        dispatch(setCredentials({ ...response?.data.user }));
       // Get the cookie string from the response headers
-      console.log("response from signin:", response);
-      const at = response?.data?.tokens?.access_token;
-      const rt = response?.data?.tokens?.refresh_token;
+      // console.log("response from signin:", response);
+      const at = data.tokens?.access_token;
+      const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
       document.cookie = "rt=" + rt + ";SameSite=Lax";
 
-      dispatch(setCredentials({ ...response?.data.user }));
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
@@ -99,11 +95,14 @@ export function AuthProvider({ children }) {
         );
         return;
       }
-      navigate("/");
+      (() => {
+        dispatch(clearSidebar());
+        dispatch(clearCredentials());
+        dispatch(clearConfigs());
+        navigate("/");
+      })();
+      localStorage.clear();
       setToastmssg(response?.message);
-      dispatch(clearSidebar());
-      dispatch(clearCredentials());
-      dispatch(clearConfigs());
     } catch (err) {
       console.log(err?.data?.message || err.error);
       toast.error(err?.data?.message || err.error);
@@ -114,6 +113,11 @@ export function AuthProvider({ children }) {
     if (toastmssg) toast.success(toastmssg);
     setToastmssg("");
   }, [toastmssg]);
+  // useEffect(() => {
+  //   if (!userInfo) {
+  //     navigate("/signin");
+  //   }
+  // }, [navigate, userInfo]);
   useEffect(() => {
     if (userInfo && (route === "/signin" || route === "/")) {
       navigate(from);
@@ -121,7 +125,7 @@ export function AuthProvider({ children }) {
   }, [userInfo, route, navigate, from]);
 
   return (
-    <AuthContext.Provider value={{ userInfo, login, logout }}>
+    <AuthContext.Provider value={{ isAuth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

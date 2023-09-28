@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserMatrixContextProvider } from "../context/UserMatrixContext";
@@ -10,8 +8,14 @@ import {
   AppFooter,
   AppHeader,
 } from "../components/index";
+import { useAuth } from "../context/AuthContext";
 
 const DefaultLayout = () => {
+  const { isAuth } =  useAuth();
+  if (!isAuth) {
+    localStorage.clear();
+    return <Navigate to="/signin" />;
+  }
   return (
     <div>
       <ToastContainer />

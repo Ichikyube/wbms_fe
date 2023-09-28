@@ -31,7 +31,6 @@ import {
   useFetchRequestsQuery,
   useApproveRequestMutation,
   useRejectRequestMutation,
-  selectFilteredRequestConfigs,
 } from "../../../slices/requestConfigsSlice";
 import { createNotificationAsync } from "../../../slices/notificationSlice";
 
@@ -43,7 +42,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  console.clear();
+  // console.clear();
   const dispatch = useDispatch();
   /**
    * Pada tampilan configRequest.
@@ -68,12 +67,6 @@ const ConfigRequest = () => {
   };
 
   const { data: requestList, refetch } = useFetchRequestsQuery();
-
-  // function RequestConfigList({ startTime, endTime, status }) {
-  //   const filteredConfigs = useSelector(state =>
-  //     selectFilteredRequestConfigs(state, startTime, endTime, status)
-  //   );
-  // }
 
   const [approveRequest] = useApproveRequestMutation();
   const [rejectRequest] = useRejectRequestMutation();
@@ -159,9 +152,7 @@ const ConfigRequest = () => {
         const notificationData = {
           message: "Seseorang menunggu persetujuan anda",
           isRead: false,
-          target: groupMap.filter(
-            (group) => group === lvl[data.approval.length + 1]
-          ),
+          target: Object.keys(groupMap).filter((id) => groupMap[id] === "PJ1"),
         };
         dispatch(createNotificationAsync(notificationData))
           .unwrap()
@@ -235,11 +226,11 @@ const ConfigRequest = () => {
         };
 
         const formattedActiveStart = activeStart.toLocaleDateString(
-          "en-US",
+          "id-ID",
           options
         );
         const formattedActiveEnd = activeEnd.toLocaleDateString(
-          "en-US",
+          "id-ID",
           options
         );
 

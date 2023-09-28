@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Notification from "./Notification";
 import { cilBell } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-                                                                                                                                                                                          
+import Badge from '@mui/material/Badge';                                                                                                                                       
 import api from "../api/api";
+
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -25,6 +27,7 @@ const NotificationList = () => {
     api.get("notifications")
       .then((data) => setNotifications(data))
       .catch((error) => console.error("Error fetching notifications:", error));
+    navigate("/configrequest")
   };
   return (
     <div style={{position:"relative"}} className="notification-list">

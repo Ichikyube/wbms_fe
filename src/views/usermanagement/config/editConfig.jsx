@@ -33,39 +33,7 @@ import { blue, grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configApi";
 import moment from "moment";
 import TimeSpanInput from "../../../components/TimeSpanInput";
-// const StyledTextarea = styled(TextareaAutosize)(
-//   ({ theme }) => `
-//   width: 320px;
-//   font-family: IBM Plex Sans, sans-serif;
-//   font-size: 0.875rem;
-//   font-weight: 400;
-//   line-height: 1.5;
-//   padding: 12px;
-//   border-radius: 12px 12px 0 12px;
-//   color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-//   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-//   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-//   box-shadow: 0px 2px 2px ${
-//     theme.palette.mode === "dark" ? grey[900] : grey[50]
-//   };
 
-//   &:hover {
-//     border-color: ${blue[400]};
-//   }
-
-//   &:focus {
-//     border-color: ${blue[400]};
-//     box-shadow: 0 0 0 3px ${
-//       theme.palette.mode === "dark" ? blue[500] : blue[200]
-//     };
-//   }
-
-//   // firefox
-//   &:focus-visible {
-//     outline: 0;
-//   }
-// `
-// );
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -97,15 +65,6 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
     return { hours, minutes };
   }
 
-  /*
-    for SetConfig
-    Set lvlOfApproval
-    depend on the level, add approver selector. Use input selector with autocomplete username or name
-    Set defaultValue. Use data type selector, depend on the data type input, bring the match input defaultValue component
-    Set timeSpan with Hours and Minutes input
-    Set repeatable checkbox
-    Abort status
-    */
   const formatLifespan = (hours, minutes) => {
     return `${hours} hours ${minutes} minutes`;
   };
@@ -244,9 +203,9 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
-                    name="status"
+                    name="defaultVal"
                     id="status-default-select"
-                    value={values.status}
+                    value={values.defaultVal}
                     label="Default State"
                     onChange={handleChange}>
                     <MenuItem value="ACTIVE">Active</MenuItem>

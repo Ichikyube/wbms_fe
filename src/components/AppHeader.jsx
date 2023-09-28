@@ -20,13 +20,11 @@ import { AppHeaderDropdown } from "./header/index";
 import "react-toastify/dist/ReactToastify.css";
 import { setSidebar } from "../slices/appSlice";
 import NotificationList from "./NotificationList";
-import { useAuth } from "../context/AuthContext";
 
 const AppHeader = () => {
   const dispatch = useDispatch();
   const { sidebar } = useSelector((state) => state.app);
-  // const sidebarShow = useSelector((state) => state.sidebarShow);
-  const {userInfo} = useAuth();
+  const { userInfo } = useSelector((state) => state.app);
   return (
     userInfo && (
     <CHeader position="sticky" className="mb-4">

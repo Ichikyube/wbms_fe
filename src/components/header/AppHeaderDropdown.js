@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import Avatar from "@mui/material/Avatar";
 import {
@@ -15,19 +16,17 @@ import { useAuth } from "../../context/AuthContext";
 
 const AppHeaderDropdown = () => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
-  const { userInfo, logout } = useAuth();
-
+  const { logout } = useAuth();
+  const { userInfo } = useSelector((state) => state.app);
   const handleSignout = () => {
-    localStorage.clear();
     logout();
   };
-
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
         <Avatar>
           <img
-            src={`${path}${userInfo.profilePic}`}
+            src={`${path}${userInfo?.profilePic}`}
             alt="Uploaded Preview"
             style={{
               width: "40px",

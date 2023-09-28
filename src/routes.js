@@ -60,115 +60,18 @@ const ConfigRequest = lazy(() =>
 );
 const Config = lazy(() => import("./views/usermanagement/config"));
 
-const routesList = [
+const baseRoute = [
   { path: "/", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
-  {
-    path: "/pks-transaction",
-    name: "PKS Transaction",
-    element: PksTransaction,
-    exact: true,
-  },
-  {
-    path: "/reports/pks-transactions",
-    name: "Report PKS Transactions",
-    element: ReportPksTransactions,
-  },
-  {
-    path: "/data-transaction",
-    name: "Data Transaction",
-    element: DataTransaction,
-    exact: true,
-  },
   {
     path: "/profile",
     name: "Profile",
     element: Profile,
   },
   {
-    path: "/md/province",
-    name: "Master Data Province",
-    element: Provinces,
-  },
-  {
-    path: "/md/city",
-    name: "Master Data City",
-    element: Cities,
-  },
-  {
-    path: "/md/company",
-    name: "Master Data Company",
-    element: Companies,
-  },
-  {
-    path: "/md/site",
-    name: "Master Data Site",
-    element: Sites,
-  },
-  {
-    path: "/md/customertype",
-    name: "Master Data Customer Type",
-    element: CustomerTypes,
-  },
-  {
-    path: "/md/customergroup",
-    name: "Master Data Customer Group",
-    element: CustomerGroups,
-  },
-  {
     path: "/md/barcodetype",
     name: "BarcodeType",
     element: BarcodeTypes,
-  },
-  {
-    path: "/md/customer",
-    name: "Master Data Customer",
-    element: Customers,
-  },
-  {
-    path: "/md/mill",
-    name: "Master Data Mill",
-    element: Mills,
-  },
-  {
-    path: "/md/weighbridge",
-    name: "Master Data Weighbridge",
-    element: Weighbridges,
-  },
-  {
-    path: "/md/productgroup",
-    name: "Master Data Product Group",
-    element: Productgroups,
-  },
-  {
-    path: "/md/product",
-    name: "Master Data Product",
-    element: Products,
-  },
-  {
-    path: "/md/storagetank",
-    name: "Master Data Storage Tank",
-    element: StorageTank,
-  },
-  {
-    path: "/md/driver",
-    name: "Master Data Driver",
-    element: Driver,
-  },
-  {
-    path: "/md/transportvehicle",
-    name: "Master Data Transport Vehicle",
-    element: Transportvehicle,
-  },
-  {
-    path: "/userslist",
-    name: "Users List",
-    element: UsersList,
-  },
-  {
-    path: "/roleslist",
-    name: "Roles List",
-    element: RolesList,
   },
   {
     path: "/configrequest",
@@ -177,10 +80,157 @@ const routesList = [
   },
   {
     path: "/config",
-    name: "Config ",
+    name: "Config",
     element: Config,
   },
 ];
+
+export const protectedRoute = [
+  {
+    path: "/pks-transaction",
+    name: "PKS Transaction",
+    element: PksTransaction,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/pks-ManualEntry-Others-TimbangMasuk",
+    name: "PKS  Manual Entry Others",
+    element: PksManualOthersTB,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
+    name: "PKS  Manual Entry TBS Internal",
+    element: PksManualTbsInternal,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
+    name: "PKS  Manual Entry TBS Eksternal",
+    element: PksManualTbsEksternal,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/pks-ManualEntry-TimbangKeluar/:id",
+    name: "PKS  Manual Entry",
+    element: PksManualTimbangKeluar,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/reports/pks-transactions",
+    name: "Report PKS Transactions",
+    element: ReportPksTransactions,
+    resource: "Transaction"
+  },
+  {
+    path: "/data-transaction",
+    name: "Data Transaction",
+    element: DataTransaction,
+    exact: true,
+    resource: "Transaction"
+  },
+  {
+    path: "/md/province",
+    name: "Master Data Province",
+    element: Provinces,
+    resource: "Province"
+  },
+  {
+    path: "/md/city",
+    name: "Master Data City",
+    element: Cities,
+    resource: "City"
+  },
+  {
+    path: "/md/company",
+    name: "Master Data Company",
+    element: Companies,
+    resource: "Company"
+  },
+  {
+    path: "/md/site",
+    name: "Master Data Site",
+    element: Sites,
+    resource: "Site"
+  },
+  {
+    path: "/md/customertype",
+    name: "Master Data Customer Type",
+    element: CustomerTypes,
+    resource: "CustomerType"
+  },
+  {
+    path: "/md/customergroup",
+    name: "Master Data Customer Group",
+    element: CustomerGroups,
+    resource: "CustomerGroup"
+  },
+  {
+    path: "/md/customer",
+    name: "Master Data Customer",
+    element: Customers,
+    resource: "Customer"
+  },
+  {
+    path: "/md/mill",
+    name: "Master Data Mill",
+    element: Mills,
+    resource: "Mill"
+  },
+  {
+    path: "/md/weighbridge",
+    name: "Master Data Weighbridge",
+    element: Weighbridges,
+    resource: "Weighbridge"
+  },
+  {
+    path: "/md/productgroup",
+    name: "Master Data Product Group",
+    element: Productgroups,
+    resource: "ProductGroup"
+  },
+  {
+    path: "/md/product",
+    name: "Master Data Product",
+    element: Products,
+    resource: "Product"
+  },
+  {
+    path: "/md/storagetank",
+    name: "Master Data Storage Tank",
+    element: StorageTank,
+    resource: "StorageTank"
+  },
+  {
+    path: "/md/driver",
+    name: "Master Data Driver",
+    element: Driver,
+    resource: "Driver"
+  },
+  {
+    path: "/md/transportvehicle",
+    name: "Master Data Transport Vehicle",
+    element: Transportvehicle,
+    resource: "TransportVehicle"
+  },
+  {
+    path: "/userslist",
+    name: "Users List",
+    element: UsersList,
+    resource: "User"
+  },
+  {
+    path: "/roleslist",
+    name: "Roles List",
+    element: RolesList,
+    resource: "User"
+  },
+]
 
 export const backdateFormRoutes = [
   {
@@ -218,31 +268,4 @@ export const editTransactionRoute = [
   },
 ];
 
-export const manualEntryRoutes = [
-  {
-    path: "/pks-ManualEntry-Others-TimbangMasuk",
-    name: "PKS  Manual Entry Others",
-    element: PksManualOthersTB,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Internal",
-    element: PksManualTbsInternal,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Eksternal",
-    element: PksManualTbsEksternal,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TimbangKeluar/:id",
-    name: "PKS  Manual Entry",
-    element: PksManualTimbangKeluar,
-    exact: true,
-  },
-];
-
-export default routesList;
+export default baseRoute;

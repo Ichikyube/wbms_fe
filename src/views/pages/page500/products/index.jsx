@@ -185,7 +185,7 @@ const Products = () => {
           "& .MuiDataGrid-footerContainer": {},
         }}>
         <Box display="flex" marginBottom="8px">
-          <Box display="flex" class="create">
+          <Box display="flex" className="create">
             <Button
               sx={{
                 fontSize: "14px",

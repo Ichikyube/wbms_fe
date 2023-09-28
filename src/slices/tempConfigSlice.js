@@ -1,3 +1,4 @@
+import { createContext } from "react";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
 
@@ -7,8 +8,8 @@ import api from "../api/api";
 // portWB: "9001",
 // editTransactionMinusWeightAndDate: "disabled",
 // editTransactionFullForm: "disabled",
-// signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}
-const initialState = {
+// signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}Bontrip TBS
+export const initialTempConfigState = {
   tempConfigDt: JSON.parse(localStorage.getItem("tempConfigs")), // This will store the config data
   status: "idle",
   error: null,
@@ -16,15 +17,26 @@ const initialState = {
 
 const tempConfigSlice = createSlice({
   name: "tempConfigs",
-  initialState,
+  initialState: initialTempConfigState,
   reducers: {
+    getTempConfigs: (state, action) => {
+      state.status = "loading";
+      // Simulate an API request to fetch temp configs
+      setTimeout(() => {
+        state.tempConfigDt = JSON.parse(localStorage.getItem("tempConfigs"));
+        state.status = "succeeded";
+      }, 1000); // Simulating a delay of 1 second (replace with actual API call)
+    },
     setTempConfigs: (state, action) => {
-      state.configs = { ...state.configs, ...action.payload };
-      localStorage.setItem("configs", JSON.stringify(state.configs));
+      state.tempConfigDt = action.payload;
+      state.status = "succeeded";
+      localStorage.setItem("tempConfigs", JSON.stringify(action.payload));
     },
     clearTempConfigs: (state, action) => {
-      state.configs = null;
-      localStorage.removeItem("configs");
+      state.tempConfigDt = null;
+      state.status = "idle";
+      state.error = null;
+      localStorage.removeItem("tempConfigs");
     },
   },
   extraReducers: (builder) => {

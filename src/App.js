@@ -14,8 +14,6 @@ const Page404 = lazy(() => import("./views/pages/page404/Page404"));
 const Page500 = lazy(() => import("./views/pages/page500/Page500"));
 
 const App = () => {
-
-
   const loading = (
     <div className="pt-3 text-center">
       <div className="sk-spinner sk-spinner-pulse"></div>

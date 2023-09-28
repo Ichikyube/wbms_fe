@@ -68,3 +68,6 @@ export const getISCC_SCC_MODEL = () => {
   };
   return response?.data;
 };
+
+
+//Modul Instalasasi

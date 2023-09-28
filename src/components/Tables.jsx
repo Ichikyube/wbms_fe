@@ -35,10 +35,10 @@ const Tables = (props) => {
   };
 
   useEffect(() => {
-    console.clear();
+    // console.clear();
 
     return () => {
-      console.clear();
+      // console.clear();
     };
   }, []);
   return (

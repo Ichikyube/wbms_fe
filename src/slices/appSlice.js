@@ -61,8 +61,16 @@ export const appSlice = createSlice({
       localStorage.removeItem("configs");
     },
     setCredentials: (state, action) => {
-      state.userInfo = action.payload;
-      localStorage.setItem("userInfo", JSON.stringify(action.payload));
+      const { access, ...rest} = action.payload;
+      state.userInfo = rest;
+      const userAccess = access.reduce((result, item) => {
+        const resource = item.resource;
+        const actions = item.grants.map(grant => grant.action);
+        result[resource] = actions;
+        return result;
+      }, {});
+      localStorage.setItem("userAccess", JSON.stringify(userAccess));
+      localStorage.setItem("userInfo", JSON.stringify(rest));
     },
     clearCredentials: (state, action) => {
       state.userInfo = null;

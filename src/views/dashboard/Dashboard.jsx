@@ -65,8 +65,7 @@ const Dashboard = () => {
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
         gridAutoRows="140px"
-        gap="20px"
-      >
+        gap="20px">
         <Box
           gridColumn="span 3"
           display="flex"
@@ -77,8 +76,7 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right, #0B63F6, #003CC5)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}
-        >
+          }}>
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {CPOProduct}
@@ -99,8 +97,7 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#33cc33, #009933)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}
-        >
+          }}>
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {PKOProduct}
@@ -121,8 +118,7 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#ffc107, #ffc107 )",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}
-        >
+          }}>
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {TBSProduct}
@@ -143,8 +139,7 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#f44336,#d32f2f)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}
-        >
+          }}>
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {OtherProduct}
@@ -157,15 +152,15 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn="span 8" pt={3}>
           <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
-            <div style={{ width: "auto", height: "45vh" }}>
+            <div style={{ width: "auto", height: "420px" }}>
               <AreaCharts />
             </div>
           </Paper>
         </Box>
         <Box gridColumn="span 4" pt={3}>
           <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
-            <div style={{ width: "auto", height: "45vh" }}>
-              <div className="title" >
+            <div style={{ width: "auto", height: "auto" }}>
+              <div className="title">
                 <Typography fontSize="18px" mb={3}>
                   <PieChartOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
                   Sales Chart

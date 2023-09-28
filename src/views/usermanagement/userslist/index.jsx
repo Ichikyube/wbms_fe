@@ -29,8 +29,6 @@ import {
   blue,
   red,
   indigo,
-  green,
-  teal,
   lightBlue,
 } from "@mui/material/colors";
 import "ag-grid-enterprise";
@@ -45,7 +43,6 @@ import AddIcon from "@mui/icons-material/Add";
 import FaceIcon from "@mui/icons-material/Face";
 import * as React from "react";
 import * as UsersAPI from "../../../api/usersApi";
-import { useAuth } from "../../../context/AuthContext";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
@@ -72,7 +69,7 @@ const UsersList = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const { userInfo } = useAuth();
+  const userInfo = useSelector((state) => state.app);
   const selectionMode = useSelector((state) => state.selectionMode);
   const groupMap = useSelector((state) => state.groupMapping);
   const [saveGroupMapping] = useSaveGroupMappingMutation();

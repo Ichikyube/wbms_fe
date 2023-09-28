@@ -21,10 +21,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm } from "../../../../utils/useForm";
 import WeightWB from "../../../../components/weightWB";
-
 import BonTripTBS from "../../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../../api/transactionApi";
-import * as SiteAPI from "../../../../api/sitesApi";
 import * as ProductAPI from "../../../../api/productsApi";
 import * as CompaniesAPI from "../../../../api/companiesApi";
 import * as DriverAPI from "../../../../api/driverApi";
@@ -35,7 +33,7 @@ import { useWeighbridge, useConfig } from "../../../../common/hooks";
 
 const tType = 1;
 
-const TimbangKeluarOthersKirim = () => {
+const TimbangKeluarOthersTerima = () => {
   const [configs] = useConfig();
   const [weighbridge] = useWeighbridge();
 
@@ -79,8 +77,6 @@ const TimbangKeluarOthersKirim = () => {
       progressStatus,
       originWeighInTimestamp,
       originWeighOutTimestamp,
-      destinationSiteId,
-      destinationSiteName,
     } = values;
 
     let updatedProgressStatus = progressStatus;
@@ -113,8 +109,6 @@ const TimbangKeluarOthersKirim = () => {
       progressStatus: updatedProgressStatus,
       originWeighInTimestamp,
       originWeighOutTimestamp: updatedOriginWeighOutTimestamp,
-      destinationSiteId,
-      destinationSiteName,
     };
 
     try {
@@ -150,6 +144,23 @@ const TimbangKeluarOthersKirim = () => {
     fetchData();
   }, [id]);
 
+  // const [canSubmit, setCanSubmit] = useState(false);
+
+  // useEffect(() => {
+  //   let cSubmit = false;
+
+  //   if (values.progressStatus === 20) {
+  //     if (values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT) {
+  //       cSubmit = true;
+  //     }
+  //   } else if (values.progressStatus === 4) {
+  //     if (values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT)
+  //       cSubmit = false;
+  //   }
+
+  //   setCanSubmit(cSubmit);
+  // }, [values]);
+
   useEffect(() => {
     if (
       values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
@@ -166,6 +177,8 @@ const TimbangKeluarOthersKirim = () => {
   }, [values, weighbridge]);
 
   const validateForm = () => {
+    // Implementasikan aturan validasi Anda di sini
+    // Kembalikan true jika semua kolom yang dibutuhkan terisi, jika tidak, kembalikan false
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
@@ -173,8 +186,7 @@ const TimbangKeluarOthersKirim = () => {
       values.driverId &&
       values.transporterId &&
       values.productId &&
-      values.customerId &&
-      values.destinationSiteId
+      values.customerId
     );
   };
 
@@ -189,7 +201,6 @@ const TimbangKeluarOthersKirim = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -209,9 +220,6 @@ const TimbangKeluarOthersKirim = () => {
 
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
-    });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
     });
   }, []);
 
@@ -246,6 +254,7 @@ const TimbangKeluarOthersKirim = () => {
           name="bonTripNo"
           value={values?.bonTripNo || ""}
         />
+
         <TextField
           variant="outlined"
           size="small"
@@ -438,7 +447,7 @@ const TimbangKeluarOthersKirim = () => {
               />
             )}
           />
-        </FormControl>{" "}
+        </FormControl>
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Customer
@@ -467,41 +476,6 @@ const TimbangKeluarOthersKirim = () => {
                   },
                 }}
                 placeholder="-- Pilih Customer --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ mt: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Dikirim Ke
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtSite}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtSite.find((item) => item.id === values.destinationSiteId) ||
-              null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                destinationSiteId: newValue ? newValue.id : "",
-                destinationSiteName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Tujuan --"
                 variant="outlined"
                 size="small"
               />
@@ -699,4 +673,4 @@ const TimbangKeluarOthersKirim = () => {
   );
 };
 
-export default TimbangKeluarOthersKirim;
+export default TimbangKeluarOthersTerima;

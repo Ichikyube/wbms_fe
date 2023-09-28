@@ -24,10 +24,8 @@ import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CustomerAPI from "../../api/customerApi";
 import { useConfig } from "../../common/hooks";
 import * as SiteAPI from "../../api/sitesApi";
-import TBSInternal from "./dataTBSInternal";
-import TBSEksternal from "./dataTBSEksternal";
-import OthersTerima from "./othersTerima";
-import OthersKirim from "./othersKirim";
+import TBS from "./dataTBS";
+import DataOthers from "./dataOthers";
 import BeratTanggal from "./beratTanggal";
 
 const EditDataTransaksi = () => {
@@ -39,24 +37,16 @@ const EditDataTransaksi = () => {
     const fetchData = async () => {
       try {
         const dataById = await TransactionAPI.getById(id);
-        console.log(dataById);
         if (dataById) {
           setValues({
             ...dataById.record,
           });
-          const productName = dataById.record.productName;
-          const destinationSiteId = dataById.record.destinationSiteId;
+          const productName = dataById.record.productName.toLowerCase();
 
-          if (productName === "TBS Internal") {
-            setSelectedOption("TbsInternal");
-          } else if (productName === "TBS Eksternal") {
-            setSelectedOption("TbsEksternal");
+          if (productName.includes("tbs")) {
+            setSelectedOption("Tbs");
           } else {
-            if (destinationSiteId) {
-              setSelectedOption("OthersKirim");
-            } else {
-              setSelectedOption("OthersTerima");
-            }
+            setSelectedOption("Others");
           }
         }
       } catch (error) {
@@ -255,68 +245,34 @@ const EditDataTransaksi = () => {
                   setSelectedOption(event.target.value);
                 }}
               >
-                {/* TBS INTERNAL */}
-                {(selectedOption === "TbsInternal" ||
-                  selectedOption === "BeratTanggalTbsInternal") && (
+                {/* TBS */}
+                {(selectedOption === "Tbs" ||
+                  selectedOption === "BeratTanggalTbs") && (
                   <>
                     <FormControlLabel
-                      value="TbsInternal"
+                      value="Tbs"
                       control={<Radio />}
-                      label="TBS Internal"
+                      label="TBS"
                     />
                     <FormControlLabel
-                      value="BeratTanggalTbsInternal"
+                      value="BeratTanggalTbs"
                       control={<Radio />}
                       label="Berat & Tanggal"
                     />
                   </>
                 )}
 
-                {/* TBS EKSTERNAL */}
-                {(selectedOption === "TbsEksternal" ||
-                  selectedOption === "BeratTanggalTbsEksternal") && (
+                {/* OTHERS */}
+                {(selectedOption === "Others" ||
+                  selectedOption === "BeratTanggalOthers") && (
                   <>
                     <FormControlLabel
-                      value="TbsEksternal"
+                      value="Others"
                       control={<Radio />}
-                      label="TBS Eksternal"
+                      label="Others "
                     />
                     <FormControlLabel
-                      value="BeratTanggalTbsEksternal"
-                      control={<Radio />}
-                      label="Berat & Tanggal"
-                    />
-                  </>
-                )}
-
-                {/* OTHERS TERIMA */}
-                {(selectedOption === "OthersTerima" ||
-                  selectedOption === "BeratTanggalOthersTerima") && (
-                  <>
-                    <FormControlLabel
-                      value="OthersTerima"
-                      control={<Radio />}
-                      label="Others Terima"
-                    />
-                    <FormControlLabel
-                      value="BeratTanggalOthersTerima"
-                      control={<Radio />}
-                      label="Berat & Tanggal"
-                    />
-                  </>
-                )}
-
-                {/* OTHERS KIRIM*/}
-                {(selectedOption === "OthersKirim" ||
-                  selectedOption === "BeratTanggalOthersKirim") && (
-                  <>
-                    <FormControlLabel
-                      value="OthersKirim"
-                      control={<Radio />}
-                      label="Others Kirim"
-                    />
-                    <FormControlLabel
-                      value="BeratTanggalOthersKirim"
+                      value="BeratTanggalOthers"
                       control={<Radio />}
                       label="Berat & Tanggal"
                     />
@@ -333,11 +289,11 @@ const EditDataTransaksi = () => {
               gap="20px"
               gridTemplateColumns="repeat(15, minmax(0, 1fr))"
             >
-              {/* TBS INTERNAL */}
+              {/* TBS */}
 
-              {selectedOption === "TbsInternal" && (
+              {selectedOption === "Tbs" && (
                 <>
-                  <TBSInternal
+                  <TBS
                     values={values}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
@@ -354,47 +310,10 @@ const EditDataTransaksi = () => {
                 </>
               )}
 
-              {/* TBS EKSTERNAL */}
+              {/* OTHERS */}
 
-              {selectedOption === "TbsEksternal" && (
-                <TBSEksternal
-                  values={values}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  setValues={setValues}
-                  handleClose={handleClose}
-                  dtCompany={dtCompany}
-                  dtTransportVehicle={dtTransportVehicle}
-                  validateForm={validateForm}
-                  dtProduct={dtProduct}
-                  dtSite={dtSite}
-                  dtCustomer={dtCustomer}
-                  dtDriver={dtDriver}
-                />
-              )}
-
-              {/* OTHERS TERIMA */}
-
-              {selectedOption === "OthersTerima" && (
-                <OthersTerima
-                  values={values}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  setValues={setValues}
-                  handleClose={handleClose}
-                  dtCompany={dtCompany}
-                  dtTransportVehicle={dtTransportVehicle}
-                  validateForm={validateForm}
-                  dtProduct={dtProduct}
-                  dtCustomer={dtCustomer}
-                  dtDriver={dtDriver}
-                />
-              )}
-
-              {/* OTHERS KIRIM */}
-
-              {selectedOption === "OthersKirim" && (
-                <OthersKirim
+              {selectedOption === "Others" && (
+                <DataOthers
                   values={values}
                   handleChange={handleChange}
                   handleSubmit={handleSubmit}
@@ -412,10 +331,8 @@ const EditDataTransaksi = () => {
 
               {/* BERAT DAN TANGGAL */}
 
-              {(selectedOption === "BeratTanggalTbsInternal" ||
-                selectedOption === "BeratTanggalTbsEksternal" ||
-                selectedOption === "BeratTanggalOthersTerima" ||
-                selectedOption === "BeratTanggalOthersKirim") && (
+              {(selectedOption === "BeratTanggalTbs" ||
+                selectedOption === "BeratTanggalOthers") && (
                 <BeratTanggal
                   values={values}
                   handleChange={handleChange}

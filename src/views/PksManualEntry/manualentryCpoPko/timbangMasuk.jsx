@@ -14,55 +14,42 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  FormLabel,
   Autocomplete,
 } from "@mui/material";
 import moment from "moment";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import WeightWB from "../../../components/weightWB";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
-import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
-import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
-import WeightWB from "../../../components/weightWB";
-
-import BonTripTBS from "../../../components/BonTripTBS";
+import * as CompaniesAPI from "../../../api/companiesApi";
+import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
-import Config from "../../../configs";
 import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
-import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 import * as SiteAPI from "../../../api/sitesApi";
-import { getEnvInit } from "../../../configs";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 
+const tType = 1;
 let wsClient;
 
-const tType = 1;
-
-const PksManualTBSinternalTimbangMasuk = () => {
+const PksManualCpoPkoTimbangMasuk = () => {
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
-
-  const dispatch = useDispatch();
 
   const { values, setValues } = useForm({ ...TransactionAPI.InitialData });
   const navigate = useNavigate();
 
-  const [originWeightNetto, setOriginWeightNetto] = useState(0);
-  const [canSubmit, setCanSubmit] = useState(false);
-
   const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const fetchTransactionsFromAPI = async () => {
@@ -96,7 +83,10 @@ const PksManualTBSinternalTimbangMasuk = () => {
       progressStatus,
       originWeighInTimestamp,
       transportVehicleSccModel,
-      qtyTbs,
+      currentSeal1,
+      currentSeal2,
+      currentSeal3,
+      currentSeal4,
     } = values;
 
     const tempTrans = {
@@ -118,7 +108,10 @@ const PksManualTBSinternalTimbangMasuk = () => {
       progressStatus,
       originWeighInTimestamp,
       transportVehicleSccModel,
-      qtyTbs,
+      currentSeal1,
+      currentSeal2,
+      currentSeal3,
+      currentSeal4,
     };
 
     if (tempTrans.progressStatus === 0) {
@@ -162,38 +155,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
     setValues({ ...tempTrans });
   };
 
-  const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
-
-  useEffect(() => {
-    // Fungsi untuk menghasilkan Nomor BON Trip dengan format P041YYMMDDHHmmss
-    const generateBonTripNo = () => {
-      const dateNow = moment().format("YYMMDDHHmmss");
-      return `P041${dateNow}`;
-    };
-
-    const generatedBonTripNo = generateBonTripNo(); // Panggil fungsi untuk menghasilkan Nomor BON Trip
-    setBonTripNo(generatedBonTripNo); // Simpan Nomor BON Trip dalam state
-
-    // Set nilai Nomor BON Trip ke dalam form values
-    setValues({
-      ...values,
-      bonTripNo: generatedBonTripNo,
-    });
-  }, []);
-
-  useEffect(() => {
-    // ... (kode useEffect yang sudah ada)
-
-    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-    let cSubmit = false;
-    if (values.progressStatus === 0) {
-      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 4) {
-      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    }
-    setCanSubmit(cSubmit);
-  }, [values]);
-
   const validateForm = () => {
     return (
       values.bonTripNo &&
@@ -203,17 +164,53 @@ const PksManualTBSinternalTimbangMasuk = () => {
       values.transporterId &&
       values.productId &&
       values.originSiteId &&
-      values.qtyTbs &&
-      values.customerId
+      values.customerId &&
+      values.currentSeal1 &&
+      values.currentSeal2
     );
   };
 
-  const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
+  const [originWeightNetto, setOriginWeightNetto] = useState(0);
 
+  useEffect(() => {
+    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
+
+    if (
+      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
+      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values]);
+
+  const [bonTripNo, setBonTripNo] = useState("");
+
+  useEffect(() => {
+    const generateBonTripNo = () => {
+      const dateNow = moment().format("YYMMDDHHmmss");
+      return `P041${dateNow}`;
+    };
+
+    const generatedBonTripNo = generateBonTripNo();
+    setBonTripNo(generatedBonTripNo);
+
+    // Set nilai Nomor BON Trip ke dalam form values
+    setValues({
+      ...values,
+      bonTripNo: generatedBonTripNo,
+    });
+  }, []);
+
+  const handleClose = () => {
     navigate("/pks-transaction");
   };
+
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
   const [dtDriver, setDtDriver] = useState([]);
@@ -225,7 +222,6 @@ const PksManualTBSinternalTimbangMasuk = () => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompany(res.data.company.records);
     });
-
     ProductAPI.getAll().then((res) => {
       setDtProduct(res.data.product.records);
     });
@@ -248,7 +244,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
   return (
     <>
       <PageHeader
-        title="Transaksi TBS Internal PKS"
+        title="Transaksi PKS4"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
@@ -362,6 +358,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   >
                     Nomor Polisi
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtTransportVehicle}
@@ -406,6 +403,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   >
                     Nama Supir
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtDriver}
@@ -512,6 +510,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   >
                     Jenis Barang
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtProduct}
@@ -541,117 +540,154 @@ const PksManualTBSinternalTimbangMasuk = () => {
                       />
                     )}
                   />
-                </FormControl>{" "}
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
-                    Customer
-                  </InputLabel>
-
-                  <Autocomplete
-                    id="select-label"
-                    options={dtCustomer}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      dtCustomer.find(
-                        (item) => item.id === values.customerId
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        customerId: newValue ? newValue.id : "",
-                        customerName: newValue ? newValue.name : "",
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
-                        }}
-                        placeholder="-- Pilih Customer --"
-                        variant="outlined"
-                        size="small"
-                      />
-                    )}
-                  />
                 </FormControl>
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
-                    Asal
-                  </InputLabel>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="1.8fr 1fr"
+                  gap={2}
+                  alignItems="center"
+                >
+                  <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                    <InputLabel
+                      id="select-label"
+                      shrink
+                      sx={{ bgcolor: "white", px: 1 }}
+                    >
+                      Asal
+                    </InputLabel>
 
-                  <Autocomplete
-                    id="select-label"
-                    options={dtSite}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      dtSite.find((item) => item.id === values.originSiteId) ||
-                      null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        originSiteId: newValue ? newValue.id : "",
-                        originSiteName: newValue ? newValue.name : "",
-                      }));
+                    <Autocomplete
+                      id="select-label"
+                      options={dtSite}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        dtSite.find(
+                          (item) => item.id === values.originSiteId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          originSiteId: newValue ? newValue.id : "",
+                          originSiteName: newValue ? newValue.name : "",
+                        }));
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                          }}
+                          placeholder="-- Pilih Asal --"
+                          variant="outlined"
+                          size="small"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <TextField
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
-                        }}
-                        placeholder="-- Pilih Asal --"
-                        variant="outlined"
-                        size="small"
-                      />
-                    )}
-                  />
-                </FormControl>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  type="number"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  placeholder="Masukkan Jumlah Janjang"
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "10px",
+                      },
+                    }}
+                    label={
                       <Typography
                         sx={{
                           bgcolor: "white",
-                          px: 1.5,
+                          px: 1,
                         }}
                       >
-                        Qty TBS
+                        Tangki
                       </Typography>
-                    </>
-                  }
-                  name="qtyTbs"
-                  value={values.qtyTbs}
-                  onChange={handleChange}
-                />
+                    }
+                    //   name="originWeighInKg"
+                    value={0}
+                  />
+                </Box>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="1.8fr 1fr"
+                  gap={2}
+                  alignItems="center"
+                >
+                  <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                    <InputLabel
+                      id="select-label"
+                      shrink
+                      sx={{ bgcolor: "white", px: 1 }}
+                    >
+                      Customer
+                    </InputLabel>
+
+                    <Autocomplete
+                      id="select-label"
+                      options={dtCustomer}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        dtCustomer.find(
+                          (item) => item.id === values.customerId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          customerId: newValue ? newValue.id : "",
+                          customerName: newValue ? newValue.name : "",
+                        }));
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                          }}
+                          placeholder="-- Pilih Customer --"
+                          variant="outlined"
+                          size="small"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <TextField
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{
+                      my: 2,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "10px",
+                      },
+                    }}
+                    label={
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1,
+                        }}
+                      >
+                        Tangki
+                      </Typography>
+                    }
+                    //   name="originWeighInKg"
+                    value={0}
+                  />
+                </Box>
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -811,8 +847,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
                   disabled={
-                    !validateForm() ||
-                    !weighbridge.isStable() ||
+                    (!validateForm() && !weighbridge.isStable()) ||
                     weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
                       ? true
                       : false
@@ -820,7 +855,7 @@ const PksManualTBSinternalTimbangMasuk = () => {
                 >
                   Simpan
                 </Button>
-                <BonTripTBS
+                <BonTripPrint
                   dtTrans={{ ...values }}
                   isDisable={!(values.progressStatus === 4)}
                 />
@@ -833,6 +868,151 @@ const PksManualTBSinternalTimbangMasuk = () => {
                 >
                   Tutup
                 </Button>
+              </FormControl>
+              <FormControl sx={{ gridColumn: "span 4" }}>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  placeholder="Segel Mainhole 1 *"
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Segel Mainhole 1 *
+                    </Typography>
+                  }
+                  name="currentSeal1"
+                  value={values.currentSeal1}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  placeholder="Segel Valve 1 *"
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Segel Mainhole 1 *
+                    </Typography>
+                  }
+                  name="currentSeal2"
+                  value={values.currentSeal2}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  placeholder="Segel Mainhole 2 "
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Segel Mainhole 2
+                    </Typography>
+                  }
+                  name="currentSeal3"
+                  value={values.currentSeal3}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  placeholder="Segel Valve 2"
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Segel Mainhole 2
+                    </Typography>
+                  }
+                  name="currentSeal4"
+                  value={values.currentSeal4}
+                  onChange={handleChange}
+                />
+
+                <FormControl>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Sertifikasi
+                  </FormLabel>
+                  <Autocomplete
+                    multiple
+                    options={["RSPO", "ISCC"]}
+                    getOptionLabel={(option) => option}
+                    value={values.sertifikasi}
+                    onChange={(event, newValue) => {
+                      setValues({
+                        ...values,
+                        sertifikasi: newValue,
+                      });
+                    }}
+                    name="Sertifikasi"
+                    isOptionEqualToValue={(option, value) => option === value}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" />
+                    )}
+                    renderValue={(selected) => selected.join(", ")}
+                  />
+                </FormControl>
               </FormControl>
             </Box>
           </Paper>
@@ -847,4 +1027,4 @@ const PksManualTBSinternalTimbangMasuk = () => {
   );
 };
 
-export default PksManualTBSinternalTimbangMasuk;
+export default PksManualCpoPkoTimbangMasuk;

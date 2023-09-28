@@ -22,15 +22,13 @@ import WeightWB from "../../../components/weightWB";
 
 import BonTripTBS from "../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../api/transactionApi";
-import Config from "../../../configs";
-import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
 import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { useConfig } from "../../../configs";
+import { useConfig } from "../../../common/hooks";
 import * as SiteAPI from "../../../api/sitesApi";
 
 const tType = 1;
@@ -155,7 +153,6 @@ const BackdateFormOthers = () => {
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
-      values.transportVehicleId &&
       values.driverId &&
       values.transporterId &&
       values.productId &&
@@ -235,7 +232,8 @@ const BackdateFormOthers = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}>
+                    }}
+                  >
                     STATUS PROSES
                   </Typography>
                 </>
@@ -245,44 +243,42 @@ const BackdateFormOthers = () => {
               value="Backdate Others"
             />
           </Paper>
+          <Paper elevation={2} sx={{ p: 2, mt: 2 }}>
+            <TextField
+              type="date"
+              variant="outlined"
+              size="medium"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label={
+                <Typography
+                  sx={{
+                    bgcolor: "white",
+                    px: 1,
+                  }}
+                >
+                  Tanggal BonTripNo
+                </Typography>
+              }
+              value={moment(selectedDate).format("YYYY-MM-DD")}
+              onChange={(e) => {
+                const newDate = new Date(e.target.value);
+                setSelectedDate(newDate);
+              }}
+              disabled={values.progressStatus === 4}
+            />
+          </Paper>
         </Grid>
         <Grid item xs={10.2}>
           <Paper elevation={1} sx={{ p: 3, px: 5, mb: 3 }}>
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
               <FormControl sx={{ gridColumn: "span 4" }}>
-                <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    mb: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Tanggal BonTripNo
-                    </Typography>
-                  }
-                  value={moment(selectedDate).format("YYYY-MM-DD")}
-                  onChange={(e) => {
-                    const newDate = new Date(e.target.value);
-                    setSelectedDate(newDate);
-                  }}
-                  disabled={values.progressStatus === 4}
-                />
                 <TextField
                   variant="outlined"
                   size="small"
@@ -291,7 +287,7 @@ const BackdateFormOthers = () => {
                     shrink: true,
                   }}
                   sx={{
-                    my: 2,
+                    mb: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
@@ -302,7 +298,8 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}>
+                        }}
+                      >
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -330,7 +327,8 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}>
+                        }}
+                      >
                         No. DO/NPB
                       </Typography>
                     </>
@@ -339,54 +337,39 @@ const BackdateFormOthers = () => {
                   value={values.deliveryOrderNo}
                   onChange={handleChange}
                 />
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
-                    Nomor Polisi
-                  </InputLabel>
-                  <Autocomplete
-                    id="select-label"
-                    options={dtTransportVehicle}
-                    getOptionLabel={(option) => option.plateNo}
-                    value={
-                      dtTransportVehicle.find(
-                        (item) => item.id === values.transportVehicleId
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        transportVehicleId: newValue ? newValue.id : "",
-                        transportVehiclePlateNo: newValue
-                          ? newValue.plateNo
-                          : "",
-                        transportVehicleSccModel: newValue
-                          ? newValue.sccModel
-                          : "",
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="-- Pilih Kendaraan --"
-                        variant="outlined"
-                        size="small"
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  // placeholder="Masukkan Jumlah Janjang"
+                  sx={{
+                    my: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
                         sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
+                          bgcolor: "white",
+                          px: 1.5,
                         }}
-                      />
-                    )}
-                  />
-                </FormControl>
+                      >
+                        Nomor Polisi
+                      </Typography>
+                    </>
+                  }
+                  name="transportVehiclePlateNo"
+                  value={values.transportVehiclePlateNo}
+                  onChange={handleChange}
+                />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Nama Supir
                   </InputLabel>
                   <Autocomplete
@@ -423,7 +406,8 @@ const BackdateFormOthers = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -477,56 +461,22 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}>
+                        }}
+                      >
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
                   }
                   name="transportVehicleSccModel"
-                  value={values.transportVehicleSccModel || "-"}
+                  value={values.transportVehicleSccModel}
+                  onChange={handleChange}
                 />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
-                    Jenis Barang
-                  </InputLabel>
-                  <Autocomplete
-                    id="select-label"
-                    options={dtProduct}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      dtProduct.find((item) => item.id === values.productId) ||
-                      null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        productId: newValue ? newValue.id : "",
-                        productName: newValue ? newValue.name : "",
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
-                        }}
-                        placeholder="-- Pilih Barang --"
-                        variant="outlined"
-                        size="small"
-                      />
-                    )}
-                  />
-                </FormControl>{" "}
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Customer
                   </InputLabel>
 
@@ -560,6 +510,44 @@ const BackdateFormOthers = () => {
                       />
                     )}
                   />
+                </FormControl>{" "}
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Jenis Barang
+                  </InputLabel>
+                  <Autocomplete
+                    id="select-label"
+                    options={dtProduct}
+                    getOptionLabel={(option) => option.name}
+                    value={
+                      dtProduct.find((item) => item.id === values.productId) ||
+                      null
+                    }
+                    onChange={(event, newValue) => {
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        productId: newValue ? newValue.id : "",
+                        productName: newValue ? newValue.name : "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "10px",
+                          },
+                        }}
+                        placeholder="-- Pilih Barang --"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
+                  />
                 </FormControl>
               </FormControl>
 
@@ -588,7 +576,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Weight IN
                     </Typography>
                   }
@@ -620,7 +609,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Weight OUT
                     </Typography>
                   }
@@ -653,7 +643,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -684,7 +675,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Potongan Lainnya
                     </Typography>
                   }
@@ -715,7 +707,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       TOTAL
                     </Typography>
                   }
@@ -727,12 +720,13 @@ const BackdateFormOthers = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!validateForm() || values.progressStatus === 4}>
+                  disabled={!validateForm() || values.progressStatus === 4}
+                >
                   Simpan
                 </Button>
                 <BonTripTBS
                   dtTrans={{ ...values }}
-                  isDisable={!(values.progressStatus === 4)}
+                  isDisable={!(values?.progressStatus === 4)}
                 />
                 <Button
                   variant="contained"
@@ -764,7 +758,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Tanggal Weight IN
                     </Typography>
                   }
@@ -791,7 +786,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Tanggal Weight OUT
                     </Typography>
                   }

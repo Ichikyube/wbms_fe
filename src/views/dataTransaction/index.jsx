@@ -53,18 +53,18 @@ const DataTransaction = () => {
   const handleCellClick = (params) => {
     const productName = params.data.productName.toLowerCase();
     const progressStatus = params.data.progressStatus;
-
+  
     if (
       progressStatus === 1 &&
-      productName !== "cpo" &&
-      productName !== "pko"
+      !(productName.includes("cpo") || productName.includes("pko"))
     ) {
-      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
-    } else {
       const Id = params.data.id;
       navigate(`/edit-data-Transaction/${Id}`);
+    } else {
+      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
     }
   };
+  
 
   const deleteById = (id, bonTripNo, productName) => {
     if (productName === "cpo" || productName === "pko") {

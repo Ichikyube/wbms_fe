@@ -1,39 +1,41 @@
 import { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { w3cwebsocket } from "websocket";
 import {
   Button,
-  Grid,
   InputAdornment,
   TextField,
   FormControl,
   Typography,
-  Paper,
-  Box,
-  Select,
-  MenuItem,
   InputLabel,
   Autocomplete,
+  Grid,
+  Paper,
+  Box,
 } from "@mui/material";
 import moment from "moment";
-import { toast } from "react-toastify";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useForm } from "../../../../utils/useForm";
-import WeightWB from "../../../../components/weightWB";
-import BonTripTBS from "../../../../components/BonTripTBS";
-import * as TransactionAPI from "../../../../api/transactionApi";
-import * as SiteAPI from "../../../../api/sitesApi";
-import * as ProductAPI from "../../../../api/productsApi";
-import * as CompaniesAPI from "../../../../api/companiesApi";
-import * as DriverAPI from "../../../../api/driverApi";
-import * as TransportVehicleAPI from "../../../../api/transportvehicleApi";
-import * as CustomerAPI from "../../../../api/customerApi";
-import { useWeighbridge, useConfig } from "../../../../common/hooks";
+import { useForm } from "../../../utils/useForm";
+import WeightWB from "../../../components/weightWB";
+import BonTripTBS from "../../../components/BonTripTBS";
+import * as TransactionAPI from "../../../api/transactionApi";
+import * as ProductAPI from "../../../api/productsApi";
+import * as CompaniesAPI from "../../../api/companiesApi";
+import * as DriverAPI from "../../../api/driverApi";
+import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
+import * as CustomerAPI from "../../../api/customerApi";
+import { useWeighbridge, useConfig } from "../../../common/hooks";
+import Swal from "sweetalert2";
 
 const tType = 1;
 
-const TimbangMasukOthersKirim = () => {
+const PksManualTimbangMasukOthers = ({
+  selectedProduct,
+  selectedCompany,
+  PlateNo,
+}) => {
   // console.clear();
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
@@ -76,7 +78,7 @@ const TimbangMasukOthersKirim = () => {
       transporterCompanyName,
       driverId,
       driverName,
-      transportVehicleId,
+      // transportVehicleId,
       transportVehiclePlateNo,
       customerName,
       customerId,
@@ -85,8 +87,6 @@ const TimbangMasukOthersKirim = () => {
       progressStatus,
       originWeighInTimestamp,
       transportVehicleSccModel,
-      destinationSiteId,
-      destinationSiteName,
     } = values;
 
     const tempTrans = {
@@ -97,7 +97,7 @@ const TimbangMasukOthersKirim = () => {
       transporterCompanyName,
       driverId,
       driverName,
-      transportVehicleId,
+      // transportVehicleId,
       transportVehiclePlateNo,
       customerName,
       customerId,
@@ -106,32 +106,56 @@ const TimbangMasukOthersKirim = () => {
       progressStatus,
       originWeighInTimestamp,
       transportVehicleSccModel,
-      destinationSiteId,
-      destinationSiteName,
     };
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
       tempTrans.tType = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
-      tempTrans.originWeighInKg = weighbridge.getWeight();
+      tempTrans.productId = selectedProduct ? selectedProduct.id : "";
+      tempTrans.productName = selectedProduct ? selectedProduct.name : "";
+      tempTrans.transporterId = selectedCompany ? selectedCompany.id : "";
+      tempTrans.transporterCompanyName = selectedCompany
+        ? selectedCompany.name
+        : "";
+      tempTrans.transportVehiclePlateNo = PlateNo;
+      // tempTrans.originWeighInKg = weighbridge.getWeight();
     }
 
     try {
-      const transactionsFromAPI = await fetchTransactionsFromAPI();
-
-      const duplicateEntryFromAPI = transactionsFromAPI.some(
-        (item) =>
-          item.transportVehiclePlateNo === transportVehiclePlateNo &&
-          [1].includes(item.progressStatus)
-      );
-
-      if (duplicateEntryFromAPI) {
-        toast.error(` ${transportVehiclePlateNo} Truk Masih di Dalam`);
-        return;
-      }
-
+      // Tambahkan logika untuk menentukan apakah membuat atau mengambil transaksi
       if (tempTrans.progressStatus === 1) {
+        const transactionsFromAPI = await fetchTransactionsFromAPI();
+
+        const duplicatePlateNo = transactionsFromAPI.find(
+          (item) =>
+            item.transportVehiclePlateNo === transportVehiclePlateNo &&
+            [1].includes(item.progressStatus)
+        );
+
+        if (duplicatePlateNo) {
+          const productName = duplicatePlateNo.productName.toLowerCase();
+
+          // Periksa apakah produk bukan "cpo" atau "pko" sebelum menampilkan SweetAlert
+          if (!productName.includes("cpo") && !productName.includes("pko")) {
+            const swalResult = await Swal.fire({
+              title: "Truk Masih di Dalam",
+              text: "Apakah Anda ingin keluar?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonColor: "#1976d2",
+              confirmButtonText: "Ya",
+              cancelButtonText: "Tidak",
+            });
+
+            if (swalResult.isConfirmed) {
+              const Id = duplicatePlateNo.id;
+              navigate(`/pks-ManualEntry-TimbangKeluar/${Id}`);
+            }
+          }
+          return;
+        }
+
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {
@@ -140,7 +164,6 @@ const TimbangMasukOthersKirim = () => {
         }
 
         toast.success(`Transaksi Timbang Masuk telah tersimpan.`);
-
         return handleClose();
       }
     } catch (error) {
@@ -189,16 +212,19 @@ const TimbangMasukOthersKirim = () => {
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
-      values.transportVehicleId &&
       values.driverId &&
       values.transporterId &&
-      values.productId &&
-      values.customerId &&
-      values.destinationSiteId
+      selectedProduct &&
+      selectedCompany &&
+      PlateNo &&
+      values.customerId
     );
   };
 
   const handleClose = () => {
+    // setProgressStatus("-");
+    // setWbPksTransaction(null);
+
     navigate("/pks-transaction");
   };
   const [dtCompany, setDtCompany] = useState([]);
@@ -206,7 +232,6 @@ const TimbangMasukOthersKirim = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -226,9 +251,6 @@ const TimbangMasukOthersKirim = () => {
 
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
-    });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
     });
   }, []);
 
@@ -293,7 +315,7 @@ const TimbangMasukOthersKirim = () => {
           value={values.deliveryOrderNo}
           onChange={handleChange}
         />
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Nomor Polisi
           </InputLabel>
@@ -312,7 +334,6 @@ const TimbangMasukOthersKirim = () => {
                 ...prevValues,
                 transportVehicleId: newValue ? newValue.id : "",
                 transportVehiclePlateNo: newValue ? newValue.plateNo : "",
-                transportVehicleSccModel: newValue ? newValue.sccModel : "",
               }));
             }}
             renderInput={(params) => (
@@ -329,7 +350,7 @@ const TimbangMasukOthersKirim = () => {
               />
             )}
           />
-        </FormControl>
+        </FormControl> */}
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Nama Supir
@@ -362,7 +383,7 @@ const TimbangMasukOthersKirim = () => {
             )}
           />
         </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Nama Vendor
           </InputLabel>
@@ -394,7 +415,7 @@ const TimbangMasukOthersKirim = () => {
               />
             )}
           />
-        </FormControl>
+        </FormControl> */}
         <TextField
           variant="outlined"
           size="small"
@@ -422,42 +443,10 @@ const TimbangMasukOthersKirim = () => {
             </>
           }
           name="transportVehicleSccModel"
-          value={values.transportVehicleSccModel || "-"}
+          value={values.transportVehicleSccModel}
+          onChange={handleChange}
         />
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Jenis Barang
-          </InputLabel>
 
-          <Autocomplete
-            id="select-label"
-            options={dtProduct}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtProduct.find((item) => item.id === values.productId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                productId: newValue ? newValue.id : "",
-                productName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Barang --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>{" "}
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Customer
@@ -492,41 +481,37 @@ const TimbangMasukOthersKirim = () => {
             )}
           />
         </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ mt: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Dikirim Ke
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtSite}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtSite.find((item) => item.id === values.destinationSiteId) ||
-              null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                destinationSiteId: newValue ? newValue.id : "",
-                destinationSiteName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
+        <TextField
+          variant="outlined"
+          size="small"
+          type="number"
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          // placeholder="Masukkan Jumlah Janjang"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          label={
+            <>
+              <Typography
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
+                  bgcolor: "white",
+                  px: 1.5,
                 }}
-                placeholder="-- Pilih Tujuan --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
+              >
+                SPTBS
+              </Typography>
+            </>
+          }
+          name="sptbs"
+          value={values.sptbs}
+          onChange={handleChange}
+        />
       </FormControl>
 
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -560,7 +545,8 @@ const TimbangMasukOthersKirim = () => {
             </Typography>
           }
           name="originWeighInKg"
-          value={weighbridge.getWeight()}
+          value={values.originWeighInKg}
+          onChange={handleChange}
         />
         <TextField
           type="number"
@@ -686,16 +672,16 @@ const TimbangMasukOthersKirim = () => {
 
         <Button
           variant="contained"
-          fullWidth
           sx={{ mt: 2 }}
+          fullWidth
           onClick={handleSubmit}
-          disabled={
-            !validateForm() ||
-            !weighbridge.isStable() ||
-            weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-              ? true
-              : false
-          }
+          // disabled={
+          //   !validateForm() ||
+          //   !weighbridge.isStable() ||
+          //   weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+          //     ? true
+          //     : false
+          // }
         >
           Simpan
         </Button>
@@ -705,7 +691,7 @@ const TimbangMasukOthersKirim = () => {
         />
         <Button
           variant="contained"
-          sx={{ my: 1 }}
+          sx={{ mt: 1 }}
           fullWidth
           onClick={handleClose}
           // disabled={!(values.progressStatus === 4)}
@@ -717,4 +703,4 @@ const TimbangMasukOthersKirim = () => {
   );
 };
 
-export default TimbangMasukOthersKirim;
+export default PksManualTimbangMasukOthers;

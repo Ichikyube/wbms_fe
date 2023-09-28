@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { w3cwebsocket } from "websocket";
 import {
   Button,
   Grid,
@@ -10,46 +11,56 @@ import {
   Typography,
   Paper,
   Box,
-  Autocomplete,
+  Select,
+  MenuItem,
   InputLabel,
+  FormLabel,
+  Autocomplete,
 } from "@mui/material";
-import { toast } from "react-toastify";
 import moment from "moment";
+import { toast } from "react-toastify";
+import WeightWB from "../../../components/weightWB";
 import "react-toastify/dist/ReactToastify.css";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../../utils/useForm";
-import WeightWB from "../../../components/weightWB";
-
-import BonTripTBS from "../../../components/BonTripTBS";
+import * as CompaniesAPI from "../../../api/companiesApi";
+import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
-import Config from "../../../configs";
 import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
-import * as CompaniesAPI from "../../../api/companiesApi";
 import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
-import { useConfig } from "../../../common/hooks";
+import * as SiteAPI from "../../../api/sitesApi";
+import { useWeighbridge, useConfig } from "../../../common/hooks";
 
 const tType = 1;
+let wsClient;
 
-const BackdateFormTBSEksternal = () => {
-  const dispatch = useDispatch();
+const PksManualCpoPkoTimbangMasuk = () => {
+  const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
+
+  const { values, setValues } = useForm({ ...TransactionAPI.InitialData });
   const navigate = useNavigate();
-  const { values, setValues } = useForm({
-    ...TransactionAPI.InitialData,
-  });
-  const [originWeightNetto, setOriginWeightNetto] = useState(0);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
 
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+  const fetchTransactionsFromAPI = async () => {
+    try {
+      const response = await TransactionAPI.getAll({});
+      return response.records;
+    } catch (error) {
+      // Tangani error jika permintaan gagal
+      console.error("Error fetching transactions:", error);
+      return [];
+    }
   };
 
   const handleSubmit = async () => {
@@ -63,17 +74,19 @@ const BackdateFormTBSEksternal = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      originSiteId,
+      originSiteName,
       customerName,
       customerId,
       originWeighInKg,
-      originWeighOutKg,
-      originWeighOutTimestamp,
       deliveryOrderNo,
       progressStatus,
-      qtyTbsDikirim,
-      qtyTbsDikembalikan,
       originWeighInTimestamp,
       transportVehicleSccModel,
+      currentSeal1,
+      currentSeal2,
+      currentSeal3,
+      currentSeal4,
     } = values;
 
     const tempTrans = {
@@ -86,59 +99,81 @@ const BackdateFormTBSEksternal = () => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      originSiteId,
+      originSiteName,
       customerName,
       customerId,
       originWeighInKg,
-      originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
-      qtyTbsDikirim,
-      qtyTbsDikembalikan,
       originWeighInTimestamp,
-      originWeighOutTimestamp,
       transportVehicleSccModel,
+      currentSeal1,
+      currentSeal2,
+      currentSeal3,
+      currentSeal4,
     };
 
     if (tempTrans.progressStatus === 0) {
-      tempTrans.progressStatus = 4;
+      tempTrans.progressStatus = 1;
       tempTrans.tType = "1";
+      tempTrans.originWeighInTimestamp = moment().toDate();
+      tempTrans.originWeighInKg = weighbridge.getWeight();
     }
 
     try {
-      const results = await TransactionAPI.create({ ...tempTrans });
+      const transactionsFromAPI = await fetchTransactionsFromAPI();
 
-      if (!results?.status) {
-        toast.error(`Error: ${results?.message}.`);
+      const duplicateEntryFromAPI = transactionsFromAPI.some(
+        (item) =>
+          item.transportVehiclePlateNo === transportVehiclePlateNo &&
+          [1].includes(item.progressStatus)
+      );
+
+      if (duplicateEntryFromAPI) {
+        toast.error(`${transportVehiclePlateNo} Truk Masih di Dalam`);
         return;
       }
 
-      toast.success(`BackdateForm Berhasil Disimpan.`);
+      if (tempTrans.progressStatus === 1) {
+        const results = await TransactionAPI.create({ ...tempTrans });
+
+        if (!results?.status) {
+          toast.error(`Error: ${results?.message}.`);
+          return;
+        }
+
+        toast.success(`Transaksi Timbang Masuk telah tersimpan.`);
+
+        return handleClose();
+      }
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
+      return;
     }
+
     setValues({ ...tempTrans });
   };
 
-  const [bonTripNo, setBonTripNo] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const validateForm = () => {
+    return (
+      values.bonTripNo &&
+      values.deliveryOrderNo &&
+      values.transportVehicleId &&
+      values.driverId &&
+      values.transporterId &&
+      values.productId &&
+      values.originSiteId &&
+      values.customerId &&
+      values.currentSeal1 &&
+      values.currentSeal2
+    );
+  };
+
+  const [originWeightNetto, setOriginWeightNetto] = useState(0);
 
   useEffect(() => {
-    const generateBonTripNo = () => {
-      const dateNow = moment(selectedDate).format("YYMMDD");
-      const timeNow = moment().format("HHmmss");
-      return `P049${dateNow}${timeNow}`;
-    };
-
-    const generatedBonTripNo = generateBonTripNo();
-    setBonTripNo(generatedBonTripNo);
-    setValues({
-      ...values,
-      bonTripNo: generatedBonTripNo,
-    });
-  }, [selectedDate]);
-
-  useEffect(() => {
-    // setProgressStatus(Config.PKS_PROGRESS_STATUS[values.progressStatus]);
+    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
 
     if (
       values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
@@ -154,39 +189,39 @@ const BackdateFormTBSEksternal = () => {
     }
   }, [values]);
 
-  const validateForm = () => {
-    return (
-      values.bonTripNo &&
-      values.deliveryOrderNo &&
-      values.transportVehicleId &&
-      values.driverId &&
-      values.transporterId &&
-      values.productId &&
-      values.customerId &&
-      values.originWeighInTimestamp &&
-      values.originWeighOutTimestamp &&
-      values.originWeighInKg > 0 &&
-      values.originWeighOutKg > 0
-    );
-  };
+  const [bonTripNo, setBonTripNo] = useState("");
+
+  useEffect(() => {
+    const generateBonTripNo = () => {
+      const dateNow = moment().format("YYMMDDHHmmss");
+      return `P041${dateNow}`;
+    };
+
+    const generatedBonTripNo = generateBonTripNo();
+    setBonTripNo(generatedBonTripNo);
+
+    // Set nilai Nomor BON Trip ke dalam form values
+    setValues({
+      ...values,
+      bonTripNo: generatedBonTripNo,
+    });
+  }, []);
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
+
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
+  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompany(res.data.company.records);
     });
-
     ProductAPI.getAll().then((res) => {
       setDtProduct(res.data.product.records);
     });
@@ -201,12 +236,15 @@ const BackdateFormTBSEksternal = () => {
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
     });
+    SiteAPI.getAll().then((res) => {
+      setDtSite(res.data.site.records);
+    });
   }, []);
 
   return (
     <>
       <PageHeader
-        title="Backdate Form PKS"
+        title="Transaksi PKS4"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
@@ -242,12 +280,12 @@ const BackdateFormTBSEksternal = () => {
               }
               fullWidth
               multiline
-              value="Backdate TBS Eksternal"
+              value={"Timbang Masuk"}
             />
           </Paper>
         </Grid>
         <Grid item xs={10.2}>
-          <Paper elevation={1} sx={{ p: 3, px: 5, mb: 3 }}>
+          <Paper elevation={1} sx={{ p: 3, px: 5 }}>
             <Box
               display="grid"
               gap="20px"
@@ -255,62 +293,32 @@ const BackdateFormTBSEksternal = () => {
             >
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
-                  type="date"
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    mb: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Tanggal BonTripNo
-                    </Typography>
-                  }
-                  value={moment(selectedDate).format("YYYY-MM-DD")}
-                  onChange={(e) => {
-                    const newDate = new Date(e.target.value);
-                    setSelectedDate(newDate);
-                  }}
-                  disabled={values.progressStatus === 4}
-                />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
+                  variant="outlined" // Variasi TextField dengan style "outlined"
+                  size="small" // Ukuran TextField kecil
+                  fullWidth // TextField akan memiliki lebar penuh
                   InputLabelProps={{
                     shrink: true,
                   }}
                   sx={{
-                    my: 2,
+                    mb: 2, // Margin bawah dengan jarak 2 unit
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
+                      borderRadius: "10px", // Set radius border untuk bagian input
                     },
                   }}
                   label={
                     <>
                       <Typography
                         sx={{
-                          bgcolor: "white",
-                          px: 1,
+                          bgcolor: "white", // Background color teks label
+                          px: 1, // Padding horizontal teks label 1 unit
                         }}
                       >
                         Nomor BON Trip
                       </Typography>
                     </>
                   }
-                  name="bonTripNo"
-                  value={values?.bonTripNo || ""}
+                  name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
+                  value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
                 />
                 <TextField
                   variant="outlined"
@@ -532,50 +540,159 @@ const BackdateFormTBSEksternal = () => {
                       />
                     )}
                   />
-                </FormControl>{" "}
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
-                    Customer
-                  </InputLabel>
-
-                  <Autocomplete
-                    id="select-label"
-                    options={dtCustomer}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      dtCustomer.find(
-                        (item) => item.id === values.customerId
-                      ) || null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        customerId: newValue ? newValue.id : "",
-                        customerName: newValue ? newValue.name : "",
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
-                        }}
-                        placeholder="-- Pilih Customer --"
-                        variant="outlined"
-                        size="small"
-                      />
-                    )}
-                  />
                 </FormControl>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="1.8fr 1fr"
+                  gap={2}
+                  alignItems="center"
+                >
+                  <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                    <InputLabel
+                      id="select-label"
+                      shrink
+                      sx={{ bgcolor: "white", px: 1 }}
+                    >
+                      Asal
+                    </InputLabel>
+
+                    <Autocomplete
+                      id="select-label"
+                      options={dtSite}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        dtSite.find(
+                          (item) => item.id === values.originSiteId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          originSiteId: newValue ? newValue.id : "",
+                          originSiteName: newValue ? newValue.name : "",
+                        }));
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                          }}
+                          placeholder="-- Pilih Asal --"
+                          variant="outlined"
+                          size="small"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <TextField
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "10px",
+                      },
+                    }}
+                    label={
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1,
+                        }}
+                      >
+                        Tangki
+                      </Typography>
+                    }
+                    //   name="originWeighInKg"
+                    value={0}
+                  />
+                </Box>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="1.8fr 1fr"
+                  gap={2}
+                  alignItems="center"
+                >
+                  <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                    <InputLabel
+                      id="select-label"
+                      shrink
+                      sx={{ bgcolor: "white", px: 1 }}
+                    >
+                      Customer
+                    </InputLabel>
+
+                    <Autocomplete
+                      id="select-label"
+                      options={dtCustomer}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        dtCustomer.find(
+                          (item) => item.id === values.customerId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          customerId: newValue ? newValue.id : "",
+                          customerName: newValue ? newValue.name : "",
+                        }));
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                          }}
+                          placeholder="-- Pilih Customer --"
+                          variant="outlined"
+                          size="small"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <TextField
+                    type="number"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{
+                      my: 2,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "10px",
+                      },
+                    }}
+                    label={
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1,
+                        }}
+                      >
+                        Tangki
+                      </Typography>
+                    }
+                    //   name="originWeighInKg"
+                    value={0}
+                  />
+                </Box>
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
+                <WeightWB />
+
                 <TextField
                   type="number"
                   variant="outlined"
@@ -592,9 +709,6 @@ const BackdateFormTBSEksternal = () => {
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
                   }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   label={
                     <Typography
                       sx={{
@@ -606,8 +720,7 @@ const BackdateFormTBSEksternal = () => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={values.originWeighInKg}
-                  onChange={handleChange}
+                  value={weighbridge.getWeight()}
                 />
                 <TextField
                   type="number"
@@ -624,9 +737,6 @@ const BackdateFormTBSEksternal = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -639,10 +749,8 @@ const BackdateFormTBSEksternal = () => {
                     </Typography>
                   }
                   name="originWeighOutKg"
-                  value={values.originWeighOutKg}
-                  onChange={handleChange}
+                  value={values.originWeighOutKg || 0}
                 />
-
                 <TextField
                   type="number"
                   variant="outlined"
@@ -658,9 +766,6 @@ const BackdateFormTBSEksternal = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
                   }}
                   label={
                     <Typography
@@ -691,9 +796,6 @@ const BackdateFormTBSEksternal = () => {
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
                   }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   label={
                     <Typography
                       sx={{
@@ -712,14 +814,14 @@ const BackdateFormTBSEksternal = () => {
                   variant="outlined"
                   size="small"
                   fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
                     },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
                   }}
                   InputProps={{
                     endAdornment: (
@@ -737,18 +839,23 @@ const BackdateFormTBSEksternal = () => {
                     </Typography>
                   }
                   name="weightNetto"
-                  value={originWeightNetto}
+                  value={originWeightNetto || 0}
                 />
                 <Button
                   variant="contained"
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!validateForm() || values.progressStatus === 4}
+                  disabled={
+                    (!validateForm() && !weighbridge.isStable()) ||
+                    weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+                      ? true
+                      : false
+                  }
                 >
                   Simpan
                 </Button>
-                <BonTripTBS
+                <BonTripPrint
                   dtTrans={{ ...values }}
                   isDisable={!(values.progressStatus === 4)}
                 />
@@ -764,10 +871,10 @@ const BackdateFormTBSEksternal = () => {
               </FormControl>
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
-                  type="datetime-local"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  placeholder="Segel Mainhole 1 *"
                   sx={{
                     mb: 2,
                     "& .MuiOutlinedInput-root": {
@@ -784,18 +891,18 @@ const BackdateFormTBSEksternal = () => {
                         px: 1,
                       }}
                     >
-                      Tanggal Weight IN
+                      Segel Mainhole 1 *
                     </Typography>
                   }
-                  name="originWeighInTimestamp"
-                  value={values.originWeighInTimestamp}
+                  name="currentSeal1"
+                  value={values.currentSeal1}
                   onChange={handleChange}
                 />
                 <TextField
-                  type="datetime-local"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  placeholder="Segel Valve 1 *"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
@@ -812,18 +919,18 @@ const BackdateFormTBSEksternal = () => {
                         px: 1,
                       }}
                     >
-                      Tanggal Weight OUT
+                      Segel Mainhole 1 *
                     </Typography>
                   }
-                  name="originWeighOutTimestamp"
-                  value={values.originWeighOutTimestamp}
+                  name="currentSeal2"
+                  value={values.currentSeal2}
                   onChange={handleChange}
                 />
                 <TextField
-                  type="number"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  placeholder="Segel Mainhole 2 "
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
@@ -833,11 +940,6 @@ const BackdateFormTBSEksternal = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">JJG</InputAdornment>
-                    ),
-                  }}
                   label={
                     <Typography
                       sx={{
@@ -845,18 +947,18 @@ const BackdateFormTBSEksternal = () => {
                         px: 1,
                       }}
                     >
-                      Qty TBS Dikirim
+                      Segel Mainhole 2
                     </Typography>
                   }
-                  name="qtyTbsDikirim"
-                  value={values.qtyTbsDikirim}
+                  name="currentSeal3"
+                  value={values.currentSeal3}
                   onChange={handleChange}
                 />
                 <TextField
-                  type="number"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  placeholder="Segel Valve 2"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
@@ -866,11 +968,6 @@ const BackdateFormTBSEksternal = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">JJG</InputAdornment>
-                    ),
-                  }}
                   label={
                     <Typography
                       sx={{
@@ -878,48 +975,51 @@ const BackdateFormTBSEksternal = () => {
                         px: 1,
                       }}
                     >
-                      Qty TBS Dikembalikan
+                      Segel Mainhole 2
                     </Typography>
                   }
-                  name="qtyTbsDikembalikan"
-                  value={values.qtyTbsDikembalikan}
+                  name="currentSeal4"
+                  value={values.currentSeal4}
                   onChange={handleChange}
                 />
-                <TextField
-                  type="number"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Potongan
-                    </Typography>
-                  }
-                  // name="potonganLain"
-                  value={values.potonganLain || 0}
-                  onChange={handleChange}
-                />
+
+                <FormControl>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Sertifikasi
+                  </FormLabel>
+                  <Autocomplete
+                    multiple
+                    options={["RSPO", "ISCC"]}
+                    getOptionLabel={(option) => option}
+                    value={values.sertifikasi}
+                    onChange={(event, newValue) => {
+                      setValues({
+                        ...values,
+                        sertifikasi: newValue,
+                      });
+                    }}
+                    name="Sertifikasi"
+                    isOptionEqualToValue={(option, value) => option === value}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" />
+                    )}
+                    renderValue={(selected) => selected.join(", ")}
+                  />
+                </FormControl>
               </FormControl>
             </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, mt: 1 }}>
+            <ManualEntryGrid tType={tType} />
           </Paper>
         </Grid>
       </Grid>
@@ -927,4 +1027,4 @@ const BackdateFormTBSEksternal = () => {
   );
 };
 
-export default BackdateFormTBSEksternal;
+export default PksManualCpoPkoTimbangMasuk;

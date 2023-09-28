@@ -18,15 +18,13 @@ const WeightWB = () => {
       <TextField
         type="number"
         fullWidth
-        size="small"
+        size="Large"
         InputProps={{
           endAdornment: <InputAdornment position="end">kg</InputAdornment>,
         }}
         sx={{
-          mb: 3.2,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-          },
+          mb: 2,
+        
         }}
         label={
           <>

@@ -134,7 +134,7 @@ const BonTripTBS = (props) => {
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">
-                        {dtTrans.transporterCompanyName}
+                        {dtTrans.customerName}
                       </td>
                     </tr>
                     <tr>

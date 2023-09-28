@@ -1,14 +1,22 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
-import { Grid, Paper, Button, Menu, MenuItem, Box } from "@mui/material";
-import moment from "moment";
+import {
+  Grid,
+  Paper,
+  Button,
+  Menu,
+  MenuItem,
+  Box,
+  IconButton,
+} from "@mui/material";
+import useSWR from "swr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import InputBase from "@mui/material/InputBase";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-
+import SearchIcon from "@mui/icons-material/Search";
 import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
 import * as TransactionAPI from "../../../api/transactionApi";
 import { Link } from "react-router-dom";
@@ -21,7 +29,7 @@ const tType = 1;
 
 const PksTransaction = () => {
   const { configs, wb, wbTransaction } = useSelector((state) => state.app);
-
+  const gridRef = useRef();
   // const [wsClient, setWsClient] = useState(null);
   const [wbms, setWbms] = useState({ weight: -1 });
 
@@ -105,22 +113,53 @@ const PksTransaction = () => {
     // };
   }, []);
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
   const handleFormClick = (event) => {
     setAnchorE2(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
     setAnchorE2(null);
   };
 
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetcher = () =>
+    TransactionAPI.searchMany({
+      where: {
+        tType,
+        progressStatus: { notIn: [4, 9, 14] },
+      },
+      orderBy: { bonTripNo: "desc" },
+    }).then((res) => res.records);
+
+  const { data: dtTransactions } = useSWR(
+    searchQuery ? `transaction?name_like=${searchQuery}` : "transaction",
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+
+  const updateGridData = useCallback((transaction) => {
+    if (gridRef.current && gridRef.current.api) {
+      gridRef.current.api.setRowData(transaction);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (dtTransactions) {
+      const filteredData = dtTransactions.filter((transaction) => {
+        const transactionsData = Object.values(transaction)
+          .join(" ")
+          .toLowerCase();
+        return transactionsData.includes(searchQuery.toLowerCase());
+      });
+      updateGridData(filteredData);
+    }
+  }, [searchQuery, dtTransactions, updateGridData]);
+
   return (
     <>
       <PageHeader
@@ -144,46 +183,22 @@ const PksTransaction = () => {
             </Grid>
             <Grid item xs={12}>
               <Box display="flex">
-                <Button
-                  variant="contained"
-                  onClick={handleClick}
-                  style={{
-                    width: "10vh",
-                    fontSize: "13px",
-                    borderRadius: "10%",
-                  }}
-                >
-                  New
-                </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  <MenuItem
+                <Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
                     component={Link}
-                    to="/pks-ManualEntry-TBSInternal-TimbangMasuk"
-                    onClick={handleClose}
+                    to="/pks-ManualEntry-TimbangMasuk"
+                    style={{
+                      width: "10vh",
+                      fontSize: "13px",
+                      borderRadius: "10%",
+                    }}
                   >
-                    TBS Internal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/pks-ManualEntry-TBSEksternal-TimbangMasuk"
-                    onClick={handleClose}
-                  >
-                    TBS Eksternal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/pks-ManualEntry-Others-TimbangMasuk"
-                    onClick={handleClose}
-                  >
-                    Lainnya
-                  </MenuItem>
-                </Menu>
-
-                <Box sx={{ ml: 1 }}>
+                    New
+                  </Button>
+                </Box>
+                <Box sx={{ pl: 1 }}>
                   <Button
                     variant="contained"
                     onClick={handleFormClick}
@@ -196,37 +211,60 @@ const PksTransaction = () => {
                     Form
                   </Button>
                   <Menu
-                  anchorEl={anchorE2}
-                  open={Boolean(anchorE2)}
-                  onClose={handleClose}
+                    anchorEl={anchorE2}
+                    open={Boolean(anchorE2)}
+                    onClose={handleClose}
+                  >
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormTBS"
+                      onClick={handleClose}
+                    >
+                      TBS
+                    </MenuItem>
+
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormOthers"
+                      onClick={handleClose}
+                    >
+                      Lainnya
+                    </MenuItem>
+                  </Menu>
+                </Box>
+                <Box
+                  display="flex"
+                  borderRadius="5px"
+                  ml="auto"
+                  border="solid grey 1px"
                 >
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormTBSInternal"
-                    onClick={handleClose}
+                  <InputBase
+                    sx={{ ml: 2, flex: 2, fontSize: "13px" }}
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+
+                  <IconButton
+                    type="button"
+                    sx={{ p: 1 }}
+                    onClick={() => {
+                      const filteredData = dtTransactions.filter(
+                        (transaction) =>
+                          transaction.name
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase())
+                      );
+                      gridRef.current.api.setRowData(filteredData);
+                    }}
                   >
-                    TBS Internal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormTBSEksternal"
-                    onClick={handleClose}
-                  >
-                    TBS Eksternal
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/backdateFormOthers"
-                    onClick={handleClose}
-                  >
-                    Lainnya
-                  </MenuItem>
-                </Menu>
+                    <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
+                  </IconButton>
                 </Box>
               </Box>
 
               <Paper sx={{ p: 2, mt: 1 }}>
-                <TransactionGrid tType={tType} />
+                <TransactionGrid gridRef={gridRef} fetcher={fetcher} />
               </Paper>
             </Grid>
           </Grid>

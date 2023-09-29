@@ -16,10 +16,11 @@ import { backdateTemplateNav } from "../_nav";
 import NavList from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
-const access = ['Base',...Object.keys(JSON.parse(localStorage.getItem("userAccess")))];
-NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
+const access = localStorage.getItem("userAccess")? ['Base',...Object.keys(JSON.parse(localStorage.getItem("userAccess")))] : null;
+if(access)  NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
+
   const { backDatedTemplate } = useMatrix();
   const [tempAdded, setTempAdded] = useState(false);
   const navList = NavList.filter(item => access.includes(item.resource));

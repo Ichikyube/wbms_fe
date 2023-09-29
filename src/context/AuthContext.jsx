@@ -28,6 +28,7 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }) {
+  const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useSelector((state) => state.app);
   const token = localStorage.getItem("wbms_at");
   const isAuth = userInfo && token;  
@@ -44,6 +45,7 @@ export function AuthProvider({ children }) {
   const route = location.pathname;
 
   const login = async (values) => {
+
     try {
       const response = await signin(values).unwrap();
       const { status, message, logs, data } = response || {};
@@ -53,8 +55,9 @@ export function AuthProvider({ children }) {
         await toast.promise(Promise.resolve(), { error: message });
         return;
       }
+      await dispatch(fetchConfigsData());
+      setIsLoading(true);
       (async () => {
-        await dispatch(fetchConfigsData());
         await getEnvInit().then((result) => {
           dispatch(setConfigs({ ...result }));
         })})();
@@ -65,7 +68,7 @@ export function AuthProvider({ children }) {
       const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
       document.cookie = "rt=" + rt + ";SameSite=Lax";
-
+      setIsLoading(false);
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
@@ -126,6 +129,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ isAuth, login, logout }}>
+      {isLoading && (<div>Loading...</div>)}
       {children}
     </AuthContext.Provider>
   );

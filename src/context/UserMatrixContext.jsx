@@ -17,29 +17,15 @@ export const useMatrix = () => {
   return useContext(UserMatrixContext);
 };
 
-// const useConditionalState = (initialValue, condition, updateValue) => {
-
-
-//   useEffect(() => {
-//     if (condition && currentTime >= condition.start) {
-//       setState(updateValue);
-//       // if (currentTime >= WB4.end) backDatedTemplate = WB4.defaultValue;
-//       // edit config start:null, end:null, status:disabled, 
-//     }
-//   }, [condition, currentTime, updateValue]);
-
-//   return [state, setState];
-// };
-
 //apabila user yang melakukan request, dan masuk waktu yg diskejulkan maka
 const UserMatrixContextProvider = ({ children }) => {
+  const tempConfigs = useSelector((state) => state.tempConfigs);
   const dispatch = useDispatch();
-  const userInfo = useSelector((state) => state.app);
   const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
   const [currentMinute, setCurrentMinute] = useState(null);
 
-  const tempConfigs = useSelector((state) => state.tempConfigs);
+
   const configObject = Object.assign({}, ...tempConfigs?.tempConfigDt);
   const {
     manualEntryWB: WB2,
@@ -79,19 +65,24 @@ const UserMatrixContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (backDatedForm && currentTime >= WB5.start)
+    if (backDatedForm && currentTime >= WB5?.start)
     setBackDatedForm(WB5.tempValue);
-    // if (currentTime >= WB4.end) backDatedTemplate = WB4.defaultValue;
+    if (currentTime >= WB4?.end) setBackDatedForm(WB4.defaultValue);
   }, [backDatedForm, currentTime, WB5]);
   useEffect(() => {
-    if (backDatedTemplate && currentTime >= WB4.start)
+    if (backDatedTemplate && currentTime >= WB4?.start)
       setBackdatedTemplate(WB4.tempValue);
-    // if (currentTime >= WB4.end) backDatedTemplate = WB4.defaultValue;
+    if (currentTime >= WB4?.end) setBackdatedTemplate(WB4.defaultValue);
   }, [backDatedTemplate, currentTime, WB4]);
   useEffect(() => {
-    if (manualEntryWB && currentTime >= WB2.start)
+    if (editTransaction && currentTime >= WB3?.start)
+    seteditTransaction(WB3.tempValue);
+    if (currentTime >= WB4?.end) seteditTransaction(WB4.defaultValue);
+  }, [editTransaction, currentTime, WB3]);
+  useEffect(() => {
+    if (manualEntryWB && currentTime >= WB2?.start)
     setManualEntryWB(WB2.tempValue);
-    // if (currentTime >= WB4.end) backDatedTemplate = WB4.defaultValue;
+    if (currentTime >= WB4?.end) setManualEntryWB(WB4?.defaultValue);
   }, [backDatedTemplate, currentTime, WB2]);
   return (
     <UserMatrixContext.Provider

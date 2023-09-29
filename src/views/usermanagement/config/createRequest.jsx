@@ -59,7 +59,6 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       toast.success("Data Berhasil Dibuat");
       const notificationData = {
         message: `${userInfo.name} melakukan permintaan untuk ${dtConfig.name}, dan sedang menunggu persetujuan anda`,
-        isRead: false,
         target: Object.keys(groupMap).filter((id => groupMap[id] === 'PJ1')),
       };
       dispatch(createNotificationAsync(notificationData))

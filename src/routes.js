@@ -209,13 +209,13 @@ export const protectedRoute = [
     path: "/userslist",
     name: "Users List",
     element: UsersList,
-    resource: "User",
+    resource: "user",
   },
   {
     path: "/roleslist",
     name: "Roles List",
     element: RolesList,
-    resource: "User",
+    resource: "user",
   },
 ];
 

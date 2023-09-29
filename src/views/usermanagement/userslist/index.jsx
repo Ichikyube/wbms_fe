@@ -24,13 +24,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import {
-  orange,
-  blue,
-  red,
-  indigo,
-  lightBlue,
-} from "@mui/material/colors";
+import { orange, blue, red, indigo, lightBlue } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -69,7 +63,7 @@ const UsersList = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const userInfo = useSelector((state) => state.app);
+  const { userInfo } = useSelector((state) => state.app);
   const selectionMode = useSelector((state) => state.selectionMode);
   const groupMap = useSelector((state) => state.groupMapping);
   const [saveGroupMapping] = useSaveGroupMappingMutation();
@@ -304,7 +298,7 @@ const UsersList = () => {
     },
     {
       headerName: "Role",
-      field: "role",
+      field: "userRole.name",
       filter: true,
       sortable: true,
       hide: false,
@@ -319,6 +313,7 @@ const UsersList = () => {
       flex: 3,
     },
   ];
+  console.log(userInfo);
   const [columnDefs] = useState(
     userInfo?.role === "adminIT" || userInfo?.role === "admin_HC"
       ? [

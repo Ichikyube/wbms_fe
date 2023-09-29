@@ -81,7 +81,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       transporterCompanyName,
       driverId,
       driverName,
-      transportVehicleId,
+      // transportVehicleId,
       transportVehiclePlateNo,
       originSiteId,
       originSiteName,
@@ -93,6 +93,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       originWeighInTimestamp,
       transportVehicleSccModel,
       qtyTbs,
+      SPBTS,
     } = values;
 
     const tempTrans = {
@@ -103,7 +104,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       transporterCompanyName,
       driverId,
       driverName,
-      transportVehicleId,
+      // transportVehicleId,
       transportVehiclePlateNo,
       originSiteId,
       originSiteName,
@@ -115,6 +116,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       originWeighInTimestamp,
       transportVehicleSccModel,
       qtyTbs,
+      SPBTS,
     };
 
     if (tempTrans.progressStatus === 0) {
@@ -287,8 +289,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -316,8 +317,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -445,8 +445,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -577,8 +576,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Qty TBS
               </Typography>
             </>
@@ -608,14 +606,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
-                SPTBS
+                }}>
+                SPBTS
               </Typography>
             </>
           }
-          name="sptbs"
-          value={values.sptbs}
+          name="SPBTS"
+          value={values.SPBTS}
           onChange={handleChange}
         />
       </FormControl>
@@ -625,13 +622,11 @@ const PksManualTBSinternalTimbangMasuk = ({
           display="grid"
           gridTemplateColumns="4fr 2fr"
           gap={2}
-          alignItems="center"
-        >
+          alignItems="center">
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -665,8 +660,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Mentah
                 </Typography>
               }
@@ -703,8 +697,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -738,8 +731,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Lewat Matang
                 </Typography>
               }
@@ -776,8 +768,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -811,8 +802,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Panjang
                 </Typography>
               }
@@ -849,8 +839,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -884,8 +873,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Kosong
                 </Typography>
               }
@@ -922,8 +910,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -957,8 +944,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Sampah
                 </Typography>
               }
@@ -995,8 +981,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1030,8 +1015,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Air
                 </Typography>
               }
@@ -1068,8 +1052,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1103,8 +1086,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Parteno
                 </Typography>
               }
@@ -1141,8 +1123,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1176,8 +1157,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Brondolan
                 </Typography>
               }
@@ -1214,8 +1194,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1249,8 +1228,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1287,8 +1265,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1322,8 +1299,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Lainnya
                 </Typography>
               }
@@ -1377,8 +1353,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL Potongan
             </Typography>
           }
@@ -1408,8 +1383,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -1435,8 +1409,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -1462,8 +1435,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1489,8 +1461,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -1519,8 +1490,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }

@@ -33,6 +33,7 @@ api.interceptors.response?.use(
       const response = await api.post("/auth/refresh", rt, {
         withCredentials: true,
       });
+      console.log(response?.response.status)
       if (response?.status === 200) {
         const at = response?.data?.data.tokens["access_token"];
         localStorage.setItem("wbms_at", at);
@@ -44,9 +45,8 @@ api.interceptors.response?.use(
         api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
         config.headers.Authorization = `Bearer ${at}`;
         return axios(config);
-      } else if (response?.logs.error.status === 403 || localStorage.getItem("wbms_at")) {
+      } else if (response?.response.status === 401 || localStorage.getItem("wbms_at")) {
         localStorage.clear();
-        window.location.reload();
       }
     } 
 

@@ -255,8 +255,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -284,8 +283,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -413,8 +411,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -580,8 +577,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Qty TBS
               </Typography>
             </>
@@ -611,14 +607,13 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPTBS
               </Typography>
             </>
           }
-          name="sptbs"
-          value={values.sptbs}
+          name="SPBTS"
+          value={values.SPBTS}
           onChange={handleChange}
         />
       </FormControl>
@@ -628,13 +623,11 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           display="grid"
           gridTemplateColumns="4fr 2fr"
           gap={2}
-          alignItems="center"
-        >
+          alignItems="center">
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -668,8 +661,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Mentah
                 </Typography>
               }
@@ -706,8 +698,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -741,8 +732,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Lewat Matang
                 </Typography>
               }
@@ -779,8 +769,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -814,8 +803,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Panjang
                 </Typography>
               }
@@ -852,8 +840,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -887,8 +874,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Kosong
                 </Typography>
               }
@@ -925,8 +911,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -960,8 +945,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Sampah
                 </Typography>
               }
@@ -998,8 +982,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1033,8 +1016,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Air
                 </Typography>
               }
@@ -1071,8 +1053,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1106,8 +1087,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Parteno
                 </Typography>
               }
@@ -1144,8 +1124,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1179,8 +1158,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Brondolan
                 </Typography>
               }
@@ -1217,8 +1195,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1252,8 +1229,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1290,8 +1266,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1325,8 +1300,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Lainnya
                 </Typography>
               }
@@ -1380,8 +1354,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL Potongan
             </Typography>
           }
@@ -1411,8 +1384,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -1438,8 +1410,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -1465,8 +1436,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1492,8 +1462,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -1522,8 +1491,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -1542,8 +1510,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
               ? true
               : false
-          }
-        >
+          }>
           Simpan
         </Button>
         <BonTripTBS
@@ -1554,8 +1521,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}
-        >
+          onClick={handleClose}>
           Tutup
         </Button>
       </FormControl>

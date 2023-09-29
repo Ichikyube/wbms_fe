@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useSelector((state) => state.app);
   const token = localStorage.getItem("wbms_at");
-  const isAuth = userInfo && token;  
+  const isAuth = userInfo && token;
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -45,7 +45,6 @@ export function AuthProvider({ children }) {
   const route = location.pathname;
 
   const login = async (values) => {
-
     try {
       const response = await signin(values).unwrap();
       const { status, message, logs, data } = response || {};
@@ -55,20 +54,24 @@ export function AuthProvider({ children }) {
         await toast.promise(Promise.resolve(), { error: message });
         return;
       }
-      await dispatch(fetchConfigsData());
       setIsLoading(true);
+
+
       (async () => {
+        await dispatch(fetchConfigsData());
         await getEnvInit().then((result) => {
           dispatch(setConfigs({ ...result }));
-        })})();
-        dispatch(setCredentials({ ...response?.data.user }));
+        });
+      })();
+      setIsLoading(false);
+      dispatch(setCredentials({ ...response?.data.user }));
       // Get the cookie string from the response headers
       // console.log("response from signin:", response);
       const at = data.tokens?.access_token;
       const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
       document.cookie = "rt=" + rt + ";SameSite=Lax";
-      setIsLoading(false);
+      
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
@@ -129,8 +132,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ isAuth, login, logout }}>
-      {isLoading && (<div>Loading...</div>)}
-      {children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }

@@ -30,6 +30,7 @@ api.interceptors.response?.use(
     if (error.response?.status === 401 && !refresh) {
       refresh = true;
       const rt = getCookie("rt");
+      if(!rt) localStorage.clear()
       try {
         const response = await api.post("/auth/refresh", rt, {
           withCredentials: true,

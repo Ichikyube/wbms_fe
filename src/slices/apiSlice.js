@@ -19,13 +19,16 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   if (result?.error?.status === 401) {
     console.log("Sending refresh token.");
     // send refresh token to get new access token
+    const rt = getCookie("rt");
+    if(rt) localStorage.clear()
     try {
       const refreshResult = await baseQuery(
         {
           url: "/auth/refresh",
           method: "POST",
           mode: "cors",
-          credentials: "include"
+          credentials: "include",
+          body: rt
         },
         api,
         extraOptions

@@ -7,6 +7,7 @@ import selectionModeReducer from "./slices/selectionModeSlice";
 import groupMappingReducer from "./slices/groupMappingSlice";
 import tempConfigReducer from "./slices/tempConfigSlice";
 import notificationReducer from "./slices/notificationSlice";
+
 const store = configureStore({
   reducer: {
     app: appReducer,

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchConfigsData } from "../slices/tempConfigSlice";
+import { useFetchConfigsDataQuery } from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";
 import {
   setCredentials,
@@ -26,9 +26,8 @@ const AuthContext = createContext({
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
 export function AuthProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const { data, isLoading } = useFetchConfigsDataQuery();
   const { userInfo } = useSelector((state) => state.app);
   const token = localStorage.getItem("wbms_at");
   const isAuth = userInfo && token;
@@ -41,18 +40,8 @@ export function AuthProvider({ children }) {
   const dispatch = useDispatch();
   const [signin] = useSigninMutation();
   const [signout] = useSignoutMutation();
-  useEffect(() => {
-    if(isLoading)
-      (async () => {
-        await dispatch(fetchConfigsData());
-        await getEnvInit().then((result) => {
-          dispatch(setConfigs({ ...result }));
-        });
-      })();
-  }, [isLoading, dispatch])
-  
+
   const route = location.pathname;
-  console.log(isLoading)
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
@@ -63,9 +52,13 @@ export function AuthProvider({ children }) {
         await toast.promise(Promise.resolve(), { error: message });
         return;
       }
-      setIsLoading(true);
+
+      (async () => {
+        await getEnvInit().then((result) => {
+          dispatch(setConfigs({ ...result }));
+        });
+      })();
       dispatch(setCredentials({ ...response?.data.user }));
-      // Get the cookie string from the response headers
       // console.log("response from signin:", response);
       const at = data.tokens?.access_token;
       const rt = data.tokens?.refresh_token;
@@ -73,7 +66,6 @@ export function AuthProvider({ children }) {
       document.cookie = "rt=" + rt + ";SameSite=Lax";
 
       navigate(from, { replace: true });
-      setIsLoading(false);
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
       if (!err?.response) {

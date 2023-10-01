@@ -111,6 +111,14 @@ export const fetchActiveConfigsData = createAsyncThunk(
     return configs;
   }
 );
+export const requestApproved = createAsyncThunk('config/requestEnded', async (id, data) => {
+  const response = await api.post(`${id}/approve`, { data });
+  return response.data;
+});
+export const requestEnded = createAsyncThunk('config/requestEnded', async (id) => {
+  const response = await api.post(`${id}/requestEnded`);
+  return response.data;
+});
 
 export const { setTempConfigs, clearTempConfigs } = tempConfigSlice.actions;
 export default tempConfigSlice.reducer;

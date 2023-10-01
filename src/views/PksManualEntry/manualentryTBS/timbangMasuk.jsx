@@ -267,6 +267,87 @@ const PksManualTBSinternalTimbangMasuk = ({
     });
   }, []);
 
+  // BUAH MENTAH
+
+  const [persenBM, setPersenBM] = useState(0);
+
+  const handlePersenBM = (event) => {
+    const value = event.target.value;
+    // Memastikan nilai yang dimasukkan adalah angka
+    if (!isNaN(value)) {
+      setPersenBM(value);
+    }
+  };
+
+  const BMkg = () => {
+    const result = (persenBM * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // BUAH LEWAT MATANG
+
+  const [persenBLM, setPersenBLM] = useState(0);
+
+  const handlePersenBLM = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenBLM(value);
+    }
+  };
+
+  const BLMkg = () => {
+    const result = (persenBLM * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // TANGKAI PANJANG
+
+  const [persenTP, setPersenTP] = useState(0);
+
+  const handlePersenTP = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenTP(value);
+    }
+  };
+
+  const TPkg = () => {
+    const result = (persenTP * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // AIR
+
+  const [persenAir, setPersenAir] = useState(0);
+
+  const handlePersenAir = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenAir(value);
+    }
+  };
+
+  const Airkg = () => {
+    const result = (persenAir * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // SAMPAH
+
+  const [persenSMPH, setPersenSMPH] = useState(0);
+
+  const handlePersenSMPH = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenSMPH(value);
+    }
+  };
+
+  const SMPHkg = () => {
+    const result = (persenSMPH * values.qtyTbs) / 100;
+    return result;
+  };
+
   return (
     <>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -289,7 +370,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}>
+                }}
+              >
                 Nomor BON Trip
               </Typography>
             </>
@@ -317,7 +399,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 No. DO/NPB
               </Typography>
             </>
@@ -445,7 +528,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}>
+                }}
+              >
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -576,7 +660,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 Qty TBS
               </Typography>
             </>
@@ -584,7 +669,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           name="qtyTbs"
           value={values.qtyTbs}
           onChange={handleChange}
-        />{" "}
+        />
+        <hr />
         <TextField
           variant="outlined"
           size="small"
@@ -606,7 +692,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 SPBTS
               </Typography>
             </>
@@ -620,13 +707,15 @@ const PksManualTBSinternalTimbangMasuk = ({
       <FormControl sx={{ gridColumn: "span 4" }}>
         <Box
           display="grid"
-          gridTemplateColumns="4fr 2fr"
+          gridTemplateColumns="4fr 3fr"
           gap={2}
-          alignItems="center">
+          alignItems="center"
+        >
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -660,12 +749,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Buah Mentah
                 </Typography>
               }
-              // name="originWeighInKg"
-              // value={0}
+              value={persenBM}
+              onChange={handlePersenBM}
             />
           </FormControl>
           <TextField
@@ -691,13 +781,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={BMkg()}
           />
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -731,12 +821,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Buah Lewat Matang
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={persenBLM}
+              onChange={handlePersenBLM}
             />
           </FormControl>
           <TextField
@@ -762,13 +853,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={BLMkg()}
           />
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -802,12 +893,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Tangkai Panjang
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={persenTP}
+              onChange={handlePersenTP}
             />
           </FormControl>
           <TextField
@@ -833,13 +925,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={TPkg()}
           />
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -873,7 +965,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Tangkai Kosong
                 </Typography>
               }
@@ -910,7 +1003,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -944,12 +1038,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Sampah
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={persenSMPH}
+              onChange={handlePersenSMPH}
             />
           </FormControl>
           <TextField
@@ -975,13 +1070,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={SMPHkg()}
           />
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1015,12 +1110,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Air
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={persenAir}
+              onChange={handlePersenAir}
             />
           </FormControl>
           <TextField
@@ -1046,13 +1142,13 @@ const PksManualTBSinternalTimbangMasuk = ({
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={Airkg()}
           />
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1086,7 +1182,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Parteno
                 </Typography>
               }
@@ -1123,7 +1220,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1157,7 +1255,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Brondolan
                 </Typography>
               }
@@ -1194,7 +1293,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1228,7 +1328,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1265,7 +1366,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1299,7 +1401,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Pot. Lainnya
                 </Typography>
               }
@@ -1353,7 +1456,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL Potongan
             </Typography>
           }
@@ -1383,7 +1487,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight IN
             </Typography>
           }
@@ -1409,7 +1514,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight OUT
             </Typography>
           }
@@ -1435,7 +1541,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1461,7 +1568,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Lainnya
             </Typography>
           }
@@ -1490,7 +1598,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL
             </Typography>
           }

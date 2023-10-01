@@ -30,25 +30,26 @@ api.interceptors.response?.use(
     if (error.response?.status === 401 && !refresh) {
       refresh = true;
       const rt = getCookie("rt");
-      const response = await api.post("/auth/refresh", rt, {
-        withCredentials: true,
-      });
-      console.log(response?.response.status)
-      if (response?.status === 200) {
-        const at = response?.data?.data.tokens["access_token"];
-        localStorage.setItem("wbms_at", at);
-        document.cookie =
-          "rt=" +
-          response?.data?.data.tokens["refresh_token"] +
-          "; SameSite=Lax";
-        const config = error.config;
-        api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
-        config.headers.Authorization = `Bearer ${at}`;
-        return axios(config);
-      } else if (response?.response.status === 401 || localStorage.getItem("wbms_at")) {
-        localStorage.clear();
+      try {
+        const response = await api.post("/auth/refresh", rt, {
+          withCredentials: true,
+        });
+        if (response?.status === 200) {
+          const at = response?.data?.data.tokens["access_token"];
+          localStorage.setItem("wbms_at", at);
+          document.cookie =
+            "rt=" +
+            response?.data?.data.tokens["refresh_token"] +
+            "; SameSite=Lax";
+          const config = error.config;
+          api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
+          config.headers.Authorization = `Bearer ${at}`;
+          return axios(config);
+        } 
+      } catch (_error) {
+        return Promise.reject(_error);
       }
-    } 
+    }
 
     refresh = false;
     return error;

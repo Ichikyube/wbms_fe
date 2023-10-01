@@ -41,9 +41,18 @@ export function AuthProvider({ children }) {
   const dispatch = useDispatch();
   const [signin] = useSigninMutation();
   const [signout] = useSignoutMutation();
-
+  useEffect(() => {
+    if(isLoading)
+      (async () => {
+        await dispatch(fetchConfigsData());
+        await getEnvInit().then((result) => {
+          dispatch(setConfigs({ ...result }));
+        });
+      })();
+  }, [isLoading, dispatch])
+  
   const route = location.pathname;
-
+  console.log(isLoading)
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
@@ -55,15 +64,6 @@ export function AuthProvider({ children }) {
         return;
       }
       setIsLoading(true);
-
-
-      (async () => {
-        await dispatch(fetchConfigsData());
-        await getEnvInit().then((result) => {
-          dispatch(setConfigs({ ...result }));
-        });
-      })();
-      setIsLoading(false);
       dispatch(setCredentials({ ...response?.data.user }));
       // Get the cookie string from the response headers
       // console.log("response from signin:", response);
@@ -71,8 +71,9 @@ export function AuthProvider({ children }) {
       const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
       document.cookie = "rt=" + rt + ";SameSite=Lax";
-      
+
       navigate(from, { replace: true });
+      setIsLoading(false);
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
       if (!err?.response) {

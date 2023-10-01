@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchActiveConfigsData } from "../slices/tempConfigSlice";
+import { fetchActiveConfigsData, requestEnded } from "../slices/tempConfigSlice";
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import { initialTempConfigState } from "../slices/tempConfigSlice";
 const UserMatrixContext = createContext({
@@ -26,7 +26,20 @@ const UserMatrixContextProvider = ({ children }) => {
   const [currentMinute, setCurrentMinute] = useState(null);
 
 
-  const configObject = Object.assign({}, ...tempConfigs?.tempConfigDt);
+  let configObject = {};
+
+  if (tempConfigs && tempConfigs.tempConfigDt) {
+    if (Array.isArray(tempConfigs.tempConfigDt)) {
+      // If it's an array, you can proceed to merge the objects
+      configObject = Object.assign({}, ...tempConfigs.tempConfigDt);
+    } else {
+      console.error('tempConfigDt is not an array');
+      // Handle the case where tempConfigDt is not an array
+    }
+  } else {
+    console.error('tempConfigDt is not available');
+    // Handle the case where tempConfigDt is not available
+  }
   const {
     manualEntryWB: WB2,
     editTransaction: WB3,
@@ -67,22 +80,34 @@ const UserMatrixContextProvider = ({ children }) => {
   useEffect(() => {
     if (backDatedForm && currentTime >= WB5?.start)
     setBackDatedForm(WB5.tempValue);
-    if (currentTime >= WB4?.end) setBackDatedForm(WB4.defaultValue);
+    if (currentTime >= WB4?.end) {
+      setBackDatedForm(WB4.defaultValue);
+      dispatch(requestEnded(5))
+    }
   }, [backDatedForm, currentTime, WB5]);
   useEffect(() => {
     if (backDatedTemplate && currentTime >= WB4?.start)
       setBackdatedTemplate(WB4.tempValue);
-    if (currentTime >= WB4?.end) setBackdatedTemplate(WB4.defaultValue);
+    if (currentTime >= WB4?.end) {
+      setBackdatedTemplate(WB4.defaultValue);
+      dispatch(requestEnded(4))
+    }
   }, [backDatedTemplate, currentTime, WB4]);
   useEffect(() => {
     if (editTransaction && currentTime >= WB3?.start)
     seteditTransaction(WB3.tempValue);
-    if (currentTime >= WB4?.end) seteditTransaction(WB4.defaultValue);
+    if (currentTime >= WB4?.end) {
+      seteditTransaction(WB4.defaultValue);
+      dispatch(requestEnded(6));
+    };
   }, [editTransaction, currentTime, WB3]);
   useEffect(() => {
     if (manualEntryWB && currentTime >= WB2?.start)
     setManualEntryWB(WB2.tempValue);
-    if (currentTime >= WB4?.end) setManualEntryWB(WB4?.defaultValue);
+    if (currentTime >= WB4?.end) {
+      setManualEntryWB(WB4?.defaultValue);
+      dispatch(requestEnded(3));
+    }
   }, [backDatedTemplate, currentTime, WB2]);
   return (
     <UserMatrixContext.Provider

@@ -7,9 +7,8 @@ const baseQuery = fetchBaseQuery({
   baseUrl: `${REACT_APP_WBMS_BACKEND_API_URL}`,
   prepareHeaders: (headers, { getState }) => {
     const token = localStorage.getItem("wbms_at"); //api.getState().auth.token;
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
+    if(!token)  localStorage.clear();
+    headers.set("Authorization", `Bearer ${token}`);
     return headers;
   },
 });

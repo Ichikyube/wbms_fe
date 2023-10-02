@@ -56,7 +56,6 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
       query: () => "/configs",
       transformResponse: (response) => {
         const res = response.data;
-        console.log(res)
         const configItemsData = res.config.records;
         const configItems = configItemsData.map(
           ({ name, defaultVal, type }) => ({

@@ -19,6 +19,9 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
+  userAccess: localStorage.getItem("userAccess")
+    ? JSON.parse(localStorage.getItem("userAccess"))
+    : null,
   sidebar: localStorage.getItem("sidebar")
     ? JSON.parse(localStorage.getItem("sidebar"))
     : { show: true, unfoldable: false },
@@ -61,20 +64,23 @@ export const appSlice = createSlice({
       localStorage.removeItem("configs");
     },
     setCredentials: (state, action) => {
-      const { access, ...rest} = action.payload;
+      const { access, ...rest } = action.payload;
       state.userInfo = rest;
       const userAccess = access.reduce((result, item) => {
         const resource = item.resource;
-        const actions = item.grants.map(grant => grant.action);
+        const actions = item.grants.map((grant) => grant.action);
         result[resource] = actions;
         return result;
       }, {});
+      state.userAccess = userAccess;
       localStorage.setItem("userAccess", JSON.stringify(userAccess));
       localStorage.setItem("userInfo", JSON.stringify(rest));
     },
     clearCredentials: (state, action) => {
       state.userInfo = null;
+      state.userAccess = null;
       localStorage.removeItem("userInfo");
+      localStorage.removeItem("userAccess");
     },
     setSidebar: (state, action) => {
       state.sidebar = { ...state.sidebar, ...action.payload };

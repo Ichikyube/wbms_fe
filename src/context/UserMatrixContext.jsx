@@ -26,21 +26,11 @@ const UserMatrixContextProvider = ({ children }) => {
   const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
   const [currentMinute, setCurrentMinute] = useState(null);
-
   let configObject = {};
-
-  if (tempConfigs && tempConfigs.tempConfigDt) {
-    if (Array.isArray(tempConfigs.tempConfigDt)) {
-      // If it's an array, you can proceed to merge the objects
-      configObject = Object.assign({}, ...tempConfigs.tempConfigDt);
-    } else {
-      console.error('tempConfigDt is not an array');
-      // Handle the case where tempConfigDt is not an array
-    }
-  } else {
-    console.error('tempConfigDt is not available');
-    // Handle the case where tempConfigDt is not available
+  if (activeConfigsData) {
+    configObject = Object.assign({}, ...activeConfigsData);
   }
+  
   const {
     manualEntryWB: WB2,
     editTransaction: WB3,
@@ -58,7 +48,6 @@ const UserMatrixContextProvider = ({ children }) => {
 
   const configCallback = useCallback(() => {
     dispatch(fetchGroupMappingData());
-    // dispatch(fetchActiveConfigsData());
   }, [dispatch]);
 
   useEffect(() => {
@@ -118,7 +107,7 @@ const UserMatrixContextProvider = ({ children }) => {
         backDatedTemplate,
         backDatedForm,
       }}>
-      {children}
+      {!isLoading && children}
     </UserMatrixContext.Provider>
   );
 };

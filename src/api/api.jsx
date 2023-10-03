@@ -22,15 +22,15 @@ api.interceptors.request.use(
   }
 );
 // Add an interceptor to refresh token when it's expired
-api.interceptors.response?.use(
+api.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
-    if (error.response?.status === 401 && !refresh) {
+    if (error.response.status === 401 && !refresh) {
       refresh = true;
       const rt = getCookie("rt");
-      if(!rt) localStorage.clear()
+      if (!rt) localStorage.clear();
       try {
         const response = await api.post("/auth/refresh", rt, {
           withCredentials: true,
@@ -46,7 +46,7 @@ api.interceptors.response?.use(
           api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
           config.headers.Authorization = `Bearer ${at}`;
           return axios(config);
-        } 
+        }
       } catch (_error) {
         return Promise.reject(_error);
       }
@@ -68,3 +68,14 @@ export function getCookie(name) {
   return null;
 }
 export default api;
+
+/** 
+ * api: This is probably an instance of createApi from Redux Toolkit Query. 
+ * It's a pre-configured set of options and hooks for making API calls.
+ * */ 
+/**
+ * 
+ * extraOptions: These are additional options that you might want to pass to customize the behavior of the request. 
+ * These could include things like headers, authentication tokens,
+ *  or any other options supported by the baseQuery.
+ */

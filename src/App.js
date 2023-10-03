@@ -28,21 +28,24 @@ const App = () => {
             <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
             <Route path="/" element={<LayoutGuest />}>
-            <Route
-              index={true}
-              exact
-              path="/"
-              name="Home Page"
-              element={<Home />}
-            />
-            <Route exact path="/signin" name="Sign In Page" element={<SignIn />} />
+              <Route
+                index={true}
+                exact
+                path="/"
+                name="Home Page"
+                element={<Home />}
+              />
+              <Route
+                exact
+                path="/signin"
+                name="Sign In Page"
+                element={<SignIn />}
+              />
             </Route>
 
             <Route exact path="*" name="WBMS" element={<DefaultLayout />} />
           </Routes>
         </AuthProvider>
-        {/* <div>Weight on weighbridge: {weighbridge.getWeight()}</div>
-        <div>isStable on weighbridge: {weighbridge.isStable().toString()}</div> */}
       </Suspense>
     </HashRouter>
   );

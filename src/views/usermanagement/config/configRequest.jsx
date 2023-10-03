@@ -150,10 +150,10 @@ const ConfigRequest = () => {
       }
       if (data.approval.length < data.config.lvlOfApprvl) {
         const notificationData = {
-          message: "Seseorang menunggu persetujuan anda",
-          isRead: false,
-          target: Object.keys(groupMap).filter((id) => groupMap[id] === "PJ1"),
+          message: `${userInfo.name} melakukan permintaan untuk ${data.config.name}, dan sedang menunggu persetujuan anda`,
+          target: Object.keys(groupMap).filter((id => groupMap[id] === lvl[ data.approval.length + 1])),
         };
+
         dispatch(createNotificationAsync(notificationData))
           .unwrap()
           .then((createdNotification) => {

@@ -36,7 +36,7 @@ const PksTransaction = () => {
 
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
-  const { backDatedForm } = useSelector((state) => state.tempConfigs);
+  const { backDatedForm } = useMatrix();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

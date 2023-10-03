@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import socketIOClient from "socket.io-client";
 import {
   Button,
   Grid,
@@ -14,7 +15,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import moment from "moment";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm } from "../../../utils/useForm";
 import WeightWB from "../../../components/weightWB";
@@ -28,19 +29,38 @@ import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
-const tType = 1;
 
+
+const tType = 1;
+const socket = socketIOClient("http://localhost:3000");
 const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
-
-  const dispatch = useDispatch();
-
+  const [, trxGradingPencentage, ...rest] = useSelector(
+    (state) => state.tempConfigs
+  );
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
+  const gradingPercentage = JSON.parse(Object.values(trxGradingPencentage));
+  const {
+    trxGradingAIRPERSEN,
+    trxGradingTPPesen,
+    trxGradingSAMPAHPERSEN,
+    trxGradingBLMPERSEN,
+    trxGradingBMPERSEN,
+    trxGradingLAINNYAPERSEN,
+    trxGradingWAJIB,
+  } = gradingPercentage;
+
+  // useEffect(() => {
+  //   socket.on('result', (data) => {
+  //     setResult(data);
+  //   });
+  // }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,8 +88,89 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
       ...prevValues,
       [name]: value,
     }));
+    socket.emit("calculate", value);
   };
 
+  // BUAH MENTAH
+
+  const [persenBM, setPersenBM] = useState(0);
+
+  const handlePersenBM = (event) => {
+    const value = event.target.value;
+    // Memastikan nilai yang dimasukkan adalah angka
+    if (!isNaN(value)) {
+      setPersenBM(value);
+    }
+  };
+
+  const BMkg = () => {
+    const result = (persenBM * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // BUAH LEWAT MATANG
+
+  const [persenBLM, setPersenBLM] = useState(0);
+
+  const handlePersenBLM = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenBLM(value);
+    }
+  };
+
+  const BLMkg = () => {
+    const result = (persenBLM * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // TANGKAI PANJANG
+
+  const [persenTP, setPersenTP] = useState(0);
+
+  const handlePersenTP = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenTP(value);
+    }
+  };
+
+  const TPkg = () => {
+    const result = (persenTP * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // AIR
+
+  const [persenAir, setPersenAir] = useState(0);
+
+  const handlePersenAir = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenAir(value);
+    }
+  };
+
+  const Airkg = () => {
+    const result = (persenAir * values.qtyTbs) / 100;
+    return result;
+  };
+
+  // SAMPAH
+
+  const [persenSMPH, setPersenSMPH] = useState(0);
+
+  const handlePersenSMPH = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value)) {
+      setPersenSMPH(value);
+    }
+  };
+
+  const SMPHkg = () => {
+    const result = (persenSMPH * values.qtyTbs) / 100;
+    return result;
+  };
   const handleSubmit = async () => {
     const {
       id,
@@ -665,8 +766,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Buah Mentah
                 </Typography>
               }
-              // name="originWeighInKg"
-              // value={0}
+              value={trxGradingBMPERSEN}
+              onChange={handlePersenBM}
             />
           </FormControl>
           <TextField
@@ -692,8 +793,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={BMkg()}
           />
           <FormControl
             sx={{
@@ -736,8 +836,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Buah Lewat Matang
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingBLMPERSEN}
+              onChange={handlePersenBLM}
             />
           </FormControl>
           <TextField
@@ -763,8 +863,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={BLMkg()}
           />
           <FormControl
             sx={{
@@ -807,8 +906,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Tangkai Panjang
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingTPPesen}
+              onChange={handlePersenTP}
             />
           </FormControl>
           <TextField
@@ -834,8 +933,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={TPkg()}
           />
           <FormControl
             sx={{
@@ -949,8 +1047,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Sampah
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingSAMPAHPERSEN}
+              onChange={handlePersenSMPH}
             />
           </FormControl>
           <TextField
@@ -976,8 +1074,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={SMPHkg()}
           />
           <FormControl
             sx={{
@@ -1020,8 +1117,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Air
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingAIRPERSEN}
+              onChange={handlePersenAir}
             />
           </FormControl>
           <TextField
@@ -1047,8 +1144,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={Airkg()}
           />
           <FormControl
             sx={{
@@ -1234,7 +1330,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingWAJIB}
             />
           </FormControl>
           <TextField
@@ -1305,7 +1401,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingLAINNYAPERSEN}
             />
           </FormControl>
           <TextField
@@ -1332,7 +1428,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               ),
             }}
             //   name="originWeighInKg"
-            // value={0}
+            // value={trxGradingLAINNYAPERSEN}
           />
         </Box>
         <TextField
@@ -1358,8 +1454,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               TOTAL Potongan
             </Typography>
           }
-          //   name="originWeighInKg"
-          // value={0}
+          // value={}
         />
       </FormControl>
       <FormControl sx={{ gridColumn: "span 4" }}>

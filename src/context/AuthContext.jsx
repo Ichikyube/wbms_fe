@@ -1,7 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useFetchConfigsDataQuery } from "../slices/tempConfigSlice";
+import {
+  clearTempConfigs,
+  useFetchConfigsDataQuery,
+} from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";
 import {
   setCredentials,
@@ -16,6 +19,7 @@ import {
   useSigninMutation,
   useSignoutMutation,
 } from "./../slices/authApiSlice";
+import { clearGroupMap } from "../slices/groupMappingSlice";
 
 const AuthContext = createContext({
   isAuth: false,
@@ -27,7 +31,7 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 export function AuthProvider({ children }) {
-  const { data, isLoading } = useFetchConfigsDataQuery();
+  const { isLoading } = useFetchConfigsDataQuery();
   const { userInfo } = useSelector((state) => state.app);
   const token = localStorage.getItem("wbms_at");
   const isAuth = userInfo && token;
@@ -98,6 +102,7 @@ export function AuthProvider({ children }) {
         dispatch(clearSidebar());
         dispatch(clearCredentials());
         dispatch(clearConfigs());
+        dispatch(clearGroupMap());
         navigate("/");
       })();
       localStorage.clear();

@@ -1,3 +1,21 @@
+export const jembatanTimbangList = ["PKS", "T30", "Labanan"];
+export const masterDataList = [
+  "Province",
+  "City",
+  "Company",
+  "Customer",
+  "CustomerType",
+  "CustomerGroup",
+  "Driver",
+  "Mill",
+  "Product",
+  "ProductGroup",
+  "Site",
+  "StorageTank",
+  "TransportVehicle",
+  "Weighbridge",
+];
+export const userManagementList = ["User", "Role", "Config"];
 export const dtAttrJson = {
   Province: [
     { value: "id", label: "id" },

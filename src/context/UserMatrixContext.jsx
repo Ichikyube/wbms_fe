@@ -6,11 +6,14 @@ import React, {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useFetchActiveConfigsDataQuery, useRequestEndedMutation } from "../slices/tempConfigSlice";
+import {
+  useFetchActiveConfigsDataQuery,
+  useRequestEndedMutation,
+} from "../slices/tempConfigSlice";
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import { initialTempConfigState } from "../slices/tempConfigSlice";
 const UserMatrixContext = createContext({
-  ...initialTempConfigState.tempConfigDt,
+  ...initialTempConfigState,
 });
 
 export const useMatrix = () => {
@@ -19,9 +22,12 @@ export const useMatrix = () => {
 
 //apabila user yang melakukan request, dan masuk waktu yg diskejulkan maka
 const UserMatrixContextProvider = ({ children }) => {
-  const { data: activeConfigsData, isLoading, error } = useFetchActiveConfigsDataQuery();
+  const {
+    data: activeConfigsData,
+    isLoading,
+    error,
+  } = useFetchActiveConfigsDataQuery();
   const [requestEnded] = useRequestEndedMutation();
-  const tempConfigs = useSelector((state) => state.tempConfigs);
   const dispatch = useDispatch();
   const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
@@ -30,7 +36,7 @@ const UserMatrixContextProvider = ({ children }) => {
   if (activeConfigsData) {
     configObject = Object.assign({}, ...activeConfigsData);
   }
-  
+
   const {
     manualEntryWB: WB2,
     editTransaction: WB3,
@@ -69,7 +75,7 @@ const UserMatrixContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (backDatedForm && currentTime >= WB5?.start)
-    setBackDatedForm(WB5.tempValue);
+      setBackDatedForm(WB5.tempValue);
     if (currentTime >= WB5?.end) {
       setBackDatedForm(WB5.defaultValue);
       requestEnded(5).unwrap();
@@ -85,15 +91,15 @@ const UserMatrixContextProvider = ({ children }) => {
   }, [backDatedTemplate, currentTime, WB4, requestEnded]);
   useEffect(() => {
     if (editTransaction && currentTime >= WB3?.start)
-    seteditTransaction(WB3.tempValue);
+      seteditTransaction(WB3.tempValue);
     if (currentTime >= WB3?.end) {
       seteditTransaction(WB3.defaultValue);
       requestEnded(6).unwrap();
-    };
+    }
   }, [editTransaction, currentTime, WB3, requestEnded]);
   useEffect(() => {
     if (manualEntryWB && currentTime >= WB2?.start)
-    setManualEntryWB(WB2.tempValue);
+      setManualEntryWB(WB2.tempValue);
     if (currentTime >= WB2?.end) {
       setManualEntryWB(WB2?.defaultValue);
       requestEnded(3).unwrap();

@@ -22,7 +22,7 @@ const _nav = [
   {
     component: CNavTitle,
     name: "Jembatan Timbang (WB)",
-    resource: "Base",
+    resource: "WB",
   },
   {
     component: CNavGroup,
@@ -89,14 +89,14 @@ const _nav = [
   {
     component: CNavTitle,
     name: "Administrasi WBMS",
-    resource: "Base",
+    resource: "ADMIN",
   },
   {
     component: CNavGroup,
     name: "Master Data",
     to: "/base",
     icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
-    resource: "Base",
+    resource: "MD",
     items: [
       {
         component: CNavItem,

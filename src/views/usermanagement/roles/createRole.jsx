@@ -30,7 +30,12 @@ import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
-import { dtAttrJson } from "../../../constants/attributeListObj";
+import {
+  dtAttrJson,
+  jembatanTimbangList,
+  masterDataList,
+  userManagementList,
+} from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
 const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   const [expanded, setExpanded] = useState(null);
@@ -38,24 +43,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   const toggleAccordion = (index) => {
     setExpanded(index === expanded ? null : index);
   };
-  const jembatanTimbangList = ["PKS", "T30", "Labanan"];
-  const masterDataList = [
-    "Province",
-    "City",
-    "Company",
-    "Customer",
-    "CustomerType",
-    "CustomerGroup",
-    "Driver",
-    "Mill",
-    "Product",
-    "ProductGroup",
-    "Site",
-    "StorageTank",
-    "TransportVehicle",
-    "Weighbridge",
-  ];
-  const userManagementList = ["User", "Role", "Config"];
+
   const [checkboxes, setCheckboxes] = useState(
     masterDataList.map((resource, index) => ({
       id: index,
@@ -63,7 +51,13 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
       checked: true,
     }))
   );
-  const fetcher = () => RolesAPI.getAll();
+
+  const INITIAL_DATA = {
+    name: "",
+    description: "",
+    permissions: [],
+  };
+
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const [selectedResources, setSelectedResources] = useState([]);

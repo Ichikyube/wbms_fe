@@ -11,25 +11,23 @@ import {
 import { useAuth } from "../context/AuthContext";
 
 const DefaultLayout = () => {
-  const { isAuth } =  useAuth();
+  const { isAuth } = useAuth();
   if (!isAuth) {
     localStorage.clear();
     return <Navigate to="/signin" />;
   }
   return (
-    <div>
+    <UserMatrixContextProvider>
       <ToastContainer />
-      <UserMatrixContextProvider>
-        <AppSidebar />
-        <div className="wrapper d-flex flex-column min-vh-100 bg-light">
-          <AppHeader />
-          <div className="body flex-grow-1 px-3">
-            <AppContent />
-          </div>
-          <AppFooter />
+      <AppSidebar />
+      <div className="wrapper d-flex flex-column min-vh-100 bg-light">
+        <AppHeader />
+        <div className="body flex-grow-1 px-3">
+          <AppContent />
         </div>
-      </UserMatrixContextProvider>
-    </div>
+        <AppFooter />
+      </div>
+    </UserMatrixContextProvider>
   );
 };
 

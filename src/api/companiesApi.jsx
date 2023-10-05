@@ -7,6 +7,11 @@ export const getAll = async () => {
   return response?.data;
 };
 
+export const syncSemai = async () => {
+  const response = await api.get(`${endpoint}/sync-with-semai`);
+  return response?.data;
+};
+
 export const getById = async (id) => {
   const response = await api.get(`${endpoint}/${id}`);
   return response?.data;

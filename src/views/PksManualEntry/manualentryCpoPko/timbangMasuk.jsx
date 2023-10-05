@@ -35,7 +35,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 
-const tType = 1;
+const typeTransaction = 1;
 let wsClient;
 
 const PksManualCpoPkoTimbangMasuk = () => {
@@ -116,7 +116,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
-      tempTrans.tType = "1";
+      tempTrans.typeTransaction = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.originWeighInKg = weighbridge.getWeight();
     }
@@ -1019,7 +1019,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
-            <ManualEntryGrid tType={tType} />
+            <ManualEntryGrid typeTransaction={typeTransaction} />
           </Paper>
         </Grid>
       </Grid>

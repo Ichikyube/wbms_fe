@@ -27,8 +27,9 @@ import CpoPko from "../PksManualEntry/manualentryCpoPko/timbangKeluar";
 import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
+import { cibSlack } from "@coreui/icons";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const TimbangKeluar = () => {
   const [configs] = useConfig();
@@ -70,7 +71,6 @@ const TimbangKeluar = () => {
     }));
   };
 
-  const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCompany, setDtCompany] = useState([]);
@@ -93,7 +93,7 @@ const TimbangKeluar = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -177,7 +177,6 @@ const TimbangKeluar = () => {
               gap="20px"
               gridTemplateColumns="repeat(15, minmax(0, 1fr))"
             >
-              {" "}
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
               fullWidth
@@ -249,7 +248,7 @@ const TimbangKeluar = () => {
                     </>
                   }
                   name="transportVehiclePlateNo"
-                  value={values.transportVehiclePlateNo}
+                  value={values?.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
                 <FormControl
@@ -263,7 +262,7 @@ const TimbangKeluar = () => {
                     shrink
                     sx={{ bgcolor: "white", px: 1 }}
                   >
-                    Nama Vendor
+                    Nama Vendor/Customer
                   </InputLabel>
                   <Autocomplete
                     id="select-label"
@@ -271,7 +270,7 @@ const TimbangKeluar = () => {
                     getOptionLabel={(option) => option.name}
                     value={
                       dtCompany.find(
-                        (item) => item.id === values.transporterId
+                        (item) => item.id === values?.transporterId
                       ) || null
                     }
                     onChange={(event, newValue) => {
@@ -280,10 +279,6 @@ const TimbangKeluar = () => {
                         transporterId: newValue ? newValue.id : "",
                         transporterCompanyName: newValue ? newValue.name : "",
                       }));
-                      setSelectedCompany({
-                        id: newValue ? newValue.id : "",
-                        name: newValue ? newValue.name : "",
-                      });
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -295,21 +290,49 @@ const TimbangKeluar = () => {
                     )}
                   />
                 </FormControl>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder="Masukkan Jumlah Janjang"
+                  sx={{
+                    my: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Jenis Barang
+                      </Typography>
+                    </>
+                  }
+                  value={values?.productName}
+                />
               </FormControl>
               {/* CPO & PKO */}
               {/* {selectedOption === "CpoPko" && <CpoPko />} */}
               {/* TBS */}
               {selectedOption === "Tbs" && (
                 <TimbangKeluarTBS
-                  selectedCompany={selectedCompany}
-                  PlateNo={values.transportVehiclePlateNo}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
+                  PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
               {/* OTHERS */}
               {selectedOption === "Others" && (
                 <TimbangKeluarOthers
-                  selectedCompany={selectedCompany}
-                  PlateNo={values.transportVehiclePlateNo}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
+                  PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
             </Box>
@@ -343,7 +366,7 @@ const TimbangKeluar = () => {
           </Box>
           <Paper sx={{ p: 2, mt: 1 }}>
             <ManualEntryGrid
-              tType={tType}
+              typeTransaction={typeTransaction}
               gridRef={gridRef}
               fetcher={fetcher}
             />

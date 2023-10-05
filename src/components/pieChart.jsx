@@ -5,11 +5,19 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/DataSaverOffOutline
 import * as TransactionAPI from "../api/transactionApi";
 import "../index.css";
 
+const typeTransaction = 1;
+
 const PieCharts = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
-    TransactionAPI.getAll()
+    TransactionAPI.searchMany({
+      where: {
+        typeTransaction,
+        isDeleted: false,
+        progressStatus: { notIn: [1] },
+      },
+    })
       .then((res) => res.records)
       .then((transactions) => {
         setSalesData(transactions);
@@ -20,11 +28,8 @@ const PieCharts = () => {
   const productNames = ["CPO", "PKO", "TBS"];
   const othersName = "Other";
 
-  // Menggabungkan "TBS Internal" dan "TBS Eksternal" menjadi "TBS"
   const combinedTBSCount = salesData.filter(
-    (transaction) =>
-      transaction.productName === "TBS Internal" ||
-      transaction.productName === "TBS Eksternal"
+    (transaction) => transaction.productName === "TBS"
   ).length;
 
   const productCount = {};

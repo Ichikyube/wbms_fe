@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import useSWR from "swr";
 import {
   Grid,
   Typography,
@@ -9,9 +9,11 @@ import {
   FormControl,
   Autocomplete,
   InputLabel,
+  InputBase,
+  IconButton,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import moment from "moment";
+import SearchIcon from "@mui/icons-material/Search";
 import "react-toastify/dist/ReactToastify.css";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../utils/useForm";
@@ -26,28 +28,24 @@ import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
 
-const tType = 1;
+const typeSite = 1;
 
 const TimbangMasuk = () => {
-  const [configs] = useConfig();
-  const { id } = useParams();
+  const gridRef = useRef();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    setValues((prevValues) => ({
-      ...prevValues,
+    setValues((preValues) => ({
+      ...preValues,
       [name]: value,
     }));
   };
 
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
-  const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
 
@@ -55,13 +53,48 @@ const TimbangMasuk = () => {
     ProductAPI.getAll().then((res) => {
       setDtProduct(res.data.product.records);
     });
-    TransportVehicleAPI.getAll().then((res) => {
-      setDtTransportVehicle(res.data.transportVehicle.records);
-    });
+
     CompaniesAPI.getAll().then((res) => {
       setDtCompany(res.data.company.records);
     });
   }, []);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetcher = () =>
+    TransactionAPI.searchMany({
+      where: {
+        typeSite,
+        progressStatus: { notIn: [4, 9, 14] },
+      },
+      orderBy: { bonTripNo: "desc" },
+    }).then((res) => res.records);
+
+  const { data: dtTransactions } = useSWR(
+    searchQuery ? `transaction?name_like=${searchQuery}` : "transaction",
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+
+  const updateGridData = useCallback((transaction) => {
+    if (gridRef.current && gridRef.current.api) {
+      gridRef.current.api.setRowData(transaction);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (dtTransactions) {
+      const filteredData = dtTransactions.filter((transaction) => {
+        const transactionsData = Object.values(transaction)
+          .join(" ")
+          .toLowerCase();
+        return transactionsData.includes(searchQuery.toLowerCase());
+      });
+      updateGridData(filteredData);
+    }
+  }, [searchQuery, dtTransactions, updateGridData]);
 
   return (
     <>
@@ -167,7 +200,7 @@ const TimbangMasuk = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  // placeholder="Masukkan Jumlah Janjang"
+                  placeholder="Masukkan No.Pol"
                   sx={{
                     mb: 2,
                   }}
@@ -198,7 +231,7 @@ const TimbangMasuk = () => {
                     shrink
                     sx={{ bgcolor: "white", px: 1 }}
                   >
-                    Nama Vendor
+                    Nama Vendor/Customer
                   </InputLabel>
                   <Autocomplete
                     id="select-label"
@@ -206,19 +239,15 @@ const TimbangMasuk = () => {
                     getOptionLabel={(option) => option.name}
                     value={
                       dtCompany.find(
-                        (item) => item.id === values.transporterId
+                        (item) => item.id === values?.transporterId
                       ) || null
                     }
                     onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
+                      setValues((preValues) => ({
+                        ...preValues,
                         transporterId: newValue ? newValue.id : "",
                         transporterCompanyName: newValue ? newValue.name : "",
                       }));
-                      setSelectedCompany({
-                        id: newValue ? newValue.id : "",
-                        name: newValue ? newValue.name : "",
-                      });
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -236,14 +265,25 @@ const TimbangMasuk = () => {
                   size="small"
                   sx={{ my: 2 }}
                 >
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nama Product
+                  </InputLabel>
                   <Autocomplete
                     id="select-label"
                     options={dtProduct}
                     getOptionLabel={(option) => option.name}
                     value={selectedProduct}
                     onChange={(event, newValue) => {
+                      setValues((preValues) => ({
+                        ...preValues,
+                        productId: newValue ? newValue.id : "",
+                        productName: newValue ? newValue.name : "",
+                      }));
                       setSelectedProduct(newValue);
-                      // Determine and set the selectedOption based on some condition.
                       if (newValue) {
                         const productName = newValue.name.toLowerCase();
                         if (
@@ -279,9 +319,11 @@ const TimbangMasuk = () => {
 
               {selectedOption === "Tbs" && (
                 <TBS
-                  selectedProduct={selectedProduct}
-                  selectedCompany={selectedCompany}
-                  PlateNo={values.transportVehiclePlateNo}
+                  ProductId={values?.productId}
+                  ProductName={values?.productName}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
+                  PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
 
@@ -289,8 +331,10 @@ const TimbangMasuk = () => {
 
               {selectedOption === "Others" && (
                 <OTHERS
-                  selectedProduct={selectedProduct}
-                  selectedCompany={selectedCompany}
+                  ProductId={values?.productId}
+                  ProductName={values?.productName}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
                   PlateNo={values.transportVehiclePlateNo}
                 />
               )}
@@ -298,8 +342,34 @@ const TimbangMasuk = () => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
+          <Box display="flex">
+            <Box borderRadius="5px" ml="auto" border="solid grey 1px">
+              <InputBase
+                sx={{ ml: 2, flex: 2, fontSize: "13px" }}
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+
+              <IconButton
+                type="button"
+                sx={{ p: 1 }}
+                onClick={() => {
+                  const filteredData = dtTransactions.filter((transaction) =>
+                    transaction.name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  );
+                  gridRef.current.api.setRowData(filteredData);
+                }}
+              >
+                <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
+              </IconButton>
+            </Box>
+          </Box>
+
           <Paper sx={{ p: 2, mt: 1 }}>
-            <ManualEntryGrid tType={tType} />
+            <ManualEntryGrid gridRef={gridRef} fetcher={fetcher} />
           </Paper>
         </Grid>
       </Grid>

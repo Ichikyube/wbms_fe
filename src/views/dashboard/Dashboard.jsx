@@ -6,6 +6,8 @@ import PieCharts from "../../components/pieChart";
 import BarChartIcon from "@mui/icons-material/EqualizerOutlined";
 import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
 
+const typeTransaction = 1;
+
 const Dashboard = () => {
   const [CPOProduct, setCPOProduct] = useState(0);
   const [PKOProduct, setPKOProduct] = useState(0);
@@ -15,8 +17,13 @@ const Dashboard = () => {
   useEffect(() => {
     const lowerCaseProductName = (productName) => productName.toLowerCase();
 
-    TransactionAPI.getAll()
-      .then((res) => res.records)
+     TransactionAPI.searchMany({
+      where: {
+        typeTransaction,
+        isDeleted: false,
+        progressStatus: { notIn: [1] },
+      },
+      }).then((res) => res.records)
       .then((transactions) => {
         // Filter transaksi berdasarkan produk "CPO"
         const CPOProduct = transactions.filter(
@@ -31,8 +38,7 @@ const Dashboard = () => {
         // Filter transaksi berdasarkan produk "TBS"
         const TBSProduct = transactions.filter(
           (transaction) =>
-            lowerCaseProductName(transaction.productName) === "tbs internal" ||
-            lowerCaseProductName(transaction.productName) === "tbs eksternal"
+            lowerCaseProductName(transaction.productName) === "tbs"
         );
         setTBSProduct(TBSProduct.length);
         // Filter transaksi berdasarkan produk "Other"
@@ -40,11 +46,7 @@ const Dashboard = () => {
           (transaction) =>
             transaction.productName !== "CPO" &&
             transaction.productName !== "PKO" &&
-            !(
-              lowerCaseProductName(transaction.productName) ===
-                "tbs internal" ||
-              lowerCaseProductName(transaction.productName) === "tbs eksternal"
-            )
+            !(lowerCaseProductName(transaction.productName) === "tbs")
         );
         setOtherProduct(OtherProduct.length);
 
@@ -65,7 +67,8 @@ const Dashboard = () => {
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
         gridAutoRows="140px"
-        gap="20px">
+        gap="20px"
+      >
         <Box
           gridColumn="span 3"
           display="flex"
@@ -76,7 +79,8 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right, #0B63F6, #003CC5)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}>
+          }}
+        >
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {CPOProduct}
@@ -97,7 +101,8 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#33cc33, #009933)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}>
+          }}
+        >
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {PKOProduct}
@@ -118,7 +123,8 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#ffc107, #ffc107 )",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}>
+          }}
+        >
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {TBSProduct}
@@ -139,7 +145,8 @@ const Dashboard = () => {
           sx={{
             background: "linear-gradient(to right,#f44336,#d32f2f)",
             boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
-          }}>
+          }}
+        >
           <Box mx={3}>
             <Typography variant="h5" pb={1} fontWeight="bold" color="white">
               {OtherProduct}

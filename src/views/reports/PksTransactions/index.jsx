@@ -47,7 +47,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
+const typeSite = 1;
 
 const ReportPksTransactions = () => {
   // console.clear();
@@ -154,7 +154,7 @@ const ReportPksTransactions = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeSite,
         isDeleted: false,
         progressStatus: { notIn: [1, 20, 21, 22] },
       },

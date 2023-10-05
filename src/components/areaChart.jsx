@@ -29,12 +29,20 @@ const monthNames = [
   "Des",
 ];
 
+const typeTransaction = 1;
+
 const AreaCharts = () => {
   const [salesData, setSalesData] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState("All");
 
   useEffect(() => {
-    TransactionAPI.getAll()
+    TransactionAPI.searchMany({
+      where: {
+        typeTransaction,
+        isDeleted: false,
+        progressStatus: { notIn: [1] },
+      },
+    })
       .then((res) => res.records)
       .then((transactions) => {
         setSalesData(transactions);
@@ -51,13 +59,9 @@ const AreaCharts = () => {
       ? salesData?.filter(
           (transaction) =>
             (selectedProduct === "TBS" &&
-              ["TBS Internal", "TBS Eksternal"].includes(
-                transaction.productName
-              )) ||
+              ["TBS"].includes(transaction.productName)) ||
             (selectedProduct === "Other" &&
-              !["CPO", "PKO", "TBS Internal", "TBS Eksternal"].includes(
-                transaction.productName
-              )) ||
+              !["CPO", "PKO", "TBS"].includes(transaction.productName)) ||
             (selectedProduct !== "TBS" &&
               selectedProduct !== "Other" &&
               transaction.productName === selectedProduct)
@@ -79,10 +83,7 @@ const AreaCharts = () => {
     );
 
     monthTransactions.forEach((transaction) => {
-      if (
-        transaction.productName === "TBS Internal" ||
-        transaction.productName === "TBS Eksternal"
-      ) {
+      if (transaction.productName === "TBS") {
         monthTotal["TBS"] += 1;
       } else if (productNames.includes(transaction.productName)) {
         monthTotal[transaction.productName] += 1;

@@ -42,7 +42,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
+const typeTransaction = 1;
 
 const DataTransaction = () => {
   const navigate = useNavigate();
@@ -53,10 +53,12 @@ const DataTransaction = () => {
   const handleCellClick = (params) => {
     const productName = params.data.productName.toLowerCase();
     const progressStatus = params.data.progressStatus;
-  
+
     if (
-      progressStatus === 1 &&
-      !(productName.includes("cpo") || productName.includes("pko"))
+      !(
+        (progressStatus === 1 || productName.includes("cpo")) ||
+        productName.includes("pko")
+      )
     ) {
       const Id = params.data.id;
       navigate(`/edit-data-Transaction/${Id}`);
@@ -64,7 +66,6 @@ const DataTransaction = () => {
       toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
     }
   };
-  
 
   const deleteById = (id, bonTripNo, productName) => {
     if (productName === "cpo" || productName === "pko") {
@@ -223,7 +224,7 @@ const DataTransaction = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         isDeleted: false,
         progressStatus: { notIn: [20, 21, 22, 1] },
       },

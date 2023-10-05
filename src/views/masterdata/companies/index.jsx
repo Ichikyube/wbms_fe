@@ -81,6 +81,8 @@ const Companies = () => {
   const fetcher = () =>
     CompaniesAPI.getAll().then((res) => res.data.company.records);
 
+  const syncSemai = () => CompaniesAPI.syncSemai();
+
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -584,6 +586,7 @@ const Companies = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
+                        onClick={syncSemai}
                       >
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync

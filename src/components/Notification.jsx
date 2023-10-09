@@ -1,6 +1,5 @@
 // Notification.js
 import React from "react";
-import toast from "react-hot-toast";
 import "./styles/index.css";
 const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
 const Notification = ({ message, isRead, sender, photo, key, onClick }) => {

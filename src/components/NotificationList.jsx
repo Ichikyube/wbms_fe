@@ -6,12 +6,14 @@ import CIcon from "@coreui/icons-react";
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';                                                                                                                                       
 import api from "../api/api";
-import toast from "react-hot-toast";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
+  const [showNotification, setShowNotification] = useState(false)
   const navigate = useNavigate();
-
+  const handleShowNotification = () => {
+    setShowNotification(!showNotification);
+  }
   useEffect(() => {
     api
       .get("notifications")

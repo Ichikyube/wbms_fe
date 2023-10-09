@@ -131,10 +131,8 @@ const PksManualTBSTimbangKeluar = ({
       values.progressStatus = 4;
       values.originWeighOutKg = weighbridge.getWeight();
       values.originWeighOutTimestamp = moment().toDate();
-      values.transporterId = selectedCompany ? selectedCompany.id : "";
-      values.transporterCompanyName = selectedCompany
-        ? selectedCompany.name
-        : "";
+      values.transporterId = TransporterId;
+      values.transporterCompanyName = TransporterCompanyName
       values.transportVehiclePlateNo = PlateNo;
     }
 

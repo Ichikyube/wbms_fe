@@ -11,6 +11,8 @@ import {
   InputLabel,
   InputBase,
   IconButton,
+  Button,
+  InputAdornment,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,17 +23,25 @@ import * as TransactionAPI from "../../api/transactionApi";
 import PageHeader from "../../components/PageHeader";
 import ManualEntryGrid from "../../components/TransactionGrid";
 import { useConfig } from "../../common/hooks";
-import TBS from "../PksManualEntry/manualentryTBS/timbangMasuk";
-import OTHERS from "../PksManualEntry/manualentryothers/timbangMasuk";
+import TBS from "../PksManualEntry/manualentryTBS/TbsTimbangMasuk";
+import OTHERS from "../PksManualEntry/manualentryothers/OthersTimbangMasuk";
+import FilterDataCompany from "./filterDtCompany";
 import CpoPko from "../PksManualEntry/manualentryCpoPko/timbangMasuk";
 import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
+import * as RolesAPI from "../../api/roleApi";
 
 const typeTransaction = 1;
 const typeSite = 1;
 
-const TimbangMasuk = () => {
+const TimbangMasuk = (props) => {
+  const { VendorName, Id } = props;
+  useEffect(() => {
+    // Lakukan tindakan setelah VendorName berubah
+    console.log(VendorName, "nama vendor");
+  }, [VendorName]);
+  console.log(VendorName, "nama vendor");
   const gridRef = useRef();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
@@ -49,6 +59,7 @@ const TimbangMasuk = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
+  const [isFilterData, setIsFilterData] = useState(false);
 
   useEffect(() => {
     ProductAPI.getAll().then((res) => {
@@ -218,7 +229,7 @@ const TimbangMasuk = () => {
                   value={values.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
-                <FormControl
+                {/* <FormControl
                   fullWidth
                   variant="outlined"
                   size="small"
@@ -228,7 +239,7 @@ const TimbangMasuk = () => {
                     shrink
                     sx={{ bgcolor: "white", px: 1 }}
                   >
-                    Nama Vendor/Customer
+                    Vendor/Customer Transport
                   </InputLabel>
                   <Autocomplete
                     id="select-label"
@@ -255,7 +266,47 @@ const TimbangMasuk = () => {
                       />
                     )}
                   />
-                </FormControl>
+                </FormControl> */}
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment
+                        position="end"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        <SearchIcon sx={{ fontSize: "18px" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  placeholder="Cari cust/vendor..."
+                  sx={{
+                    my: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Vendor
+                      </Typography>
+                    </>
+                  }
+                  name="Name"
+                  value={VendorName}
+                  onClick={() => {
+                    setIsFilterData(true);
+                  }}
+                />
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -333,6 +384,13 @@ const TimbangMasuk = () => {
                   TransporterId={values?.transporterId}
                   TransporterCompanyName={values?.transporterCompanyName}
                   PlateNo={values.transportVehiclePlateNo}
+                />
+              )}
+
+              {isFilterData && (
+                <FilterDataCompany
+                  isFilterData={isFilterData}
+                  onClose={() => setIsFilterData(false)}
                 />
               )}
             </Box>

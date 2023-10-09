@@ -36,7 +36,7 @@ const PksTransaction = () => {
 
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
-  const { backDatedForm } = useMatrix();
+  const { backDatedForm } = useSelector((state) => state.tempConfigs);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -200,9 +200,11 @@ const PksTransaction = () => {
                 </Box>
                 <Box sx={{ pl: 1 }}>
                   <Button
-                    disabled={!backDatedForm}
+                    // disabled={!backDatedForm}
+                    color="primary"
                     variant="contained"
-                    onClick={handleFormClick}
+                    component={Link}
+                    to="/Backdate-Form"
                     style={{
                       width: "10vh",
                       fontSize: "13px",
@@ -211,24 +213,6 @@ const PksTransaction = () => {
                   >
                     Form
                   </Button>
-                  <Menu
-                    anchorEl={anchorE2}
-                    open={Boolean(anchorE2)}
-                    onClose={handleClose}>
-                    <MenuItem
-                      component={Link}
-                      to="/backdateFormTBS"
-                      onClick={handleClose}>
-                      TBS
-                    </MenuItem>
-
-                    <MenuItem
-                      component={Link}
-                      to="/backdateFormOthers"
-                      onClick={handleClose}>
-                      Lainnya
-                    </MenuItem>
-                  </Menu>
                 </Box>
                 <Box
                   display="flex"

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import {
@@ -15,7 +15,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import moment from "moment";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm } from "../../../utils/useForm";
 import WeightWB from "../../../components/weightWB";
@@ -1296,7 +1296,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 </Typography>
               }
               //   name="originWeighInKg"
-              value={trxGradingWAJIB}
+              // value={0}
             />
           </FormControl>
           <TextField

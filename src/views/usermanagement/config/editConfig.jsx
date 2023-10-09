@@ -27,10 +27,13 @@ import FormLabel from "@mui/material/FormLabel";
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import { format, addHours, addMinutes } from "date-fns";
 import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configApi";
-import ConditionalInput from "./editConfig/conditionalInput";
+import moment from "moment";
+import TimeSpanInput from "../../../components/TimeSpanInput";
+
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
   const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
@@ -51,7 +54,26 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
+  const [timeSpan, setTimeSpan] = useState(dtConfig?.lifespan);
+  const { hours, minutes } = secondsToHoursAndMinutes(timeSpan);
+  const handleTimeSpanChange = (newTimeSpan) => {
+    setTimeSpan(newTimeSpan);
+  };
+  function secondsToHoursAndMinutes(seconds) {
+    const hours = Math.floor(seconds / 3600); // 3600 seconds in an hour
+    const remainingSeconds = seconds % 3600;
+    const minutes = Math.floor(remainingSeconds / 60); // 60 seconds in a minute
+    return { hours, minutes };
+  }
 
+  const formatLifespan = (hours, minutes) => {
+    return `${hours} hours ${minutes} minutes`;
+  };
+
+  useEffect(() => {
+    console.log(timeSpan)
+
+  }, [timeSpan])
   return (
     <Dialog
       open={isEditOpen}
@@ -87,14 +109,15 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
             setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
-              <Box fullWidth
-                display="block"
+              <Box
+                display="grid"
                 padding={2}
                 paddingBottom={3}
                 paddingLeft={3}
                 paddingRight={3}
-                gap="20px">
-                <FormControl marginTop={2} marginBottom={2}>
+                gap="20px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -104,6 +127,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     }}>
                     Config Name
                   </FormLabel>
+
                   <TextField
                     variant="outlined"
                     type="text"
@@ -119,14 +143,88 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     id="name-input"
                   />
                 </FormControl>
-
-                <ConditionalInput
-                  dtConfig={dtConfig}
-                  setFieldValue={setFieldValue}
-                  values={values}
+              </Box>
+              <Box
+                display="block"
+                padding={2}
+                paddingBottom={3}
+                paddingLeft={3}
+                paddingRight={3}
+                gap="20px">
+                <FormControl
+                  sx={{
+                    marginBottom: "8px",
+                    color: "black",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                  }}
+                  component="fieldset">
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}>
+                    Level of Approval
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    aria-label="Level of Approval"
+                    name="lvlOfApprvl"
+                    value={values.lvlOfApprvl}
+                    onChange={handleChange}>
+                    <FormControlLabel
+                      value={1}
+                      control={<Radio />}
+                      label="lvl 1  "
+                    />
+                    <FormControlLabel
+                      value={2}
+                      control={<Radio />}
+                      label="lvl 2"
+                    />
+                    <FormControlLabel
+                      value={3}
+                      control={<Radio />}
+                      label="lvl 3"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                <FormControl
                   fullWidth
-                  handleChange={handleChange}
+                  sx={{
+                    marginBottom: "8px",
+                    color: "black",
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                  }}>
+                  <InputLabel id="demo-simple-select-label">
+                    Default State
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    name="defaultVal"
+                    id="status-default-select"
+                    value={values.defaultVal}
+                    label="Default State"
+                    onChange={handleChange}>
+                    <MenuItem value="ACTIVE">Active</MenuItem>
+                    <MenuItem default value="DISABLED">
+                      Disabled
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <InputLabel id="demo-simple-select-label">LIFESPAN</InputLabel>
+                <TimeSpanInput
+                  initialHours={hours}
+                  initialMinutes={minutes}
+                  onChange={handleTimeSpanChange}
                 />
+
+                {/* <Typography>
+                  Lifespan: {formatLifespan(hours, minutes)}
+                </Typography> */}
               </Box>
               <Box display="flex" mt={2} ml={3}>
                 <Button

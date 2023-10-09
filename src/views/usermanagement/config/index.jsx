@@ -126,7 +126,7 @@ const Config = () => {
       valueGetter: (params) => {
         const { data } = params;
         if (!data?.start) return "-";
-        console.log(params);
+        console.log(params)
         if (data.type != "Boolean") return "Always";
         const options = {
           year: "numeric",
@@ -136,11 +136,9 @@ const Config = () => {
           minute: "2-digit",
           second: "2-digit",
         };
-        console.log(data?.start);
-        const formattedActiveStart = new Date(data?.start).toLocaleString(
-          "id-ID"
-        );
-        const formattedActiveEnd = new Date(data?.end).toLocaleString("id-ID");
+        console.log(data?.start)
+        const formattedActiveStart = new Date(data?.start).toLocaleString('id-ID');
+        const formattedActiveEnd = new Date(data?.end).toLocaleString('id-ID');
 
         return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
@@ -154,11 +152,9 @@ const Config = () => {
           <Box display="flex" justifyContent="center">
             <Box
               display="flex"
+              bgcolor={yellow[900]}
               borderRadius="5px"
               justifyContent="center"
-              cursor={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? "pointer": "not-allowed"}
-              pointer-events={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? "auto": "none"}
-              bgcolor={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? yellow[900]: null}
               textAlign="center"
               alignItems="center"
               color="white"
@@ -172,16 +168,16 @@ const Config = () => {
                 setSelectedConfig(params.data);
                 if (userInfo?.role.toLowerCase().includes("admin"))
                   setIsEditOpen(true);
-                else if (params.data.type === "Boolean") setIsRequestOpen(true);
+                else setIsRequestOpen(true);
               }}>
               {" "}
               {userInfo?.role.toLowerCase().includes("admin") ? (
                 <DriveFileRenameOutlineIcon
                   sx={{ ontSize: "20px", "&:hover": { color: "blue" } }}
                 />
-              ) : params.data.type === "Boolean" ? (
+              ) : (
                 <LiveHelpOutlinedIcon sx={{ mr: "3px", fontSize: "19px" }} />
-              ) : null}
+              )}
             </Box>
           </Box>
         );

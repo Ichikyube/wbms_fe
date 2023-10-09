@@ -10,7 +10,14 @@ import { fetchActiveConfigsData } from "../slices/tempConfigSlice";
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import { initialTempConfigState } from "../slices/tempConfigSlice";
 const UserMatrixContext = createContext({
+<<<<<<< HEAD
   ...initialTempConfigState.tempConfigDt,
+=======
+  manualEntryWB: false,
+  editTransaction: false,
+  backDatedTemplate: false,
+  backDatedForm: false,
+>>>>>>> fb0496cb5b0347598681e34c2484d3a59cfd267b
 });
 
 export const useMatrix = () => {

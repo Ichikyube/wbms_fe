@@ -113,7 +113,7 @@ const PksTransaction = () => {
     //   console.clear();
     // };
   }, []);
-
+// type Transaction 1.eDispatch(CPO, PKO) 2.pks 3.Bulking
   const [anchorE2, setAnchorE2] = useState(null);
 
   const handleFormClick = (event) => {
@@ -194,8 +194,7 @@ const PksTransaction = () => {
                       width: "10vh",
                       fontSize: "13px",
                       borderRadius: "10%",
-                    }}
-                  >
+                    }}>
                     New
                   </Button>
                 </Box>
@@ -214,13 +213,33 @@ const PksTransaction = () => {
                   >
                     Form
                   </Button>
+<<<<<<< HEAD
+=======
+                  <Menu
+                    anchorEl={anchorE2}
+                    open={Boolean(anchorE2)}
+                    onClose={handleClose}>
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormTBS"
+                      onClick={handleClose}>
+                      TBS
+                    </MenuItem>
+
+                    <MenuItem
+                      component={Link}
+                      to="/backdateFormOthers"
+                      onClick={handleClose}>
+                      Lainnya
+                    </MenuItem>
+                  </Menu>
+>>>>>>> fb0496cb5b0347598681e34c2484d3a59cfd267b
                 </Box>
                 <Box
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -239,8 +258,7 @@ const PksTransaction = () => {
                             .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>

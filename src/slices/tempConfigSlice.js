@@ -2,30 +2,17 @@ import { createContext } from "react";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/api";
 
-// zeroLock: "",
-// stableLockPeriod: "3000",  //waktu stableLockTime nilai INT
-// minimumWeight: "1", //nilai INT
-// portWB: "9001",
-// editTransactionMinusWeightAndDate: "disabled",
-// editTransactionFullForm: "disabled",
-// signBONTRIP: {PGS:"", MILLHEAD:""}, //nilai Object {PGS:<NAMA>,millHead:<NAMA}Bontrip TBS
-export const initialTempConfigState = {
-  tempConfigDt: JSON.parse(localStorage.getItem("tempConfigs")), // This will store the config data
-  status: "idle",
-  error: null,
-};
+export const initialTempConfigState = localStorage.getItem("tempConfigs")
+  ? Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")))
+  : [];
 
 const tempConfigSlice = createSlice({
   name: "tempConfigs",
   initialState: initialTempConfigState,
   reducers: {
     getTempConfigs: (state, action) => {
-      state.status = "loading";
-      // Simulate an API request to fetch temp configs
-      setTimeout(() => {
-        state.tempConfigDt = JSON.parse(localStorage.getItem("tempConfigs"));
-        state.status = "succeeded";
-      }, 1000); // Simulating a delay of 1 second (replace with actual API call)
+      if (localStorage.getItem("tempConfigs"))
+        state = Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")));
     },
     setTempConfigs: (state, action) => {
       state.tempConfigDt = action.payload;

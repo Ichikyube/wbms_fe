@@ -27,7 +27,7 @@ import * as TransactionAPI from "../../../api/transactionApi";
 import * as ENUM from "../../../api/enumApi";
 import * as SemaiAPI from "../../../api/semaiApi";
 
-const tType = 2;
+const typeTransaction = 2;
 
 const T30WbNormal = (props) => {
   const { wbT30Transaction, setWbT30Transaction } = useContext(
@@ -71,7 +71,7 @@ const T30WbNormal = (props) => {
           where: {
             transportVehiclePlateNo: wbT30Transaction?.transportVehiclePlateNo,
             progressStatus: { in: [1, 6] }, // cari yang statusnya unloading
-            tType,
+            typeTransaction,
           },
           orderBy: { bonTripNo: "desc" },
         });
@@ -82,7 +82,7 @@ const T30WbNormal = (props) => {
 
           setValues({
             ...wbT30Transaction,
-            tType,
+            typeTransaction,
             bonTripNo,
             originSiteId: T30Site.id,
             progressStatus: 0,
@@ -312,8 +312,7 @@ const T30WbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="vaScc">Vehicle Allowable SCC Model</InputLabel>
         <Select
           labelId="vaScc"
@@ -321,8 +320,7 @@ const T30WbNormal = (props) => {
           name="vehicleAllowableSccModel"
           value={values?.jsonData?.vehicleAllowableSccModel || 0}
           onChange={(e) => handleInputChange(e, 2)}
-          disabled={true}
-        >
+          disabled={true}>
           <MenuItem value="">-</MenuItem>
           {dtVaScc?.map((data, index) => {
             return (
@@ -345,8 +343,7 @@ const T30WbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="rspoScc">RSPO SCC Model</InputLabel>
         <Select
           labelId="rspoScc"
@@ -354,8 +351,7 @@ const T30WbNormal = (props) => {
           name="rspoSccModel"
           value={values?.jsonData?.rspoSccModel || 0}
           onChange={(e) => handleInputChange(e, 2)}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtRspoScc?.map((data, index) => {
             return (
@@ -378,8 +374,7 @@ const T30WbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="isccScc">ISCC SCC Model</InputLabel>
         <Select
           labelId="isccScc"
@@ -387,8 +382,7 @@ const T30WbNormal = (props) => {
           name="isccSccModel"
           value={values?.jsonData?.isccSccModel || "0"}
           onChange={(e) => handleInputChange(e, 2)}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtIsccScc?.map((data, index) => {
             return (
@@ -411,8 +405,7 @@ const T30WbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="originSourceTankId">Tangki Asal</InputLabel>
         <Select
           labelId="originSourceTankId"
@@ -433,8 +426,7 @@ const T30WbNormal = (props) => {
               });
             }
           }}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtStorageTanks?.map((data, index) => (
             <MenuItem key={index} value={data.id}>
@@ -457,8 +449,7 @@ const T30WbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="destinationSiteId">Site Tujuan</InputLabel>
         <Select
           labelId="destinationSiteId"
@@ -479,8 +470,7 @@ const T30WbNormal = (props) => {
               });
             }
           }}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtDestinationSites?.map((data, index) => {
             return (
@@ -500,8 +490,7 @@ const T30WbNormal = (props) => {
         className="mb-2"
         style={{
           backgroundColor: values.progressStatus !== 1 ? "whitesmoke" : "white",
-        }}
-      >
+        }}>
         <Select label="Truk" disabled={values.progressStatus !== 1}>
           {dtTransportVehicles?.map((data, index) => {
             return (
@@ -524,8 +513,7 @@ const T30WbNormal = (props) => {
           mb: 1,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="productId">Produk</InputLabel>
         <Select
           labelId="productId"
@@ -546,8 +534,7 @@ const T30WbNormal = (props) => {
               });
             }
           }}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtProducts?.map((data, index) => {
             return (
@@ -785,8 +772,7 @@ const T30WbNormal = (props) => {
                 canSubmit &&
                 (values.progressStatus === 0 || values.progressStatus === 2)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -802,8 +788,7 @@ const T30WbNormal = (props) => {
                 }
               );
             }}
-            disabled={!(values.progressStatus === 4)}
-          >
+            disabled={!(values.progressStatus === 4)}>
             Tampilkan QR
           </Button>
           <Button
@@ -811,8 +796,7 @@ const T30WbNormal = (props) => {
             fullWidth
             sx={{ mb: 1 }}
             onClick={handleClose}
-            disabled={!(values.progressStatus === 4)}
-          >
+            disabled={!(values.progressStatus === 4)}>
             Tutup
           </Button>
           {values.progressStatus === 2 && (
@@ -824,8 +808,7 @@ const T30WbNormal = (props) => {
               variant="contained"
               fullWidth
               sx={{ mb: 1, backgroundColor: "goldenrod" }}
-              onClick={handleCancel}
-            >
+              onClick={handleCancel}>
               Cancel (Batal)
             </Button>
           )}
@@ -837,8 +820,7 @@ const T30WbNormal = (props) => {
               setValues((prev) => ({ ...prev }));
               console.log("data transaction:");
               console.log(values);
-            }}
-          >
+            }}>
             Debugging
           </Button>
         </Grid>

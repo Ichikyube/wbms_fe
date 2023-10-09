@@ -29,8 +29,6 @@ import * as CustomerAPI from "../../../api/customerApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 import Swal from "sweetalert2";
 
-const typeTransaction = 1;
-
 const PksManualTimbangMasukOthers = ({
   ProductId,
   ProductName,
@@ -228,7 +226,8 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}>
+                }}
+              >
                 Nomor BON Trip
               </Typography>
             </>
@@ -256,7 +255,8 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 No. DO/NPB
               </Typography>
             </>
@@ -415,7 +415,8 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 SPTBS
               </Typography>
             </>
@@ -483,7 +484,8 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight IN
             </Typography>
           }
@@ -512,7 +514,8 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight OUT
             </Typography>
           }
@@ -542,7 +545,8 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Wajib Vendor
             </Typography>
           }
@@ -571,7 +575,8 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Lainnya
             </Typography>
           }
@@ -600,7 +605,8 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL
             </Typography>
           }
@@ -613,13 +619,13 @@ const PksManualTimbangMasukOthers = ({
           sx={{ mt: 2 }}
           fullWidth
           onClick={handleSubmit}
-          disabled={
-            !validateForm()
-            // !weighbridge.isStable() ||
-            // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-            //   ? true
-            //   : false
-          }
+          // disabled={
+          //   // !validateForm()
+          //   // !weighbridge.isStable() ||
+          //   // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+          //   //   ? true
+          //   //   : false
+          // }
         >
           Simpan
         </Button>

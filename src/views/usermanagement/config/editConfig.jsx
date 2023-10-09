@@ -34,18 +34,11 @@ import * as ConfigApi from "../../../api/configApi";
 import moment from "moment";
 import TimeSpanInput from "../../../components/TimeSpanInput";
 
-
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
-<<<<<<< HEAD
-  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.lifespan = timeSpan;
-
-=======
   const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
-    console.log(values.defaultVal)
+    console.log(values.defaultVal);
     values.defaultVal = JSON.stringify(values.defaultVal);
-    console.log(values.defaultVal)
->>>>>>> origin/main
+    console.log(values.defaultVal);
     try {
       ConfigApi.update(values);
       toast.success("Data Berhasil Diperbarui");
@@ -77,17 +70,18 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
   };
 
   useEffect(() => {
-    console.log(timeSpan)
-
-  }, [timeSpan])
+    console.log(timeSpan);
+  }, [timeSpan]);
   return (
     <Dialog
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}>
+      onClose={() => onClose("", false)}
+    >
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
+      >
         Edit Data Config
         <IconButton
           sx={{
@@ -98,7 +92,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -122,7 +117,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              >
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -130,7 +126,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Config Name
                   </FormLabel>
 
@@ -156,7 +153,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                 paddingBottom={3}
                 paddingLeft={3}
                 paddingRight={3}
-                gap="20px">
+                gap="20px"
+              >
                 <FormControl
                   sx={{
                     marginBottom: "8px",
@@ -164,14 +162,16 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     fontSize: "16px",
                     fontWeight: "bold",
                   }}
-                  component="fieldset">
+                  component="fieldset"
+                >
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Level of Approval
                   </FormLabel>
                   <RadioGroup
@@ -179,7 +179,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     aria-label="Level of Approval"
                     name="lvlOfApprvl"
                     value={values.lvlOfApprvl}
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                  >
                     <FormControlLabel
                       value={1}
                       control={<Radio />}
@@ -204,7 +205,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     color: "black",
                     fontSize: "16px",
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   <InputLabel id="demo-simple-select-label">
                     Default State
                   </InputLabel>
@@ -214,7 +216,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     id="status-default-select"
                     value={values.defaultVal}
                     label="Default State"
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                  >
                     <MenuItem value="ACTIVE">Active</MenuItem>
                     <MenuItem default value="DISABLED">
                       Disabled
@@ -241,7 +244,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -250,7 +254,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}>
+                    }}
+                  >
                     Simpan
                   </Button>
                 </Box>

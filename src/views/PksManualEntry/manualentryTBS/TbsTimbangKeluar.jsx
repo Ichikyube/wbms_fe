@@ -33,7 +33,12 @@ import { IosShareRounded } from "@mui/icons-material";
 
 const typeTransaction = 1;
 
-const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
+const PksManualTBSTimbangKeluar = ({
+  TransporterId,
+  TransporterCompanyName,
+  PlateNo,
+}) => {
+  
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
   const [dtDriver, setDtDriver] = useState([]);
@@ -47,12 +52,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
 
   const [results, setResults] = useState([]);
 
-const PksManualTBSTimbangKeluar = ({
-  TransporterId,
-  TransporterCompanyName,
-  PlateNo,
-}) => {
-  
+
   const initialValues = {
     bonTripNo: "",
     driverName: "",

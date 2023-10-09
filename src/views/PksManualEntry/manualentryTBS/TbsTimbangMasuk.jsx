@@ -88,11 +88,11 @@ const PksManualTBSinternalTimbangMasuk = ({
       values.typeTransaction = "1";
       values.originWeighInTimestamp = moment().toDate();
       values.originWeighInKg = weighbridge.getWeight();
-      values.productId = selectedProduct ? selectedProduct.id : "";
-      values.productName = selectedProduct ? selectedProduct.name : "";
-      values.transporterId = selectedCompany ? selectedCompany.id : "";
-      values.transporterCompanyName = selectedCompany
-        ? selectedCompany.name
+      values.productId = values.selectedProduct ? values.selectedProduct.id : "";
+      values.productName = values.selectedProduct ? values.selectedProduct.name : "";
+      values.transporterId = values.selectedCompany ? values.selectedCompany.id : "";
+      values.transporterCompanyName = values.selectedCompany
+        ? values.selectedCompany.name
         : "";
       values.transportVehiclePlateNo = PlateNo;
     }

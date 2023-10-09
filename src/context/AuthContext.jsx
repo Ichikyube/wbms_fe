@@ -1,7 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchConfigsData } from "../slices/tempConfigSlice";
+import {
+  clearTempConfigs,
+  useFetchConfigsDataQuery,
+} from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";
 import {
   setCredentials,
@@ -16,6 +19,7 @@ import {
   useSigninMutation,
   useSignoutMutation,
 } from "./../slices/authApiSlice";
+import { clearGroupMap } from "../slices/groupMappingSlice";
 
 const AuthContext = createContext({
   isAuth: false,
@@ -26,9 +30,8 @@ const AuthContext = createContext({
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
 export function AuthProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading } = useFetchConfigsDataQuery();
   const { userInfo } = useSelector((state) => state.app);
   const token = localStorage.getItem("wbms_at");
   const isAuth = userInfo && token;
@@ -43,7 +46,6 @@ export function AuthProvider({ children }) {
   const [signout] = useSignoutMutation();
 
   const route = location.pathname;
-
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
@@ -54,24 +56,19 @@ export function AuthProvider({ children }) {
         await toast.promise(Promise.resolve(), { error: message });
         return;
       }
-      setIsLoading(true);
-
 
       (async () => {
-        await dispatch(fetchConfigsData());
         await getEnvInit().then((result) => {
           dispatch(setConfigs({ ...result }));
         });
       })();
-      setIsLoading(false);
       dispatch(setCredentials({ ...response?.data.user }));
-      // Get the cookie string from the response headers
       // console.log("response from signin:", response);
       const at = data.tokens?.access_token;
       const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
       document.cookie = "rt=" + rt + ";SameSite=Lax";
-      
+
       navigate(from, { replace: true });
       // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
@@ -105,6 +102,7 @@ export function AuthProvider({ children }) {
         dispatch(clearSidebar());
         dispatch(clearCredentials());
         dispatch(clearConfigs());
+        dispatch(clearGroupMap());
         navigate("/");
       })();
       localStorage.clear();

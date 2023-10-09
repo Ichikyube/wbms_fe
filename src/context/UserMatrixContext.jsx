@@ -6,7 +6,10 @@ import React, {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchActiveConfigsData } from "../slices/tempConfigSlice";
+import {
+  useFetchActiveConfigsDataQuery,
+  useRequestEndedMutation,
+} from "../slices/tempConfigSlice";
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import { initialTempConfigState } from "../slices/tempConfigSlice";
 const UserMatrixContext = createContext({
@@ -22,14 +25,21 @@ export const useMatrix = () => {
 
 //apabila user yang melakukan request, dan masuk waktu yg diskejulkan maka
 const UserMatrixContextProvider = ({ children }) => {
-  const tempConfigs = useSelector((state) => state.tempConfigs);
+  const {
+    data: activeConfigsData,
+    isLoading,
+    error,
+  } = useFetchActiveConfigsDataQuery();
+  const [requestEnded] = useRequestEndedMutation();
   const dispatch = useDispatch();
   const [currentTime, setCurrentTime] = useState(null);
   const [currentHour, setCurrentHour] = useState(null);
   const [currentMinute, setCurrentMinute] = useState(null);
+  let configObject = {};
+  if (activeConfigsData) {
+    configObject = Object.assign({}, ...activeConfigsData);
+  }
 
-
-  const configObject = Object.assign({}, ...tempConfigs?.tempConfigDt);
   const {
     manualEntryWB: WB2,
     editTransaction: WB3,
@@ -47,7 +57,6 @@ const UserMatrixContextProvider = ({ children }) => {
 
   const configCallback = useCallback(() => {
     dispatch(fetchGroupMappingData());
-    dispatch(fetchActiveConfigsData());
   }, [dispatch]);
 
   useEffect(() => {
@@ -69,24 +78,36 @@ const UserMatrixContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (backDatedForm && currentTime >= WB5?.start)
-    setBackDatedForm(WB5.tempValue);
-    if (currentTime >= WB4?.end) setBackDatedForm(WB4.defaultValue);
-  }, [backDatedForm, currentTime, WB5]);
+      setBackDatedForm(WB5.tempValue);
+    if (currentTime >= WB5?.end) {
+      setBackDatedForm(WB5.defaultValue);
+      requestEnded(5).unwrap();
+    }
+  }, [backDatedForm, currentTime, WB5, requestEnded]);
   useEffect(() => {
     if (backDatedTemplate && currentTime >= WB4?.start)
       setBackdatedTemplate(WB4.tempValue);
-    if (currentTime >= WB4?.end) setBackdatedTemplate(WB4.defaultValue);
-  }, [backDatedTemplate, currentTime, WB4]);
+    if (currentTime >= WB4?.end) {
+      setBackdatedTemplate(WB4.defaultValue);
+      requestEnded(4).unwrap();
+    }
+  }, [backDatedTemplate, currentTime, WB4, requestEnded]);
   useEffect(() => {
     if (editTransaction && currentTime >= WB3?.start)
-    seteditTransaction(WB3.tempValue);
-    if (currentTime >= WB4?.end) seteditTransaction(WB4.defaultValue);
-  }, [editTransaction, currentTime, WB3]);
+      seteditTransaction(WB3.tempValue);
+    if (currentTime >= WB3?.end) {
+      seteditTransaction(WB3.defaultValue);
+      requestEnded(6).unwrap();
+    }
+  }, [editTransaction, currentTime, WB3, requestEnded]);
   useEffect(() => {
     if (manualEntryWB && currentTime >= WB2?.start)
-    setManualEntryWB(WB2.tempValue);
-    if (currentTime >= WB4?.end) setManualEntryWB(WB4?.defaultValue);
-  }, [backDatedTemplate, currentTime, WB2]);
+      setManualEntryWB(WB2.tempValue);
+    if (currentTime >= WB2?.end) {
+      setManualEntryWB(WB2?.defaultValue);
+      requestEnded(3).unwrap();
+    }
+  }, [manualEntryWB, currentTime, WB2, requestEnded]);
   return (
     <UserMatrixContext.Provider
       value={{
@@ -95,7 +116,7 @@ const UserMatrixContextProvider = ({ children }) => {
         backDatedTemplate,
         backDatedForm,
       }}>
-      {children}
+      {!isLoading && children}
     </UserMatrixContext.Provider>
   );
 };

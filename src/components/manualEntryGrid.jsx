@@ -20,7 +20,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ManualEntryGrid = (props) => {
-  const { tType } = props;
+  const { typeTransaction } = props;
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -89,7 +89,7 @@ const ManualEntryGrid = (props) => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },

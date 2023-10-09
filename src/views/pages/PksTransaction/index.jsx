@@ -26,7 +26,7 @@ import ProgressStatus from "../../../components/ProgressStatus";
 import TransactionGrid from "../../../components/TransactionGrid";
 import { useMatrix } from "../../../context/UserMatrixContext";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksTransaction = () => {
   const { configs, wb, wbTransaction } = useSelector((state) => state.app);
@@ -42,7 +42,7 @@ const PksTransaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), tType };
+      const data = { content: codeContent.trim(), typeTransaction };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
@@ -129,7 +129,7 @@ const PksTransaction = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -194,8 +194,7 @@ const PksTransaction = () => {
                       width: "10vh",
                       fontSize: "13px",
                       borderRadius: "10%",
-                    }}
-                  >
+                    }}>
                     New
                   </Button>
                 </Box>
@@ -214,21 +213,18 @@ const PksTransaction = () => {
                   <Menu
                     anchorEl={anchorE2}
                     open={Boolean(anchorE2)}
-                    onClose={handleClose}
-                  >
+                    onClose={handleClose}>
                     <MenuItem
                       component={Link}
                       to="/backdateFormTBS"
-                      onClick={handleClose}
-                    >
+                      onClick={handleClose}>
                       TBS
                     </MenuItem>
 
                     <MenuItem
                       component={Link}
                       to="/backdateFormOthers"
-                      onClick={handleClose}
-                    >
+                      onClick={handleClose}>
                       Lainnya
                     </MenuItem>
                   </Menu>
@@ -237,8 +233,7 @@ const PksTransaction = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -257,8 +252,7 @@ const PksTransaction = () => {
                             .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>

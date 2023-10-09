@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TempFeature from "./tempFeature";
 import TrxPercentages from "./trxPercentage";
 import TrxGradingFormula from "./trxGradingFormula";
+import TrxTypeCodes from "./trxTypeCodes";
 
 const ConditionalInput = ({
   dtConfig,
@@ -19,6 +20,15 @@ const ConditionalInput = ({
   if (dtConfig.id === 7) {
     inputComponent = (
       <TrxPercentages
+        dtConfig={dtConfig}
+        setFieldValue={setFieldValue}
+        handleChange={handleChange}
+        values={values}
+      />
+    );
+  } else if (dtConfig.id === 18) {
+    inputComponent = (
+      <TrxTypeCodes
         dtConfig={dtConfig}
         setFieldValue={setFieldValue}
         handleChange={handleChange}
@@ -52,8 +62,8 @@ const ConditionalInput = ({
       <input type="text" value={inputValue} onChange={handleInputChange} />
     );
   }
-
-  return <div>{inputComponent}</div>;
+  console.log(values.defaultVal)
+  return <>{inputComponent}</>;
 };
 
 export default ConditionalInput;

@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import api from "../api/api";
 import toast from "react-hot-toast";
-import "./styles/index.css";
+
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotification, setshowNotification] = useState(false);
@@ -28,7 +28,6 @@ const NotificationList = () => {
   useEffect(() => {
     fetchNotification();
   }, []);
-
   const handleNotificationClick = async (id) => {
     // Send a PUT request to mark notification as read
     // Example using fetch:
@@ -42,7 +41,7 @@ const NotificationList = () => {
     <div style={{ position: "relative" }} className="notification-list">
       <IconButton
         size="large"
-        aria-label="show 17 new notifications"
+        aria-label="show new notifications"
         color="inherit"
         onClick={handleShowNotification}>
         <Badge badgeContent={notifications?.length} color="error">
@@ -55,6 +54,8 @@ const NotificationList = () => {
             notifications?.map((notification) => (
               <Notification
                 key={notification.id}
+                photo={notification.photo}
+                sender={notification.sender}
                 message={notification.message}
                 isReaded={notification.isReaded}
                 onClick={() => handleNotificationClick(notification.id)}

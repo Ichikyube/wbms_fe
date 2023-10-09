@@ -31,7 +31,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const TimbangKeluarOthersTerima = () => {
   const [configs] = useConfig();
@@ -245,8 +245,7 @@ const TimbangKeluarOthersTerima = () => {
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -275,8 +274,7 @@ const TimbangKeluarOthersTerima = () => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -405,8 +403,7 @@ const TimbangKeluarOthersTerima = () => {
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -510,8 +507,7 @@ const TimbangKeluarOthersTerima = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -540,8 +536,7 @@ const TimbangKeluarOthersTerima = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -571,8 +566,7 @@ const TimbangKeluarOthersTerima = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -601,8 +595,7 @@ const TimbangKeluarOthersTerima = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -631,8 +624,7 @@ const TimbangKeluarOthersTerima = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -652,8 +644,7 @@ const TimbangKeluarOthersTerima = () => {
             weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
               ? true
               : false
-          }
-        >
+          }>
           Simpan
         </Button>
         <BonTripTBS
@@ -664,8 +655,7 @@ const TimbangKeluarOthersTerima = () => {
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}
-        >
+          onClick={handleClose}>
           Tutup
         </Button>
       </FormControl>

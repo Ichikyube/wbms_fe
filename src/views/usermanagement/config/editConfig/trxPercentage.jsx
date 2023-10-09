@@ -6,7 +6,7 @@ const styles = {
   border: "3px solid #efefef",
   backgroundColor: "#fff",
 };
-const TrxPercentages = ({dtConfig, setFieldValue, handleChange, values}) => {
+const TrxPercentages = ({dtConfig, setFieldValue}) => {
   let config;
   if(dtConfig)   config= dtConfig?.defaultVal;
 

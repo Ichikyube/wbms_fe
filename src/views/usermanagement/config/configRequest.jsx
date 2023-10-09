@@ -121,7 +121,6 @@ const ConfigRequest = () => {
   };
 
   const handleApprove = async (data, name) => {
-    console.log(data);
     // Tampilkan SweetAlert untuk konfirmasi
     const result = await Swal.fire({
       title: "Persetujuan",
@@ -150,8 +149,10 @@ const ConfigRequest = () => {
       }
       if (data.approval.length < data.config.lvlOfApprvl) {
         const notificationData = {
-          message: `${userInfo.name} melakukan permintaan untuk ${data.config.name}, dan sedang menunggu persetujuan anda`,
+          message: `${userInfo.name} telah menyetujui ${data.config.name}, dan kini menunggu persetujuan anda`,
           target: Object.keys(groupMap).filter((id => groupMap[id] === lvl[ data.approval.length + 1])),
+          photo: userInfo.profilePic,
+          sender: userInfo.name,
         };
 
         dispatch(createNotificationAsync(notificationData))

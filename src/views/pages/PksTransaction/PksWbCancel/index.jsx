@@ -135,7 +135,7 @@ const PksWbCancel = (props) => {
           where: {
             transportVehiclePlateNo: wbPksTransaction?.transportVehiclePlateNo,
             progressStatus: { in: [1, 4, 6] },
-            tType: 1,
+            typeTransaction: 1,
           },
           orderBy: { bonTripNo: "desc" },
         });
@@ -380,8 +380,7 @@ const PksWbCancel = (props) => {
                 canSubmit &&
                 (values.progressStatus === 5 || values.progressStatus === 7)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -397,16 +396,14 @@ const PksWbCancel = (props) => {
                 }
               );
             }}
-            disabled={!(values.progressStatus === 9)}
-          >
+            disabled={!(values.progressStatus === 9)}>
             Tampilkan QR
           </Button>
           <Button
             variant="contained"
             fullWidth
             sx={{ mb: 1 }}
-            onClick={handleClose}
-          >
+            onClick={handleClose}>
             Tutup
           </Button>
           <Button
@@ -416,8 +413,7 @@ const PksWbCancel = (props) => {
             onClick={() => {
               console.log("data transaction:");
               console.log(values);
-            }}
-          >
+            }}>
             Debugging
           </Button>
         </Grid>

@@ -1,8 +1,9 @@
 // Notification.js
 import React from "react";
 import toast from "react-hot-toast";
-
-const Notification = toast(({ message, isRead, key, onClick }) => {
+import "./styles/index.css";
+const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
+const Notification = ({ message, isRead, sender, photo, key, onClick }) => {
   return (
     <div
       style={{ width: "max-content", marginTop: "25px" }}
@@ -11,12 +12,12 @@ const Notification = toast(({ message, isRead, key, onClick }) => {
         <div className="notification-wrapper">
           <div className="image-container">
             <img 
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=6GHAjsWpt9&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
+              src={`${path}${photo}`}
               alt=""
             />
           </div>
           <div className="message">
-            <p className="sender">Emilia Gates</p>
+            <p className="sender">{sender}</p>
             <p className="message">{message}</p>
           </div>
         </div>
@@ -32,6 +33,6 @@ const Notification = toast(({ message, isRead, key, onClick }) => {
       </div>
     </div>
   );
-});
+};
 
 export default Notification;

@@ -19,7 +19,7 @@ import QRCodeScanner from "../../components/QRCodeScanner";
 import ProgressStatus from "../../components/ProgressStatus";
 import TransactionGrid from "../../components/TransactionGrid";
 
-const tType = 2;
+const typeTransaction = 2;
 
 const T30Transaction = () => {
   const { configs, wb } = useSelector((state) => state.app);
@@ -40,7 +40,7 @@ const T30Transaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), tType };
+      const data = { content: codeContent.trim(), typeTransaction };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
@@ -104,7 +104,7 @@ const T30Transaction = () => {
               <div
                 className="ag-theme-alpine"
                 style={{ width: "auto", height: "40vh" }}>
-                <TransactionGrid tType={tType} />
+                <TransactionGrid typeTransaction={typeTransaction} />
               </div>
             </Paper>
           </Grid>

@@ -29,7 +29,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 import Swal from "sweetalert2";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksManualTimbangMasukOthers = ({
   selectedProduct,
@@ -110,7 +110,7 @@ const PksManualTimbangMasukOthers = ({
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
-      tempTrans.tType = "1";
+      tempTrans.typeTransaction = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.productId = selectedProduct ? selectedProduct.id : "";
       tempTrans.productName = selectedProduct ? selectedProduct.name : "";
@@ -276,8 +276,7 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -305,8 +304,7 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -436,8 +434,7 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -502,8 +499,7 @@ const PksManualTimbangMasukOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPTBS
               </Typography>
             </>
@@ -539,8 +535,7 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -570,8 +565,7 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -601,8 +595,7 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -631,8 +624,7 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -661,8 +653,7 @@ const PksManualTimbangMasukOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }

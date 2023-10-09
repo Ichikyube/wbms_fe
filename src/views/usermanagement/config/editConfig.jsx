@@ -33,10 +33,12 @@ import * as ConfigApi from "../../../api/configApi";
 import ConditionalInput from "./editConfig/conditionalInput";
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
-  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
+    console.log(values.defaultVal)
     values.defaultVal = JSON.stringify(values.defaultVal);
+    console.log(values.defaultVal)
     try {
-      await ConfigApi.update(values);
+      ConfigApi.update(values);
       toast.success("Data Berhasil Diperbarui");
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {

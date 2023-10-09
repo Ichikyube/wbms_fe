@@ -17,7 +17,7 @@ import QRCodeScanner from "../../components/QRCodeScanner";
 import ProgressStatus from "../../components/ProgressStatus";
 import TransactionGrid from "../../components/TransactionGrid";
 
-const tType = 3;
+const typeTransaction = 3;
 
 const BulkingTransaction = () => {
   const { wb } = useSelector((state) => state.app);
@@ -37,7 +37,7 @@ const BulkingTransaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), tType };
+      const data = { content: codeContent.trim(), typeTransaction };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
@@ -101,7 +101,7 @@ const BulkingTransaction = () => {
               <div
                 className="ag-theme-alpine"
                 style={{ width: "auto", height: "40vh" }}>
-                <TransactionGrid tType={tType} />
+                <TransactionGrid typeTransaction={typeTransaction} />
               </div>
             </Paper>
           </Grid>

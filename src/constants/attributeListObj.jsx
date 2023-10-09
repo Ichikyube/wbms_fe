@@ -229,7 +229,7 @@ export const dtAttrJson = {
   ],
   Transaction: [
     { value: "id", label: "id" },
-    { value: "tType", label: "tType" },
+    { value: "typeTransaction", label: "typeTransaction" },
     { value: "bonTripNo", label: "bonTripNo" },
     { value: "vehicleStatus", label: "vehicleStatus" },
     { value: "deliveryStatus", label: "deliveryStatus" },

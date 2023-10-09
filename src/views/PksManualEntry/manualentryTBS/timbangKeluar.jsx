@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import socketIOClient from "socket.io-client";
+import { io } from "socket.io-client";
 import {
   Button,
   Grid,
@@ -29,55 +29,54 @@ import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
+import { IosShareRounded } from "@mui/icons-material";
 
+const typeTransaction = 1;
 
-const tType = 1;
-const socket = socketIOClient("http://localhost:3000");
 const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
+  const [dtCompany, setDtCompany] = useState([]);
+  const [dtProduct, setDtProduct] = useState([]);
+  const [dtDriver, setDtDriver] = useState([]);
+  const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
+  const [dtCustomer, setDtCustomer] = useState([]);
+  const [dtSite, setDtSite] = useState([]);
+
+  const [socket, setSocket] = useState();
+  const [qtyTbs, setQtyTbs] = useState();
+  const [millCode, setMillCode] = useState();
+
+  const [results, setResults] = useState([]);
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
-  const [, trxGradingPencentage, ...rest] = useSelector(
-    (state) => state.tempConfigs
-  );
+  const { trxGradingPencentage } = useSelector((state) => state.tempConfigs);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { values, setValues } = useForm({
-    ...TransactionAPI.InitialData,
-  });
-  const gradingPercentage = JSON.parse(Object.values(trxGradingPencentage));
+  const { values, setValues } = useForm(TransactionAPI.InitialData);
+  // console.log(trxGradingPencentage)
+  const gradingPercentage = JSON.parse(trxGradingPencentage);
+  let trxGradingWAJIB;
   const {
     trxGradingAIRPERSEN,
-    trxGradingTPPesen,
+    trxGradingTPPERSEN,
+    trxGradingTKPERSEN,
     trxGradingSAMPAHPERSEN,
     trxGradingBLMPERSEN,
     trxGradingBMPERSEN,
-    trxGradingLAINNYAPERSEN,
-    trxGradingWAJIB,
+    trxGradingPartenoPERSEN,
+    trxGradingBrondolanPERSEN,
   } = gradingPercentage;
+  const [potBMKG, setPotBMKG] = useState();
+  const [potBLMKG, setPotBLMKG] = useState();
+  const [potTPKG, setPotTPKG] = useState();
+  const [potTKKG, setPotTKKG] = useState();
+  const [potSMPHKG, setPotSMPHKG] = useState();
+  const [potAirKG, setPotAirKG] = useState();
+  const [potPartenoKG, setPotPartenoKG] = useState();
+  const [potBrondolanKG, setPotBrondolanKG] = useState();
+  const [potWajibKG, setPotWajibKG] = useState();
+  const [potLainnyaKG, setPotLainnyaKG] = useState();
+  const [potTotalKG, setPotTotalKG] = useState();
 
-  // useEffect(() => {
-  //   socket.on('result', (data) => {
-  //     setResult(data);
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dataById = await TransactionAPI.getById(id);
-        console.log(dataById);
-        if (dataById) {
-          setValues({
-            ...dataById.record,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
   const [canSubmit, setCanSubmit] = useState(false);
 
@@ -88,200 +87,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
       ...prevValues,
       [name]: value,
     }));
-    socket.emit("calculate", value);
   };
-
-  // BUAH MENTAH
-
-  const [persenBM, setPersenBM] = useState(0);
-
-  const handlePersenBM = (event) => {
-    const value = event.target.value;
-    // Memastikan nilai yang dimasukkan adalah angka
-    if (!isNaN(value)) {
-      setPersenBM(value);
-    }
-  };
-
-  const BMkg = () => {
-    const result = (persenBM * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // BUAH LEWAT MATANG
-
-  const [persenBLM, setPersenBLM] = useState(0);
-
-  const handlePersenBLM = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenBLM(value);
-    }
-  };
-
-  const BLMkg = () => {
-    const result = (persenBLM * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // TANGKAI PANJANG
-
-  const [persenTP, setPersenTP] = useState(0);
-
-  const handlePersenTP = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenTP(value);
-    }
-  };
-
-  const TPkg = () => {
-    const result = (persenTP * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // AIR
-
-  const [persenAir, setPersenAir] = useState(0);
-
-  const handlePersenAir = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenAir(value);
-    }
-  };
-
-  const Airkg = () => {
-    const result = (persenAir * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // SAMPAH
-
-  const [persenSMPH, setPersenSMPH] = useState(0);
-
-  const handlePersenSMPH = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenSMPH(value);
-    }
-  };
-
-  const SMPHkg = () => {
-    const result = (persenSMPH * values.qtyTbs) / 100;
-    return result;
-  };
-  const handleSubmit = async () => {
-    const {
-      id,
-      bonTripNo,
-      productId,
-      productName,
-      transporterId,
-      transporterCompanyName,
-      driverId,
-      driverName,
-      transportVehicleId,
-      transportVehiclePlateNo,
-      transportVehicleSccModel,
-      originSiteId,
-      originSiteName,
-      customerName,
-      customerId,
-      originWeighInKg,
-      originWeighOutKg,
-      deliveryOrderNo,
-      progressStatus,
-      originWeighInTimestamp,
-      originWeighOutTimestamp,
-      qtyTbs,
-    } = values;
-
-    let updatedProgressStatus = progressStatus;
-    let updatedOriginWeighOutTimestamp = originWeighOutTimestamp;
-    let updatedOriginWeighOutKg = originWeighOutKg;
-    let updatedtransporterId = transporterId;
-    let updatedtransporterName = transporterCompanyName;
-    let updatedTransportName = transportVehiclePlateNo;
-
-    if (progressStatus === 1) {
-      updatedProgressStatus = 4;
-      updatedOriginWeighOutKg = weighbridge.getWeight();
-      updatedOriginWeighOutTimestamp = moment().toDate();
-      updatedtransporterId = selectedCompany ? selectedCompany.id : "";
-      updatedtransporterName = selectedCompany ? selectedCompany.name : "";
-      updatedTransportName = PlateNo;
-    }
-
-    const updatedTransaction = {
-      id,
-      bonTripNo,
-      productId,
-      productName,
-      transporterId: updatedtransporterId,
-      transporterCompanyName: updatedtransporterName,
-      driverId,
-      driverName,
-      transportVehicleId,
-      transportVehiclePlateNo: updatedTransportName,
-      originSiteId,
-      originSiteName,
-      customerName,
-      customerId,
-      transportVehicleSccModel,
-      originWeighInKg,
-      originWeighOutKg: updatedOriginWeighOutKg,
-      deliveryOrderNo,
-      progressStatus: updatedProgressStatus,
-      qtyTbs,
-      originWeighInTimestamp,
-      originWeighOutTimestamp: updatedOriginWeighOutTimestamp,
-    };
-
-    try {
-      const results = await TransactionAPI.update({ ...updatedTransaction });
-
-      if (!results?.status) {
-        toast.error(`Error: ${results?.message}.`);
-        return;
-      }
-
-      toast.success(`Transaksi Timbang Keluar Berhasil disimpan.`);
-      setValues({ ...updatedTransaction });
-    } catch (error) {
-      toast.error(`Error: ${error.message}.`);
-    }
-  };
-
-  useEffect(() => {
-    // ... (kode useEffect yang sudah ada)
-
-    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-    let cSubmit = false;
-    if (values.progressStatus === 0) {
-      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 21) {
-      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    }
-    setCanSubmit(cSubmit);
-  }, [values]);
-
-  useEffect(() => {
-    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
-
-    if (
-      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
-    ) {
-      setOriginWeightNetto(0);
-    } else {
-      let total =
-        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
-        values.potonganWajib -
-        values.potonganLain;
-      setOriginWeightNetto(total);
-    }
-  }, [values]);
 
   const validateForm = () => {
     return (
@@ -303,12 +109,31 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
 
     navigate("/pks-transaction");
   };
-  const [dtCompany, setDtCompany] = useState([]);
-  const [dtProduct, setDtProduct] = useState([]);
-  const [dtDriver, setDtDriver] = useState([]);
-  const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
-  const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
+  const handleSubmit = async () => {
+    if (values.progressStatus === 1) {
+      values.progressStatus = 4;
+      values.originWeighOutKg = weighbridge.getWeight();
+      values.originWeighOutTimestamp = moment().toDate();
+      values.transporterId = selectedCompany ? selectedCompany.id : "";
+      values.transporterCompanyName = selectedCompany
+        ? selectedCompany.name
+        : "";
+      values.transportVehiclePlateNo = PlateNo;
+    }
+
+    try {
+      const results = await TransactionAPI.update({ ...values });
+
+      if (!results?.status) {
+        toast.error(`Error: ${results?.message}.`);
+        return;
+      }
+
+      toast.success(`Transaksi Timbang Keluar Berhasil disimpan.`);
+    } catch (error) {
+      toast.error(`Error: ${error.message}.`);
+    }
+  };
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -332,7 +157,118 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
     SiteAPI.getAll().then((res) => {
       setDtSite(res.data.site.records);
     });
+
+    const socket = io("http://localhost:6001");
+    setSocket(socket);
+    socket.on("connect", () => console.log("Connected"));
+    socket.on("result", (values) => {
+      setResults(values);
+      console.log(values)
+    });
+    socket.on("connect_error", (error) => {
+      console.error("Connection Error:", error.message); // Handle the error here
+    });
+    return () => {
+      socket.disconnect(); // Clean up on component unmount
+    };
   }, []);
+  useEffect(() => {
+    if(results) {
+      setPotBMKG(results.calculatedBM)
+      setPotBLMKG(results.calculatedBLM)
+      setPotTPKG(results.calculatedTP)
+      setPotTKKG(results.calculatedTK)
+      setPotSMPHKG(results.calculatedTrash)
+      setPotAirKG(results.calculatedWater)
+      setPotPartenoKG(results.calculatedParteno)
+      setPotBrondolanKG(results.calculatedBrondolan)
+      // setPotWajibKG()
+      // setPotLainnyaKG()
+      // setPotTotalKG()
+    }
+  }, [results])
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataById = await TransactionAPI.getById(id);
+
+        if (dataById) {
+          const record = Object.fromEntries(
+            Object.entries(dataById.record).filter(
+              ([key, value]) => value !== null
+            )
+          );
+          setValues({
+            ...record,
+          });
+          console.log(values);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    // ... (kode useEffect yang sudah ada)
+
+    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+    let cSubmit = false;
+    if (values.progressStatus === 0) {
+      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+    } else if (values.progressStatus === 21) {
+      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+    }
+    setCanSubmit(cSubmit);
+  }, [values]);
+
+  useEffect(() => {
+    socket?.emit("hitungPotongan", {
+      millCode,
+      qtyTbs,
+      weightnetto: originWeightNetto,
+      trxGradingAIRPERSEN,
+      trxGradingTPPERSEN,
+      trxGradingTKPERSEN,
+      trxGradingSAMPAHPERSEN,
+      trxGradingBLMPERSEN,
+      trxGradingBMPERSEN,
+      trxGradingPartenoPERSEN,
+      trxGradingBrondolanPERSEN,
+    });
+  }, [
+    millCode,
+    qtyTbs,
+    originWeightNetto,
+    trxGradingAIRPERSEN,
+    trxGradingTPPERSEN,
+    trxGradingTKPERSEN,
+    trxGradingSAMPAHPERSEN,
+    trxGradingBLMPERSEN,
+    trxGradingBMPERSEN,
+    trxGradingPartenoPERSEN,
+    trxGradingBrondolanPERSEN,
+  ]);
+
+  useEffect(() => {
+    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
+
+    if (
+      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
+      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values]);
 
   return (
     <>
@@ -393,41 +329,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           value={values.deliveryOrderNo}
           onChange={handleChange}
         />
-        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Nomor Polisi
-          </InputLabel>
-          <Autocomplete
-            id="select-label"
-            options={dtTransportVehicle}
-            getOptionLabel={(option) => option.plateNo}
-            value={
-              dtTransportVehicle.find(
-                (item) => item.id === values.transportVehicleId
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                transportVehicleId: newValue ? newValue.id : "",
-                transportVehiclePlateNo: newValue ? newValue.plateNo : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="-- Pilih Kendaraan --"
-                variant="outlined"
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-              />
-            )}
-          />
-        </FormControl> */}
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Nama Supir
@@ -459,39 +360,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             )}
           />
         </FormControl>
-        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Nama Vendor
-          </InputLabel>
-          <Autocomplete
-            id="select-label"
-            options={dtCompany}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtCompany.find((item) => item.id === values.transporterId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                transporterId: newValue ? newValue.id : "",
-                transporterCompanyName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Vendor --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl> */}
         <TextField
           variant="outlined"
           size="small"
@@ -521,39 +389,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           value={values.transportVehicleSccModel}
           onChange={handleChange}
         />
-        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Jenis Barang
-          </InputLabel>
-          <Autocomplete
-            id="select-label"
-            options={dtProduct}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtProduct.find((item) => item.id === values.productId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                productId: newValue ? newValue.id : "",
-                productName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Barang --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl> */}
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Customer
@@ -685,7 +520,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           }
           name="qtyTbs"
           value={values.qtyTbs}
-          onChange={handleChange}
+          onChange={(event) => {
+            const { name, value } = event.target;
+            setValues((prevValues) => ({
+              ...prevValues,
+              [name]: value,
+            }));
+            setQtyTbs(value);
+          }}
         />
         <TextField
           variant="outlined"
@@ -695,7 +537,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           InputLabelProps={{
             shrink: true,
           }}
-          // placeholder="Masukkan Jumlah Janjang"
           sx={{
             my: 2,
             "& .MuiOutlinedInput-root": {
@@ -745,6 +586,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -767,7 +609,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               value={trxGradingBMPERSEN}
-              onChange={handlePersenBM}
             />
           </FormControl>
           <TextField
@@ -787,13 +628,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               },
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            value={BMkg()}
+            value={potBMKG}
           />
           <FormControl
             sx={{
@@ -815,6 +657,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -837,7 +680,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               value={trxGradingBLMPERSEN}
-              onChange={handlePersenBLM}
             />
           </FormControl>
           <TextField
@@ -857,13 +699,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               },
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            value={BLMkg()}
+            value={potBLMKG}
           />
           <FormControl
             sx={{
@@ -885,6 +728,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -906,8 +750,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Tangkai Panjang
                 </Typography>
               }
-              value={trxGradingTPPesen}
-              onChange={handlePersenTP}
+              value={trxGradingTPPERSEN}
             />
           </FormControl>
           <TextField
@@ -927,13 +770,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            value={TPkg()}
+            value={potTPKG}
           />
           <FormControl
             sx={{
@@ -955,6 +799,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -976,8 +821,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Tangkai Kosong
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingTKPERSEN}
             />
           </FormControl>
           <TextField
@@ -997,14 +841,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={potTKKG}
           />
           <FormControl
             sx={{
@@ -1026,6 +870,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1048,7 +893,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               value={trxGradingSAMPAHPERSEN}
-              onChange={handlePersenSMPH}
             />
           </FormControl>
           <TextField
@@ -1068,13 +912,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            value={SMPHkg()}
+            value={potSMPHKG}
           />
           <FormControl
             sx={{
@@ -1096,6 +941,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1118,7 +964,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 </Typography>
               }
               value={trxGradingAIRPERSEN}
-              onChange={handlePersenAir}
             />
           </FormControl>
           <TextField
@@ -1138,13 +983,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            value={Airkg()}
+            value={potAirKG}
           />
           <FormControl
             sx={{
@@ -1166,6 +1012,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1187,8 +1034,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Parteno
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingPartenoPERSEN}
             />
           </FormControl>
           <TextField
@@ -1208,14 +1054,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={potPartenoKG}
           />
           <FormControl
             sx={{
@@ -1237,6 +1083,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1258,8 +1105,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Brondolan
                 </Typography>
               }
-              //   name="originWeighInKg"
-              // value={0}
+              value={trxGradingBrondolanPERSEN}
             />
           </FormControl>
           <TextField
@@ -1279,14 +1125,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={potBrondolanKG}
           />
           <FormControl
             sx={{
@@ -1308,6 +1154,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1350,14 +1197,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={0}
+            value={potWajibKG}
           />
           <FormControl
             sx={{
@@ -1379,6 +1226,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 shrink: true,
               }}
               InputProps={{
+                readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                     %/Jjg
@@ -1400,8 +1248,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   Pot. Lainnya
                 </Typography>
               }
-              //   name="originWeighInKg"
-              value={trxGradingLAINNYAPERSEN}
+              // value={trxGradingLAINNYAPERSEN}
             />
           </FormControl>
           <TextField
@@ -1421,14 +1268,14 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               my: 1,
             }}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
                   kg
                 </InputAdornment>
               ),
             }}
-            //   name="originWeighInKg"
-            // value={trxGradingLAINNYAPERSEN}
+            value={potLainnyaKG}
           />
         </Box>
         <TextField
@@ -1454,7 +1301,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               TOTAL Potongan
             </Typography>
           }
-          // value={}
+          value={potTotalKG}
         />
       </FormControl>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -1524,6 +1371,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             },
           }}
           InputProps={{
+            readOnly: true,
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
           label={
@@ -1550,6 +1398,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             },
           }}
           InputProps={{
+            readOnly: true,
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
           label={
@@ -1579,6 +1428,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             },
           }}
           InputProps={{
+            readOnly: true,
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
           label={

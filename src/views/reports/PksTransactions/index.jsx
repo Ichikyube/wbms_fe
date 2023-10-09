@@ -47,7 +47,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
+const typeTransaction = 1;
 
 const ReportPksTransactions = () => {
   // console.clear();
@@ -154,7 +154,7 @@ const ReportPksTransactions = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         isDeleted: false,
         progressStatus: { notIn: [1, 20, 21, 22] },
       },
@@ -374,8 +374,7 @@ const ReportPksTransactions = () => {
                     }}
                     onClick={() => {
                       gridRef.current.api.exportDataAsExcel();
-                    }}
-                  >
+                    }}>
                     <FileDownloadOutlinedIcon
                       sx={{ mr: "5px", fontSize: "17px" }}
                     />
@@ -386,8 +385,7 @@ const ReportPksTransactions = () => {
             </div>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "70vh" }}
-            >
+              style={{ width: "auto", height: "70vh" }}>
               <AgGridReact
                 ref={gridRef}
                 rowData={filteredTransactions} // Row Data for Rows

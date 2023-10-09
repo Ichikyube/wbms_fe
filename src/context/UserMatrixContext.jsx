@@ -13,7 +13,10 @@ import {
 import { fetchGroupMappingData } from "../slices/groupMappingSlice";
 import { initialTempConfigState } from "../slices/tempConfigSlice";
 const UserMatrixContext = createContext({
-  ...initialTempConfigState,
+  manualEntryWB: false,
+  editTransaction: false,
+  backDatedTemplate: false,
+  backDatedForm: false,
 });
 
 export const useMatrix = () => {

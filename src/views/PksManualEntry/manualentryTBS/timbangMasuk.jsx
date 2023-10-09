@@ -34,7 +34,7 @@ import { useWeighbridge, useConfig } from "../../../common/hooks";
 
 let wsClient;
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksManualTBSinternalTimbangMasuk = ({
   selectedProduct,
@@ -121,7 +121,7 @@ const PksManualTBSinternalTimbangMasuk = ({
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
-      tempTrans.tType = "1";
+      tempTrans.typeTransaction = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.originWeighInKg = weighbridge.getWeight();
       tempTrans.productId = selectedProduct ? selectedProduct.id : "";

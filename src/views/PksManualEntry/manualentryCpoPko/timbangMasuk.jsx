@@ -35,7 +35,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 
-const tType = 1;
+const typeTransaction = 1;
 let wsClient;
 
 const PksManualCpoPkoTimbangMasuk = () => {
@@ -116,7 +116,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
-      tempTrans.tType = "1";
+      tempTrans.typeTransaction = "1";
       tempTrans.originWeighInTimestamp = moment().toDate();
       tempTrans.originWeighInKg = weighbridge.getWeight();
     }
@@ -272,8 +272,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -289,8 +288,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined" // Variasi TextField dengan style "outlined"
@@ -311,8 +309,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white", // Background color teks label
                           px: 1, // Padding horizontal teks label 1 unit
-                        }}
-                      >
+                        }}>
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -340,8 +337,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         No. DO/NPB
                       </Typography>
                     </>
@@ -354,8 +350,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nomor Polisi
                   </InputLabel>
 
@@ -399,8 +394,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Supir
                   </InputLabel>
 
@@ -438,8 +432,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -493,8 +486,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
@@ -506,8 +498,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Jenis Barang
                   </InputLabel>
 
@@ -545,14 +536,12 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   display="grid"
                   gridTemplateColumns="1.8fr 1fr"
                   gap={2}
-                  alignItems="center"
-                >
+                  alignItems="center">
                   <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                     <InputLabel
                       id="select-label"
                       shrink
-                      sx={{ bgcolor: "white", px: 1 }}
-                    >
+                      sx={{ bgcolor: "white", px: 1 }}>
                       Asal
                     </InputLabel>
 
@@ -605,8 +594,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Tangki
                       </Typography>
                     }
@@ -618,14 +606,12 @@ const PksManualCpoPkoTimbangMasuk = () => {
                   display="grid"
                   gridTemplateColumns="1.8fr 1fr"
                   gap={2}
-                  alignItems="center"
-                >
+                  alignItems="center">
                   <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                     <InputLabel
                       id="select-label"
                       shrink
-                      sx={{ bgcolor: "white", px: 1 }}
-                    >
+                      sx={{ bgcolor: "white", px: 1 }}>
                       Customer
                     </InputLabel>
 
@@ -679,8 +665,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Tangki
                       </Typography>
                     }
@@ -714,8 +699,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight IN
                     </Typography>
                   }
@@ -743,8 +727,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight OUT
                     </Typography>
                   }
@@ -772,8 +755,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -801,8 +783,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Lainnya
                     </Typography>
                   }
@@ -833,8 +814,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL
                     </Typography>
                   }
@@ -851,8 +831,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                     weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
                       ? true
                       : false
-                  }
-                >
+                  }>
                   Simpan
                 </Button>
                 <BonTripPrint
@@ -889,8 +868,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Segel Mainhole 1 *
                     </Typography>
                   }
@@ -917,8 +895,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Segel Mainhole 1 *
                     </Typography>
                   }
@@ -945,8 +922,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Segel Mainhole 2
                     </Typography>
                   }
@@ -973,8 +949,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Segel Mainhole 2
                     </Typography>
                   }
@@ -990,8 +965,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Sertifikasi
                   </FormLabel>
                   <Autocomplete
@@ -1019,7 +993,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
-            <ManualEntryGrid tType={tType} />
+            <ManualEntryGrid typeTransaction={typeTransaction} />
           </Paper>
         </Grid>
       </Grid>

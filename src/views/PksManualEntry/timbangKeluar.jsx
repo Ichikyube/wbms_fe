@@ -28,7 +28,7 @@ import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const TimbangKeluar = () => {
   const [configs] = useConfig();
@@ -93,7 +93,7 @@ const TimbangKeluar = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -158,8 +158,7 @@ const TimbangKeluar = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -175,8 +174,7 @@ const TimbangKeluar = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               {" "}
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
@@ -242,8 +240,7 @@ const TimbangKeluar = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Nomor Polisi
                       </Typography>
                     </>
@@ -256,13 +253,11 @@ const TimbangKeluar = () => {
                   fullWidth
                   variant="outlined"
                   size="small"
-                  sx={{ my: 2 }}
-                >
+                  sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -335,15 +330,14 @@ const TimbangKeluar = () => {
                       .includes(searchQuery.toLowerCase())
                   );
                   gridRef.current.api.setRowData(filteredData);
-                }}
-              >
+                }}>
                 <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
               </IconButton>
             </Box>
           </Box>
           <Paper sx={{ p: 2, mt: 1 }}>
             <ManualEntryGrid
-              tType={tType}
+              typeTransaction={typeTransaction}
               gridRef={gridRef}
               fetcher={fetcher}
             />

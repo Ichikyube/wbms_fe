@@ -34,7 +34,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 import { useConfig } from "../../../common/hooks";
 import * as SiteAPI from "../../../api/sitesApi";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const BackdateFormTBSInternal = () => {
   const dispatch = useDispatch();
@@ -105,7 +105,7 @@ const BackdateFormTBSInternal = () => {
 
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 4;
-      tempTrans.tType = "1";
+      tempTrans.typeTransaction = "1";
     }
 
     try {
@@ -243,8 +243,7 @@ const BackdateFormTBSInternal = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -255,31 +254,30 @@ const BackdateFormTBSInternal = () => {
             />
           </Paper>
           <Paper elevation={2} sx={{ p: 2, mt: 2 }}>
-              <TextField
-                type="date"
-                variant="outlined"
-                size="medium"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label={
-                  <Typography
-                    sx={{
-                      bgcolor: "white",
-                      px: 1,
-                    }}
-                  >
-                    Tanggal BonTripNo
-                  </Typography>
-                }
-                value={moment(selectedDate).format("YYYY-MM-DD")}
-                onChange={(e) => {
-                  const newDate = new Date(e.target.value);
-                  setSelectedDate(newDate);
-                }}
-                disabled={values.progressStatus === 4}
-              />
+            <TextField
+              type="date"
+              variant="outlined"
+              size="medium"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label={
+                <Typography
+                  sx={{
+                    bgcolor: "white",
+                    px: 1,
+                  }}>
+                  Tanggal BonTripNo
+                </Typography>
+              }
+              value={moment(selectedDate).format("YYYY-MM-DD")}
+              onChange={(e) => {
+                const newDate = new Date(e.target.value);
+                setSelectedDate(newDate);
+              }}
+              disabled={values.progressStatus === 4}
+            />
           </Paper>
         </Grid>
         <Grid item xs={10.2}>
@@ -287,8 +285,7 @@ const BackdateFormTBSInternal = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined"
@@ -309,8 +306,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -338,8 +334,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         No. DO/NPB
                       </Typography>
                     </>
@@ -365,8 +360,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Nomor Polisi
                       </Typography>
                     </>
@@ -379,8 +373,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Supir
                   </InputLabel>
                   <Autocomplete
@@ -417,8 +410,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -472,8 +464,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
@@ -486,8 +477,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Jenis Barang
                   </InputLabel>
                   <Autocomplete
@@ -524,8 +514,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Customer
                   </InputLabel>
 
@@ -564,8 +553,7 @@ const BackdateFormTBSInternal = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Asal
                   </InputLabel>
 
@@ -620,8 +608,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Qty TBS
                       </Typography>
                     </>
@@ -651,8 +638,7 @@ const BackdateFormTBSInternal = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         SPTBS
                       </Typography>
                     </>
@@ -667,13 +653,11 @@ const BackdateFormTBSInternal = () => {
                   display="grid"
                   gridTemplateColumns="4fr 2fr"
                   gap={2}
-                  alignItems="center"
-                >
+                  alignItems="center">
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -693,8 +677,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -710,8 +693,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Buah Mentah
                         </Typography>
                       }
@@ -739,8 +721,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -751,8 +732,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -772,8 +752,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -789,8 +768,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Buah Lewat Matang
                         </Typography>
                       }
@@ -818,8 +796,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -830,8 +807,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -851,8 +827,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -868,8 +843,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Tangkai Panjang
                         </Typography>
                       }
@@ -897,8 +871,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -909,8 +882,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -930,8 +902,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -947,8 +918,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Tangkai Kosong
                         </Typography>
                       }
@@ -976,8 +946,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -988,8 +957,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1009,8 +977,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1026,8 +993,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Sampah
                         </Typography>
                       }
@@ -1055,8 +1021,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1067,8 +1032,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1088,8 +1052,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1105,8 +1068,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Air
                         </Typography>
                       }
@@ -1134,8 +1096,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1146,8 +1107,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1167,8 +1127,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1184,8 +1143,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Parteno
                         </Typography>
                       }
@@ -1213,8 +1171,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1225,8 +1182,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1246,8 +1202,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1263,8 +1218,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Brondolan
                         </Typography>
                       }
@@ -1292,8 +1246,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1304,8 +1257,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1325,8 +1277,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1342,8 +1293,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Pot. Wajib Vendor
                         </Typography>
                       }
@@ -1371,8 +1321,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1383,8 +1332,7 @@ const BackdateFormTBSInternal = () => {
                   <FormControl
                     sx={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <Checkbox
                       size="small"
                       sx={{
@@ -1404,8 +1352,7 @@ const BackdateFormTBSInternal = () => {
                         endAdornment: (
                           <InputAdornment
                             position="end"
-                            sx={{ fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold" }}>
                             %/Jjg
                           </InputAdornment>
                         ),
@@ -1421,8 +1368,7 @@ const BackdateFormTBSInternal = () => {
                           sx={{
                             bgcolor: "white",
                             px: 1,
-                          }}
-                        >
+                          }}>
                           Pot. Lainnya
                         </Typography>
                       }
@@ -1450,8 +1396,7 @@ const BackdateFormTBSInternal = () => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           kg
                         </InputAdornment>
                       ),
@@ -1479,8 +1424,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL Potongan
                     </Typography>
                   }
@@ -1513,8 +1457,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight IN
                     </Typography>
                   }
@@ -1546,8 +1489,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Weight OUT
                     </Typography>
                   }
@@ -1580,8 +1522,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -1612,8 +1553,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Potongan Lainnya
                     </Typography>
                   }
@@ -1644,8 +1584,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       TOTAL
                     </Typography>
                   }
@@ -1657,8 +1596,7 @@ const BackdateFormTBSInternal = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!validateForm() || values.progressStatus === 4}
-                >
+                  disabled={!validateForm() || values.progressStatus === 4}>
                   Simpan
                 </Button>
                 <BonTripTBS
@@ -1695,8 +1633,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Tanggal Weight IN
                     </Typography>
                   }
@@ -1723,8 +1660,7 @@ const BackdateFormTBSInternal = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}
-                    >
+                      }}>
                       Tanggal Weight OUT
                     </Typography>
                   }

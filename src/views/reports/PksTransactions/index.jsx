@@ -48,6 +48,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const typeTransaction = 1;
+const typeSite = 1;
 
 const ReportPksTransactions = () => {
   // console.clear();

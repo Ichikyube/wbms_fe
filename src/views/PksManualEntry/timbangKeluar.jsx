@@ -27,6 +27,7 @@ import CpoPko from "../PksManualEntry/manualentryCpoPko/timbangKeluar";
 import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
+import { cibSlack } from "@coreui/icons";
 
 const typeTransaction = 1;
 
@@ -70,7 +71,6 @@ const TimbangKeluar = () => {
     }));
   };
 
-  const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCompany, setDtCompany] = useState([]);
@@ -174,8 +174,8 @@ const TimbangKeluar = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
-              {" "}
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
               fullWidth
@@ -246,7 +246,7 @@ const TimbangKeluar = () => {
                     </>
                   }
                   name="transportVehiclePlateNo"
-                  value={values.transportVehiclePlateNo}
+                  value={values?.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
                 <FormControl
@@ -257,8 +257,9 @@ const TimbangKeluar = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
-                    Nama Vendor
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nama Vendor/Customer
                   </InputLabel>
                   <Autocomplete
                     id="select-label"
@@ -266,7 +267,7 @@ const TimbangKeluar = () => {
                     getOptionLabel={(option) => option.name}
                     value={
                       dtCompany.find(
-                        (item) => item.id === values.transporterId
+                        (item) => item.id === values?.transporterId
                       ) || null
                     }
                     onChange={(event, newValue) => {
@@ -275,10 +276,6 @@ const TimbangKeluar = () => {
                         transporterId: newValue ? newValue.id : "",
                         transporterCompanyName: newValue ? newValue.name : "",
                       }));
-                      setSelectedCompany({
-                        id: newValue ? newValue.id : "",
-                        name: newValue ? newValue.name : "",
-                      });
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -290,21 +287,49 @@ const TimbangKeluar = () => {
                     )}
                   />
                 </FormControl>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder="Masukkan Jumlah Janjang"
+                  sx={{
+                    my: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Jenis Barang
+                      </Typography>
+                    </>
+                  }
+                  value={values?.productName}
+                />
               </FormControl>
               {/* CPO & PKO */}
               {/* {selectedOption === "CpoPko" && <CpoPko />} */}
               {/* TBS */}
               {selectedOption === "Tbs" && (
                 <TimbangKeluarTBS
-                  selectedCompany={selectedCompany}
-                  PlateNo={values.transportVehiclePlateNo}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
+                  PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
               {/* OTHERS */}
               {selectedOption === "Others" && (
                 <TimbangKeluarOthers
-                  selectedCompany={selectedCompany}
-                  PlateNo={values.transportVehiclePlateNo}
+                  TransporterId={values?.transporterId}
+                  TransporterCompanyName={values?.transporterCompanyName}
+                  PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
             </Box>

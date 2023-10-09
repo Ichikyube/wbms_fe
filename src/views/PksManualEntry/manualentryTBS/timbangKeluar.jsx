@@ -46,13 +46,35 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
   const [millCode, setMillCode] = useState();
 
   const [results, setResults] = useState([]);
+
+const PksManualTBSTimbangKeluar = ({
+  TransporterId,
+  TransporterCompanyName,
+  PlateNo,
+}) => {
+  
+  const initialValues = {
+    bonTripNo: "",
+    driverName: "",
+    transporterId: "",
+    transporterCompanyName: "",
+    transportVehiclePlateNo: "",
+    originWeighOutKg: "",
+    deliveryOrderNo: "",
+    progressStatus: "",
+    originWeighOutTimestamp: "",
+    transportVehicleSccModel: "",
+    afdeling: "",
+    blok: "",
+    sptbs: "",
+    qtyTbs: "",
+  };
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
   const { trxGradingPencentage } = useSelector((state) => state.tempConfigs);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { values, setValues } = useForm(TransactionAPI.InitialData);
-  // console.log(trxGradingPencentage)
+  const { values, setValues } = useForm(initialValues);
   const gradingPercentage = JSON.parse(trxGradingPencentage);
   let trxGradingWAJIB;
   const {
@@ -76,7 +98,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
   const [potWajibKG, setPotWajibKG] = useState();
   const [potLainnyaKG, setPotLainnyaKG] = useState();
   const [potTotalKG, setPotTotalKG] = useState();
-
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
   const [canSubmit, setCanSubmit] = useState(false);
 
@@ -89,17 +110,43 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
     }));
   };
 
+
+  // useEffect(() => {
+  //   // ... (kode useEffect yang sudah ada)
+
+  //   // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+  //   let cSubmit = false;
+  //   if (values.progressStatus === 0) {
+  //     cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+  //   } else if (values.progressStatus === 21) {
+  //     cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+  //   }
+  //   setCanSubmit(cSubmit);
+  // }, [values]);
+
+  useEffect(() => {
+    if (
+      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
+      weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values, weighbridge]);
+
   const validateForm = () => {
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
-      values.transportVehicleId &&
-      values.driverId &&
-      values.transporterId &&
-      values.productId &&
-      values.originSiteId &&
-      values.qtyTbs &&
-      values.customerId
+      values.driverName &&
+      TransporterId &&
+      TransporterCompanyName &&
+      PlateNo
     );
   };
 
@@ -270,6 +317,27 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
     }
   }, [values]);
 
+  // BUAH MENTAH
+
+  const [persenBM, setPersenBM] = useState(0);
+
+  const handlePersenBM = (event) => {
+    const value = event.target.value;
+    // Memastikan nilai yang dimasukkan adalah angka
+    if (!isNaN(value)) {
+      setPersenBM(value);
+    }
+  };
+
+  const BMkg = () => {
+    let result;
+    const persenbm = persenBM / originWeightNetto;
+    // result = Math.round((persenbm * 2500)/100);
+    result = Math.round(((25 / 100) * (persenbm - 5) * values.qtyTbs) / 100);
+
+    return result;
+  };
+
   return (
     <>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -292,7 +360,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}>
+                }}
+              >
                 Nomor BON Trip
               </Typography>
             </>
@@ -320,7 +389,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 No. DO/NPB
               </Typography>
             </>
@@ -329,7 +399,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           value={values.deliveryOrderNo}
           onChange={handleChange}
         />
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Nama Supir
           </InputLabel>
@@ -343,11 +413,32 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 ...prevValues,
                 driverId: newValue ? newValue.id : "",
                 driverName: newValue ? newValue.name : "",
+        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
+            Nomor Polisi
+          </InputLabel>
+          <Autocomplete
+            id="select-label"
+            options={dtTransportVehicle}
+            getOptionLabel={(option) => option.plateNo}
+            value={
+              dtTransportVehicle.find(
+                (item) => item.id === values.transportVehicleId
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              setValues((prevValues) => ({
+                ...prevValues,
+                transportVehicleId: newValue ? newValue.id : "",
+                transportVehiclePlateNo: newValue ? newValue.plateNo : "",
               }));
             }}
             renderInput={(params) => (
               <TextField
                 {...params}
+                placeholder="-- Pilih Kendaraan --"
+                variant="outlined"
+                size="small"
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "10px",
@@ -360,33 +451,38 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             )}
           />
         </FormControl>
+              />
+            )}
+          />
+        </FormControl> */}
         <TextField
           variant="outlined"
           size="small"
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          placeholder="Masukkan Nama Supir"
           sx={{
             my: 2,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
           }}
-          InputLabelProps={{
-            shrink: true,
-            readOnly: true,
-          }}
           label={
             <>
               <Typography
                 sx={{
                   bgcolor: "white",
-                  px: 1,
-                }}>
-                Sertifikasi Tipe Truk
+                  px: 1.5,
+                }}
+              >
+                Nama Supir
               </Typography>
             </>
           }
-          name="transportVehicleSccModel"
-          value={values.transportVehicleSccModel}
+          name="driverName"
+          value={values?.driverName}
           onChange={handleChange}
         />
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
@@ -457,41 +553,66 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             )}
           />
         </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Jenis Barang
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtProduct}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtProduct.find((item) => item.id === values.productId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                productId: newValue ? newValue.id : "",
-                productName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
+                  bgcolor: "white",
+                  px: 1,
                 }}
-                placeholder="-- Pilih Barang --"
-                variant="outlined"
-                size="small"
-                InputProps={{ readOnly: true }}
-              />
-            )}
-          />
-        </FormControl>
+              >
+                Afdeling
+              </Typography>
+            </>
+          }
+          name="afdeling"
+          value={values?.afdeling}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Blok
+              </Typography>
+            </>
+          }
+          name="blok"
+          value={values?.blok}
+          onChange={handleChange}
+        />
         <TextField
           variant="outlined"
           size="small"
@@ -513,7 +634,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 Qty TBS
               </Typography>
             </>
@@ -529,14 +651,16 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
             setQtyTbs(value);
           }}
         />
+        <hr />
         <TextField
           variant="outlined"
           size="small"
-          type="number"
+          type="text"
           fullWidth
           InputLabelProps={{
             shrink: true,
           }}
+          placeholder="Masukkan SPTBS"
           sx={{
             my: 2,
             "& .MuiOutlinedInput-root": {
@@ -549,13 +673,45 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
-                SPTBS
+                }}
+              >
+                SPBTS
               </Typography>
             </>
           }
-          name="SPBTS"
-          value={values.SPBTS}
+          name="sptbs"
+          value={values?.sptbs}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder="Masukkan Sertifikasi"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Sertifikasi Tipe Truk
+              </Typography>
+            </>
+          }
+          name="transportVehicleSccModel"
+          value={values?.transportVehicleSccModel}
           onChange={handleChange}
         />
       </FormControl>
@@ -565,11 +721,13 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           display="grid"
           gridTemplateColumns="4fr 2fr"
           gap={2}
-          alignItems="center">
+          alignItems="center"
+        >
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -604,7 +762,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Buah Mentah
                 </Typography>
               }
@@ -640,7 +799,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -675,7 +835,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Buah Lewat Matang
                 </Typography>
               }
@@ -711,7 +872,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -746,7 +908,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Tangkai Panjang
                 </Typography>
               }
@@ -782,7 +945,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -817,7 +981,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Tangkai Kosong
                 </Typography>
               }
@@ -853,7 +1018,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -888,7 +1054,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Sampah
                 </Typography>
               }
@@ -924,7 +1091,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -959,7 +1127,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Air
                 </Typography>
               }
@@ -995,7 +1164,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1030,7 +1200,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Parteno
                 </Typography>
               }
@@ -1066,7 +1237,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1101,7 +1273,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Brondolan
                 </Typography>
               }
@@ -1137,7 +1310,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1172,7 +1346,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1209,7 +1384,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           <FormControl
             sx={{
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Checkbox
               size="small"
               sx={{
@@ -1244,7 +1420,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Pot. Lainnya
                 </Typography>
               }
@@ -1297,7 +1474,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL Potongan
             </Typography>
           }
@@ -1326,7 +1504,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight IN
             </Typography>
           }
@@ -1352,7 +1531,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight OUT
             </Typography>
           }
@@ -1379,7 +1559,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1406,7 +1587,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Lainnya
             </Typography>
           }
@@ -1436,7 +1618,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL
             </Typography>
           }
@@ -1449,13 +1632,13 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           sx={{ mt: 2 }}
           onClick={handleSubmit}
           disabled={
-            values.progressStatus === 4 ||
-            !validateForm() ||
-            !weighbridge.isStable() ||
-            weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-              ? true
-              : false
-          }>
+            values.progressStatus === 4 || !validateForm()
+            // !weighbridge.isStable() ||
+            // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+            //   ? true
+            //   : false
+          }
+        >
           Simpan
         </Button>
         <BonTripTBS
@@ -1466,7 +1649,8 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo }) => {
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}>
+          onClick={handleClose}
+        >
           Tutup
         </Button>
       </FormControl>

@@ -26,7 +26,7 @@ import ProgressStatus from "../../../components/ProgressStatus";
 import TransactionGrid from "../../../components/TransactionGrid";
 import { useMatrix } from "../../../context/UserMatrixContext";
 
-const typeTransaction = 1;
+const typeSite = 1;
 
 const PksTransaction = () => {
   const { configs, wb, wbTransaction } = useSelector((state) => state.app);
@@ -42,7 +42,7 @@ const PksTransaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), typeTransaction };
+      const data = { content: codeContent.trim(), typeSite };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
@@ -113,7 +113,7 @@ const PksTransaction = () => {
     //   console.clear();
     // };
   }, []);
-
+// type Transaction 1.eDispatch(CPO, PKO) 2.pks 3.Bulking
   const [anchorE2, setAnchorE2] = useState(null);
 
   const handleFormClick = (event) => {
@@ -130,6 +130,7 @@ const PksTransaction = () => {
     TransactionAPI.searchMany({
       where: {
         typeTransaction,
+        typeSite,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -207,7 +208,8 @@ const PksTransaction = () => {
                       width: "10vh",
                       fontSize: "13px",
                       borderRadius: "10%",
-                    }}>
+                    }}
+                  >
                     Form
                   </Button>
                   <Menu

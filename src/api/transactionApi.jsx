@@ -72,6 +72,7 @@ export const deleteById = async (id) => {
 
 export const InitialData = {
   id: "",
+  typeSite: 0,
   typeTransaction: 0,
 
   bonTripNo: "",

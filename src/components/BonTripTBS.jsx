@@ -11,11 +11,11 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { useSelector } from "react-redux";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 
-const BonTripTBS = (props) => {
+const BonTripPrint = (props) => {
   const { dtTrans, isDisable } = props;
   const { userInfo } = useSelector((state) => state.app);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +44,7 @@ const BonTripTBS = (props) => {
   const secondsKeluar = dateObjKeluar.getSeconds();
   const jamKeluar = `${hoursKeluar}:${minutesKeluar}:${secondsKeluar}`;
 
-  const dateObj = new Date(timestampMasuk);
+  const dateObj = new Date(timestampKeluar);
 
   // Mendapatkan komponen tanggal
   const year = dateObj.getFullYear();
@@ -63,7 +63,8 @@ const BonTripTBS = (props) => {
         disabled={isDisable}
         onClick={() => {
           setIsOpen(true);
-        }}>
+        }}
+      >
         Print Bontrip
       </Button>
       <Dialog open={isOpen} fullWidth maxWidth={"md"}>
@@ -78,7 +79,8 @@ const BonTripTBS = (props) => {
             }}
             onClick={() => {
               setIsOpen(false);
-            }}>
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -113,7 +115,8 @@ const BonTripTBS = (props) => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span " },
-              }}>
+              }}
+            >
               <Table striped sx={{ gridColumn: "span 2 " }}>
                 <tbody>
                   <Typography fontSize="15px">
@@ -131,15 +134,17 @@ const BonTripTBS = (props) => {
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">
-                        {dtTrans.customerName}
+                        {dtTrans.transporterCompanyName}
                       </td>
                     </tr>
                     <tr>
                       <td height="30" width="100">
-                        Asal
+                        Dikirim Ke
                       </td>
                       <td width="10">:</td>
-                      <td className="nota-text">{dtTrans.originSiteName}</td>
+                      <td className="nota-text">
+                        {dtTrans.destinationSiteName}
+                      </td>
                     </tr>
                     <tr>
                       <td height="30" width="100">
@@ -176,7 +181,9 @@ const BonTripTBS = (props) => {
                         Jenis Barang
                       </td>
                       <td width="10">:</td>
-                      <td className="nota-text">{dtTrans.productName}</td>
+                      <td className="nota-text">
+                        {dtTrans.productName}
+                      </td>
                     </tr>
                     <tr>
                       <td height="25" width="100">
@@ -391,7 +398,8 @@ const BonTripTBS = (props) => {
                 <Button
                   variant="contained"
                   color="success"
-                  sx={{ textTransform: "none" }}>
+                  sx={{ textTransform: "none" }}
+                >
                   Print PKS Transaction
                 </Button>
               )}
@@ -406,4 +414,4 @@ const BonTripTBS = (props) => {
   );
 };
 
-export default BonTripTBS;
+export default BonTripPrint;

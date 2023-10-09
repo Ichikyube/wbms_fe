@@ -11,7 +11,7 @@ const tempConfigSlice = createSlice({
   reducers: {
     getTempConfigs: (state, action) => {
       if (localStorage.getItem("tempConfigs"))
-        state = Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")));
+        state = JSON.parse(Object.assign({}, ...localStorage.getItem("tempConfigs")));
     },
     setTempConfigs: (state, action) => {
       state = action.payload;

@@ -69,6 +69,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm(initialValues);
+  console.log(trxGradingPencentage)
   const gradingPercentage = JSON.parse(trxGradingPencentage);
   let trxGradingWAJIB;
   const {
@@ -92,7 +93,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   const [potWajibKG, setPotWajibKG] = useState();
   const [potLainnyaKG, setPotLainnyaKG] = useState();
   const [potTotalKG, setPotTotalKG] = useState();
-  const [originWeightNetto, setOriginWeightNetto] = useState(0);
+  const [originWeightNetto, setOriginWeightNetto] = useState(8000);
   const [canSubmit, setCanSubmit] = useState(false);
 
   const handleChange = (event) => {
@@ -160,20 +161,20 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     setCanSubmit(cSubmit);
   }, [values]);
 
-  useEffect(() => {
-    if (
-      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-    ) {
-      setOriginWeightNetto(0);
-    } else {
-      let total =
-        Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
-        values.potonganWajib -
-        values.potonganLain;
-      setOriginWeightNetto(total);
-    }
-  }, [values, weighbridge]);
+  // useEffect(() => {
+  //   if (
+  //     values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
+  //     weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+  //   ) {
+  //     setOriginWeightNetto(0);
+  //   } else {
+  //     let total =
+  //       Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
+  //       values.potonganWajib -
+  //       values.potonganLain;
+  //     setOriginWeightNetto(total);
+  //   }
+  // }, [values, weighbridge]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {

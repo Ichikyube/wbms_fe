@@ -3,31 +3,29 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
-const BackdateFormTBSEksternal = lazy(() => import("./views/backdate/backdateFormTBSEksternal"));
-const BackdateFormTBSInternal = lazy(() => import("./views/backdate/backdateFormTBSInternal"));
-const BackdateFormOthers = lazy(() => import("./views/backdate/backdateFormOthers"));
-const BackdateTemplate = lazy(() => import("./views/backdate/backdateTemplate"));
-const EditDataTransaction = lazy(() => import("./views/dataTransaction/editDataTransaksi"));
+
+const BackdateFormTBS = lazy(() => import("./views/backdate/backdateFormTBS"));
+const BackdateFormOthers = lazy(() =>
+  import("./views/backdate/backdateFormOthers")
+);
+const BackdateTemplate = lazy(() =>
+  import("./views/backdate/backdateTemplate")
+);
+const EditDataTransaction = lazy(() =>
+  import("./views/dataTransaction/editDataTransaksi")
+);
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
-const PksManualOthersTB = lazy(() =>
-  import("./views/PksManualEntry/manualentryothers/timbangMasuk")
+const PksManualTimbangMasuk = lazy(() =>
+  import("./views/PksManualEntry/timbangMasuk")
 );
-const PksManualOthersTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryothers/timbangKeluar")
+const PksManualTimbangKeluar = lazy(() =>
+  import("./views/PksManualEntry/timbangKeluar")
 );
-const PksManualTbsInternal = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
-);
-const PksManualTbsInternalTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSInternal/timbangKeluar")
-);
-const PksManualTbsEksternal = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
-);
-const PksManualTbsEksternalTK = lazy(() =>
-  import("./views/PksManualEntry/manualentryTBSEksternal/timbangKeluar")
+
+const PksManualCpoPko = lazy(() =>
+  import("./views/PksManualEntry/manualentryCpoPko/timbangMasuk")
 );
 
 const Cities = lazy(() => import("./views/masterdata/cities"));
@@ -55,230 +53,18 @@ const ConfigRequest = lazy(() =>
 );
 const Config = lazy(() => import("./views/usermanagement/config"));
 
-// Base
-// const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-// const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
-// const Cards = React.lazy(() => import('./views/base/cards/Cards'))
-// const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
-// const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
-// const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'))
-// const Navs = React.lazy(() => import('./views/base/navs/Navs'))
-// const Paginations = React.lazy(() => import('./views/base/paginations/Paginations'))
-// const Placeholders = React.lazy(() => import('./views/base/placeholders/Placeholders'))
-// const Popovers = React.lazy(() => import('./views/base/popovers/Popovers'))
-// const Progress = React.lazy(() => import('./views/base/progress/Progress'))
-// const Spinners = React.lazy(() => import('./views/base/spinners/Spinners'))
-// const Tables = React.lazy(() => import('./views/base/tables/Tables'))
-// const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
-
-// Buttons
-// const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
-// const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
-// const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
-
-//Forms
-// const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
-// const FloatingLabels = React.lazy(() => import('./views/forms/floating-labels/FloatingLabels'))
-// const FormControl = React.lazy(() => import('./views/forms/form-control/FormControl'))
-// const InputGroup = React.lazy(() => import('./views/forms/input-group/InputGroup'))
-// const Layout = React.lazy(() => import('./views/forms/layout/Layout'))
-// const Range = React.lazy(() => import('./views/forms/range/Range'))
-// const Select = React.lazy(() => import('./views/forms/select/Select'))
-// const Validation = React.lazy(() => import('./views/forms/validation/Validation'))
-
-// const Charts = React.lazy(() => import('./views/charts/Charts'))
-
-// Icons
-// const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'))
-// const Flags = React.lazy(() => import('./views/icons/flags/Flags'))
-// const Brands = React.lazy(() => import('./views/icons/brands/Brands'))
-
-// Notifications
-// const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
-// const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
-// const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
-// const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
-
-// const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
-
-const routes = [
-  { path: "/", exact: true, name: "Home" },
+const baseRoute = [
+  { path: "/:id", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
-  {
-    path: "/pks-transaction",
-    name: "PKS Transaction",
-    element: PksTransaction,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-Others-TimbangMasuk",
-    name: "PKS  Manual Entry Others",
-    element: PksManualOthersTB,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-Others-TimbangKeluar/:id",
-    name: "PKS  Manual Entry Others",
-    element: PksManualOthersTK,
-    exact: true,
-  },
-
-  {
-    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Internal",
-    element: PksManualTbsInternal,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TBSInternal-TimbangKeluar/:id",
-    name: "PKS  Manual Entry TBS Internal",
-    element: PksManualTbsInternalTK,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
-    name: "PKS  Manual Entry TBS Eksternal",
-    element: PksManualTbsEksternal,
-    exact: true,
-  },
-  {
-    path: "/pks-ManualEntry-TBSEksternal-TimbangKeluar/:id",
-    name: "PKS  Manual Entry TBS Eksternal",
-    element: PksManualTbsEksternalTK,
-    exact: true,
-  },
-
-  {
-    path: "/reports/pks-transactions",
-    name: "Report PKS Transactions",
-    element: ReportPksTransactions,
-  },
-  {
-    path: "/data-transaction",
-    name: "Data Transaction",
-    element: DataTransaction,
-    exact: true,
-  },
-  {
-    path: "/backdateFormTBSEksternal",
-    name: "Backdate Form TBSEksternal",
-    element: BackdateFormTBSEksternal,
-    exact: true,
-  },
-  {
-    path: "/backdateFormTBSInternal",
-    name: "Backdate Form TBSInternal",
-    element: BackdateFormTBSInternal,
-    exact: true,
-  },
-  {
-    path: "/backdateFormOthers",
-    name: "Backdate Form Others",
-    element: BackdateFormOthers,
-    exact: true,
-  },
-  {
-    path: "/backdateTemplate",
-    name: "Backdate Template",
-    element: BackdateTemplate,
-    exact: true,
-  },
-  {
-    path: "/edit-data-Transaction/:id",
-    name: "Edit Data Transaction",
-    element: EditDataTransaction,
-    exact: true,
-  },
   {
     path: "/profile",
     name: "Profile",
     element: Profile,
   },
   {
-    path: "/md/province",
-    name: "Master Data Province",
-    element: Provinces,
-  },
-  {
-    path: "/md/city",
-    name: "Master Data City",
-    element: Cities,
-  },
-  {
-    path: "/md/company",
-    name: "Master Data Company",
-    element: Companies,
-  },
-  {
-    path: "/md/site",
-    name: "Master Data Site",
-    element: Sites,
-  },
-
-  {
-    path: "/md/customertype",
-    name: "Master Data Customer Type",
-    element: CustomerTypes,
-  },
-  {
-    path: "/md/customergroup",
-    name: "Master Data Customer Group",
-    element: CustomerGroups,
-  },
-  {
     path: "/md/barcodetype",
     name: "BarcodeType",
     element: BarcodeTypes,
-  },
-  {
-    path: "/md/customer",
-    name: "Master Data Customer",
-    element: Customers,
-  },
-  {
-    path: "/md/mill",
-    name: "Master Data Mill",
-    element: Mills,
-  },
-  {
-    path: "/md/weighbridge",
-    name: "Master Data Weighbridge",
-    element: Weighbridges,
-  },
-  {
-    path: "/md/productgroup",
-    name: "Master Data Product Group",
-    element: Productgroups,
-  },
-  {
-    path: "/md/product",
-    name: "Master Data Product",
-    element: Products,
-  },
-  {
-    path: "/md/storagetank",
-    name: "Master Data Storage Tank",
-    element: StorageTank,
-  },
-  {
-    path: "/md/driver",
-    name: "Master Data Driver",
-    element: Driver,
-  },
-  {
-    path: "/md/transportvehicle",
-    name: "Master Data Transport Vehicle",
-    element: Transportvehicle,
-  },
-  {
-    path: "/userslist",
-    name: "Users List",
-    element: UsersList,
-  },
-  {
-    path: "/roleslist",
-    name: "Roles List",
-    element: RolesList,
   },
   {
     path: "/configrequest",
@@ -287,10 +73,180 @@ const routes = [
   },
   {
     path: "/config",
-    name: "Config ",
+    name: "Config",
     element: Config,
   },
-
 ];
 
-export default routes;
+export const protectedRoute = [
+  {
+    path: "/pks-transaction",
+    name: "PKS Transaction",
+    element: PksTransaction,
+    exact: true,
+    resource: "Transaction",
+  },
+  {
+    path: "/pks-ManualEntry-TimbangMasuk",
+    name: "PKS  Manual Entry",
+    element: PksManualTimbangMasuk,
+    exact: true,
+    resource: "Transaction",
+  },
+  {
+    path: "/pks-ManualEntry-CpoPko-TimbangMasuk",
+    name: "PKS  Manual Entry CPO / PKO",
+    element: PksManualCpoPko,
+    exact: true,
+    resource: "Transaction",
+  },
+  {
+    path: "/pks-ManualEntry-TimbangKeluar/:id",
+    name: "PKS  Manual Entry",
+    element: PksManualTimbangKeluar,
+    exact: true,
+    resource: "Transaction",
+  },
+  {
+    path: "/reports/pks-transactions",
+    name: "Report PKS Transactions",
+    element: ReportPksTransactions,
+    resource: "Transaction",
+  },
+  {
+    path: "/data-transaction",
+    name: "Data Transaction",
+    element: DataTransaction,
+    exact: true,
+    resource: "Transaction",
+  },
+
+  {
+    path: "/md/province",
+    name: "Master Data Province",
+    element: Provinces,
+    resource: "Province",
+  },
+  {
+    path: "/md/city",
+    name: "Master Data City",
+    element: Cities,
+    resource: "City",
+  },
+  {
+    path: "/md/company",
+    name: "Master Data Company",
+    element: Companies,
+    resource: "Company",
+  },
+  {
+    path: "/md/site",
+    name: "Master Data Site",
+    element: Sites,
+    resource: "Site",
+  },
+  {
+    path: "/md/customertype",
+    name: "Master Data Customer Type",
+    element: CustomerTypes,
+    resource: "CustomerType",
+  },
+  {
+    path: "/md/customergroup",
+    name: "Master Data Customer Group",
+    element: CustomerGroups,
+    resource: "CustomerGroup",
+  },
+  {
+    path: "/md/customer",
+    name: "Master Data Customer",
+    element: Customers,
+    resource: "Customer",
+  },
+  {
+    path: "/md/mill",
+    name: "Master Data Mill",
+    element: Mills,
+    resource: "Mill",
+  },
+  {
+    path: "/md/weighbridge",
+    name: "Master Data Weighbridge",
+    element: Weighbridges,
+    resource: "Weighbridge",
+  },
+  {
+    path: "/md/productgroup",
+    name: "Master Data Product Group",
+    element: Productgroups,
+    resource: "ProductGroup",
+  },
+  {
+    path: "/md/product",
+    name: "Master Data Product",
+    element: Products,
+    resource: "Product",
+  },
+  {
+    path: "/md/storagetank",
+    name: "Master Data Storage Tank",
+    element: StorageTank,
+    resource: "StorageTank",
+  },
+  {
+    path: "/md/driver",
+    name: "Master Data Driver",
+    element: Driver,
+    resource: "Driver",
+  },
+  {
+    path: "/md/transportvehicle",
+    name: "Master Data Transport Vehicle",
+    element: Transportvehicle,
+    resource: "TransportVehicle",
+  },
+  {
+    path: "/userslist",
+    name: "Users List",
+    element: UsersList,
+    resource: "user",
+  },
+  {
+    path: "/roleslist",
+    name: "Roles List",
+    element: RolesList,
+    resource: "user",
+  },
+];
+
+export const backdateFormRoutes = [
+  {
+    path: "/backdateFormTBS",
+    name: "Backdate Form TBS",
+    element: BackdateFormTBS,
+    exact: true,
+  },
+  {
+    path: "/backdateFormOthers",
+    name: "Backdate Form Others",
+    element: BackdateFormOthers,
+    exact: true,
+  },
+];
+export const backdateTemplateRoute = {
+  path: "/backdateTemplate",
+  name: "Backdate Template",
+  element: BackdateTemplate,
+  exact: true,
+};
+
+export const editTransactionRoute = [
+  {
+    path: "/edit-data-Transaction/:id",
+    name: "Edit Data Transaction",
+    element: EditDataTransaction,
+    exact: true,
+  },
+];
+
+export default baseRoute;

@@ -5,28 +5,28 @@ export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async () => {
     const response = await fetch("/api/notifications"); // Replace with your actual API endpoint
-    if (!response.ok) {
+    if (!response?.ok) {
       throw new Error("Failed to fetch notifications");
     }
-    const data = await response.json();
+    const data = await response?.json();
     return data;
   }
 );
 
 export const createNotificationAsync = createAsyncThunk(
-  'notifications/createNotification',
+  "notifications/createNotification",
   async (notificationData, { rejectWithValue }) => {
     try {
       // Make an API request to create a notification with notificationData
-      const response = await api.post('/notifications', notificationData);
+      const response = await api.post("/notifications", notificationData);
 
-      if (!response.ok) {
+      if (!response?.ok) {
         // Handle non-successful responses here (e.g., validation errors)
-        const errorData = await response.json();
+        const errorData = await response?.json();
         return rejectWithValue(errorData);
       }
 
-      const createdNotification = await response.json();
+      const createdNotification = await response?.json();
       return createdNotification;
     } catch (error) {
       // Handle network errors or unexpected errors here
@@ -64,14 +64,14 @@ const notificationSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(createNotificationAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(createNotificationAsync.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.notifications.push(action.payload);
       })
       .addCase(createNotificationAsync.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.payload;
       });
   },

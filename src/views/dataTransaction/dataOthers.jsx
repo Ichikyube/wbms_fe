@@ -246,7 +246,7 @@ const EditDataOthers = ({
             )}
           />
         </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ mb: 2 }}>
+        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Customer
           </InputLabel>
@@ -289,10 +289,7 @@ const EditDataOthers = ({
         >
           Simpan
         </Button>
-        {/* <BonTripTBS
-    dtTrans={{ ...values }}
-    isDisable={!(values.progressStatus === 4)}
-  /> */}
+   
         <Button
           variant="contained"
           sx={{ my: 1 }}

@@ -16,23 +16,6 @@ const BeratTanggal = ({
   validateForm,
   handleClose,
 }) => {
-  const convertUTCtoLocal = (utcDateTime) => {
-    if (!utcDateTime) return ""; // Handle jika utcDateTime kosong
-
-    // Parse tanggal dan waktu UTC
-    const utcDate = new Date(utcDateTime);
-
-    // Mengonversi UTC ke waktu lokal
-    const localDate = new Date(
-      utcDate.getUTCFullYear(),
-      utcDate.getUTCMonth(),
-      utcDate.getUTCDate(),
-      utcDate.getUTCHours(),
-      utcDate.getUTCMinutes()
-    );
-
-    return format(localDate, "yyyy-MM-dd'T'HH:mm");
-  };
   return (
     <>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -216,7 +199,14 @@ const BeratTanggal = ({
             </Typography>
           }
           name="originWeighInTimestamp"
-          value={convertUTCtoLocal(values.originWeighInTimestamp)}
+          value={
+            values.originWeighInTimestamp
+              ? format(
+                  new Date(values.originWeighInTimestamp),
+                  "yyyy-MM-dd'T'HH:mm"
+                )
+              : ""
+          }
           onChange={handleChange}
         />
         <TextField
@@ -244,7 +234,14 @@ const BeratTanggal = ({
             </Typography>
           }
           name="originWeighOutTimestamp"
-          value={convertUTCtoLocal(values.originWeighOutTimestamp)}
+          value={
+            values.originWeighOutTimestamp
+              ? format(
+                  new Date(values.originWeighOutTimestamp),
+                  "yyyy-MM-dd'T'HH:mm"
+                )
+              : ""
+          }
           onChange={handleChange}
         />
         <Button

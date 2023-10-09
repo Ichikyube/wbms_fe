@@ -77,17 +77,6 @@ const BackdateTemplate = () => {
   };
 
   const handleSave = () => {
-    const isValidData = uploadedData.every((rowData) => {
-      return !isNaN(rowData.tType); // Pastikan tType adalah angka
-    });
-
-    if (!isValidData) {
-      toast.error(
-        "Data contains invalid tType values. Please check your data."
-      );
-      return;
-    }
-
     TransactionAPI.create(uploadedData)
       .then(() => {
         setIsFileUploaded(true);
@@ -144,15 +133,21 @@ const BackdateTemplate = () => {
   const formattedDate = selectedDate.format("YYMMDD");
   const [bonTripNo, setBonTripNo] = useState("");
 
+  // Gunakan useState untuk melacak nomor increment
+  const [increment, setIncrement] = useState(1);
+
   useEffect(() => {
     const generateBonTripNo = () => {
-      return `P041${formattedDate}${Math.floor(
-        100000 + Math.random() * 900000
-      )}`;
+      // Format nomor increment menjadi 4 digit dengan leading zeros
+      const formattedIncrement = String(increment).padStart(4, "0");
+      return `P049${formattedDate}${formattedIncrement}`;
     };
 
     const generatedBonTripNo = generateBonTripNo();
     setBonTripNo(generatedBonTripNo);
+
+    // Tingkatkan nilai increment setiap kali Anda menghasilkan nomor baru
+    setIncrement(increment + 0);
   }, [formattedDate]);
 
   const processUploadedData = (csvData) => {
@@ -178,9 +173,10 @@ const BackdateTemplate = () => {
     const dataWithId = csvData.map((row, index) => ({
       ...row,
       id: index,
-      tType: 1,
-      bonTripNo: `P041${formattedDate}${Math.floor(
-        100000 + Math.random() * 900000
+      typeTransaction: 1,
+      bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
+        4,
+        "0"
       )}`,
     }));
 
@@ -199,16 +195,14 @@ const BackdateTemplate = () => {
             mt: 2,
             borderTop: "5px solid #000",
             borderRadius: "10px 10px 10px 10px",
-          }}
-        >
+          }}>
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
               <Typography fontSize="20px">Backdate Template</Typography>
               <Box display="flex" ml="auto">
                 <FormControl
                   sx={{ mt: "auto", mr: 1.5, minWidth: 150 }}
-                  size="small"
-                >
+                  size="small">
                   <TextField
                     type="date"
                     variant="outlined"
@@ -224,8 +218,7 @@ const BackdateTemplate = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}
-                      >
+                        }}>
                         Tanggal BonTripNo
                       </Typography>
                     }
@@ -246,8 +239,7 @@ const BackdateTemplate = () => {
                     padding: "12px 12px",
                     color: "white",
                     marginLeft: "8px",
-                  }}
-                >
+                  }}>
                   <UploadFileOutlinedIcon
                     sx={{ mr: "5px", fontSize: "17px" }}
                   />
@@ -280,8 +272,7 @@ const BackdateTemplate = () => {
                   marginLeft: "8px",
                 }}
                 onClick={handleSave}
-                disabled={!isFileUploaded}
-              >
+                disabled={!isFileUploaded}>
                 <SaveOutlinedIcon sx={{ mr: "5px", fontSize: "17px" }} />
                 Simpan
               </Button>
@@ -290,8 +281,7 @@ const BackdateTemplate = () => {
                 display="flex"
                 borderRadius="5px"
                 ml="auto"
-                border="solid grey 1px"
-              >
+                border="solid grey 1px">
                 <InputBase
                   sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                   placeholder="Search"
@@ -300,8 +290,7 @@ const BackdateTemplate = () => {
                 <IconButton
                   type="button"
                   sx={{ p: 1 }}
-                  onClick={() => handleSearch("")}
-                >
+                  onClick={() => handleSearch("")}>
                   <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                 </IconButton>
               </Box>
@@ -309,8 +298,7 @@ const BackdateTemplate = () => {
           </div>
           <div
             className="ag-theme-alpine"
-            style={{ width: "auto", height: "70vh" }}
-          >
+            style={{ width: "auto", height: "70vh" }}>
             <AgGridReact
               ref={gridRef}
               rowData={uploadedData}

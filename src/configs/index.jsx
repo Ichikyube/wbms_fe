@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useGetENVQuery } from "../slices/configApiSlice";
-import * as ConfigAPI from "../api/configsApi";
+import * as ConfigAPI from "../api/configApi";
 export * from "./Weighbridge";
 
 
@@ -107,7 +107,7 @@ export const useConfig = () => {
   };
 
   if (!isLoading && isSuccess) {
-    if (EnvData?.status) configs.ENV = { ...EnvData.data.ENV };
+    if (EnvData?.status) configs.ENV = { ...EnvData?.data?.ENV };
   }
 
   return [configs];

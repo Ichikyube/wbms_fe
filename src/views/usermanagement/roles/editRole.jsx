@@ -35,7 +35,6 @@ import { dtAttrJson } from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
 const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   const [expanded, setExpanded] = useState(null);
-  const role = dtRole;
   const toggleAccordion = (index) => {
     setExpanded(index === expanded ? null : index);
   };
@@ -58,7 +57,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
     resourcesList.map((res, index) => ({
       id: index,
       label: res,
-      checked: role.permissions.map(({ resource }) => resource).includes(res)
+      checked: dtRole?.permissions.map(({ resource }) => resource).includes(res)
         ? true
         : false,
     }))
@@ -76,15 +75,16 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
   };
   const actionOptions = ["read", "create", "update", "delete"];
   const adjustValues = {
-    id: role.id,
-    name: role.name,
-    description: role.description,
-    permissions: role.permissions.map(({ resource, grants }) => ({
+    id: dtRole?.id,
+    name: dtRole?.name,
+    description: dtRole?.description,
+    permissions: dtRole?.permissions.map(({ resource, grants }) => ({
       resource,
-      roleId: role.id,
+      roleId: dtRole?.id,
       grants: actionOptions.map((actionOption, index) => {
-        const grant = grants[grants.map(({ action }) => action).indexOf(actionOption)];
-    
+        const grant =
+          grants[grants.map(({ action }) => action).indexOf(actionOption)];
+
         if (grant) {
           return {
             action: grant.action,
@@ -95,21 +95,26 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
           };
         } else {
           return {
-            action: '', // or some default value if action is empty
-            possession: '', // or some default value if possession is empty
+            action: "", // or some default value if action is empty
+            possession: "", // or some default value if possession is empty
             attributes: [], // or an empty array if attributes are empty
           };
         }
       }),
     })),
   };
-  const inValues = _.mergeWith({}, adjustValues, role, (objValue, srcValue) => {
-    // Replace values in role with those from initialValue
-    if (_.isArray(objValue) && _.isArray(srcValue)) {
-      return srcValue;
+  const inValues = _.mergeWith(
+    {},
+    adjustValues,
+    dtRole,
+    (objValue, srcValue) => {
+      // Replace values in role with those from initialValue
+      if (_.isArray(objValue) && _.isArray(srcValue)) {
+        return srcValue;
+      }
+      return undefined; // Default behavior to let _.merge handle the merge
     }
-    return undefined; // Default behavior to let _.merge handle the merge
-  });
+  );
   const { users, isDeleted, userCreated, ...initialValues } = inValues;
   const [mountAttributes, setMountAttributes] = useState([]);
   const toggleAttr = (attrId) => {
@@ -304,17 +309,22 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                               <strong>{resource}</strong>
                               <br />
                               {expanded !== index &&
-                                values.permissions[index].grants.map((a, i) => (
-                                  <span key={i}>
-                                    {values.permissions[index].grants[i].action}
-                                    <span style={{ fontSize: "10px" }}>
+                                values.permissions[index]?.grants.map(
+                                  (a, i) => (
+                                    <span key={i}>
                                       {
                                         values.permissions[index].grants[i]
-                                          .possession
-                                      }{" "}
+                                          .action
+                                      }
+                                      <span style={{ fontSize: "10px" }}>
+                                        {
+                                          values.permissions[index]?.grants[i]
+                                            .possession
+                                        }{" "}
+                                      </span>
                                     </span>
-                                  </span>
-                                ))}
+                                  )
+                                )}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -352,7 +362,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           type="checkbox"
                                           name={`permissions[${index}].grants[${actionIndex}].action`}
                                           checked={
-                                            values.permissions[index].grants[
+                                            values.permissions[index]?.grants[
                                               actionIndex
                                             ].action === actionOption
                                               ? true
@@ -360,35 +370,41 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           }
                                           onChange={(event) => {
                                             if (event.target.checked)
-                                              setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                                action: event.target.value,
-                                                possession: "own",
-                                                attributes: []
-                                              });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: event.target.value,
+                                                  possession: "own",
+                                                  attributes: [],
+                                                }
+                                              );
                                             else
-                                            setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                              action: "",
-                                              possession: "",
-                                              attributes: []
-                                            });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: "",
+                                                  possession: "",
+                                                  attributes: [],
+                                                }
+                                              );
                                           }}
                                           value={actionOption}
                                         />
                                         {actionOption}
                                       </label>
-                                      {values.permissions[index].grants[
+                                      {values.permissions[index]?.grants[
                                         actionIndex
                                       ].action === actionOption && (
                                         <>
                                           <Switch
                                             name={`permissions[${index}].grants[${actionIndex}].possession`}
                                             value={
-                                              values.permissions[index].grants[
+                                              values.permissions[index]?.grants[
                                                 actionIndex
                                               ].possession
                                             }
                                             checked={
-                                              values.permissions[index].grants[
+                                              values.permissions[index]?.grants[
                                                 actionIndex
                                               ].possession === "any"
                                                 ? true

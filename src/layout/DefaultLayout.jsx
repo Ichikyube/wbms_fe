@@ -1,25 +1,23 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { UserMatrixContextProvider } from "../context/UserMatrixContext";
 import {
   AppContent,
   AppSidebar,
   AppFooter,
   AppHeader,
 } from "../components/index";
+import { useAuth } from "../context/AuthContext";
 
 const DefaultLayout = () => {
-  const { userInfo } = useSelector((state) => state.app);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!userInfo) navigate("/home");
-  }, []);
+  const { isAuth } = useAuth();
+  if (!isAuth) {
+    localStorage.clear();
+    return <Navigate to="/signin" />;
+  }
   return (
-    <div>
+    <UserMatrixContextProvider>
       <ToastContainer />
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
@@ -29,7 +27,7 @@ const DefaultLayout = () => {
         </div>
         <AppFooter />
       </div>
-    </div>
+    </UserMatrixContextProvider>
   );
 };
 

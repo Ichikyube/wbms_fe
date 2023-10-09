@@ -5,11 +5,19 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/DataSaverOffOutline
 import * as TransactionAPI from "../api/transactionApi";
 import "../index.css";
 
+const typeTransaction = 1;
+
 const PieCharts = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
-    TransactionAPI.getAll()
+    TransactionAPI.searchMany({
+      where: {
+        typeTransaction,
+        isDeleted: false,
+        progressStatus: { notIn: [1] },
+      },
+    })
       .then((res) => res.records)
       .then((transactions) => {
         setSalesData(transactions);
@@ -20,11 +28,8 @@ const PieCharts = () => {
   const productNames = ["CPO", "PKO", "TBS"];
   const othersName = "Other";
 
-  // Menggabungkan "TBS Internal" dan "TBS Eksternal" menjadi "TBS"
   const combinedTBSCount = salesData.filter(
-    (transaction) =>
-      transaction.productName === "TBS Internal" ||
-      transaction.productName === "TBS Eksternal"
+    (transaction) => transaction.productName === "TBS"
   ).length;
 
   const productCount = {};
@@ -65,7 +70,7 @@ const PieCharts = () => {
     <>
       <div className="areaChart">
         <div className="chart mt-4">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="80%">
             <PieChart>
               <Tooltip />
               <Legend iconType="square" />
@@ -75,7 +80,7 @@ const PieCharts = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
+                outerRadius={85}
                 label={({ name, percent }) =>
                   `${name} ${(percent * 100).toFixed(2)}%`
                 }
@@ -88,6 +93,5 @@ const PieCharts = () => {
     </>
   );
 };
-
 
 export default PieCharts;

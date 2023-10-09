@@ -4,6 +4,9 @@ import * as TransactionAPI from "../../api/transactionApi";
 import AreaCharts from "../../components/areaChart";
 import PieCharts from "../../components/pieChart";
 import BarChartIcon from "@mui/icons-material/EqualizerOutlined";
+import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
+
+const typeTransaction = 1;
 
 const Dashboard = () => {
   const [CPOProduct, setCPOProduct] = useState(0);
@@ -14,8 +17,13 @@ const Dashboard = () => {
   useEffect(() => {
     const lowerCaseProductName = (productName) => productName.toLowerCase();
 
-    TransactionAPI.getAll()
-      .then((res) => res.records)
+     TransactionAPI.searchMany({
+      where: {
+        typeTransaction,
+        isDeleted: false,
+        progressStatus: { notIn: [1] },
+      },
+      }).then((res) => res.records)
       .then((transactions) => {
         // Filter transaksi berdasarkan produk "CPO"
         const CPOProduct = transactions.filter(
@@ -30,8 +38,7 @@ const Dashboard = () => {
         // Filter transaksi berdasarkan produk "TBS"
         const TBSProduct = transactions.filter(
           (transaction) =>
-            lowerCaseProductName(transaction.productName) === "tbs internal" ||
-            lowerCaseProductName(transaction.productName) === "tbs eksternal"
+            lowerCaseProductName(transaction.productName) === "tbs"
         );
         setTBSProduct(TBSProduct.length);
         // Filter transaksi berdasarkan produk "Other"
@@ -39,11 +46,7 @@ const Dashboard = () => {
           (transaction) =>
             transaction.productName !== "CPO" &&
             transaction.productName !== "PKO" &&
-            !(
-              lowerCaseProductName(transaction.productName) ===
-                "tbs internal" ||
-              lowerCaseProductName(transaction.productName) === "tbs eksternal"
-            )
+            !(lowerCaseProductName(transaction.productName) === "tbs")
         );
         setOtherProduct(OtherProduct.length);
 
@@ -66,7 +69,6 @@ const Dashboard = () => {
         gridAutoRows="140px"
         gap="20px"
       >
-        {/* ROWS 1 */}
         <Box
           gridColumn="span 3"
           display="flex"
@@ -157,14 +159,21 @@ const Dashboard = () => {
         </Box>
         <Box gridColumn="span 8" pt={3}>
           <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
-            <div style={{ width: "auto", height: "45vh" }}>
+            <div style={{ width: "auto", height: "420px" }}>
               <AreaCharts />
             </div>
           </Paper>
         </Box>
         <Box gridColumn="span 4" pt={3}>
           <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius: "10px" }}>
-            <div style={{ width: "auto", height: "45vh" }}>
+            <div style={{ width: "auto", height: "auto" }}>
+              <div className="title">
+                <Typography fontSize="18px" mb={3}>
+                  <PieChartOutlinedIcon sx={{ mb: 0.5, mr: 1 }} />
+                  Sales Chart
+                </Typography>
+              </div>
+              <hr />
               <PieCharts />
             </div>
           </Paper>

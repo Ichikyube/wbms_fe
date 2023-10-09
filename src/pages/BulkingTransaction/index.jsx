@@ -17,7 +17,7 @@ import QRCodeScanner from "../../components/QRCodeScanner";
 import ProgressStatus from "../../components/ProgressStatus";
 import TransactionGrid from "../../components/TransactionGrid";
 
-const tType = 3;
+const typeTransaction = 3;
 
 const BulkingTransaction = () => {
   const { wb } = useSelector((state) => state.app);
@@ -37,20 +37,20 @@ const BulkingTransaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), tType };
+      const data = { content: codeContent.trim(), typeTransaction };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
-      if (!response.status) {
-        return toast.error(response.message);
+      if (!response?.status) {
+        return toast.error(response?.message);
       }
 
       console.log(
-        `vStatus: ${response.data.transaction.vehicleStatus}, dStatus:${response.data.transaction.deliveryStatus}.`
+        `vStatus: ${response?.data.transaction.vehicleStatus}, dStatus:${response?.data.transaction.deliveryStatus}.`
       );
 
-      setWbBulkingTransaction(response.data.transaction);
-      navigate(response.data.urlPath);
+      setWbBulkingTransaction(response?.data.transaction);
+      navigate(response?.data.urlPath);
     } else if (readEnter) {
       return toast.error(
         "Tidak dapat membaca QR Code atau QR Code tidak valid..."
@@ -100,9 +100,8 @@ const BulkingTransaction = () => {
             <Paper sx={{ p: 2, mx: 1 }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "40vh" }}
-              >
-                <TransactionGrid tType={tType} />
+                style={{ width: "auto", height: "40vh" }}>
+                <TransactionGrid typeTransaction={typeTransaction} />
               </div>
             </Paper>
           </Grid>

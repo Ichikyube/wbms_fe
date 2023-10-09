@@ -25,6 +25,20 @@ const SelectBox = (props) => {
       return value ? { ...base } : { display: "none" };
     },
   };
+  const [len, setLen] = useState("");
+  const [opts, setOpts] = useState([]);
+  useEffect(() => {
+    if (props.length) {
+      setLen(props.length);
+    }
+  }, [props.length]);
+
+  useEffect(() => {
+    if (props.options) {
+      setOpts(props.options);
+    }
+  }, [props.options]);
+  const [selectedValues, setselectedValues] = useState(props.defaultValue);
 
   return (
     <>

@@ -9,7 +9,6 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import { useNavigate } from "react-router-dom";
 import Config from "../configs";
 import * as TransactionAPI from "../api/transactionApi";
 
@@ -21,14 +20,11 @@ ModuleRegistry.registerModules([
 ]);
 
 const ManualEntryGrid = (props) => {
-  const { tType } = props;
-  const navigate = useNavigate();
+  const { typeTransaction } = props;
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
-
-  const gridRef = useRef();
 
   const [columnDefs] = useState([
     {
@@ -37,22 +33,21 @@ const ManualEntryGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
     },
     {
       headerName: "No Pol",
       field: "transportVehiclePlateNo",
       filter: true,
     },
-    // {
-    //   headerName: "Status",
-    //   field: "progressStatus",
-    //   cellClass: "progressStatus",
-    //   valueFormatter: statusFormatter,
-    //   enableRowGroup: true,
-    //   rowGroup: true,
-    //   hide: true,
-    // },
+    {
+      headerName: "Status",
+      field: "progressStatus",
+      cellClass: "progressStatus",
+      valueFormatter: statusFormatter,
+      enableRowGroup: true,
+      rowGroup: true,
+      hide: true,
+    },
     {
       headerName: "DO No",
       field: "deliveryOrderNo",
@@ -94,7 +89,7 @@ const ManualEntryGrid = (props) => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
         progressStatus: { notIn: [4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },

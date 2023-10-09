@@ -42,21 +42,37 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
+const typeTransaction = 1;
 
 const DataTransaction = () => {
   const navigate = useNavigate();
-
-  const handleCellClick = (params) => {
-    const Id = params.data.id;
-    navigate(`/edit-data-Transaction/${Id}`);
-  };
-
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
 
-  const deleteById = (id, bonTripNo) => {
+  const handleCellClick = (params) => {
+    const productName = params.data.productName.toLowerCase();
+    const progressStatus = params.data.progressStatus;
+
+    if (
+      !(
+        (progressStatus === 1 || productName.includes("cpo")) ||
+        productName.includes("pko")
+      )
+    ) {
+      const Id = params.data.id;
+      navigate(`/edit-data-Transaction/${Id}`);
+    } else {
+      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
+    }
+  };
+
+  const deleteById = (id, bonTripNo, productName) => {
+    if (productName === "cpo" || productName === "pko") {
+      toast.warning("Tidak dapat menghapus transaksi CPO atau PKO");
+      return; // Exit the function early without performing deletion
+    }
+
     Swal.fire({
       title: `Hapus Transaksi !!!`,
       html: `<span style="font-weight: bold; font-size: 28px;">"${bonTripNo}"</span>`,
@@ -152,8 +168,7 @@ const DataTransaction = () => {
                 textDecoration: "none",
                 cursor: "pointer",
               }}
-              onClick={() => handleCellClick(params)}
-            >
+              onClick={() => handleCellClick(params)}>
               <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
             <Box
@@ -162,13 +177,18 @@ const DataTransaction = () => {
               borderRadius="5px"
               padding="7px 5px "
               color="white"
-              onClick={() => deleteById(params.value, params.data.bonTripNo)}
+              onClick={() =>
+                deleteById(
+                  params.value,
+                  params.data.bonTripNo,
+                  params.data.productName.toLowerCase()
+                )
+              }
               style={{
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <CancelOutlinedIcon sx={{ fontSize: "25px" }} />
             </Box>
           </Box>
@@ -202,7 +222,8 @@ const DataTransaction = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
+        isDeleted: false,
         progressStatus: { notIn: [20, 21, 22, 1] },
       },
       orderBy: { bonTripNo: "desc" },
@@ -245,38 +266,18 @@ const DataTransaction = () => {
             mt: 2,
             borderTop: "5px solid #000",
             borderRadius: "10px 10px 10px 10px",
-          }}
-        >
+          }}>
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
               <Typography fontSize="20px">Data Transaksi PKS</Typography>
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
-              {/* <Button
-                color="success"
-                variant="contained"
-                sx={{
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                  padding: "12px 12px",
-                  color: "white",
-                }}
-                onClick={() => {
-                  gridRef.current.api.exportDataAsExcel();
-                }}
-              >
-                <FileDownloadOutlinedIcon
-                  sx={{ mr: "5px", fontSize: "17px" }}
-                />
-                Export Excel
-              </Button> */}
               <Box
                 display="flex"
                 borderRadius="5px"
                 ml="auto"
-                border="solid grey 1px"
-              >
+                border="solid grey 1px">
                 <InputBase
                   sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                   placeholder="Search"
@@ -294,8 +295,7 @@ const DataTransaction = () => {
                         .includes(searchQuery.toLowerCase())
                     );
                     gridRef.current.api.setRowData(filteredData);
-                  }}
-                >
+                  }}>
                   <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                 </IconButton>
               </Box>
@@ -303,8 +303,7 @@ const DataTransaction = () => {
           </div>
           <div
             className="ag-theme-alpine"
-            style={{ width: "auto", height: "70vh" }}
-          >
+            style={{ width: "auto", height: "70vh" }}>
             <AgGridReact
               ref={gridRef}
               rowData={dtTransactions} // Row Data for Rows

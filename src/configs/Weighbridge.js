@@ -4,7 +4,7 @@ import moment from "moment";
 
 // import { getEnvInit } from "../configs";
 import { useConfig } from "../configs";
-import { appSlice } from "../slices/app/appSlice";
+import { appSlice } from "../slices/appSlice";
 const { setWb } = appSlice.actions;
 
 let wsClient;

@@ -3,27 +3,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { w3cwebsocket } from "websocket";
 import moment from "moment";
-import { useWeighbridge } from "../configs";
+import { useWeighbridge } from "../common/hooks";
 import { getEnvInit } from "../configs";
 import { setWb } from "../slices/appSlice";
+
+
 
 const WeightWB = () => {
   const [weighbridge] = useWeighbridge();
 
+ 
   return (
     <>
       <TextField
         type="number"
         fullWidth
-        size="small"
+        size="Large"
         InputProps={{
           endAdornment: <InputAdornment position="end">kg</InputAdornment>,
         }}
         sx={{
-          mb: 3.2,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-          },
+          mb: 2,
+        
         }}
         label={
           <>
@@ -31,7 +32,8 @@ const WeightWB = () => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               WB WEIGHT
             </Typography>
           </>

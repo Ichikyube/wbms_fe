@@ -46,7 +46,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
   const role = dtRole;
 
@@ -83,7 +83,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
     setShowGrants(index === showGrants ? null : index);
   };
   return (
-    <Dialog open={isViewOpen} fullWidth maxWidth={"lg"}>
+    <Dialog open={isViewOpen} fullWidth maxWidth>
       <DialogTitle
         sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
         <pre>
@@ -104,8 +104,8 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <Grid container spacing={2} pl={8} pr={8}>
-          <Grid item xs={12} sm={6} md={4} lg={6}>
+        <Grid container spacing={2} px={2}>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
             <Paper
               variant="outlined"
               sx={{
@@ -119,11 +119,12 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
               <div
                 className="ag-theme-alpine"
                 style={{ width: "auto", height: "auto" }}>
-                <h4 ml={3}>{role.description}</h4>
+                <h5>{role.description}</h5>
                 <br />
                 <Box
                   sx={{
-                    display: "flex", flexWrap: "wrap"
+                    display: "flex",
+                    flexWrap: "wrap",
                   }}>
                   {role.permissions.map((permission, index) => (
                     <div style={{ position: "relative" }}>
@@ -161,7 +162,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4} lg={6}>
+          <Grid item xs={12} sm={6} md={4} lg={8}>
             <Paper
               sx={{
                 p: 3,
@@ -170,7 +171,12 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 10px 10px",
               }}>
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
+              <h6
+                sx={{
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  color: "grey",
+                }}>
                 Total users with this role: {role.users.length}
               </h6>
               <div

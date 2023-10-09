@@ -24,7 +24,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
+const typeTransaction = 1;
 
 const DailyReportTransaction = () => {
   console.clear();
@@ -113,7 +113,7 @@ const DailyReportTransaction = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        tType,
+        typeTransaction,
       },
       orderBy: { bonTripNo: "desc" },
     }).then((res) => res.records);
@@ -145,15 +145,13 @@ const DailyReportTransaction = () => {
               <button
                 onClick={() => {
                   gridRef.current.api.exportDataAsExcel();
-                }}
-              >
+                }}>
                 Export Excel
               </button>
             </div>
             <div
               className="ag-theme-alpine"
-              style={{ width: "auto", height: "70vh" }}
-            >
+              style={{ width: "auto", height: "70vh" }}>
               <AgGridReact
                 ref={gridRef}
                 rowData={dtTransactions} // Row Data for Rows

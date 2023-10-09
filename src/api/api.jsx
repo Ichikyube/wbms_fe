@@ -1,10 +1,12 @@
 import axios from "axios";
+
 const { REACT_APP_WBMS_BACKEND_API_URL } = process.env;
 const api = axios.create({
   baseURL: `${REACT_APP_WBMS_BACKEND_API_URL}`,
 });
 
 let refresh = false;
+
 // Add an interceptor to set the 'Authorization' header
 api.interceptors.request.use(
   (config) => {
@@ -19,21 +21,61 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-axios.interceptors.response.use(resp => resp, async error => {
+// Add an interceptor to refresh token when it's expired
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
     if (error.response.status === 401 && !refresh) {
-        refresh = true;
-
-        const response = await axios.post('refresh', {}, {withCredentials: true});
-
-        if (response.status === 200) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data['token']}`;
-
-            return axios(error.config);
+      refresh = true;
+      const rt = getCookie("rt");
+      if (!rt) localStorage.clear();
+      try {
+        const response = await api.post("/auth/refresh", rt, {
+          withCredentials: true,
+        });
+        if (response?.status === 200) {
+          const at = response?.data?.data.tokens["access_token"];
+          localStorage.setItem("wbms_at", at);
+          document.cookie =
+            "rt=" +
+            response?.data?.data.tokens["refresh_token"] +
+            "; SameSite=Lax";
+          const config = error.config;
+          api.defaults.headers.common["Authorization"] = `Bearer ${at}`;
+          config.headers.Authorization = `Bearer ${at}`;
+          return axios(config);
         }
+      } catch (_error) {
+        return Promise.reject(_error);
+      }
     }
+
     refresh = false;
     return error;
-});
+  }
+);
 
+export function getCookie(name) {
+  const cookies = document.cookie.split(";");
+  for (const cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) {
+      return value;
+    }
+  }
+  return null;
+}
 export default api;
+
+/** 
+ * api: This is probably an instance of createApi from Redux Toolkit Query. 
+ * It's a pre-configured set of options and hooks for making API calls.
+ * */ 
+/**
+ * 
+ * extraOptions: These are additional options that you might want to pass to customize the behavior of the request. 
+ * These could include things like headers, authentication tokens,
+ *  or any other options supported by the baseQuery.
+ */

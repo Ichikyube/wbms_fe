@@ -11,10 +11,12 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
 
 const BonTripPrint = (props) => {
+  const { userInfo } = useSelector((state) => state.app);
   const { dtTrans, isDisable } = props;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -307,7 +309,7 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Dibuat,
@@ -318,7 +320,7 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Diketahui,
@@ -329,7 +331,7 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Disetujui,
@@ -341,7 +343,18 @@ const BonTripPrint = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                          padding: "40px",
+                          padding: "23px",
+                          fontFamily: "Courier New",
+                        }}
+                      >
+                        {userInfo.name}
+                      </td>
+                      <td
+                        style={{
+                          borderCollapse: "collapse",
+                          border: "1px solid black",
+                          color: "grey",
+                          fontFamily: "Courier New",
                         }}
                       ></td>
                       <td
@@ -349,13 +362,7 @@ const BonTripPrint = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                        }}
-                      ></td>
-                      <td
-                        style={{
-                          borderCollapse: "collapse",
-                          border: "1px solid black",
-                          color: "grey",
+                          fontFamily: "Courier New",
                         }}
                       ></td>
                     </tr>
@@ -364,7 +371,7 @@ const BonTripPrint = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Operator Timbang
@@ -373,7 +380,7 @@ const BonTripPrint = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         PGS
@@ -382,7 +389,7 @@ const BonTripPrint = (props) => {
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
+                          fontWeight: "bold",
                         }}
                       >
                         Mill Head
@@ -395,7 +402,7 @@ const BonTripPrint = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Box class="print-button" sx={{ p: 2, mr: 1 }}>
+          <Box className="print-button" sx={{ p: 2, mr: 1 }}>
             <ReactToPrint
               trigger={() => (
                 <Button

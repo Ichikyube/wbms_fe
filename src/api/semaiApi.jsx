@@ -36,23 +36,23 @@ const endpoint = "semai";
 //       dataOut.data.error = error;
 //     });
 
-//   // dataOut.status = response.data?.success || false;
-//   // dataOut.message = response.data?.message || "";
-//   // dataOut.data.jsonData = response.data?.record || null;
+//   // dataOut.status = response?.data?.success || false;
+//   // dataOut.message = response?.data?.message || "";
+//   // dataOut.data.jsonData = response?.data?.record || null;
 
-//   return response.data;
+//   return response?.data;
 // };
 
 export const dispatchDelivery = async (data) => {
   const response = await api.post(`${endpoint}/dispatch-delivery`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const rejectDelivery = async (data) => {
   const response = await api.post(`${endpoint}/reject-delivery`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const closeDeliveryCanceled = async (data) => {
@@ -61,7 +61,7 @@ export const closeDeliveryCanceled = async (data) => {
     data
   );
 
-  return response.data;
+  return response?.data;
 };
 
 export const closeDeliveryAccepted = async (data) => {
@@ -70,7 +70,7 @@ export const closeDeliveryAccepted = async (data) => {
     data
   );
 
-  return response.data;
+  return response?.data;
 };
 
 export const closeDeliveryRejected = async (data) => {
@@ -79,7 +79,7 @@ export const closeDeliveryRejected = async (data) => {
     data
   );
 
-  return response.data;
+  return response?.data;
 };
 
 export const validateDispatchDelivery = async (data) => {
@@ -88,13 +88,13 @@ export const validateDispatchDelivery = async (data) => {
     data
   );
 
-  return response.data;
+  return response?.data;
 };
 
 export const validateUnloading = async (data) => {
   const response = await api.post(`${endpoint}/validate-unloading`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const encodeQrcode = async (orderId, functionCode) => {
@@ -105,17 +105,17 @@ export const encodeQrcode = async (orderId, functionCode) => {
 
   const response = await api.post(`${endpoint}/encode-qrcode`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const getSites = async () => {
   const response = await api.get(`sites`);
-  return response.data;
+  return response?.data;
 };
 
 export const getStorageTanks = async () => {
   const response = await api.get(`storage-tanks`);
-  return response.data;
+  return response?.data;
 };
 
 export const getStorageTanksBySiteID = async (siteID) => {
@@ -124,17 +124,17 @@ export const getStorageTanksBySiteID = async (siteID) => {
   data.params.fltSiteId = siteID;
 
   const response = await api.get(`storage-tanks`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const getTransportVehicles = async () => {
   const response = await api.get(`transport-vehicles`);
-  return response.data;
+  return response?.data;
 };
 
 export const getProducts = async () => {
   const response = await api.get(`products`);
-  return response.data;
+  return response?.data;
 };
 
 export const getT30Site = () => {

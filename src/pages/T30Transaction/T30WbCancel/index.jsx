@@ -46,7 +46,7 @@ const T30WbCancel = (props) => {
           where: {
             transportVehiclePlateNo: wbT30Transaction?.transportVehiclePlateNo,
             progressStatus: { in: [1, 4, 6] },
-            tType: 2,
+            typeTransaction: 2,
           },
           orderBy: { bonTripNo: "desc" },
         });
@@ -363,8 +363,7 @@ const T30WbCancel = (props) => {
                 canSubmit &&
                 (values.progressStatus === 5 || values.progressStatus === 7)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -380,16 +379,14 @@ const T30WbCancel = (props) => {
                 }
               );
             }}
-            disabled={!(values.progressStatus === 9)}
-          >
+            disabled={!(values.progressStatus === 9)}>
             Tampilkan QR
           </Button>
           <Button
             variant="contained"
             fullWidth
             sx={{ mb: 1 }}
-            onClick={handleClose}
-          >
+            onClick={handleClose}>
             Tutup
           </Button>
           <Button
@@ -399,8 +396,7 @@ const T30WbCancel = (props) => {
             onClick={() => {
               console.log("data transaction:");
               console.log(values);
-            }}
-          >
+            }}>
             Debugging
           </Button>
         </Grid>

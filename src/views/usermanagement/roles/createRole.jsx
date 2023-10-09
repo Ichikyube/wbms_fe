@@ -1,6 +1,4 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useCollapse } from "react-collapsed";
 import "./style.css";
 import { styled } from "@mui/material/styles";
 import {
@@ -32,7 +30,12 @@ import { Formik, Form, FieldArray, Field } from "formik";
 import * as yup from "yup";
 import { grey, blue } from "@mui/material/colors";
 import * as RolesAPI from "../../../api/roleApi";
-import { dtAttrJson } from "../../../constants/attributeListObj";
+import {
+  dtAttrJson,
+  jembatanTimbangList,
+  masterDataList,
+  userManagementList,
+} from "../../../constants/attributeListObj";
 const SelectBox = lazy(() => import("../../../components/selectbox"));
 const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   const [expanded, setExpanded] = useState(null);
@@ -40,28 +43,21 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   const toggleAccordion = (index) => {
     setExpanded(index === expanded ? null : index);
   };
-  const resourcesList = [
-    "Company",
-    "Customer",
-    "Driver",
-    "Mill",
-    "Product",
-    "Site",
-    "StorageTank",
-    "Transaction",
-    "TransportVehicle",
-    "Weighbridge",
-    "User",
-    "Config",
-  ];
+
   const [checkboxes, setCheckboxes] = useState(
-    resourcesList.map((resource, index) => ({
+    masterDataList.map((resource, index) => ({
       id: index,
       label: resource,
       checked: true,
     }))
   );
-  const fetcher = () => RolesAPI.getAll();
+
+  const INITIAL_DATA = {
+    name: "",
+    description: "",
+    permissions: [],
+  };
+
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const [selectedResources, setSelectedResources] = useState([]);
@@ -93,7 +89,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
       possession: possesionList[index],
       attributes: [
         {
-          attr: "",
+          attr: "id",
         },
       ],
     }))
@@ -149,7 +145,10 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
 
     //   setPermissions(...selectedPermissions, ...selectedResources);
     // }
-    if(!selectedTemplate)  setPermissions(selectedResources.map((resource) => ({ resource, grants })));
+    if (!selectedTemplate)
+      setPermissions(
+        selectedResources.map((resource) => ({ resource, grants }))
+      );
     setAttrOptions(
       Object.keys(dtAttrJson)
         .filter((resource) => selectedResources.includes(resource))
@@ -177,7 +176,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
-
         onClose("", false);
       });
   };
@@ -227,7 +225,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                   top: "20px",
                 }}
                 onClick={() => {
-                  resetForm({values: generateInitialValues(permissions)});
+                  resetForm({ values: generateInitialValues(permissions) });
                   onClose("", false);
                 }}>
                 <CloseIcon />
@@ -329,15 +327,12 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                         <MenuItem value="" disabled>
                           -- Pilih Role Template --
                         </MenuItem>
-                        <MenuItem value="" >
-                          ---Kosongkan---
-                        </MenuItem>
+                        <MenuItem value="">---Kosongkan---</MenuItem>
                         {dtRoles.map((item) => (
                           <MenuItem key={item.id} value={item.id}>
                             {item.name}
                           </MenuItem>
                         ))}
-
                       </Select>
                     </FormControl>
                     <label>
@@ -543,36 +538,37 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                                       {mountAttributes.includes(
                                         `permissions[${index}].grants[${actionIndex}].attributes`
                                       ) && (
-                                        <SelectBox
-                                          name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                          onChange={(selectedOption) => {
-                                            if (
-                                              values.permissions[index] &&
-                                              values.permissions[index].grants[
+                                        <Suspense>
+                                          <SelectBox
+                                            name={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                            onChange={(selectedOption) => {
+                                              if (
+                                                values.permissions[index] &&
+                                                values.permissions[index]
+                                                  .grants[actionIndex]
+                                              ) {
+                                                setFieldValue(
+                                                  `permissions[${index}].grants[${actionIndex}].attributes`,
+                                                  selectedOption.map(
+                                                    ({ value }) => ({
+                                                      attr: value,
+                                                    })
+                                                  )
+                                                );
+                                              }
+                                            }}
+                                            placeholder="Hide Attributes: "
+                                            value={
+                                              values.permissions[index]?.grants[
                                                 actionIndex
-                                              ]
-                                            ) {
-                                              setFieldValue(
-                                                `permissions[${index}].grants[${actionIndex}].attributes`,
-                                                selectedOption.map(
-                                                  ({ value }) => ({
-                                                    attr: value,
-                                                  })
-                                                )
-                                              );
+                                              ]?.attributes.map(({ attr }) => ({
+                                                value: attr,
+                                                label: attr,
+                                              })) || null
                                             }
-                                          }}
-                                          placeholder="Hide Attributes: "
-                                          value={
-                                            values.permissions[index]?.grants[
-                                              actionIndex
-                                            ]?.attributes.map(({ attr }) => ({
-                                              value: attr,
-                                              label: attr,
-                                            })) || null
-                                          }
-                                          options={attrOptions[resource]}
-                                        />
+                                            options={attrOptions[resource]}
+                                          />
+                                        </Suspense>
                                       )}
                                     </div>
                                   )

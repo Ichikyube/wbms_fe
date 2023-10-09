@@ -9,14 +9,12 @@ const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
   const userRef = useRef();
-  const {login} = useAuth();
+  const { login } = useAuth();
   const [values, setValues] = useState(initialValues);
-
 
   useEffect(() => {
     userRef.current.focus();
   }, []);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();

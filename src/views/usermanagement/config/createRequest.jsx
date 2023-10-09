@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./style/style.css";
 import {
   Dialog,
   DialogTitle,
@@ -9,82 +11,87 @@ import {
   FormControl,
   FormLabel,
   IconButton,
-  InputLabel,
-  Autocomplete,
   TextareaAutosize,
 } from "@mui/material";
-import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { format, addDays, addHours } from "date-fns";
 import { Formik } from "formik";
-import * as yup from "yup";
-import { blue, grey } from "@mui/material/colors";
-import * as ConfigApi from "../../../api/configsApi";
+import { grey } from "@mui/material/colors";
 import moment from "moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import ReactRRuleGenerator from "../../../components/ReactRRuleGenerator";
-
+import { useTimescape, $NOW } from "timescape/react";
 import {
   useFetchRequestsQuery,
+  useCreateRequestMutation,
 } from "../../../slices/requestConfigsSlice";
-/*
-for createRequest
-Set Start using date input
-If repeatableTrue, activate Repeat and End input
-Set Edited value. Example: manualEntry=true
-*/
+import { createNotificationAsync } from "../../../slices/notificationSlice";
 
 const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
-  const { data: requestList, refetch } = useFetchRequestsQuery();
+  const dispatch = useDispatch();
+  const { refetch } = useFetchRequestsQuery();
+  const { userInfo } = useSelector((state) => state.app);
+  const groupMap = useSelector((state) => state.groupMapping);
+  const [createRequest, { isLoading, isSuccess }] = useCreateRequestMutation();
   const [isCopied, setIsCopied] = useState(false);
-  const [rrule, setRrule] = useState(
-    "DTSTART:20190301T230000Z\nFREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"
-  );
-
-  const handleChange = (newRRule) => {
-    setRrule(newRRule);
-    setIsCopied(false);
-  };
-
+  const [initialValues, setInitialValue] = useState({
+    configId: dtConfig?.id,
+    name: dtConfig?.name,
+    schedule: null,
+  });
+  const [nextSchedule, setNextSchedule] = useState(new Date());
+  const [timeReceipt, setTimeReceipt] = useState("");
+  const { getRootProps, getInputProps } = useTimescape({
+    minDate: $NOW,
+    date: nextSchedule,
+    wrapAround: false,
+    onChangeDate: setNextSchedule,
+  });
   const handleCopy = () => {
     setIsCopied(true);
   };
-  const userSchema = yup.object().shape({
-    // name: yup.string().required("required"),
-  });
-
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.start = moment(values.start).toDate();
-    values.end = moment(values.end).toDate();
+    values["schedule"] = new Date(nextSchedule);
 
     try {
-      dispatch(createRequest(requestData));
+      await createRequest(values);
+      await refetch();
       toast.success("Data Berhasil Dibuat");
-      refetch()
-      // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+      const notificationData = {
+        photo: userInfo.profilePic,
+        sender: userInfo.name,
+        message: `Meminta persetujuan untuk mengaktifkan ${dtConfig.name}`,
+        target: Object.keys(groupMap).filter((id => groupMap[id] === 'PJ1')),
+      };
+      dispatch(createNotificationAsync(notificationData))
+        .unwrap()
+        .then((createdNotification) => {
+          console.log("Notification sended:", createdNotification);
+        })
+        .catch((error) => {
+          // Handle failure (error in creating notification)
+          console.error("Error sending notification:", error);
+        });
     } catch (error) {
       console.error("Data Gagal Dibuat:", error);
       toast.error("Data Gagal Dibuat: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
       setSubmitting(false);
+      refetch();
       resetForm();
       onClose("", false);
     }
   };
-  useEffect(() => {
-    if (isRequestOpen)
-      setInitialValue({
-        configId: dtConfig.id,
-        name: dtConfig.name,
-        start: null,
-        end: null,
-      });
-      
-  }, [isRequestOpen, dtConfig]);
 
-  const [initialValues, setInitialValue] = useState({});
+  useEffect(() => {
+    setTimeReceipt(
+      `Perkiraan request akan berlaku mulai ${nextSchedule} hingga ${new Date(
+        new Date(nextSchedule).getTime() + dtConfig?.lifespan * 1000
+      )}`
+    );
+  }, [nextSchedule, dtConfig]);
+
   return (
     <Dialog
       open={isRequestOpen}
@@ -109,10 +116,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          validationSchema={userSchema}>
+        <Formik onSubmit={handleFormSubmit} initialValues={initialValues}>
           {({
             values,
             errors,
@@ -131,7 +135,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
                 paddingRight={3}
                 gap="20px"
                 gridTemplateColumns="repeat(4, minmax(0, 1fr))">
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 2" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -139,22 +143,22 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
                       fontSize: "16px",
                       fontWeight: "bold",
                     }}>
-                    Config Name
+                    Nama Konfig
                   </FormLabel>
 
                   <TextField
                     variant="outlined"
+                    id="name-input"
+                    name="name"
                     type="text"
                     placeholder="Masukkan Nama...."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={initialValues.name}
-                    name="name"
                     inputProps={{ readOnly: true }}
                     sx={{ backgroundColor: "whitesmoke" }}
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
-                    id="name-input"
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 2" }}>
@@ -165,126 +169,67 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
                       fontSize: "16px",
                       fontWeight: "bold",
                     }}>
-                    Tanggal Mulai
+                    Dijadwalkan Pada
                   </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="datetime-local"
-                    onBlur={handleBlur}
-                    onChange={(e) => {
-                      handleChange(e);
-                      if (
-                        !values.end ||
-                        new Date(e.target.value) <= new Date(values.end)
-                      ) {
-                        setFieldValue("status", "PENDING");
-                      }
-                    }}
+                  <div
+                    className="timescape"
+                    onChange={console.log(values.name)}
+                    id="schedule-input"
+                    name="schedule"
+                    {...getRootProps()}
                     value={
-                      values.start
-                        ? format(new Date(values.start), "yyyy-MM-dd'T'HH:mm")
+                      values.schedule
+                        ? format(
+                            new Date(values.schedule),
+                            "yyyy-MM-dd'T'HH:mm"
+                          )
                         : ""
-                    }
-                    name="start"
-                    error={!!touched.start && !!errors.start}
-                    helperText={touched.start && errors.start}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 2" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    Tanggal Akhir
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="datetime-local"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={
-                      values.end
-                        ? format(new Date(values.end), "yyyy-MM-dd'T'HH:mm")
-                        : ""
-                    }
-                    name="end"
-                    error={!!touched.end && !!errors.end}
-                    helperText={touched.end && errors.end}
-                    // Nonaktifkan pilihan tanggal yang lebih dari 24 jam dari tanggal mulai
-                    inputProps={{
-                      max: format(
-                        addDays(new Date(values.start), 1),
-                        "yyyy-MM-dd'T'HH:mm"
-                      ),
-                      min: format(
-                        addDays(new Date(values.start), 1),
-                        "yyyy-MM-dd'T'HH:mm"
-                      ),
-                    }}
-                  />
+                    }>
+                    <input {...getInputProps("days")} />
+                    <span>/</span>
+                    <input {...getInputProps("months")} />
+                    <span>/</span>
+                    <input {...getInputProps("years")} />
+                    <span className="separator">&nbsp;</span>
+                    <input {...getInputProps("hours")} />
+                    <span>:</span>
+                    <input {...getInputProps("minutes")} />
+                  </div>
                 </FormControl>
               </Box>
-              {/* <div>
-                <div className="app container">
-                  <ReactRRuleGenerator
-                    onChange={handleChange}
-                    value={rrule}
-                    config={{
-                      hideStart: false,
-                    }}
+              <div className="form-group row d-flex align-items-sm-center">
+                <div className="col-sm-2 text-sm-right">
+                  <span className="col-form-label">
+                    <strong>timeReceipt</strong>
+                  </span>
+                </div>
+
+                <div className="col-sm-8">
+                  <TextareaAutosize
+                    aria-label="minimum height"
+                    minRows={3}
+                    placeholder="Minimum 3 rows"
+                    className={`form-control rrule ${
+                      isCopied ? "rrule-copied" : "rrule-not-copied"
+                    }`}
+                    value={timeReceipt}
+                    readOnly
                   />
                 </div>
 
-                <hr className="mt-5 mb-5" />
-
-                <div className="container">
-                  <h5>
-                    <strong>Example handling</strong>
-                  </h5>
-
-                  <div className="px-3 pt-3 border rounded">
-                    <div className="form-group row d-flex align-items-sm-center">
-                      <div className="col-sm-2 text-sm-right">
-                        <span className="col-form-label">
-                          <strong>RRule</strong>
-                        </span>
-                      </div>
-
-                      <div className="col-sm-8">
-                        <TextareaAutosize
-                          aria-label="minimum height"
-                          minRows={3}
-                          placeholder="Minimum 3 rows"
-                          className={`form-control rrule ${
-                            isCopied ? "rrule-copied" : "rrule-not-copied"
-                          }`}
-                          value={rrule}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="col-sm-2">
-                        <CopyToClipboard text={rrule} onCopy={handleCopy}>
-                          <button
-                            aria-label="Copy generated RRule"
-                            className={`btn ${
-                              isCopied ? "btn-secondary" : "btn-primary"
-                            } float-right`}>
-                            {isCopied ? "Copied" : "Copy"}
-                          </button>
-                        </CopyToClipboard>
-                      </div>
-                    </div>
-                  </div>
+                <div className="col-sm-2">
+                  <CopyToClipboard text={timeReceipt} onCopy={handleCopy}>
+                    <button
+                      type="button"
+                      aria-label="Copy generated RRule"
+                      className={`btn ${
+                        isCopied ? "btn-secondary" : "btn-primary"
+                      } float-right`}>
+                      {isCopied ? "Copied" : "Copy"}
+                    </button>
+                  </CopyToClipboard>
                 </div>
-
-                <hr className="mt-5 mb-5" />
-              </div> */}
+              </div>
               <Box display="flex" mt={2} ml={3}>
                 <Button
                   variant="contained"

@@ -5,9 +5,10 @@ import {
   FormControl,
   Paper,
   Box,
-  InputLabel,
-  MenuItem,
-  Select,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -21,11 +22,10 @@ import * as CompaniesAPI from "../../api/companiesApi";
 import * as DriverAPI from "../../api/driverApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CustomerAPI from "../../api/customerApi";
-import { useConfig } from "../../configs";
+import { useConfig } from "../../common/hooks";
 import * as SiteAPI from "../../api/sitesApi";
-import TBSInternal from "./dataTBSInternal";
-import TBSEksternal from "./dataTBSEksternal";
-import Others from "./dataOthers";
+import TBS from "./dataTBS";
+import DataOthers from "./dataOthers";
 import BeratTanggal from "./beratTanggal";
 
 const EditDataTransaksi = () => {
@@ -37,19 +37,16 @@ const EditDataTransaksi = () => {
     const fetchData = async () => {
       try {
         const dataById = await TransactionAPI.getById(id);
-        console.log(dataById);
         if (dataById) {
           setValues({
             ...dataById.record,
           });
-          // Set selectedOption berdasarkan productName dari data yang diambil
-          const productName = dataById.record.productName;
-          if (productName === "TBS Internal") {
-            setSelectedOption("TbsInternal");
-          } else if (productName === "TBS Eksternal") {
-            setSelectedOption("TbsEksternal");
+          const productName = dataById.record.productName.toLowerCase();
+
+          if (productName.includes("tbs")) {
+            setSelectedOption("Tbs");
           } else {
-            setSelectedOption("Others"); // Default ke "Others" jika productName bukan "TBS Internal" atau "TBS Eksternal"
+            setSelectedOption("Others");
           }
         }
       } catch (error) {
@@ -101,6 +98,8 @@ const EditDataTransaksi = () => {
       qtyTbsDikembalikan,
       originWeighInTimestamp,
       transportVehicleSccModel,
+      destinationSiteId,
+      destinationSiteName,
     } = values;
 
     const tempTrans = {
@@ -128,6 +127,8 @@ const EditDataTransaksi = () => {
       originWeighInTimestamp: moment(originWeighInTimestamp).toDate(),
       originWeighOutTimestamp: moment(originWeighOutTimestamp).toDate(),
       transportVehicleSccModel,
+      destinationSiteId,
+      destinationSiteName,
     };
 
     try {
@@ -167,13 +168,12 @@ const EditDataTransaksi = () => {
     return (
       values.bonTripNo &&
       values.deliveryOrderNo &&
-      values.transportVehicleId &&
-      values.driverId &&
-      values.transporterId &&
-      values.productId &&
-      values.customerId &&
-      values.originWeighInTimestamp &&
-      values.originWeighOutTimestamp &&
+      // values.transportVehicleId &&
+      // values.driverId &&
+      // values.transporterId &&
+      // values.productId &&
+      // values.originWeighInTimestamp &&
+      // values.originWeighOutTimestamp &&
       values.originWeighInKg > 0 &&
       values.originWeighOutKg > 0
     );
@@ -230,62 +230,55 @@ const EditDataTransaksi = () => {
       <Grid container spacing={3}>
         <Grid item xs={1.7}>
           <Paper elevation={2} sx={{ p: 2 }}>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel
-                id="select-label"
-                sx={{
-                  bgcolor: "white",
-                  px: 2,
-                }}>
+            <FormControl component="fieldset">
+              <FormLabel
+                component="legend"
+                sx={{ fontWeight: "bold", fontSize: "17px" }}
+              >
                 Edit Transaksi
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                size="large"
+              </FormLabel>
+              <RadioGroup
+                aria-label="edit-transaksi"
+                name="edit-transaksi"
                 value={selectedOption}
                 onChange={(event) => {
                   setSelectedOption(event.target.value);
-                }}>
-                {/* TBS INTERNAL */}
-
-                {(selectedOption === "TbsInternal" ||
-                  selectedOption === "BeratTanggalTbsInternal") && (
-                  <MenuItem value="TbsInternal">TBS Internal</MenuItem>
-                )}
-                {(selectedOption === "BeratTanggalTbsInternal" ||
-                  selectedOption === "TbsInternal") && (
-                  <MenuItem value="BeratTanggalTbsInternal">
-                    Berat & Tanggal
-                  </MenuItem>
-                )}
-
-                {/* TBS EKSTERNAL */}
-
-                {(selectedOption === "TbsEksternal" ||
-                  selectedOption === "BeratTanggalTbsEksternal") && (
-                  <MenuItem value="TbsEksternal">TBS Eksternal</MenuItem>
-                )}
-                {(selectedOption === "BeratTanggalTbsEksternal" ||
-                  selectedOption === "TbsEksternal") && (
-                  <MenuItem value="BeratTanggalTbsEksternal">
-                    Berat & Tanggal
-                  </MenuItem>
+                }}
+              >
+                {/* TBS */}
+                {(selectedOption === "Tbs" ||
+                  selectedOption === "BeratTanggalTbs") && (
+                  <>
+                    <FormControlLabel
+                      value="Tbs"
+                      control={<Radio />}
+                      label="TBS"
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalTbs"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
                 )}
 
                 {/* OTHERS */}
-
                 {(selectedOption === "Others" ||
                   selectedOption === "BeratTanggalOthers") && (
-                  <MenuItem value="Others">Others</MenuItem>
+                  <>
+                    <FormControlLabel
+                      value="Others"
+                      control={<Radio />}
+                      label="Others "
+                    />
+                    <FormControlLabel
+                      value="BeratTanggalOthers"
+                      control={<Radio />}
+                      label="Berat & Tanggal"
+                    />
+                  </>
                 )}
-                {(selectedOption === "BeratTanggalOthers" ||
-                  selectedOption === "Others") && (
-                  <MenuItem value="BeratTanggalOthers">
-                    Berat & Tanggal
-                  </MenuItem>
-                )}
-              </Select>
+              </RadioGroup>
             </FormControl>
           </Paper>
         </Grid>
@@ -294,12 +287,13 @@ const EditDataTransaksi = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
-              {/* TBS INTERNAL */}
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
+              {/* TBS */}
 
-              {selectedOption === "TbsInternal" && (
+              {selectedOption === "Tbs" && (
                 <>
-                  <TBSInternal
+                  <TBS
                     values={values}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
@@ -316,29 +310,10 @@ const EditDataTransaksi = () => {
                 </>
               )}
 
-              {/* TBS EKSTERNAL */}
-
-              {selectedOption === "TbsEksternal" && (
-                <TBSEksternal
-                  values={values}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  setValues={setValues}
-                  handleClose={handleClose}
-                  dtCompany={dtCompany}
-                  dtTransportVehicle={dtTransportVehicle}
-                  validateForm={validateForm}
-                  dtProduct={dtProduct}
-                  dtSite={dtSite}
-                  dtCustomer={dtCustomer}
-                  dtDriver={dtDriver}
-                />
-              )}
-
               {/* OTHERS */}
 
               {selectedOption === "Others" && (
-                <Others
+                <DataOthers
                   values={values}
                   handleChange={handleChange}
                   handleSubmit={handleSubmit}
@@ -350,13 +325,13 @@ const EditDataTransaksi = () => {
                   dtProduct={dtProduct}
                   dtCustomer={dtCustomer}
                   dtDriver={dtDriver}
+                  dtSite={dtSite}
                 />
               )}
 
               {/* BERAT DAN TANGGAL */}
 
-              {(selectedOption === "BeratTanggalTbsInternal" ||
-                selectedOption === "BeratTanggalTbsEksternal" ||
+              {(selectedOption === "BeratTanggalTbs" ||
                 selectedOption === "BeratTanggalOthers") && (
                 <BeratTanggal
                   values={values}

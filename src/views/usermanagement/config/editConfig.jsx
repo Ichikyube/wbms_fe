@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -27,63 +27,18 @@ import FormLabel from "@mui/material/FormLabel";
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { format, addDays, addHours } from "date-fns";
 import * as yup from "yup";
 import { blue, grey } from "@mui/material/colors";
-import * as ConfigApi from "../../../api/configsApi";
-import moment from "moment";
-import TimeSpanInput from "../../../components/TimeSpanInput";
-const StyledTextarea = styled(TextareaAutosize)(
-  ({ theme }) => `
-  width: 320px;
-  font-family: IBM Plex Sans, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
-  padding: 12px;
-  border-radius: 12px 12px 0 12px;
-  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${
-    theme.palette.mode === "dark" ? grey[900] : grey[50]
-  };
-
-  &:hover {
-    border-color: ${blue[400]};
-  }
-
-  &:focus {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${
-      theme.palette.mode === "dark" ? blue[500] : blue[200]
-    };
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`
-);
+import * as ConfigApi from "../../../api/configApi";
+import ConditionalInput from "./editConfig/conditionalInput";
 
 const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
-  const [isRepeatable, setIsRepeatable] = useState(false);
-
-  const handleIsRepeatableChange = (event) => {
-    setIsRepeatable(event.target.checked);
-  };
-
-  const userSchema = yup.object().shape({
-    // name: yup.string().required("required"),
-  });
-
-  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.start = moment(values.start).toDate();
-    values.end = moment(values.end).toDate();
-
+  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
+    console.log(values.defaultVal)
+    values.defaultVal = JSON.stringify(values.defaultVal);
+    console.log(values.defaultVal)
     try {
-      await ConfigApi.update(values);
+      ConfigApi.update(values);
       toast.success("Data Berhasil Diperbarui");
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
@@ -96,29 +51,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       onClose("", false);
     }
   };
-  const [timeSpan, setTimeSpan] = useState(0);
 
-  const handleTimeSpanChange = (newTimeSpan) => {
-    setTimeSpan(newTimeSpan);
-  };
-  /*
-    for SetConfig
-    Set lvlOfApproval
-    depend on the level, add approver selector. Use input selector with autocomplete username or name
-    Set defaultValue. Use data type selector, depend on the data type input, bring the match input defaultValue component
-    Set timeSpan with Hours and Minutes input
-    Set repeatable checkbox
-    Abort status
-    */
-  const formatLifespan = (hours, minutes) => {
-    return `${hours} hours ${minutes} minutes`;
-  };
-  const initialValues = {
-    configRequestLifespan: {
-      hours: 0,
-      minutes: 0,
-    },
-  };
   return (
     <Dialog
       open={isEditOpen}
@@ -143,10 +76,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
       </DialogTitle>
 
       <DialogContent dividers>
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={dtConfig}
-          validationSchema={userSchema}>
+        <Formik onSubmit={handleFormSubmit} initialValues={dtConfig}>
           {({
             values,
             errors,
@@ -157,15 +87,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
             setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
-              <Box
-                display="grid"
+              <Box fullWidth
+                display="block"
                 padding={2}
                 paddingBottom={3}
                 paddingLeft={3}
                 paddingRight={3}
-                gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                gap="20px">
+                <FormControl marginTop={2} marginBottom={2}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -175,7 +104,6 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     }}>
                     Config Name
                   </FormLabel>
-
                   <TextField
                     variant="outlined"
                     type="text"
@@ -191,88 +119,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     id="name-input"
                   />
                 </FormControl>
-              </Box>
-              <Box
-                display="block"
-                padding={2}
-                paddingBottom={3}
-                paddingLeft={3}
-                paddingRight={3}
-                gap="20px">
-                <FormControl
-                  sx={{
-                    marginBottom: "8px",
-                    color: "black",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  }}
-                  component="fieldset">
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}>
-                    Level of Approval
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-label="Level of Approval"
-                    name="lvlOfApprvl"
-                    value={values.lvlOfApprvl}
-                    onChange={handleChange}>
-                    <FormControlLabel
-                      value={1}
-                      control={<Radio />}
-                      label="lvl 1  "
-                    />
-                    <FormControlLabel
-                      value={2}
-                      control={<Radio />}
-                      label="lvl 2"
-                    />
-                    <FormControlLabel
-                      value={3}
-                      control={<Radio />}
-                      label="lvl 3"
-                    />
-                  </RadioGroup>
-                </FormControl>
-                <FormControl
-                  fullWidth
-                  sx={{
-                    marginBottom: "8px",
-                    color: "black",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  }}>
-                  <InputLabel id="demo-simple-select-label">
-                    Default State
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    name="status"
-                    id="status-default-select"
-                    value={values.status}
-                    label="Default State"
-                    onChange={handleChange}>
-                    <MenuItem value="ACTIVE">Active</MenuItem>
-                    <MenuItem default value="DISABLED">
-                      Disabled
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-                <InputLabel id="demo-simple-select-label">LIFESPAN</InputLabel>
-                <TimeSpanInput onChange={handleTimeSpanChange} />
 
-                {/* <Typography>
-                  Lifespan:{" "}
-                  {formatLifespan(
-                    initialValues.configRequestLifespan.hours,
-                    initialValues.configRequestLifespan.minutes
-                  )}
-                </Typography> */}
+                <ConditionalInput
+                  dtConfig={dtConfig}
+                  setFieldValue={setFieldValue}
+                  values={values}
+                  fullWidth
+                  handleChange={handleChange}
+                />
               </Box>
               <Box display="flex" mt={2} ml={3}>
                 <Button

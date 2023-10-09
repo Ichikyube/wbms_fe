@@ -21,29 +21,26 @@ ModuleRegistry.registerModules([
 ]);
 
 const TransactionGrid = (props) => {
-  const { tType } = props;
+  const { fetcher, gridRef } = props;
   const navigate = useNavigate();
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
 
-  const gridRef = useRef();
+  // const gridRef = useRef();
 
   const handleCellClick = (params) => {
+    const productName = params.data.productName.toLowerCase();
     const progressStatus = params.data.progressStatus;
-    const Id = params.data.id; 
 
     if (
-      progressStatus === 20 ||
-      progressStatus === 21 ||
-      progressStatus === 22
+      progressStatus === 1 &&
+      !productName.includes("cpo") &&
+      !productName.includes("pko")
     ) {
-      navigate(
-        `/pks-ManualEntry-${progressStatus === 20 ? "Others-" : ""}${
-          progressStatus === 21 ? "TBSInternal-" : ""
-        }${progressStatus === 22 ? "TBSEksternal-" : ""}TimbangKeluar/${Id}`
-      );
+      const Id = params.data.id;
+      navigate(`/pks-ManualEntry-TimbangKeluar/${Id}`);
     }
   };
 
@@ -54,7 +51,7 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
+      flex: true,
       onCellClicked: handleCellClick,
       cellStyle: { cursor: "pointer" },
     },
@@ -65,15 +62,15 @@ const TransactionGrid = (props) => {
       onCellClicked: handleCellClick,
       cellStyle: { cursor: "pointer" },
     },
-    // {
-    //   headerName: "Status",
-    //   field: "progressStatus",
-    //   cellClass: "progressStatus",
-    //   valueFormatter: statusFormatter,
-    //   enableRowGroup: true,
-    //   rowGroup: true,
-    //   hide: true,
-    // },
+    {
+      headerName: "Status",
+      field: "progressStatus",
+      cellClass: "progressStatus",
+      valueFormatter: statusFormatter,
+      enableRowGroup: true,
+      rowGroup: true,
+      hide: true,
+    },
 
     {
       headerName: "DO No",
@@ -112,27 +109,21 @@ const TransactionGrid = (props) => {
         checkbox: true,
       },
       field: "bonTripNo",
+      cellStyle: { cursor: "pointer" },
+      onCellClicked: handleCellClick,
       width: 300,
     }),
     []
   );
 
-  const fetcher = () =>
-    TransactionAPI.searchMany({
-      where: {
-        tType,
-        progressStatus: { notIn: [4, 9, 14] },
-      },
-      orderBy: { bonTripNo: "desc" },
-    }).then((res) => res.records);
-
-  const { data: dtTransactions } = useSWR("transaction", fetcher, {
-    refreshInterval: 2000,
+  const { data } = useSWR("transaction", fetcher, {
+    refreshInterval: 1000,
   });
   return (
     <div className="ag-theme-alpine" style={{ width: "auto", height: "50vh" }}>
       <AgGridReact
-        rowData={dtTransactions} // Row Data for Rows
+        ref={gridRef}
+        rowData={data} // Row Data for Rows
         columnDefs={columnDefs} // Column Defs for Columns
         defaultColDef={defaultColDef} // Default Column Properties
         animateRows={true} // Optional - set to 'true' to have rows animate when sorted

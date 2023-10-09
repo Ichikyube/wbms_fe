@@ -284,30 +284,20 @@ const Customers = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{  p: 3,
+          <Paper
+            sx={{
+              p: 3,
               mx: 3,
               mb: 5,
               mt: 2,
               borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px", }}>
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Customer</Typography>
                 <Box display="flex" ml="auto">
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: green[800],
-                      fontSize: "11px",
-                      fontWeight: "bold",
-                      padding: "8px 8px",
-                      color: "white",
-                      marginLeft: "3px",
-                    }}
-                  >
-                    <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
-                    Sync
-                  </Button>
                   <Button
                     variant="contained"
                     sx={{

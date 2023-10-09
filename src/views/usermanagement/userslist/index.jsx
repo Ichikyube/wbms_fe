@@ -24,15 +24,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import {
-  orange,
-  blue,
-  red,
-  indigo,
-  green,
-  teal,
-  lightBlue,
-} from "@mui/material/colors";
+import { orange, blue, red, indigo, lightBlue } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -45,11 +37,9 @@ import AddIcon from "@mui/icons-material/Add";
 import FaceIcon from "@mui/icons-material/Face";
 import * as React from "react";
 import * as UsersAPI from "../../../api/usersApi";
-
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
 
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
@@ -68,7 +58,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const UsersList = () => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +76,6 @@ const UsersList = () => {
 
   useEffect(() => {
     RoleAPI.getAll().then((res) => {
-      console.log(res)
       setDtRole(res.data.roles.records);
     });
   }, []);
@@ -309,7 +298,7 @@ const UsersList = () => {
     },
     {
       headerName: "Role",
-      field: "role",
+      field: "userRole.name",
       filter: true,
       sortable: true,
       hide: false,
@@ -324,6 +313,7 @@ const UsersList = () => {
       flex: 3,
     },
   ];
+  console.log(userInfo);
   const [columnDefs] = useState(
     userInfo?.role === "adminIT" || userInfo?.role === "admin_HC"
       ? [

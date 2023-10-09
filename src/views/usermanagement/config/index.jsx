@@ -20,7 +20,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/configsApi";
+import * as ConfigAPI from "../../../api/configApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
 import CreateIcon from "@mui/icons-material/Create";
@@ -109,7 +109,7 @@ const Config = () => {
     },
     {
       headerName: "Status",
-      field: "status",
+      field: "defaultVal",
       filter: true,
       sortable: true,
       hide: false,
@@ -125,24 +125,24 @@ const Config = () => {
       cellClass: "grid-cell-centered",
       valueGetter: (params) => {
         const { data } = params;
-        if (data.status == "ACTIVE") return "Always";
-        else if (data.status === "DISABLED") return "-";
-        // const activeStart = new Date(data.start);
-        // const activeEnd = new Date(data.end);
+        if (!data?.start) return "-";
+        console.log(params);
+        if (data.type != "Boolean") return "Always";
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        console.log(data?.start);
+        const formattedActiveStart = new Date(data?.start).toLocaleString(
+          "id-ID"
+        );
+        const formattedActiveEnd = new Date(data?.end).toLocaleString("id-ID");
 
-        // const options = {
-        //   year: 'numeric',
-        //   month: '2-digit',
-        //   day: '2-digit',
-        //   hour: '2-digit',
-        //   minute: '2-digit',
-        //   second: '2-digit'
-        // };
-
-        // const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
-        // const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
-
-        // return `${formattedActiveStart} - ${formattedActiveEnd}`;
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
     {
@@ -154,9 +154,11 @@ const Config = () => {
           <Box display="flex" justifyContent="center">
             <Box
               display="flex"
-              bgcolor={yellow[900]}
               borderRadius="5px"
               justifyContent="center"
+              cursor={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? "pointer": "not-allowed"}
+              pointer-events={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? "auto": "none"}
+              bgcolor={userInfo?.role.toLowerCase().includes("admin") || params.data.type === "Boolean" ? yellow[900]: null}
               textAlign="center"
               alignItems="center"
               color="white"
@@ -170,16 +172,16 @@ const Config = () => {
                 setSelectedConfig(params.data);
                 if (userInfo?.role.toLowerCase().includes("admin"))
                   setIsEditOpen(true);
-                else setIsRequestOpen(true);
+                else if (params.data.type === "Boolean") setIsRequestOpen(true);
               }}>
               {" "}
               {userInfo?.role.toLowerCase().includes("admin") ? (
                 <DriveFileRenameOutlineIcon
                   sx={{ ontSize: "20px", "&:hover": { color: "blue" } }}
                 />
-              ) : (
+              ) : params.data.type === "Boolean" ? (
                 <LiveHelpOutlinedIcon sx={{ mr: "3px", fontSize: "19px" }} />
-              )}
+              ) : null}
             </Box>
           </Box>
         );
@@ -243,16 +245,20 @@ const Config = () => {
           </Paper>
         </Grid>
       </Grid>
-      <EditDataConfig
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtConfig={selectedConfig}
-      />
-      <CreateRequestConfig
-        isRequestOpen={isRequestOpen}
-        onClose={() => setIsRequestOpen(false)}
-        dtConfig={selectedConfig}
-      />
+      {isEditOpen && (
+        <EditDataConfig
+          isEditOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          dtConfig={selectedConfig}
+        />
+      )}
+      {isRequestOpen && (
+        <CreateRequestConfig
+          isRequestOpen={isRequestOpen}
+          onClose={() => setIsRequestOpen(false)}
+          dtConfig={selectedConfig}
+        />
+      )}
     </>
   );
 };

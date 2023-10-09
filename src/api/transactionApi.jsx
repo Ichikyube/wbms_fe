@@ -1,36 +1,5 @@
 import api from "./api";
 
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async function (error) {
-    const originalRequest = error.config;
-    if (error.response.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const response = await refreshAccessToken();
-      console.log(response);
-      // axios.defaults.headers.common["Authorization"] = "Bearer " + access_token;
-      return api(originalRequest);
-    }
-    return Promise.reject(error);
-  }
-);
-
-const refreshAccessToken = async () => {
-  const response = await api.get(`auth/refresh`).catch((error) => {
-    return {
-      status: false,
-      message: error.message,
-      data: {
-        error: error,
-      },
-    };
-  });
-
-  return response.data;
-};
-
 export const endpoint = "transactions";
 
 export const getAll = async () => {
@@ -44,12 +13,12 @@ export const getAll = async () => {
     };
   });
 
-  return response.data;
+  return response?.data;
 };
 
 export const getById = async (id) => {
   const response = await api.get(`${endpoint}/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 export const searchMany = async (query) => {
@@ -62,7 +31,7 @@ export const searchMany = async (query) => {
 
 export const searchFirst = async (query) => {
   const response = await api.post(`${endpoint}/search-first`, query);
-  return response.data;
+  return response?.data;
 };
 
 export const openCreateByQrcodeSemai = async (data) => {
@@ -75,35 +44,36 @@ export const openCreateByQrcodeSemai = async (data) => {
 
 export const searchByQR = async (query) => {
   const response = await api.post(`${endpoint}/search-qr`, query);
-  return response.data;
+  return response?.data;
 };
 
 export const getByPlateNo = async (query) => {
   const response = await api.get(`${endpoint}/getByPlateNo`, {
     params: { ...query },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const create = async (data) => {
   const response = await api.post(`${endpoint}`, data);
 
-  return response.data;
+  return response?.data;
 };
 
 export const update = async (data) => {
   const response = await api.patch(`${endpoint}/${data?.id}`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const deleteById = async (id) => {
   const response = await api.delete(`${endpoint}/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 export const InitialData = {
   id: "",
-  tType: 0,
+  typeSite: 0,
+  typeTransaction: 0,
 
   bonTripNo: "",
   vehicleStatus: 0,
@@ -193,6 +163,10 @@ export const InitialData = {
   returnWeighOutRemark: "",
   returnWeighOutOperatorName: "",
   returnWeighOutTimestamp: null,
+
+  qtyTbs: 0,
+  qtyTbsDikirim: 0,
+  qtyTbsDikembalikan: 0,
 
   currentSeal1: "",
   currentSeal2: "",

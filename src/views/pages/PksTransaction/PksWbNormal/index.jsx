@@ -20,7 +20,7 @@ import * as SemaiUtils from "../../../utils/SemaiUtils";
 import * as TransactionAPI from "../../../api/transactionApi";
 import * as SemaiAPI from "../../../api/semaiApi";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksWbNormal = (props) => {
   const { configs, wb } = useSelector((state) => state.app);
@@ -141,7 +141,7 @@ const PksWbNormal = (props) => {
           where: {
             transportVehiclePlateNo: wbPksTransaction.transportVehiclePlateNo,
             progressStatus: 1, // cari yang statusnya unloading
-            tType,
+            typeTransaction,
           },
           orderBy: { bonTripNo: "desc" },
         });
@@ -158,7 +158,7 @@ const PksWbNormal = (props) => {
 
           setValues({
             ...wbPksTransaction,
-            tType: 1,
+            typeTransaction: 1,
             bonTripNo,
             progressStatus: 0,
           });
@@ -374,8 +374,7 @@ const PksWbNormal = (props) => {
                 canSubmit &&
                 (values.progressStatus === 0 || values.progressStatus === 2)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -391,8 +390,7 @@ const PksWbNormal = (props) => {
                 }
               );
             }}
-            disabled={!(values.progressStatus === 4)}
-          >
+            disabled={!(values.progressStatus === 4)}>
             Tampilkan QR
           </Button>
           <Button
@@ -400,8 +398,7 @@ const PksWbNormal = (props) => {
             sx={{ mb: 1 }}
             fullWidth
             onClick={handleClose}
-            disabled={!(values.progressStatus === 4)}
-          >
+            disabled={!(values.progressStatus === 4)}>
             Tutup
           </Button>
 
@@ -418,8 +415,7 @@ const PksWbNormal = (props) => {
               setValues((prev) => ({ ...prev, originWeighInKg: 1.5 }));
               console.log("data transaction:");
               console.log(values);
-            }}
-          >
+            }}>
             Debugging
           </Button>
         </Grid>

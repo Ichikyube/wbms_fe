@@ -158,8 +158,7 @@ const TimbangKeluar = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -241,8 +240,7 @@ const TimbangKeluar = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Nomor Polisi
                       </Typography>
                     </>
@@ -255,8 +253,7 @@ const TimbangKeluar = () => {
                   fullWidth
                   variant="outlined"
                   size="small"
-                  sx={{ my: 2 }}
-                >
+                  sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
@@ -358,8 +355,7 @@ const TimbangKeluar = () => {
                       .includes(searchQuery.toLowerCase())
                   );
                   gridRef.current.api.setRowData(filteredData);
-                }}
-              >
+                }}>
                 <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
               </IconButton>
             </Box>

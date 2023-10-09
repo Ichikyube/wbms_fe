@@ -208,8 +208,7 @@ const PksManualOthersTimbangKeluar = (props) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -435,8 +434,7 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -465,8 +463,7 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -496,8 +493,7 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -526,8 +522,7 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -556,8 +551,7 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -588,8 +582,7 @@ const PksManualOthersTimbangKeluar = (props) => {
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}
-        >
+          onClick={handleClose}>
           Tutup
         </Button>
       </FormControl>

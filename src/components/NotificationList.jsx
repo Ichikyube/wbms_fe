@@ -6,6 +6,7 @@ import CIcon from "@coreui/icons-react";
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';                                                                                                                                       
 import api from "../api/api";
+import toast from "react-hot-toast";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
@@ -17,7 +18,6 @@ const NotificationList = () => {
       .then((data) => setNotifications(data.data))
       .catch((error) => console.error("Error fetching notifications:", error));
   }, []);
-
   const handleNotificationClick = async (id) => {
     // Send a PUT request to mark notification as read
     // Example using fetch:
@@ -34,22 +34,28 @@ const NotificationList = () => {
       
       <IconButton
         size="large"
-        aria-label="show 17 new notifications"
-        color="inherit">
+        aria-label="show new notifications"
+        color="inherit"
+        onClick={handleShowNotification}>
         <Badge badgeContent={notifications?.length} color="error">
         <CIcon icon={cilBell} size="lg" />
         </Badge>
       </IconButton>
-      <div style={{position: "absolute", right: "40%", top: "20%"}}>
-      {notifications?.length>0 && notifications?.map((notification) => (
-        <Notification
-          key={notification.id}
-          message={notification.message}
-          isReaded={notification.isReaded}
-          onClick={() => handleNotificationClick(notification.id)}
-        />
-      ))}
-      </div>
+      {showNotification && (
+        <div style={{ position: "absolute", right: "40%", top: "20%" }}>
+          {notifications?.length > 0 &&
+            notifications?.map((notification) => (
+              <Notification
+                key={notification.id}
+                photo={notification.photo}
+                sender={notification.sender}
+                message={notification.message}
+                isReaded={notification.isReaded}
+                onClick={() => handleNotificationClick(notification.id)}
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 };

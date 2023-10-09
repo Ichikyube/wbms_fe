@@ -32,6 +32,7 @@ import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
 import * as RolesAPI from "../../api/roleApi";
 
+const typeTransaction = 1;
 const typeSite = 1;
 
 const TimbangMasuk = (props) => {
@@ -138,8 +139,7 @@ const TimbangMasuk = (props) => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -155,8 +155,7 @@ const TimbangMasuk = (props) => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
                   fullWidth
@@ -221,8 +220,7 @@ const TimbangMasuk = (props) => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Nomor Polisi
                       </Typography>
                     </>
@@ -235,8 +233,7 @@ const TimbangMasuk = (props) => {
                   fullWidth
                   variant="outlined"
                   size="small"
-                  sx={{ my: 2 }}
-                >
+                  sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink

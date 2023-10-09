@@ -58,7 +58,9 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       await refetch();
       toast.success("Data Berhasil Dibuat");
       const notificationData = {
-        message: `${userInfo.name} melakukan permintaan untuk ${dtConfig.name}, dan sedang menunggu persetujuan anda`,
+        photo: userInfo.profilePic,
+        sender: userInfo.name,
+        message: `Meminta persetujuan untuk mengaktifkan ${dtConfig.name}`,
         target: Object.keys(groupMap).filter((id => groupMap[id] === 'PJ1')),
       };
       dispatch(createNotificationAsync(notificationData))

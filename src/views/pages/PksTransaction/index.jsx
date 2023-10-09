@@ -129,7 +129,6 @@ const PksTransaction = () => {
   const fetcher = () =>
     TransactionAPI.searchMany({
       where: {
-        typeTransaction,
         typeSite,
         progressStatus: { notIn: [4, 9, 14] },
       },

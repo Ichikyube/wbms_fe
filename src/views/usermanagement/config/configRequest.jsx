@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import PropTypes from "prop-types";
 // import { cloneDeep, set } from "lodash";
@@ -36,9 +31,8 @@ import {
   useFetchRequestsQuery,
   useApproveRequestMutation,
   useRejectRequestMutation,
-  selectFilteredRequestConfigs
 } from "../../../slices/requestConfigsSlice";
-import { createNotificationAsync } from '../../../slices/notificationSlice';
+import { createNotificationAsync } from "../../../slices/notificationSlice";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -50,40 +44,34 @@ ModuleRegistry.registerModules([
 const ConfigRequest = () => {
   // console.clear();
   const dispatch = useDispatch();
-/**
- * Pada tampilan configRequest. 
- * Ketika config request berhasil dibuat, akan muncul notifikasi pada tampilan user yang terpilih sebagai matrix approval lvl pertama, 
- * dan hanya user matrix approval lvl pertama yang dapat melihat request, ketika sudah di approve, 
- * baru notifikasi muncul di user matrix approval lvl kedua, dan terlihat di halaman configRequest, begitu juga ke level 3.
- * 
- * ketika PJ mengirim response apakah approve atau rejected, dikirim ke config-approval. 
- * Ketika response di level pertama rejected, maka request status Rejected, apabila approved, 
- * maka approval masuk ke level kedua, notifikasi masuk ke PJ2 untuk segera memberi response, seperti itu seterusnya hingga level 3.  
- * Hanya apabila approval di semua level approve, maka status request berubah menjadi Approved, dan status config berubah menjadi selain default.
- */
+  /**
+   * Pada tampilan configRequest.
+   * Ketika config request berhasil dibuat, akan muncul notifikasi pada tampilan user yang terpilih sebagai matrix approval lvl pertama,
+   * dan hanya user matrix approval lvl pertama yang dapat melihat request, ketika sudah di approve,
+   * baru notifikasi muncul di user matrix approval lvl kedua, dan terlihat di halaman configRequest, begitu juga ke level 3.
+   *
+   * ketika PJ mengirim response apakah approve atau rejected, dikirim ke config-approval.
+   * Ketika response di level pertama rejected, maka request status Rejected, apabila approved,
+   * maka approval masuk ke level kedua, notifikasi masuk ke PJ2 untuk segera memberi response, seperti itu seterusnya hingga level 3.
+   * Hanya apabila approval di semua level approve, maka status request berubah menjadi Approved, dan status config berubah menjadi selain default.
+   */
   const groupMap = useSelector((state) => state.groupMapping);
   const { userInfo } = useSelector((state) => state.app);
-  
+
   //cek user termasuk PJ level berapa, lalu tampilkan button sign or reject untuk setiap request.
-  const userLvl = groupMap[userInfo?.id]
+  const userLvl = groupMap[userInfo?.id];
   const lvl = {
-    1: 'PJ1',
-    2: 'PJ2',
-    3: 'PJ3',
+    1: "PJ1",
+    2: "PJ2",
+    3: "PJ3",
   };
 
   const { data: requestList, refetch } = useFetchRequestsQuery();
 
-// function RequestConfigList({ startTime, endTime, status }) {
-//   const filteredConfigs = useSelector(state =>
-//     selectFilteredRequestConfigs(state, startTime, endTime, status)
-//   );
-// }
-
   const [approveRequest] = useApproveRequestMutation();
   const [rejectRequest] = useRejectRequestMutation();
   const [selectedRequest, setSelectedRequest] = useState(null);
-  
+
   const gridRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -91,11 +79,14 @@ const ConfigRequest = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const updateGridData = useCallback((requestList) => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(requestList);
-    }
-  }, [requestList]);
+  const updateGridData = useCallback(
+    (requestList) => {
+      if (gridRef.current && gridRef.current.api) {
+        gridRef.current.api.setRowData(requestList);
+      }
+    },
+    [requestList]
+  );
 
   useEffect(() => {
     if (requestList) {
@@ -108,22 +99,25 @@ const ConfigRequest = () => {
   }, [searchQuery, requestList]);
 
   const handleReject = (id) => {
-    rejectRequest({ requestId: id });
-    refetch();
     //apabila approval di level ketiga, ada pertanyaan "apakah anda yakin untuk menggugurkan request ini?"
     Swal.fire({
-      title: 'Apakah Anda yakin untuk menggugurkan request ini?',
-      icon: 'warning',
+      title: "Apakah Anda yakin untuk menggugurkan request ini?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Ya, gugurkan',
-      cancelButtonText: 'Tidak, batalkan',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Tindakan jika pengguna menekan "Ya"
-        Swal.fire('Gugurkan!', 'Request telah digugurkan.', 'success');
-      }
-    });
+      confirmButtonText: "Ya, gugurkan",
+      cancelButtonText: "Tidak, batalkan",
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          // Tindakan jika pengguna menekan "Ya"
+          Swal.fire("Gugurkan!", "Request telah digugurkan.", "success");
+          await rejectRequest(id);
+          await refetch();
+        }
+      })
+      .then(refetch());
     setSelectedRequest(null);
+    refetch();
   };
 
   const handleApprove = async (data, name) => {
@@ -140,24 +134,37 @@ const ConfigRequest = () => {
     if (result.isConfirmed) {
       try {
         await approveRequest(data.id);
-        await refetch()
+        await refetch();
+
+        console.log(data);
+        await toast.success(
+          data.approval.length + 1 >= data.config.lvlOfApprvl
+            ? "Permintaan telah di setujui"
+            : "Request naik 1 tingkat"
+        );
+        await refetch();
       } catch (error) {
         console.error("Config Gagal di setujui:", error);
         toast.error("Config Gagal di setujui ");
       }
-      await toast.success(data.approval.length+1 === data.lvlofApproval? "Config berhasil di setujui": "Request naik 1 tingkat");
-      if(data.approval.length<data.lvlofApproval) {
-        const notificationData = { message:"Seseorang menunggu persetujuan anda", isRead: false,  target: groupMap.filter(group=>group === lvl[data.approval.length+1])};
+      if (data.approval.length < data.config.lvlOfApprvl) {
+        const notificationData = {
+          message: `${userInfo.name} telah menyetujui ${data.config.name}, dan kini menunggu persetujuan anda`,
+          target: Object.keys(groupMap).filter((id => groupMap[id] === lvl[ data.approval.length + 1])),
+          photo: userInfo.profilePic,
+          sender: userInfo.name,
+        };
         dispatch(createNotificationAsync(notificationData))
-        .unwrap()
-        .then((createdNotification) => {
-          console.log('Notification sended:', createdNotification);
-        })
-        .catch((error) => {
-          // Handle failure (error in creating notification)
-          console.error('Error sending notification:', error);
-        });
+          .unwrap()
+          .then((createdNotification) => {
+            console.log("Notification sended:", createdNotification);
+          })
+          .catch((error) => {
+            // Handle failure (error in creating notification)
+            console.error("Error sending notification:", error);
+          });
       }
+      console.log(data.approval.length + 1);
     }
   };
   // Show config name, description, start, end?, value proposed, signed button
@@ -205,8 +212,10 @@ const ConfigRequest = () => {
       valueGetter: (params) => {
         const { data } = params;
         const activeStart = new Date(data.schedule);
-        const activeEnd = new Date(new Date(data.schedule).getTime() + data.config.lifespan);
-        console.log(data.schedule)
+        const activeEnd = new Date(
+          new Date(data.schedule).getTime() + data.config.lifespan
+        );
+
         const options = {
           year: "numeric",
           month: "2-digit",
@@ -217,11 +226,11 @@ const ConfigRequest = () => {
         };
 
         const formattedActiveStart = activeStart.toLocaleDateString(
-          "en-US",
+          "id-ID",
           options
         );
         const formattedActiveEnd = activeEnd.toLocaleDateString(
-          "en-US",
+          "id-ID",
           options
         );
 
@@ -233,46 +242,49 @@ const ConfigRequest = () => {
       field: "id",
       sortable: true,
       cellRenderer: (params) => {
-        const currentLevel = JSON.stringify(params.data.approval.length + 1)
+        const currentLevel = JSON.stringify(params.data.approval.length + 1);
         return (
           <Box display="flex" justifyContent="center">
             {userLvl === lvl[currentLevel] && (
-            <>
-            <Box //disabled={params.status === 'Accepted'}
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={green[500]}
-              borderRadius="25%"
-              justifyContent="center"
-              padding="10px 10px"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() =>handleApprove(params.data, params.data.config.name)}>
-              <TaskAltIcon sx={{ fontSize: "20px" }} />
-            </Box>
+              <>
+                <Box //disabled={params.status === 'Accepted'}
+                  width="25%"
+                  display="flex"
+                  m="0 3px"
+                  bgcolor={green[500]}
+                  borderRadius="25%"
+                  justifyContent="center"
+                  padding="10px 10px"
+                  color="white"
+                  style={{
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    handleApprove(params.data, params.data.config.name)
+                  }>
+                  <TaskAltIcon sx={{ fontSize: "20px" }} />
+                </Box>
 
-            <Box 
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={red[500]}
-              borderRadius="25%"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              onClick={() => handleReject(params.data, params.data.name)}
-              style={{
-                color: "white",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}>
-              <CancelIcon sx={{ fontSize: "20px" }} />
-            </Box>
-            </>)}
+                <Box
+                  width="25%"
+                  display="flex"
+                  m="0 3px"
+                  bgcolor={red[500]}
+                  borderRadius="25%"
+                  padding="10px 10px"
+                  justifyContent="center"
+                  color="white"
+                  onClick={() => handleReject(params.data.id)}
+                  style={{
+                    color: "white",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}>
+                  <CancelIcon sx={{ fontSize: "20px" }} />
+                </Box>
+              </>
+            )}
           </Box>
         );
       },
@@ -331,7 +343,9 @@ const ConfigRequest = () => {
                 </Box>
               </Box>
             </div>
-            <div className="ag-theme-alpine" style={{ width: "auto", height: "70vh" }}>
+            <div
+              className="ag-theme-alpine"
+              style={{ width: "auto", height: "70vh" }}>
               <AgGridReact
                 ref={gridRef}
                 rowData={requestList} // Row Data for Rows

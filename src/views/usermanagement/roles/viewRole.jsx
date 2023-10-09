@@ -46,7 +46,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
   const role = dtRole;
 
@@ -85,8 +85,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
   return (
     <Dialog open={isViewOpen} fullWidth maxWidth>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
-      >
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
         <pre>
           View Role <strong>{role.name}</strong>
         </pre>
@@ -99,8 +98,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -117,20 +115,17 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
                 mt: 2,
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 10px 10px",
-              }}
-            >
+              }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "auto" }}
-              >
+                style={{ width: "auto", height: "auto" }}>
                 <h5>{role.description}</h5>
                 <br />
                 <Box
                   sx={{
                     display: "flex",
                     flexWrap: "wrap",
-                  }}
-                >
+                  }}>
                   {role.permissions.map((permission, index) => (
                     <div style={{ position: "relative" }}>
                       <Chip
@@ -149,8 +144,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
                             bgcolor: "background.paper",
                             position: "absolute",
                             zIndex: 1,
-                          }}
-                        >
+                          }}>
                           <h6>{permission.resource}</h6>
                           <ul>
                             {permission.grants.map((grant, index) => (
@@ -176,21 +170,18 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
                 mt: 2,
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 10px 10px",
-              }}
-            >
+              }}>
               <h6
                 sx={{
                   fontSize: "15px",
                   fontWeight: "bold",
                   color: "grey",
-                }}
-              >
+                }}>
                 Total users with this role: {role.users.length}
               </h6>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "70vh" }}
-              >
+                style={{ width: "auto", height: "70vh" }}>
                 <AgGridReact
                   ref={gridRef}
                   rowData={role.users} // Row Data for Rows

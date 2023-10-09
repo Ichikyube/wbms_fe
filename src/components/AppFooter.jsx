@@ -3,7 +3,7 @@ import { CFooter } from "@coreui/react";
 
 const AppFooter = () => {
   return (
-    <CFooter>
+    <CFooter style={{ position: "fixed", bottom: 0, width: "100%" }}>
       <div>
         <a href="https://dsn.id" target="_blank" rel="noopener noreferrer">
           WBMS

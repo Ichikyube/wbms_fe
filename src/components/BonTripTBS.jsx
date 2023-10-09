@@ -12,10 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 
-const BonTripTBS = (props) => {
+const BonTripPrint = (props) => {
   const { dtTrans, isDisable } = props;
+  const { userInfo } = useSelector((state) => state.app);
   const [isOpen, setIsOpen] = useState(false);
 
   const formRef = useRef();
@@ -42,7 +44,7 @@ const BonTripTBS = (props) => {
   const secondsKeluar = dateObjKeluar.getSeconds();
   const jamKeluar = `${hoursKeluar}:${minutesKeluar}:${secondsKeluar}`;
 
-  const dateObj = new Date(timestampMasuk);
+  const dateObj = new Date(timestampKeluar);
 
   // Mendapatkan komponen tanggal
   const year = dateObj.getFullYear();
@@ -137,11 +139,11 @@ const BonTripTBS = (props) => {
                     </tr>
                     <tr>
                       <td height="30" width="100">
-                        Asal
+                        Dikirim Ke
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">
-                        {dtTrans.originSiteName}
+                        {dtTrans.destinationSiteName}
                       </td>
                     </tr>
                     <tr>
@@ -298,8 +300,7 @@ const BonTripTBS = (props) => {
                       borderCollapse: "collapse",
                       border: "1px solid black",
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     <tr>
                       <td
                         style={{
@@ -307,9 +308,8 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         Dibuat,
                       </td>
                       <td
@@ -318,9 +318,8 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         Diketahui,
                       </td>
                       <td
@@ -329,9 +328,8 @@ const BonTripTBS = (props) => {
                           border: "1px solid black",
                           paddingLeft: "45px",
                           paddingRight: "45px",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         Disetujui,
                       </td>
                     </tr>
@@ -341,50 +339,49 @@ const BonTripTBS = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                          padding: "40px",
-                        }}
-                      ></td>
+                          padding: "23px",
+                          fontFamily: "Courier New",
+                        }}>
+                        {userInfo.name}
+                      </td>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                        }}
-                      ></td>
+                          fontFamily: "Courier New",
+                        }}></td>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
-                        }}
-                      ></td>
+                          fontFamily: "Courier New",
+                        }}></td>
                     </tr>
                     <tr>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         Operator Timbang
                       </td>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         PGS
                       </td>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
-                          fontWeight: 550,
-                        }}
-                      >
+                          fontWeight: "bold",
+                        }}>
                         Mill Head
                       </td>
                     </tr>
@@ -395,7 +392,7 @@ const BonTripTBS = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Box class="print-button" sx={{ p: 2, mr: 1 }}>
+          <Box className="print-button" sx={{ p: 2, mr: 1 }}>
             <ReactToPrint
               trigger={() => (
                 <Button
@@ -417,4 +414,4 @@ const BonTripTBS = (props) => {
   );
 };
 
-export default BonTripTBS;
+export default BonTripPrint;

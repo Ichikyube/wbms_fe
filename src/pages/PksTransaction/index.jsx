@@ -19,7 +19,7 @@ import QRCodeScanner from "../../components/QRCodeScanner";
 import ProgressStatus from "../../components/ProgressStatus";
 import TransactionGrid from "../../components/TransactionGrid";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksTransaction = () => {
   const { configs, wb } = useSelector((state) => state.app);
@@ -40,21 +40,21 @@ const PksTransaction = () => {
 
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
-      const data = { content: codeContent.trim(), tType };
+      const data = { content: codeContent.trim(), typeTransaction };
 
       let response = await TransactionAPI.openCreateByQrcodeSemai(data);
 
-      if (!response.status) {
-        return toast.error(response.message);
+      if (!response?.status) {
+        return toast.error(response?.message);
       }
 
       console.log(
-        `vStatus: ${response.data.transaction.vehicleStatus}, dStatus:${response.data.transaction.deliveryStatus}.`
+        `vStatus: ${response?.data.transaction.vehicleStatus}, dStatus:${response?.data.transaction.deliveryStatus}.`
       );
 
-      setWbPksTransaction(response.data.transaction);
+      setWbPksTransaction(response?.data.transaction);
 
-      navigate(response.data.urlPath);
+      navigate(response?.data.urlPath);
     } else if (readEnter) {
       return toast.error(
         "Tidak dapat membaca QR Code atau QR Code tidak valid..."
@@ -109,9 +109,8 @@ const PksTransaction = () => {
             <Paper sx={{ p: 2, mx: 1 }}>
               <div
                 className="ag-theme-alpine"
-                style={{ width: "auto", height: "40vh" }}
-              >
-                <TransactionGrid tType={tType} />
+                style={{ width: "auto", height: "40vh" }}>
+                <TransactionGrid typeTransaction={typeTransaction} />
               </div>
             </Paper>
           </Grid>

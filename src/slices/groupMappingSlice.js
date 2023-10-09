@@ -8,7 +8,7 @@ export const fetchGroupMappingData = createAsyncThunk(
   "groupMapping/fetchGroupMappingData",
   async () => {
     const response = await api.get(`/config-requests-admin`);
-    return response.data;
+    return response?.data;
   }
 );
 
@@ -68,6 +68,9 @@ const groupMappingSlice = createSlice({
       console.log(updatedState);
       return updatedState;
     },
+    clearGroupMap: (state, action) => {
+      state = null;;
+    },
     // clearSelectedPJ1: (state) => {
     //   return state.length = 0;
     // },
@@ -80,16 +83,16 @@ const groupMappingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchGroupMappingData.fulfilled, (state, action) => {
-      const {lvlMap} = action.payload;
+      const { lvlMap } = action.payload;
 
       localStorage.setItem("groupMap", JSON.stringify(lvlMap));
-      return state = lvlMap; // Set the fetched data as the initial state
+      return (state = lvlMap); // Set the fetched data as the initial state
     });
   },
 });
 
 export const { useFetchGroupMappingDataQuery, useSaveGroupMappingMutation } =
   configRequestAdminApi;
-export const { getGroupmap, addPJ1, addPJ2, addPJ3, removeUser } =
+export const { getGroupmap, addPJ1, addPJ2, addPJ3, removeUser, clearGroupMap } =
   groupMappingSlice.actions;
 export default groupMappingSlice.reducer;

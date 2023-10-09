@@ -6,5 +6,5 @@ export const injectPksWbIn = async () => {
   console.log("API Test:");
   console.log(REACT_APP_TEST_DATA_BACKEND_URL);
 
-  return response.data;
+  return response?.data;
 };

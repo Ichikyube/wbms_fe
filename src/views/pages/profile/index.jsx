@@ -10,16 +10,10 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import dayjs from "dayjs";
-import { DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useSelector } from "react-redux";
+
 import { Formik } from "formik";
-import useSWR from "swr";
 import { red, blue } from "@mui/material/colors";
-import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -31,13 +25,8 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import EditIcon from "@mui/icons-material/Edit";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import EditPassword from "../../../views/pages/profile/editPassword";
 import * as UsersAPI from "../../../api/usersApi";
-
-import PageHeader from "../../../components/PageHeader";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -47,9 +36,7 @@ ModuleRegistry.registerModules([
 
 const Profile = () => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
-  const initialValues = {
-    name: "",
-  };
+
   const { userInfo } = useSelector((state) => state.app);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -153,8 +140,8 @@ const Profile = () => {
 
                         <div
                           style={{
-                            width: "200px",
-                            height: "200px",
+                            width: "250px",
+                            height: "250px",
                             borderRadius: "50%",
                             overflow: "hidden",
                             marginBottom: "15px",
@@ -169,16 +156,16 @@ const Profile = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                width: "200px",
-                                height: "200px",
+                                width: "250px",
+                                height: "250px",
                               }}
                             >
                               <img
                                 src={`${path}${userInfo.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "200px",
-                                  height: "200px",
+                                  width: "250px",
+                                  height: "250px",
                                 }}
                               />
                             </div>
@@ -204,11 +191,16 @@ const Profile = () => {
                       </div>
 
                       <Typography
-                        sx={{ fontSize: "25px", fontWeight: "bold", mb: 1 }}
+                        sx={{
+                          fontSize: "25px",
+                          fontWeight: "bold",
+                          mb: 1,
+                          mt: 5,
+                        }}
                       >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "18px", mb: 4 }}>
+                      <Typography sx={{ fontSize: "18px", mb: 8 }}>
                         {userInfo.role}
                       </Typography>
 
@@ -353,6 +345,72 @@ const Profile = () => {
                             width: "15%",
                           }}
                         >
+                          Division
+                        </FormLabel>
+                        <TextField
+                          fullWidth
+                          sx={{ backgroundColor: "whitesmoke" }}
+                          type="text"
+                          placeholder="Division"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true }}
+                          value={values.division}
+                          name="division"
+                          error={!!touched.division && !!errors.division}
+                          helperText={touched.division && errors.division}
+                        />
+                      </FormControl>
+                      <FormControl
+                        sx={{
+                          gridColumn: "span 4",
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FormLabel
+                          sx={{
+                            color: "black",
+                            marginBottom: "8px",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            width: "15%",
+                          }}
+                        >
+                          Position
+                        </FormLabel>
+                        <TextField
+                          fullWidth
+                          sx={{ backgroundColor: "whitesmoke" }}
+                          type="text"
+                          placeholder=" Position"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true }}
+                          value={values.position}
+                          name="position"
+                          error={!!touched.position && !!errors.position}
+                          helperText={touched.position && errors.position}
+                        />
+                      </FormControl>
+                      <FormControl
+                        sx={{
+                          gridColumn: "span 4",
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FormLabel
+                          sx={{
+                            color: "black",
+                            marginBottom: "8px",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            width: "15%",
+                          }}
+                        >
                           Alamat
                         </FormLabel>
                         <TextField
@@ -367,8 +425,8 @@ const Profile = () => {
                           value={values.alamat}
                           inputProps={{ readOnly: true }}
                           name="alamat"
-                          error={!!touched.nik && !!errors.nik}
-                          helperText={touched.nik && errors.nik}
+                          error={!!touched.alamat && !!errors.alamat}
+                          helperText={touched.alamat && errors.alamat}
                         />
                       </FormControl>
                     </Box>

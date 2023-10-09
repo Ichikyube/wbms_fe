@@ -42,7 +42,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Mills = () => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -177,8 +177,7 @@ const Mills = () => {
               onClick={() => {
                 setSelectedMills(params.data);
                 setIsViewOpen(true);
-              }}
-            >
+              }}>
               <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -198,8 +197,7 @@ const Mills = () => {
               onClick={() => {
                 setSelectedMills(params.data);
                 setIsEditOpen(true);
-              }}
-            >
+              }}>
               <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
 
@@ -217,8 +215,7 @@ const Mills = () => {
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
@@ -239,8 +236,7 @@ const Mills = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Mill</Typography>
@@ -257,8 +253,7 @@ const Mills = () => {
                     }}
                     onClick={() => {
                       setIsOpen(true);
-                    }}
-                  >
+                    }}>
                     <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                     Tambah Data
                   </Button>
@@ -270,8 +265,7 @@ const Mills = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -289,8 +283,7 @@ const Mills = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>

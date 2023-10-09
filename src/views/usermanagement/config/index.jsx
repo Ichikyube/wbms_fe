@@ -109,7 +109,7 @@ const Config = () => {
     },
     {
       headerName: "Status",
-      field: "status",
+      field: "defaultVal",
       filter: true,
       sortable: true,
       hide: false,
@@ -125,24 +125,22 @@ const Config = () => {
       cellClass: "grid-cell-centered",
       valueGetter: (params) => {
         const { data } = params;
-        if (data.status == "ACTIVE") return "Always";
-        else if (data.status === "DISABLED") return "-";
-        // const activeStart = new Date(data.start);
-        // const activeEnd = new Date(data.end);
+        if (!data?.start) return "-";
+        console.log(params)
+        if (data.type != "Boolean") return "Always";
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        console.log(data?.start)
+        const formattedActiveStart = new Date(data?.start).toLocaleString('id-ID');
+        const formattedActiveEnd = new Date(data?.end).toLocaleString('id-ID');
 
-        // const options = {
-        //   year: 'numeric',
-        //   month: '2-digit',
-        //   day: '2-digit',
-        //   hour: '2-digit',
-        //   minute: '2-digit',
-        //   second: '2-digit'
-        // };
-
-        // const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
-        // const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
-
-        // return `${formattedActiveStart} - ${formattedActiveEnd}`;
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
     {
@@ -244,16 +242,19 @@ const Config = () => {
         </Grid>
       </Grid>
       {isEditOpen && (
-      <EditDataConfig
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtConfig={selectedConfig}
-      />)}
-      <CreateRequestConfig
-        isRequestOpen={isRequestOpen}
-        onClose={() => setIsRequestOpen(false)}
-        dtConfig={selectedConfig}
-      />
+        <EditDataConfig
+          isEditOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          dtConfig={selectedConfig}
+        />
+      )}
+      {isRequestOpen && (
+        <CreateRequestConfig
+          isRequestOpen={isRequestOpen}
+          onClose={() => setIsRequestOpen(false)}
+          dtConfig={selectedConfig}
+        />
+      )}
     </>
   );
 };

@@ -26,7 +26,7 @@ import * as TransactionAPI from "../../../api/transactionApi";
 import * as ENUM from "../../../api/enumApi";
 import * as SemaiAPI from "../../../api/semaiApi";
 
-const tType = 3;
+const typeTransaction = 3;
 
 const BulkingWbNormal = (props) => {
   const { wbBulkingTransaction, setWbBulkingTransaction } = useContext(
@@ -72,14 +72,18 @@ const BulkingWbNormal = (props) => {
             transportVehiclePlateNo:
               wbBulkingTransaction?.transportVehiclePlateNo,
             progressStatus: 1, // cari yang statusnya unloading
-            tType,
+            typeTransaction,
           },
           orderBy: { bonTripNo: "desc" },
         });
 
         // Kendaraan baru masuk, belum ada data gantung di DB
         if (!rSearch?.status || !rSearch?.record) {
-          setValues({ ...wbBulkingTransaction, tType, progressStatus: 0 });
+          setValues({
+            ...wbBulkingTransaction,
+            typeTransaction,
+            progressStatus: 0,
+          });
           return;
         }
 
@@ -319,8 +323,7 @@ const BulkingWbNormal = (props) => {
           mb: 2,
           backgroundColor: values.progressStatus !== 0 ? "whitesmoke" : "white",
         }}
-        required
-      >
+        required>
         <InputLabel id="destinationSinkTankId">
           Tangki Tujuan Bongkar
         </InputLabel>
@@ -343,8 +346,7 @@ const BulkingWbNormal = (props) => {
               });
             }
           }}
-          disabled={values.progressStatus !== 0}
-        >
+          disabled={values.progressStatus !== 0}>
           <MenuItem value="">-</MenuItem>
           {dtStorageTanks?.map((data, index) => (
             <MenuItem key={index} value={data.id}>
@@ -588,8 +590,7 @@ const BulkingWbNormal = (props) => {
                 canSubmit &&
                 (values.progressStatus === 0 || values.progressStatus === 2)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -617,8 +618,7 @@ const BulkingWbNormal = (props) => {
             }}
             disabled={
               !(values.progressStatus === 4 || values.progressStatus === 13)
-            }
-          >
+            }>
             Tampilkan QR
           </Button>
           <Button
@@ -626,8 +626,7 @@ const BulkingWbNormal = (props) => {
             fullWidth
             sx={{ mb: 1 }}
             onClick={handleClose}
-            disabled={!(values.progressStatus === 4)}
-          >
+            disabled={!(values.progressStatus === 4)}>
             Tutup
           </Button>
           <Button
@@ -639,8 +638,7 @@ const BulkingWbNormal = (props) => {
               console.log("data transaction:");
               console.log(values);
               console.log(canSubmit);
-            }}
-          >
+            }}>
             Debugging
           </Button>
           {values.progressStatus === 2 && (
@@ -648,8 +646,7 @@ const BulkingWbNormal = (props) => {
               variant="contained"
               fullWidth
               sx={{ mb: 1, backgroundColor: "goldenrod" }}
-              onClick={handleReject}
-            >
+              onClick={handleReject}>
               Cancel (Batal)
             </Button>
           )}

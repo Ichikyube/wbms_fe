@@ -82,8 +82,9 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
       resource,
       roleId: dtRole?.id,
       grants: actionOptions.map((actionOption, index) => {
-        const grant = grants[grants.map(({ action }) => action).indexOf(actionOption)];
-    
+        const grant =
+          grants[grants.map(({ action }) => action).indexOf(actionOption)];
+
         if (grant) {
           return {
             action: grant.action,
@@ -94,21 +95,26 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
           };
         } else {
           return {
-            action: '', // or some default value if action is empty
-            possession: '', // or some default value if possession is empty
+            action: "", // or some default value if action is empty
+            possession: "", // or some default value if possession is empty
             attributes: [], // or an empty array if attributes are empty
           };
         }
       }),
     })),
   };
-  const inValues = _.mergeWith({}, adjustValues, dtRole, (objValue, srcValue) => {
-    // Replace values in role with those from initialValue
-    if (_.isArray(objValue) && _.isArray(srcValue)) {
-      return srcValue;
+  const inValues = _.mergeWith(
+    {},
+    adjustValues,
+    dtRole,
+    (objValue, srcValue) => {
+      // Replace values in role with those from initialValue
+      if (_.isArray(objValue) && _.isArray(srcValue)) {
+        return srcValue;
+      }
+      return undefined; // Default behavior to let _.merge handle the merge
     }
-    return undefined; // Default behavior to let _.merge handle the merge
-  });
+  );
   const { users, isDeleted, userCreated, ...initialValues } = inValues;
   const [mountAttributes, setMountAttributes] = useState([]);
   const toggleAttr = (attrId) => {
@@ -303,17 +309,22 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                               <strong>{resource}</strong>
                               <br />
                               {expanded !== index &&
-                                values.permissions[index]?.grants.map((a, i) => (
-                                  <span key={i}>
-                                    {values.permissions[index].grants[i].action}
-                                    <span style={{ fontSize: "10px" }}>
+                                values.permissions[index]?.grants.map(
+                                  (a, i) => (
+                                    <span key={i}>
                                       {
-                                        values.permissions[index]?.grants[i]
-                                          .possession
-                                      }{" "}
+                                        values.permissions[index].grants[i]
+                                          .action
+                                      }
+                                      <span style={{ fontSize: "10px" }}>
+                                        {
+                                          values.permissions[index]?.grants[i]
+                                            .possession
+                                        }{" "}
+                                      </span>
                                     </span>
-                                  </span>
-                                ))}
+                                  )
+                                )}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -359,17 +370,23 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           }
                                           onChange={(event) => {
                                             if (event.target.checked)
-                                              setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                                action: event.target.value,
-                                                possession: "own",
-                                                attributes: []
-                                              });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: event.target.value,
+                                                  possession: "own",
+                                                  attributes: [],
+                                                }
+                                              );
                                             else
-                                            setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                              action: "",
-                                              possession: "",
-                                              attributes: []
-                                            });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: "",
+                                                  possession: "",
+                                                  attributes: [],
+                                                }
+                                              );
                                           }}
                                           value={actionOption}
                                         />

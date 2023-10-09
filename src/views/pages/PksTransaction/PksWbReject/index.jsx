@@ -19,7 +19,7 @@ import * as SemaiUtils from "../../../utils/SemaiUtils";
 import * as TransactionAPI from "../../../api/transactionApi";
 import * as SemaiAPI from "../../../api/semaiApi";
 
-const tType = 1;
+const typeTransaction = 1;
 
 const PksWbReject = (props) => {
   const { configs, wb } = useSelector((state) => state.app);
@@ -142,14 +142,18 @@ const PksWbReject = (props) => {
             //kl reject pasti buat 2 record jika dari PKS, atau 1 jika dari bulking
             transportVehiclePlateNo: wbPksTransaction.transportVehiclePlateNo,
             progressStatus: 11, // cari yang statusnya unloading
-            tType,
+            typeTransaction,
           },
           orderBy: { bonTripNo: "desc" },
         });
 
         // Kendaraan baru masuk, belum ada data gantung di DB
         if (!rSearch?.status || !rSearch.record) {
-          setValues({ ...wbPksTransaction, tType, progressStatus: 10 });
+          setValues({
+            ...wbPksTransaction,
+            typeTransaction,
+            progressStatus: 10,
+          });
           return;
         }
 
@@ -443,8 +447,7 @@ const PksWbReject = (props) => {
                 canSubmit &&
                 (values.progressStatus === 10 || values.progressStatus === 12)
               )
-            }
-          >
+            }>
             Simpan
           </Button>
           <Button
@@ -460,16 +463,14 @@ const PksWbReject = (props) => {
                 }
               );
             }}
-            disabled={!(values.progressStatus === 14)}
-          >
+            disabled={!(values.progressStatus === 14)}>
             Tampilkan QR
           </Button>
           <Button
             variant="contained"
             fullWidth
             sx={{ mb: 1 }}
-            onClick={handleClose}
-          >
+            onClick={handleClose}>
             Tutup
           </Button>
           <Button
@@ -479,8 +480,7 @@ const PksWbReject = (props) => {
             onClick={() => {
               console.log("data transaction:");
               console.log(values);
-            }}
-          >
+            }}>
             Debugging
           </Button>
         </Grid>

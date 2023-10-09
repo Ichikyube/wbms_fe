@@ -1,83 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import apiSlice from "./apiSlice";
 import api from "../api/api";
 
-
-// get initial value by fetch and put the value to localStorage.
-const initialState = {
-  status: null,
-  zeroLock: "",
-  stableLock: "",  //waktu stableLockTime nilai INT
-  backDatedForm: "",  // backDatedTemplate: "",
-  //minimumWeight nilai INT
-  // manualEntryWB: "",
-  // manualBackdatedForm: "",
-  // editTransactionMinusWeightAndDate: "",
-  // editTransactionFullForm: "",
-  //BONTRIP nilai Object {PGS:<NAMA>,millHead:<NAMA}
-  //
-  error: null,
-};
-/**
- * di FrontEnd, apabila status configRequest active maka status config adalah kebalikan dari status config default
- */
-const requestConfigSlice = createSlice({
-  name: "requestConfig",
-  initialState,
-  reducers: {
-    updateRequestConfig: (state, action) => {
-      return { ...state, ...action.payload };
-    },
-    addRequestConfig: (state, action) => {
-      state.push(action.payload);
-    },
-    editRequestConfig: (state, action) => {
-      state.Name = state.Name.map((items) =>
-        items.id === action.payload.id
-          ? { ...items, status: "Accepted" }
-          : items
-      );
-    },
-    removeRequestConfig: (state, action) => {
-      state.Name = state.Name.map((items) =>
-        items.id === action.payload.id
-          ? { ...items, status: "Rejected" }
-          : items
-      );
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchConfigsData.fulfilled, (state, { payload }) => {
-      // console.log("nah" + payload);
-      state.user = payload[0];
-      state.zeroLock = payload[1];
-      state.stableLock = payload[3];
-      state.backDatedForm = payload[4];
-      // state.backDatedTemplate=payload[5],
-      // state.manualEntryWB=payload[6],
-      // state.manualBackdatedForm,
-      // state.editTransactionMinusWeightAndDate,
-      // state.editTransactionFullForm
-    });
-  },
-});
-
-
-export const fetchConfigsData = createAsyncThunk(
-  "requestConfigs/fetchConfigsData",
-  async () => {
-    const response = await api.get(`/configs`);
-    const requests = await response.data;
-    const configItemsData = requests.data.config.records;
-    let configItems = configItemsData.map(({ name, status }) => ({
-      [name]: status,
-    }));
-    // console.log(configItems);
-    localStorage.setItem("customConfigs", JSON.stringify(configItems));
-    return configItems;
-  }
-);
 // Define an async thunk for handling level transitions
 export const handleApproval = createAsyncThunk(
   "requestConfigs/handleApproval",
@@ -88,7 +12,7 @@ export const handleApproval = createAsyncThunk(
     // dispatch other actions or perform other logic here
     // ...
 
-    return response.data; // Return the response data if needed
+    return response?.data; // Return the response data if needed
   }
 );
 
@@ -125,14 +49,12 @@ export const configRequestApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetActiveConfigsTodayQuery,
   useFetchRequestsQuery,
   useCreateRequestMutation,
   useApproveRequestMutation,
   useRejectRequestMutation,
 } = configRequestApi;
-export const { addRequestConfig, editRequestConfig, removeRequestConfig } =
-  requestConfigSlice.actions;
-export default requestConfigSlice.reducer;
 export const selectRequestConfigs = (state) => state.requestConfig;
 
 export const selectFilteredRequestConfigs = (

@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
 import { Form, Button, Row, InputGroup, Image } from "react-bootstrap";
-import Cookies from "js-cookie";
 import FormContainer from "../../../components/FormContainer";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { FaUser, FaLock } from "react-icons/fa";

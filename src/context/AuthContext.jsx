@@ -1,7 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
+import {
+  clearTempConfigs,
+  useFetchConfigsDataQuery,
+} from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";
 import {
   setCredentials,
@@ -10,14 +13,16 @@ import {
   clearConfigs,
   clearSidebar,
 } from "./../slices/appSlice";
+import { getEnvInit } from "../configs";
 
 import {
   useSigninMutation,
   useSignoutMutation,
 } from "./../slices/authApiSlice";
+import { clearGroupMap } from "../slices/groupMappingSlice";
 
 const AuthContext = createContext({
-  userInfo: null,
+  isAuth: false,
   login: () => {},
   logout: () => {},
 });
@@ -25,9 +30,11 @@ const AuthContext = createContext({
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
 export function AuthProvider({ children }) {
+  const { isLoading } = useFetchConfigsDataQuery();
   const { userInfo } = useSelector((state) => state.app);
+  const token = localStorage.getItem("wbms_at");
+  const isAuth = userInfo && token;
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
@@ -42,26 +49,28 @@ export function AuthProvider({ children }) {
   const login = async (values) => {
     try {
       const response = await signin(values).unwrap();
-      console.log(response);
-      if (!response.status) {
-        console.log(response.message);
-        console.log(response.logs);
-
-        await toast.promise(
-          new Promise((resolve) => setTimeout(resolve, 500)),
-          {
-            error: response.message,
-          }
-        );
+      const { status, message, logs, data } = response || {};
+      if (!status) {
+        console.log(message);
+        console.log(logs);
+        await toast.promise(Promise.resolve(), { error: message });
         return;
       }
-      // Get the cookie string from the response headers
-      console.log("response from signin:", response);
-      const at = response?.data?.tokens?.access_token;
+
+      (async () => {
+        await getEnvInit().then((result) => {
+          dispatch(setConfigs({ ...result }));
+        });
+      })();
+      dispatch(setCredentials({ ...response?.data.user }));
+      // console.log("response from signin:", response);
+      const at = data.tokens?.access_token;
+      const rt = data.tokens?.refresh_token;
       localStorage.setItem("wbms_at", at);
-      dispatch(setCredentials({ ...response.data.user }));
+      document.cookie = "rt=" + rt + ";SameSite=Lax";
+
       navigate(from, { replace: true });
-      // setToastmssg(`Selamat datang ${response.data.user.name}`)
+      // setToastmssg(`Selamat datang ${response?.data.user.name}`)
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -78,22 +87,26 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       const response = await signout().unwrap();
-      if (!response.status) {
-        console.log(response.message);
-        console.log(response.logs);
+      if (!response?.status) {
+        console.log(response?.message);
+        console.log(response?.logs);
         await toast.promise(
           new Promise((resolve) => setTimeout(resolve, 500)),
           {
-            error: response.message,
+            error: response?.message,
           }
         );
         return;
       }
-      navigate("/");
-      setToastmssg(response.message);
-      // dispatch(clearSidebar());
-      dispatch(clearCredentials());
-      dispatch(clearConfigs());
+      (() => {
+        dispatch(clearSidebar());
+        dispatch(clearCredentials());
+        dispatch(clearConfigs());
+        dispatch(clearGroupMap());
+        navigate("/");
+      })();
+      localStorage.clear();
+      setToastmssg(response?.message);
     } catch (err) {
       console.log(err?.data?.message || err.error);
       toast.error(err?.data?.message || err.error);
@@ -104,16 +117,20 @@ export function AuthProvider({ children }) {
     if (toastmssg) toast.success(toastmssg);
     setToastmssg("");
   }, [toastmssg]);
+  // useEffect(() => {
+  //   if (!userInfo) {
+  //     navigate("/signin");
+  //   }
+  // }, [navigate, userInfo]);
   useEffect(() => {
-
     if (userInfo && (route === "/signin" || route === "/")) {
       navigate(from);
-    } 
+    }
   }, [userInfo, route, navigate, from]);
 
   return (
-    <AuthContext.Provider value={{ userInfo, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ isAuth, login, logout }}>
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }

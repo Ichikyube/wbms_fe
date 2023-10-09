@@ -47,7 +47,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Sites = () => {
-  // console.clear();
+  console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -401,7 +401,12 @@ const Sites = () => {
             </Paper>
             <TabPanel value="">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}
               >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
@@ -469,7 +474,12 @@ const Sites = () => {
             </TabPanel>
             <TabPanel value="0">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}
               >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
@@ -532,7 +542,12 @@ const Sites = () => {
             </TabPanel>
             <TabPanel value="1">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}
               >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
@@ -593,7 +608,12 @@ const Sites = () => {
             </TabPanel>
             <TabPanel value="2">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}
               >
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">

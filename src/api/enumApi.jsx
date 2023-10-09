@@ -21,7 +21,7 @@ export const getVA_SCC_MODEL = () => {
       { id: 3, value: "Identity Preserved" },
     ],
   };
-  return response.data;
+  return response?.data;
 };
 
 export const getRSPO_SCC_MODEL = () => {
@@ -33,7 +33,7 @@ export const getRSPO_SCC_MODEL = () => {
       { id: 3, value: "Identity Preserved" },
     ],
   };
-  return response.data;
+  return response?.data;
 };
 
 export const getISCC_SCC_MODEL = () => {
@@ -45,10 +45,10 @@ export const getISCC_SCC_MODEL = () => {
       { id: 3, value: "Identity Preserved" },
     ],
   };
-  return response.data;
+  return response?.data;
 };
 
 export const getById = async (id) => {
   const response = await api.get(`${endpoint}/${id}`);
-  return response.data;
+  return response?.data;
 };

@@ -21,14 +21,14 @@ ModuleRegistry.registerModules([
 ]);
 
 const TransactionGrid = (props) => {
-  const { tType } = props;
+  const { fetcher, gridRef } = props;
   const navigate = useNavigate();
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
 
-  const gridRef = useRef();
+  // const gridRef = useRef();
 
   const handleCellClick = (params) => {
     const productName = params.data.productName.toLowerCase();
@@ -36,8 +36,8 @@ const TransactionGrid = (props) => {
 
     if (
       progressStatus === 1 &&
-      productName !== "cpo" &&
-      productName !== "pko"
+      !productName.includes("cpo") &&
+      !productName.includes("pko")
     ) {
       const Id = params.data.id;
       navigate(`/pks-ManualEntry-TimbangKeluar/${Id}`);
@@ -116,22 +116,14 @@ const TransactionGrid = (props) => {
     []
   );
 
-  const fetcher = () =>
-    TransactionAPI.searchMany({
-      where: {
-        tType,
-        progressStatus: { notIn: [4, 9, 14] },
-      },
-      orderBy: { bonTripNo: "desc" },
-    }).then((res) => res.records);
-
-  const { data: dtTransactions } = useSWR("transaction", fetcher, {
-    refreshInterval: 2000,
+  const { data } = useSWR("transaction", fetcher, {
+    refreshInterval: 1000,
   });
   return (
     <div className="ag-theme-alpine" style={{ width: "auto", height: "50vh" }}>
       <AgGridReact
-        rowData={dtTransactions} // Row Data for Rows
+        ref={gridRef}
+        rowData={data} // Row Data for Rows
         columnDefs={columnDefs} // Column Defs for Columns
         defaultColDef={defaultColDef} // Default Column Properties
         animateRows={true} // Optional - set to 'true' to have rows animate when sorted

@@ -31,7 +31,7 @@ import * as CustomerAPI from "../../../api/customerApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 import { IosShareRounded } from "@mui/icons-material";
 
-const typeTransaction = 1;
+const typeSite = 1;
 
 const PksManualTBSTimbangKeluar = ({
   TransporterId,
@@ -51,7 +51,6 @@ const PksManualTBSTimbangKeluar = ({
   const [millCode, setMillCode] = useState();
 
   const [results, setResults] = useState([]);
-
 
   const initialValues = {
     bonTripNo: "",
@@ -110,35 +109,6 @@ const PksManualTBSTimbangKeluar = ({
     }));
   };
 
-
-  // useEffect(() => {
-  //   // ... (kode useEffect yang sudah ada)
-
-  //   // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-  //   let cSubmit = false;
-  //   if (values.progressStatus === 0) {
-  //     cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-  //   } else if (values.progressStatus === 21) {
-  //     cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-  //   }
-  //   setCanSubmit(cSubmit);
-  // }, [values]);
-
-  useEffect(() => {
-    if (
-      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-    ) {
-      setOriginWeightNetto(0);
-    } else {
-      let total =
-        Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
-        values.potonganWajib -
-        values.potonganLain;
-      setOriginWeightNetto(total);
-    }
-  }, [values, weighbridge]);
-
   const validateForm = () => {
     return (
       values.bonTripNo &&
@@ -181,6 +151,34 @@ const PksManualTBSTimbangKeluar = ({
       toast.error(`Error: ${error.message}.`);
     }
   };
+
+  useEffect(() => {
+    // ... (kode useEffect yang sudah ada)
+
+    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+    let cSubmit = false;
+    if (values.progressStatus === 0) {
+      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+    } else if (values.progressStatus === 21) {
+      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+    }
+    setCanSubmit(cSubmit);
+  }, [values]);
+
+  useEffect(() => {
+    if (
+      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
+      weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values, weighbridge]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -259,18 +257,6 @@ const PksManualTBSTimbangKeluar = ({
     fetchData();
   }, [id]);
 
-  useEffect(() => {
-    // ... (kode useEffect yang sudah ada)
-
-    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-    let cSubmit = false;
-    if (values.progressStatus === 0) {
-      cSubmit = values.originWeighInKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 21) {
-      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-    }
-    setCanSubmit(cSubmit);
-  }, [values]);
 
   useEffect(() => {
     socket?.emit("hitungPotongan", {
@@ -299,44 +285,6 @@ const PksManualTBSTimbangKeluar = ({
     trxGradingPartenoPERSEN,
     trxGradingBrondolanPERSEN,
   ]);
-
-  useEffect(() => {
-    // setProgressStatus(configs.PKS_PROGRESS_STATUS[values.progressStatus]);
-
-    if (
-      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
-    ) {
-      setOriginWeightNetto(0);
-    } else {
-      let total =
-        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
-        values.potonganWajib -
-        values.potonganLain;
-      setOriginWeightNetto(total);
-    }
-  }, [values]);
-
-  // BUAH MENTAH
-
-  const [persenBM, setPersenBM] = useState(0);
-
-  const handlePersenBM = (event) => {
-    const value = event.target.value;
-    // Memastikan nilai yang dimasukkan adalah angka
-    if (!isNaN(value)) {
-      setPersenBM(value);
-    }
-  };
-
-  const BMkg = () => {
-    let result;
-    const persenbm = persenBM / originWeightNetto;
-    // result = Math.round((persenbm * 2500)/100);
-    result = Math.round(((25 / 100) * (persenbm - 5) * values.qtyTbs) / 100);
-
-    return result;
-  };
 
   return (
     <>

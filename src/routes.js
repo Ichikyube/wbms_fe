@@ -4,7 +4,7 @@ const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
 
-const BackdateFormTBS = lazy(() => import("./views/backdate/backdateFormTBS"));
+const BackdateFormTBS = lazy(() => import("./views/backdate/backdateForm/backdateFormTbs"));
 const BackdateFormOthers = lazy(() =>
   import("./views/backdate/backdateFormOthers")
 );

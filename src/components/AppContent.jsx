@@ -34,7 +34,7 @@ const AppContent = () => {
   }, [ConfigList, ConfigMap]);
   
   useEffect(() => {
-    setRoutes((prevRoutes) => prevRoutes.concat(newRoutes));
+    setRoutes((prevRoutes) => prevRoutes.concat(backdateFormRoutes));
   }, []);
   // useEffect(() => {
   //   const tempConfigList = Object.keys(ConfigList).filter(

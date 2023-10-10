@@ -22,7 +22,7 @@ const _nav = [
   {
     component: CNavTitle,
     name: "Jembatan Timbang (WB)",
-    resource: "Base"
+    resource: "WB",
   },
   {
     component: CNavGroup,
@@ -89,51 +89,51 @@ const _nav = [
   {
     component: CNavTitle,
     name: "Administrasi WBMS",
-    resource: "Base",
+    resource: "ADMIN",
   },
   {
     component: CNavGroup,
     name: "Master Data",
     to: "/base",
     icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
-    resource: "Base",
+    resource: "MD",
     items: [
       {
         component: CNavItem,
         name: "Province",
         to: "/md/province",
-        resource: "Province"
+        resource: "Province",
       },
 
       {
         component: CNavItem,
         name: "City",
         to: "/md/city",
-        resource: "City"
+        resource: "City",
       },
       {
         component: CNavItem,
         name: "Company",
         to: "/md/company",
-        resource: "Company"
+        resource: "Company",
       },
       {
         component: CNavItem,
         name: "Site",
         to: "/md/site",
-        resource: "Site"
+        resource: "Site",
       },
       {
         component: CNavItem,
         name: "Customers Type",
         to: "/md/customertype",
-        resource: "CustomerType"
+        resource: "CustomerType",
       },
       {
         component: CNavItem,
         name: "Customer Group",
         to: "/md/customergroup",
-        resource: "CustomerGroup"
+        resource: "CustomerGroup",
       },
       // {
       //   component: CNavItem,
@@ -144,49 +144,49 @@ const _nav = [
         component: CNavItem,
         name: "Customer",
         to: "/md/customer",
-        resource: "Customer"
+        resource: "Customer",
       },
       {
         component: CNavItem,
         name: "Mill",
         to: "/md/mill",
-        resource: "Mill"
+        resource: "Mill",
       },
       {
         component: CNavItem,
         name: "Weighbridge",
         to: "/md/weighbridge",
-        resource: "Weighbridge"
+        resource: "Weighbridge",
       },
       {
         component: CNavItem,
         name: "Product Group",
         to: "/md/productgroup",
-        resource: "ProductGroup"
+        resource: "ProductGroup",
       },
       {
         component: CNavItem,
         name: "Product",
         to: "/md/product",
-        resource: "Product"
+        resource: "Product",
       },
       {
         component: CNavItem,
         name: "Storage Tank",
         to: "/md/storagetank",
-        resource: "StorageTank"
+        resource: "StorageTank",
       },
       {
         component: CNavItem,
         name: "Driver",
         to: "/md/driver",
-        resource: "Driver"
+        resource: "Driver",
       },
       {
         component: CNavItem,
         name: "Transport Vehicle",
         to: "/md/transportvehicle",
-        resource: "TransportVehicle"
+        resource: "TransportVehicle",
       },
     ],
   },
@@ -219,7 +219,7 @@ const _nav = [
     name: "User Management",
     icon: <CIcon icon={cilUserFollow} customClassName="nav-icon" />,
     to: "/base",
-    resource: "User",
+    resource: "user",
     items: [
       {
         component: CNavGroup,

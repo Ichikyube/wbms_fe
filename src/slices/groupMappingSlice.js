@@ -68,6 +68,9 @@ const groupMappingSlice = createSlice({
       console.log(updatedState);
       return updatedState;
     },
+    clearGroupMap: (state, action) => {
+      state = null;;
+    },
     // clearSelectedPJ1: (state) => {
     //   return state.length = 0;
     // },
@@ -90,6 +93,6 @@ const groupMappingSlice = createSlice({
 
 export const { useFetchGroupMappingDataQuery, useSaveGroupMappingMutation } =
   configRequestAdminApi;
-export const { getGroupmap, addPJ1, addPJ2, addPJ3, removeUser } =
+export const { getGroupmap, addPJ1, addPJ2, addPJ3, removeUser, clearGroupMap } =
   groupMappingSlice.actions;
 export default groupMappingSlice.reducer;

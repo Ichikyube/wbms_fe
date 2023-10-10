@@ -4,7 +4,7 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Button,
+  InputAdornment,
   Box,
   FormControl,
   FormLabel,
@@ -62,7 +62,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -85,31 +85,6 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    inputProps={{ readOnly: true }}
-                    type="text"
-                    placeholder="Masukkan Code Sap...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
@@ -440,6 +415,63 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Tipe
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan tipe...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.tipe}
+                    name="tipe"
+                    error={!!touched.tipe && !!errors.tipe}
+                    helperText={touched.tipe && errors.tipe}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Persen Potong Wajib
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="number"
+                    InputProps={{
+                      readOnly: "true",
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          %
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Masukkan Potongan Wajib...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.potonganwajib}
+                    name="potonganwajib"
+                    error={!!touched.potonganwajib && !!errors.potonganwajib}
+                    helperText={touched.potonganwajib && errors.potonganwajib}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
                       color: "black",
                       marginBottom: "8px",
                       fontSize: "16px",
@@ -503,7 +535,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       fontWeight: "bold",
                     }}
                   >
-                   SiteOperator
+                    SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"

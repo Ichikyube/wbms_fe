@@ -394,7 +394,7 @@ const TransportVehicles = () => {
 
         setFilteredData(newFilteredData);
       }
-    }, 500); // Refresh interval setiap 500ms
+    }, 1000); // Refresh interval setiap 500ms
 
     return () => {
       clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan

@@ -11,6 +11,7 @@ import {
   MenuItem,
   IconButton,
   DialogActions,
+  InputAdornment,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
@@ -25,7 +26,6 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
     province: yup.string().required("required"),
     city: yup.string().required("required"),
     code: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
     shortName: yup.string().required("required"),
     address: yup.string().required("required"),
     addressExt: yup.string().required("required"),
@@ -109,7 +109,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -131,30 +131,6 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Code Sap...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
@@ -397,51 +373,51 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     helperText={touched.city && errors.city}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4",}}>
-                    <FormLabel
-                      sx={{
-                        marginBottom: "8px",
-                        color: "black",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Address
-                    </FormLabel>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="text"
-                      placeholder="Masukkan Alamat...."
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.address}
-                      name="address"
-                      error={!!touched.address && !!errors.address}
-                      helperText={touched.address && errors.address}
-                    />
-                    <FormLabel
-                      sx={{
-                        marginBottom: "8px",
-                        marginTop: "23px",
-                        color: "black",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Postal Code
-                    </FormLabel>
-                    <TextField
-                      variant="outlined"
-                      type="text"
-                      placeholder="Masukkan Kode Pos...."
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.postalCode}
-                      name="postalCode"
-                      error={!!touched.postalCode && !!errors.postalCode}
-                      helperText={touched.postalCode && errors.postalCode}
-                    />
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Address
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan Alamat...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.address}
+                    name="address"
+                    error={!!touched.address && !!errors.address}
+                    helperText={touched.address && errors.address}
+                  />
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      marginTop: "23px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Postal Code
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan Kode Pos...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.postalCode}
+                    name="postalCode"
+                    error={!!touched.postalCode && !!errors.postalCode}
+                    helperText={touched.postalCode && errors.postalCode}
+                  />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -466,6 +442,63 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="addressExt"
                     error={!!touched.addressExt && !!errors.addressExt}
                     helperText={touched.addressExt && errors.addressExt}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Tipe
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan tipe...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.tipe}
+                    name="tipe"
+                    error={!!touched.tipe && !!errors.tipe}
+                    helperText={touched.tipe && errors.tipe}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Persen Potong Wajib
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="number"
+                    inputMode="decimal" // Mengizinkan angka desimal
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          %
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Masukkan Potongan Wajib...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.potonganwajib}
+                    name="potonganwajib"
+                    error={!!touched.potonganwajib && !!errors.potonganwajib}
+                    helperText={touched.potonganwajib && errors.potonganwajib}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -536,7 +569,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       fontWeight: "bold",
                     }}
                   >
-                   SiteOperator
+                    SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"

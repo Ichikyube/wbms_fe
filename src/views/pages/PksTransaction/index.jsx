@@ -213,30 +213,6 @@ const PksTransaction = () => {
                   >
                     Form
                   </Button>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                  <Menu
-                    anchorEl={anchorE2}
-                    open={Boolean(anchorE2)}
-                    onClose={handleClose}>
-                    <MenuItem
-                      component={Link}
-                      to="/backdateFormTBS"
-                      onClick={handleClose}>
-                      TBS
-                    </MenuItem>
-
-                    <MenuItem
-                      component={Link}
-                      to="/backdateFormOthers"
-                      onClick={handleClose}>
-                      Lainnya
-                    </MenuItem>
-                  </Menu>
->>>>>>> fb0496cb5b0347598681e34c2484d3a59cfd267b
-=======
->>>>>>> origin/main
                 </Box>
                 <Box
                   display="flex"

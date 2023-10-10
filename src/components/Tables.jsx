@@ -55,7 +55,7 @@ const Tables = (props) => {
         groupSelectsChildren="true"
         suppressRowClickSelection="true"
         autoGroupColumnDef={groupColDef}
-        pagination="true"
+        // pagination="true"
         paginationAutoPageSize="true"
         groupDefaultExpanded="1"
       />

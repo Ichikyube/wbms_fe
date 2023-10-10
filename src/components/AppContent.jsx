@@ -11,8 +11,7 @@ import baseRoute, {
 } from "../routes";
 
 const AppContent = () => {
-  const { backDatedForm, backDatedTemplate, editTransaction } =
-    useMatrix;
+  const { backDatedForm, backDatedTemplate, editTransaction } = useMatrix;
 
   const ConfigList = {
     backDatedForm,
@@ -24,17 +23,36 @@ const AppContent = () => {
     backDatedTemplate: backdateTemplateRoute,
     editTransaction: editTransactionRoute,
   };
-  const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
-  const routeAccess = protectedRoute.filter(item => access.includes(item.resource));
+
+  // const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
+  const access = [
+    "Company",
+    "Customer",
+    "Driver",
+    "Mill",
+    "Product",
+    "Site",
+    "StorageTank",
+    "Transaction",
+    "TransportVehicle",
+    "Weighbridge",
+    "User",
+    "Config",
+  ];
+  const routeAccess = protectedRoute.filter((item) =>
+    access.includes(item.resource)
+  );
   const routesList = baseRoute.concat(routeAccess);
   const [routes, setRoutes] = useState(routesList);
   const newRoutes = useMemo(() => {
-    const tempConfigList = Object.keys(ConfigList).filter((key) => ConfigList[key]);
+    const tempConfigList = Object.keys(ConfigList).filter(
+      (key) => ConfigList[key]
+    );
     return tempConfigList.map((key) => ConfigMap[key]).flat();
   }, [ConfigList, ConfigMap]);
-  
+
   useEffect(() => {
-    setRoutes((prevRoutes) => prevRoutes.concat(backdateFormRoutes));
+    setRoutes((prevRoutes) => prevRoutes.concat(newRoutes));
   }, []);
   // useEffect(() => {
   //   const tempConfigList = Object.keys(ConfigList).filter(
@@ -77,6 +95,7 @@ const AppContent = () => {
           })}
           <Route path="/" exact element={<Navigate to="dashboard" replace />} />
         </Routes>
+        s
       </Suspense>
     </CContainer>
   );

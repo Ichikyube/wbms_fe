@@ -35,17 +35,21 @@ import * as RolesAPI from "../../api/roleApi";
 const typeTransaction = 1;
 const typeSite = 1;
 
-const TimbangMasuk = (props) => {
-  const { VendorName, Id } = props;
-  useEffect(() => {
-    // Lakukan tindakan setelah VendorName berubah
-    console.log(VendorName, "nama vendor");
-  }, [VendorName]);
-  console.log(VendorName, "nama vendor");
+const TimbangMasuk = () => {
+  const [Transporter, setTransporter] = useState({
+    Id: "",
+    Name: "",
+    Code: "",
+  });
+
   const gridRef = useRef();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
+
+  const handleTransporterChange = (newTransporter) => {
+    setTransporter(newTransporter);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -139,7 +143,8 @@ const TimbangMasuk = (props) => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}>
+                    }}
+                  >
                     STATUS PROSES
                   </Typography>
                 </>
@@ -155,7 +160,8 @@ const TimbangMasuk = (props) => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
                   fullWidth
@@ -220,7 +226,8 @@ const TimbangMasuk = (props) => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}>
+                        }}
+                      >
                         Nomor Polisi
                       </Typography>
                     </>
@@ -297,12 +304,12 @@ const TimbangMasuk = (props) => {
                           px: 1.5,
                         }}
                       >
-                        Vendor
+                        Cust/Vendor transport
                       </Typography>
                     </>
                   }
-                  name="Name"
-                  value={VendorName}
+                  // name="Name"
+                  value={Transporter.Code}
                   onClick={() => {
                     setIsFilterData(true);
                   }}
@@ -369,8 +376,9 @@ const TimbangMasuk = (props) => {
                 <TBS
                   ProductId={values?.productId}
                   ProductName={values?.productName}
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
+                  TransporterId={Transporter.Id}
+                  TransporterCompanyName={Transporter.Name}
+                  TransporterCompanyCode={Transporter.Code}
                   PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
@@ -381,8 +389,9 @@ const TimbangMasuk = (props) => {
                 <OTHERS
                   ProductId={values?.productId}
                   ProductName={values?.productName}
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
+                  TransporterId={Transporter.Id}
+                  TransporterCompanyName={Transporter.Name}
+                  TransporterCompanyCode={Transporter.Code}
                   PlateNo={values.transportVehiclePlateNo}
                 />
               )}
@@ -391,6 +400,8 @@ const TimbangMasuk = (props) => {
                 <FilterDataCompany
                   isFilterData={isFilterData}
                   onClose={() => setIsFilterData(false)}
+                  selectedTransporter={Transporter} // Mengirimkan transporter ke FilterDataCompany
+                  onTransporterChange={handleTransporterChange}
                 />
               )}
             </Box>

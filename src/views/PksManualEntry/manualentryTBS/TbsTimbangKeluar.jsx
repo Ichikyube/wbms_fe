@@ -33,7 +33,13 @@ import { IosShareRounded } from "@mui/icons-material";
 
 const typeSite = 1;
 
-const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, TransporterCompanyName }) => {
+const PksManualTBSTimbangKeluar = ({
+  selectedCompany,
+  PlateNo,
+  TransporterId,
+  TransporterCompanyName,
+  TransporterCompanyCode,
+}) => {
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
   const [dtDriver, setDtDriver] = useState([]);
@@ -69,7 +75,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm(initialValues);
-  console.log(trxGradingPencentage)
+  console.log(trxGradingPencentage);
   const gradingPercentage = JSON.parse(trxGradingPencentage);
   let trxGradingWAJIB;
   const {
@@ -105,20 +111,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     }));
   };
 
-  const validateForm = () => {
-    return (
-      values.bonTripNo &&
-      values.deliveryOrderNo &&
-      values.driverName &&
-      TransporterId &&
-      TransporterCompanyName &&
-      PlateNo
-    );
-  };
-
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
 
     navigate("/pks-transaction");
   };
@@ -127,10 +120,9 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
       values.progressStatus = 4;
       values.originWeighOutKg = weighbridge.getWeight();
       values.originWeighOutTimestamp = moment().toDate();
-      values.transporterId = selectedCompany ? selectedCompany.id : "";
-      values.transporterCompanyName = selectedCompany
-        ? selectedCompany.name
-        : "";
+      values.transporterId = TransporterId;
+      values.transporterCompanyName = TransporterCompanyName;
+      values.transporterCompanyCode = TransporterCompanyCode;
       values.transportVehiclePlateNo = PlateNo;
     }
 
@@ -176,6 +168,18 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   //   }
   // }, [values, weighbridge]);
 
+  const validateForm = () => {
+    return (
+      values.bonTripNo &&
+      values.deliveryOrderNo &&
+      values.driverName &&
+      TransporterId &&
+      TransporterCompanyName &&
+      TransporterCompanyCode &&
+      PlateNo
+    );
+  };
+
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompany(res.data.company.records);
@@ -204,7 +208,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     socket.on("connect", () => console.log("Connected"));
     socket.on("result", (values) => {
       setResults(values);
-      console.log(values)
+      console.log(values);
     });
     socket.on("connect_error", (error) => {
       console.error("Connection Error:", error.message); // Handle the error here
@@ -214,21 +218,21 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     };
   }, []);
   useEffect(() => {
-    if(results) {
-      setPotBMKG(results.calculatedBM)
-      setPotBLMKG(results.calculatedBLM)
-      setPotTPKG(results.calculatedTP)
-      setPotTKKG(results.calculatedTK)
-      setPotSMPHKG(results.calculatedTrash)
-      setPotAirKG(results.calculatedWater)
-      setPotPartenoKG(results.calculatedParteno)
-      setPotBrondolanKG(results.calculatedBrondolan)
+    if (results) {
+      setPotBMKG(results.calculatedBM);
+      setPotBLMKG(results.calculatedBLM);
+      setPotTPKG(results.calculatedTP);
+      setPotTKKG(results.calculatedTK);
+      setPotSMPHKG(results.calculatedTrash);
+      setPotAirKG(results.calculatedWater);
+      setPotPartenoKG(results.calculatedParteno);
+      setPotBrondolanKG(results.calculatedBrondolan);
       // setPotWajibKG()
       // setPotLainnyaKG()
       // setPotTotalKG()
     }
-  }, [results])
-  
+  }, [results]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -252,7 +256,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
 
     fetchData();
   }, [id]);
-
 
   useEffect(() => {
     socket?.emit("hitungPotongan", {
@@ -429,7 +432,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           value={values?.driverName}
           onChange={handleChange}
         />
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
             Customer
           </InputLabel>
@@ -496,7 +499,38 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               />
             )}
           />
-        </FormControl>
+        </FormControl> */}
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder="Masukkan Kebun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Kebun
+              </Typography>
+            </>
+          }
+          name="kebun"
+          value={values?.kebun}
+          onChange={handleChange}
+        />
         <TextField
           variant="outlined"
           size="small"
@@ -557,6 +591,37 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           value={values?.blok}
           onChange={handleChange}
         />
+             <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder="Masukkan Tahun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Tahun
+              </Typography>
+            </>
+          }
+          name="tahun"
+          value={values?.tahun}
+          onChange={handleChange}
+        />
         <TextField
           variant="outlined"
           size="small"
@@ -604,7 +669,6 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           InputLabelProps={{
             shrink: true,
           }}
-          placeholder="Masukkan SPTBS"
           sx={{
             my: 2,
             "& .MuiOutlinedInput-root": {
@@ -633,7 +697,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           fullWidth
           placeholder="Masukkan Sertifikasi"
           sx={{
-            my: 2,
+            mt: 2,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -1434,6 +1498,9 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           variant="outlined"
           size="small"
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
           sx={{
             mb: 2,
             "& .MuiOutlinedInput-root": {
@@ -1576,11 +1643,11 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           sx={{ mt: 2 }}
           onClick={handleSubmit}
           disabled={
-            values.progressStatus === 4 || !validateForm()
-            // !weighbridge.isStable() ||
-            // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-            //   ? true
-            //   : false
+            !validateForm() || values.progressStatus === 4
+            //   !weighbridge.isStable() ||
+            //   weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+            //     ? true
+            //     : false
           }
         >
           Simpan

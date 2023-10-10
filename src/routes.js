@@ -209,24 +209,29 @@ export const protectedRoute = [
     path: "/userslist",
     name: "Users List",
     element: UsersList,
-    resource: "User",
+    resource: "user",
   },
   {
     path: "/roleslist",
     name: "Roles List",
     element: RolesList,
-    resource: "User",
+    resource: "user",
   },
 ];
 
 export const backdateFormRoutes = [
   {
-    path: "/backdate-Form",
-    name: "Backdate Form",
+    path: "/backdateFormTBS",
+    name: "Backdate Form TBS",
     element: BackdateFormTBS,
     exact: true,
   },
-
+  {
+    path: "/backdateFormOthers",
+    name: "Backdate Form Others",
+    element: BackdateFormOthers,
+    exact: true,
+  },
 ];
 export const backdateTemplateRoute = {
   path: "/backdateTemplate",

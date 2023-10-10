@@ -192,7 +192,7 @@ const ViewRole = ({ dtRole, onClose, isViewOpen }) => {
                   enableRangeSelection="true"
                   groupSelectsChildren="true"
                   suppressRowClickSelection="true"
-                  pagination="true"
+                  // pagination="true"
                   paginationAutoPageSize="true"
                   groupDefaultExpanded="1"
                 />

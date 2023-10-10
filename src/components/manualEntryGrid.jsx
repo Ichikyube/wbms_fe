@@ -111,7 +111,7 @@ const ManualEntryGrid = (props) => {
         groupSelectsChildren="true"
         suppressRowClickSelection="true"
         autoGroupColumnDef={autoGroupColumnDef}
-        pagination="true"
+        // pagination="true"
         paginationAutoPageSize="true"
         groupDefaultExpanded="1"
       />

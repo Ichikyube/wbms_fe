@@ -16,15 +16,19 @@ import { backdateTemplateNav } from "../_nav";
 import NavList from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
-const access = localStorage.getItem("userAccess")? ['Base',...Object.keys(JSON.parse(localStorage.getItem("userAccess")))] : null;
-if(access)  NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
+import { masterDataList, userManagementList } from "../constants/attributeListObj";
+
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
+  const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
+  const cNav = access.includes("Transaction")?['WB',...access]:access;
+  const bNav = masterDataList.some(value => access.includes(value.toLowerCase()))?['Base', 'MD',...cNav]:['Base',...cNav];
+  const aNav = ["MD"].some(item=>bNav.includes(item.toLowerCase()))?['ADMIN',...bNav]:[...bNav];
 
   const { backDatedTemplate } = useMatrix();
   const [tempAdded, setTempAdded] = useState(false);
-  const navList = NavList.filter(item => access.includes(item.resource));
-  
+  // NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
+  const navList = NavList.filter(item => aNav.includes(item.resource));
   useEffect(() => {
     if (backDatedTemplate && !tempAdded) {
       setTempAdded(true);
@@ -61,7 +65,7 @@ const AppSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={navList} />
+          <AppSidebarNav items={NavList} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler

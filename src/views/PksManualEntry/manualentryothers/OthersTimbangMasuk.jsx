@@ -28,6 +28,7 @@ import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 import Swal from "sweetalert2";
+import useBonTripGenerator from "../../../utils/useBonTripGenerator";
 
 const PksManualTimbangMasukOthers = ({
   ProductId,
@@ -39,6 +40,7 @@ const PksManualTimbangMasukOthers = ({
   // console.clear();
 
   const [weighbridge] = useWeighbridge();
+  const [bonTripNo, setBonTripNo] = useBonTripGenerator();
   const [configs] = useConfig();
 
   const dispatch = useDispatch();
@@ -151,38 +153,16 @@ const PksManualTimbangMasukOthers = ({
     }
     setValues({ ...tempTrans });
   };
-
-  const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
-
   useEffect(() => {
-    // Fungsi untuk menghasilkan Nomor BON Trip dengan format P041YYMMDDHHmmss
-    const generateBonTripNo = () => {
-      const dateNow = moment().format("YYMMDDHHmmss");
-      return `P041${dateNow}`;
-    };
-
-    const generatedBonTripNo = generateBonTripNo(); // Panggil fungsi untuk menghasilkan Nomor BON Trip
-    setBonTripNo(generatedBonTripNo); // Simpan Nomor BON Trip dalam state
-
-    // Set nilai Nomor BON Trip ke dalam form values
-    setValues({
-      ...values,
-      bonTripNo: generatedBonTripNo,
-    });
-  }, []);
-
-  // useEffect(() => {
-  //   // ... (kode useEffect yang sudah ada)
-
-  //   // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
-  //   let cSubmit = false;
-  //   if (values.progressStatus === 0) {
-  //     // cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
-  //   } else if (values.progressStatus === 4) {
-  //     cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
-  //   }
-  //   setCanSubmit(cSubmit);
-  // }, [values]);
+    // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+    let cSubmit = false;
+    if (values.progressStatus === 0) {
+      // cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
+    } else if (values.progressStatus === 4) {
+      cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
+    }
+    setCanSubmit(cSubmit);
+  }, [values]);
 
   const validateForm = () => {
     return (

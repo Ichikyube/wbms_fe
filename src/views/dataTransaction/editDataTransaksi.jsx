@@ -29,10 +29,10 @@ import DataOthers from "./dataOthers";
 import BeratTanggal from "./beratTanggal";
 
 const EditDataTransaksi = () => {
-  const [configs] = useConfig();
-
   const { id } = useParams();
-
+  const { values, setValues } = useForm({
+    ...TransactionAPI.InitialData,
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,165 +56,6 @@ const EditDataTransaksi = () => {
 
     fetchData();
   }, [id]);
-
-  const navigate = useNavigate();
-  const { values, setValues } = useForm({
-    ...TransactionAPI.InitialData,
-  });
-  const [originWeightNetto, setOriginWeightNetto] = useState(0);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    const {
-      id,
-      bonTripNo,
-      productId,
-      productName,
-      transporterId,
-      transporterCompanyName,
-      driverId,
-      driverName,
-      originSiteId,
-      originSiteName,
-      transportVehicleId,
-      transportVehiclePlateNo,
-      customerName,
-      customerId,
-      originWeighInKg,
-      originWeighOutKg,
-      originWeighOutTimestamp,
-      deliveryOrderNo,
-      progressStatus,
-      qtyTbsDikirim,
-      qtyTbs,
-      qtyTbsDikembalikan,
-      originWeighInTimestamp,
-      transportVehicleSccModel,
-      destinationSiteId,
-      destinationSiteName,
-    } = values;
-
-    const tempTrans = {
-      id,
-      bonTripNo,
-      productId,
-      productName,
-      transporterId,
-      transporterCompanyName,
-      driverId,
-      driverName,
-      originSiteId,
-      originSiteName,
-      transportVehicleId,
-      transportVehiclePlateNo,
-      customerName,
-      customerId,
-      originWeighInKg: parseFloat(originWeighInKg),
-      originWeighOutKg: parseFloat(originWeighOutKg),
-      deliveryOrderNo,
-      progressStatus,
-      qtyTbsDikirim: parseFloat(qtyTbsDikirim),
-      qtyTbs: parseFloat(qtyTbs),
-      qtyTbsDikembalikan: parseFloat(qtyTbsDikembalikan),
-      originWeighInTimestamp: moment(originWeighInTimestamp).toDate(),
-      originWeighOutTimestamp: moment(originWeighOutTimestamp).toDate(),
-      transportVehicleSccModel,
-      destinationSiteId,
-      destinationSiteName,
-    };
-
-    try {
-      const results = await TransactionAPI.update({ ...tempTrans });
-
-      if (!results?.status) {
-        toast.error(`Error: ${results?.message}.`);
-        return;
-      }
-
-      toast.success(`Edit Data Transaksi Berhasil Di Update.`);
-      return handleClose();
-    } catch (error) {
-      toast.error(`Error: ${error.message}.`);
-    }
-    setValues({ ...tempTrans });
-  };
-
-  useEffect(() => {
-    // setProgressStatus(Config.PKS_PROGRESS_STATUS[values.progressStatus]);
-
-    if (
-      values.originWeighInKg < configs.ENV.WBMS_WB_MIN_WEIGHT ||
-      values.originWeighOutKg < configs.ENV.WBMS_WB_MIN_WEIGHT
-    ) {
-      setOriginWeightNetto(0);
-    } else {
-      let total =
-        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
-        values.potonganWajib -
-        values.potonganLain;
-      setOriginWeightNetto(total);
-    }
-  }, [values]);
-
-  const validateForm = () => {
-    return (
-      values.bonTripNo &&
-      values.deliveryOrderNo &&
-      // values.transportVehicleId &&
-      // values.driverId &&
-      // values.transporterId &&
-      // values.productId &&
-      // values.originWeighInTimestamp &&
-      // values.originWeighOutTimestamp &&
-      values.originWeighInKg > 0 &&
-      values.originWeighOutKg > 0
-    );
-  };
-
-  const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
-    navigate("/data-transaction");
-  };
-  const [dtCompany, setDtCompany] = useState([]);
-  const [dtProduct, setDtProduct] = useState([]);
-  const [dtDriver, setDtDriver] = useState([]);
-  const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
-  const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
-
-  useEffect(() => {
-    CompaniesAPI.getAll().then((res) => {
-      setDtCompany(res.data.company.records);
-    });
-
-    ProductAPI.getAll().then((res) => {
-      setDtProduct(res.data.product.records);
-    });
-    DriverAPI.getAll().then((res) => {
-      setDtDriver(res.data.driver.records);
-    });
-
-    TransportVehicleAPI.getAll().then((res) => {
-      setDtTransportVehicle(res.data.transportVehicle.records);
-    });
-
-    CustomerAPI.getAll().then((res) => {
-      setDtCustomer(res.data.customer.records);
-    });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
-    });
-  }, []);
 
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -293,55 +134,18 @@ const EditDataTransaksi = () => {
 
               {selectedOption === "Tbs" && (
                 <>
-                  <TBS
-                    values={values}
-                    handleChange={handleChange}
-                    handleSubmit={handleSubmit}
-                    setValues={setValues}
-                    handleClose={handleClose}
-                    dtCompany={dtCompany}
-                    dtTransportVehicle={dtTransportVehicle}
-                    validateForm={validateForm}
-                    dtProduct={dtProduct}
-                    dtSite={dtSite}
-                    dtCustomer={dtCustomer}
-                    dtDriver={dtDriver}
-                  />
+                  <TBS />
                 </>
               )}
 
               {/* OTHERS */}
 
-              {selectedOption === "Others" && (
-                <DataOthers
-                  values={values}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  setValues={setValues}
-                  handleClose={handleClose}
-                  dtCompany={dtCompany}
-                  dtTransportVehicle={dtTransportVehicle}
-                  validateForm={validateForm}
-                  dtProduct={dtProduct}
-                  dtCustomer={dtCustomer}
-                  dtDriver={dtDriver}
-                  dtSite={dtSite}
-                />
-              )}
+              {selectedOption === "Others" && <DataOthers />}
 
               {/* BERAT DAN TANGGAL */}
 
               {(selectedOption === "BeratTanggalTbs" ||
-                selectedOption === "BeratTanggalOthers") && (
-                <BeratTanggal
-                  values={values}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  handleClose={handleClose}
-                  originWeightNetto={originWeightNetto}
-                  validateForm={validateForm}
-                />
-              )}
+                selectedOption === "BeratTanggalOthers") && <BeratTanggal />}
             </Box>
           </Paper>
         </Grid>

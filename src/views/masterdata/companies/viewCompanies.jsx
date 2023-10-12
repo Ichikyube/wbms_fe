@@ -4,7 +4,7 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Button,
+  InputAdornment,
   Box,
   FormControl,
   FormLabel,
@@ -62,7 +62,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -81,35 +81,10 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    inputProps={{ readOnly: true }}
-                    type="text"
-                    placeholder="Masukkan Code Sap...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
@@ -131,7 +106,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Full Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -157,7 +132,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortName}
+                    value={values?.shortName}
                     name="shortName"
                     error={!!touched.shortName && !!errors.shortName}
                     helperText={touched.shortName && errors.shortName}
@@ -181,7 +156,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Url...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.url}
+                    value={values?.url}
                     name="url"
                     error={!!touched.url && !!errors.url}
                     helperText={touched.url && errors.url}
@@ -206,7 +181,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Email..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.contactEmail}
+                    value={values?.contactEmail}
                     name="contactEmail"
                     error={!!touched.contactEmail && !!errors.contactEmail}
                     helperText={touched.contactEmail && errors.contactEmail}
@@ -231,7 +206,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Phone Number...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.phone}
+                    value={values?.phone}
                     name="phone"
                     error={!!touched.phone && !!errors.phone}
                     helperText={touched.phone && errors.phone}
@@ -256,7 +231,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Contact Name..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.contactName}
+                    value={values?.contactName}
                     name="contactName"
                     error={!!touched.contactName && !!errors.contactName}
                     helperText={touched.contactName && errors.contactName}
@@ -281,7 +256,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Contact Phone.."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.contactPhone}
+                    value={values?.contactPhone}
                     name="contactPhone"
                     error={!!touched.contactPhone && !!errors.contactPhone}
                     helperText={touched.contactPhone && errors.contactPhone}
@@ -306,7 +281,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Country Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.country}
+                    value={values?.country}
                     name="country"
                     error={!!touched.country && !!errors.country}
                     helperText={touched.country && errors.country}
@@ -331,7 +306,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Province ...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.province}
+                    value={values?.province}
                     name="province"
                     error={!!touched.province && !!errors.province}
                     helperText={touched.province && errors.province}
@@ -356,7 +331,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan City ...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.city}
+                    value={values?.city}
                     name="city"
                     error={!!touched.city && !!errors.city}
                     helperText={touched.city && errors.city}
@@ -381,7 +356,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Alamat...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.address}
+                    value={values?.address}
                     name="address"
                     error={!!touched.address && !!errors.address}
                     helperText={touched.address && errors.address}
@@ -405,7 +380,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Kode Pos...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.postalCode}
+                    value={values?.postalCode}
                     name="postalCode"
                     error={!!touched.postalCode && !!errors.postalCode}
                     helperText={touched.postalCode && errors.postalCode}
@@ -431,10 +406,67 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan alamat lengkap..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.addressExt}
+                    value={values?.addressExt}
                     name="addressExt"
                     error={!!touched.addressExt && !!errors.addressExt}
                     helperText={touched.addressExt && errors.addressExt}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Tipe
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan tipe...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values?.tipe}
+                    name="tipe"
+                    error={!!touched.tipe && !!errors.tipe}
+                    helperText={touched.tipe && errors.tipe}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Persen Potong Wajib
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    type="number"
+                    InputProps={{
+                      readOnly: "true",
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          %
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Masukkan Potongan Wajib...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values?.potonganwajib}
+                    name="potonganwajib"
+                    error={!!touched.potonganwajib && !!errors.potonganwajib}
+                    helperText={touched.potonganwajib && errors.potonganwajib}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -451,7 +483,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                   <Select
                     labelId="label-module"
                     fullWidth
-                    value={values.isMillOperator}
+                    value={values?.isMillOperator}
                     name="isMillOperator"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -479,7 +511,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                   </FormLabel>
                   <Select
                     fullWidth
-                    value={values.isTransporter}
+                    value={values?.isTransporter}
                     name="isTransporter"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -503,12 +535,12 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       fontWeight: "bold",
                     }}
                   >
-                   SiteOperator
+                    SiteOperator
                   </FormLabel>
                   <Select
                     labelId="label-module"
                     fullWidth
-                    value={values.isSiteOperator}
+                    value={values?.isSiteOperator}
                     name="isSiteOperator"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -537,7 +569,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                   <Select
                     labelId="label-module"
                     fullWidth
-                    value={values.isEstate}
+                    value={values?.isEstate}
                     name="isEstate"
                     onBlur={handleBlur}
                     onChange={handleChange}

@@ -6,7 +6,7 @@ import PieCharts from "../../components/pieChart";
 import BarChartIcon from "@mui/icons-material/EqualizerOutlined";
 import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
 
-const typeTransaction = 1;
+const typeSite = 1;
 
 const Dashboard = () => {
   const [CPOProduct, setCPOProduct] = useState(0);
@@ -17,13 +17,14 @@ const Dashboard = () => {
   useEffect(() => {
     const lowerCaseProductName = (productName) => productName.toLowerCase();
 
-     TransactionAPI.searchMany({
+    TransactionAPI.searchMany({
       where: {
-        typeTransaction,
+        typeSite,
         isDeleted: false,
         progressStatus: { notIn: [1] },
       },
-      }).then((res) => res.records)
+    })
+      .then((res) => res.records)
       .then((transactions) => {
         // Filter transaksi berdasarkan produk "CPO"
         const CPOProduct = transactions.filter(

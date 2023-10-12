@@ -80,7 +80,7 @@ const ViewCities = ({ isViewOpen, onClose, dtCity }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -105,7 +105,7 @@ const ViewCities = ({ isViewOpen, onClose, dtCity }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.province.name}
+                    value={values?.province.name}
                     name="provinceId"
                     error={!!touched.provinceId && !!errors.provinceId}
                     helperText={touched.provinceId && errors.provinceId}

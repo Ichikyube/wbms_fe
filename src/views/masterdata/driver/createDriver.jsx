@@ -131,7 +131,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan NPK...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.nik}
+                    value={values?.nik}
                     name="nik"
                     error={!!touched.nik && !!errors.nik}
                     helperText={touched.nik && errors.nik}
@@ -155,7 +155,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan Code Sap...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.codeSap}
+                    value={values?.codeSap}
                     name="codeSap"
                     error={!!touched.codeSap && !!errors.codeSap}
                     helperText={touched.codeSap && errors.codeSap}
@@ -179,7 +179,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -204,7 +204,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan License (SIM)..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.licenseNo}
+                    value={values?.licenseNo}
                     name="licenseNo"
                     error={!!touched.licenseNo && !!errors.licenseNo}
                     helperText={touched.licenseNo && errors.licenseNo}
@@ -228,7 +228,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan License ED..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.licenseED}
+                    value={values?.licenseED}
                     name="licenseED"
                     error={!!touched.licenseED && !!errors.licenseED}
                     helperText={touched.licenseED && errors.licenseED}
@@ -248,7 +248,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                   <Select
                     fullWidth
                     name="companyId"
-                    value={values.companyId}
+                    value={values?.companyId}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -295,7 +295,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Company Name"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.companyName}
+                    value={values?.companyName}
                     name="companyName"
                     error={!!touched.companyName && !!errors.companyName}
                     helperText={touched.companyName && errors.companyName}
@@ -320,7 +320,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan Email..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.email}
+                    value={values?.email}
                     name="email"
                     error={!!touched.email && !!errors.email}
                     helperText={touched.email && errors.email}
@@ -344,7 +344,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan Phone Number...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.phone}
+                    value={values?.phone}
                     name="phone"
                     error={!!touched.phone && !!errors.phone}
                     helperText={touched.phone && errors.phone}
@@ -370,7 +370,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     placeholder="Masukkan Address...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.address}
+                    value={values?.address}
                     name="address"
                     error={!!touched.address && !!errors.address}
                     helperText={touched.address && errors.address}

@@ -11,6 +11,7 @@ import {
   InputLabel,
   InputBase,
   IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,6 +24,7 @@ import ManualEntryGrid from "../../../components/TransactionGrid";
 import { useConfig } from "../../../common/hooks";
 import TBS from "./backdateFormTbs";
 import OTHERS from "./backdateFormOthers";
+import FilterDataCompany from "../../PksManualEntry/filterDtCompany";
 // import CpoPko from "../../PksManualEntry/manualentryCpoPko/BackdateForm";
 import * as ProductAPI from "../../../api/productsApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
@@ -37,6 +39,16 @@ const BackdateForm = () => {
     ...TransactionAPI.InitialData,
   });
 
+  const [Transporter, setTransporter] = useState({
+    Id: "",
+    Name: "",
+    Code: "",
+  });
+
+  const handleTransporterChange = (newTransporter) => {
+    setTransporter(newTransporter);
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues((preValues) => ({
@@ -45,6 +57,7 @@ const BackdateForm = () => {
     }));
   };
 
+  const [isFilterData, setIsFilterData] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [dtCompany, setDtCompany] = useState([]);
@@ -167,44 +180,43 @@ const BackdateForm = () => {
               value={values.transportVehiclePlateNo}
               onChange={handleChange}
             />
-            <FormControl
-              fullWidth
+            <TextField
               variant="outlined"
               size="small"
-              sx={{ my: 2 }}
-            >
-              <InputLabel
-                id="select-label"
-                shrink
-                sx={{ bgcolor: "white", px: 1 }}
-              >
-                Nama Vendor/Customer
-              </InputLabel>
-              <Autocomplete
-                id="select-label"
-                options={dtCompany}
-                getOptionLabel={(option) => option.name}
-                value={
-                  dtCompany.find((item) => item.id === values?.transporterId) ||
-                  null
-                }
-                onChange={(event, newValue) => {
-                  setValues((preValues) => ({
-                    ...preValues,
-                    transporterId: newValue ? newValue.id : "",
-                    transporterCompanyName: newValue ? newValue.name : "",
-                  }));
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="-- Pilih Vendor --"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
-              />
-            </FormControl>
+              type="text"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
+                    <SearchIcon sx={{ fontSize: "18px" }} />
+                  </InputAdornment>
+                ),
+              }}
+              placeholder="Cari cust/vendor..."
+              sx={{
+                my: 2,
+              }}
+              label={
+                <>
+                  <Typography
+                    sx={{
+                      bgcolor: "white",
+                      px: 1.5,
+                    }}
+                  >
+                    Cust/Vendor transport
+                  </Typography>
+                </>
+              }
+              // name="Name"
+              value={Transporter.Code}
+              onClick={() => {
+                setIsFilterData(true);
+              }}
+            />
             <FormControl
               fullWidth
               variant="outlined"
@@ -220,31 +232,27 @@ const BackdateForm = () => {
               </InputLabel>
               <Autocomplete
                 id="select-label"
-                options={dtProduct}
+                options={dtProduct.filter(
+                  (option) =>
+                    !["cpo", "pko"].includes(option.name.toLowerCase())
+                )}
                 getOptionLabel={(option) => option.name}
                 value={selectedProduct}
                 onChange={(event, newValue) => {
+                  const selectedValue = newValue
+                    ? newValue
+                    : { id: "", name: "" };
                   setValues((preValues) => ({
                     ...preValues,
-                    productId: newValue ? newValue.id : "",
-                    productName: newValue ? newValue.name : "",
+                    productId: selectedValue.id,
+                    productName: selectedValue.name,
                   }));
-                  setSelectedProduct(newValue);
-                  if (newValue) {
-                    const productName = newValue.name.toLowerCase();
-                    if (
-                      productName.includes("cpo") ||
-                      productName.includes("pko")
-                    ) {
-                      setSelectedOption("CpoPko");
-                    } else if (productName.includes("tbs")) {
-                      setSelectedOption("Tbs");
-                    } else {
-                      setSelectedOption("Others");
-                    }
-                  } else {
-                    setSelectedOption(""); // Reset the selectedOption if no product is selected.
-                  }
+                  setSelectedProduct(selectedValue);
+                  setSelectedOption(
+                    newValue?.name.toLowerCase().includes("tbs")
+                      ? "Tbs"
+                      : "Others"
+                  );
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -271,9 +279,10 @@ const BackdateForm = () => {
                 <TBS
                   ProductId={values?.productId}
                   ProductName={values?.productName}
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
-                  PlateNo={values?.transportVehiclePlateNo}
+                  TransporterId={Transporter.Id}
+                  TransporterCompanyName={Transporter.Name}
+                  TransporterCompanyCode={Transporter.Code}
+                  PlateNo={values.transportVehiclePlateNo}
                 />
               )}
 
@@ -283,9 +292,18 @@ const BackdateForm = () => {
                 <OTHERS
                   ProductId={values?.productId}
                   ProductName={values?.productName}
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
+                  TransporterId={Transporter.Id}
+                  TransporterCompanyName={Transporter.Name}
+                  TransporterCompanyCode={Transporter.Code}
                   PlateNo={values.transportVehiclePlateNo}
+                />
+              )}
+              {isFilterData && (
+                <FilterDataCompany
+                  isFilterData={isFilterData}
+                  onClose={() => setIsFilterData(false)}
+                  selectedTransporter={Transporter} // Mengirimkan transporter ke FilterDataCompany
+                  onTransporterChange={handleTransporterChange}
                 />
               )}
             </Box>

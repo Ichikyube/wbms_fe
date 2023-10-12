@@ -160,14 +160,7 @@ const Companies = () => {
       hide: false,
       flex: 2,
     },
-    {
-      headerName: "Code Sap",
-      field: "codeSap",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 2,
-    },
+
     {
       headerName: "Nama",
       field: "name",
@@ -403,7 +396,7 @@ const Companies = () => {
 
         setFilteredData(newFilteredData);
       }
-    }, 500); // Refresh interval setiap 500ms
+    }, 1000); // Refresh interval setiap 500ms
 
     return () => {
       clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan

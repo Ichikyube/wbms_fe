@@ -111,7 +111,7 @@ const CreateWeighbridges = ({ isOpen, onClose, dtSites }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -136,7 +136,7 @@ const CreateWeighbridges = ({ isOpen, onClose, dtSites }) => {
                     placeholder="Masukkan Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -158,7 +158,7 @@ const CreateWeighbridges = ({ isOpen, onClose, dtSites }) => {
                   <Select
                     fullWidth
                     name="siteId"
-                    value={values.siteId}
+                    value={values?.siteId}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty

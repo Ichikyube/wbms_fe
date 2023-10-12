@@ -287,7 +287,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Nama....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -311,7 +311,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Email....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.email}
+                    value={values?.email}
                     name="email"
                     error={!!touched.email && !!errors.email}
                     helperText={touched.email && errors.email}
@@ -335,7 +335,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan No Telepon....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.phone}
+                    value={values?.phone}
                     name="phone"
                     error={!!touched.phone && !!errors.phone}
                     helperText={touched.phone && errors.phone}
@@ -359,7 +359,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan NPK....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.nik}
+                    value={values?.nik}
                     name="nik"
                     error={!!touched.nik && !!errors.nik}
                     helperText={touched.nik && errors.nik}
@@ -384,7 +384,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Username....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.username}
+                    value={values?.username}
                     name="username"
                     error={!!touched.username && !!errors.username}
                     helperText={touched.username && errors.username}
@@ -406,7 +406,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     variant="outlined"
                     type={showPassword ? "text" : "password"}
                     placeholder="Masukan Password ..."
-                    value={values.password}
+                    value={values?.password}
                     onChange={handleChange}
                     name="password"
                     InputProps={{
@@ -440,7 +440,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Division....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.division}
+                    value={values?.division}
                     name="division"
                     error={!!touched.division && !!errors.division}
                     helperText={touched.division && errors.division}
@@ -464,7 +464,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Position....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.position}
+                    value={values?.position}
                     name="position"
                     error={!!touched.position && !!errors.position}
                     helperText={touched.position && errors.position}
@@ -488,7 +488,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan Tanggal Lahir..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.doB}
+                    value={values?.doB}
                     name="doB"
                     error={!!touched.doB && !!errors.doB}
                     helperText={touched.doB && errors.doB}
@@ -514,7 +514,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     placeholder="Masukkan alamat....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.alamat}
+                    value={values?.alamat}
                     name="alamat"
                     error={!!touched.alamat && !!errors.alamat}
                     helperText={touched.alamat && errors.alamat}
@@ -535,7 +535,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   <Select
                     fullWidth
                     name="roleId"
-                    value={values.roleId}
+                    value={values?.roleId}
                     onChange={(event) => {
                       const { name, value } = event.target;
                       const selectedRole = dtRole.find(

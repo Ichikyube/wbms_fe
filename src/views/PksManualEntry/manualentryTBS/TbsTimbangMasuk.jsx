@@ -31,6 +31,7 @@ const PksManualTBSinternalTimbangMasuk = ({
   ProductName,
   TransporterId,
   TransporterCompanyName,
+  TransporterCompanyCode,
   PlateNo,
 }) => {
   const [weighbridge] = useWeighbridge();
@@ -55,6 +56,7 @@ const PksManualTBSinternalTimbangMasuk = ({
     driverName: "",
     transporterId: "",
     transporterCompanyName: "",
+    transporterCompanyCode: "",
     transportVehiclePlateNo: "",
     productId: "",
     productName: "",
@@ -83,19 +85,17 @@ const PksManualTBSinternalTimbangMasuk = ({
   };
 
   const handleSubmit = async () => {
-    if (values.progressStatus === 0) {
-      values.progressStatus = 1;
-      values.typeTransaction = "1";
-      values.originWeighInTimestamp = moment().toDate();
-      values.originWeighInKg = weighbridge.getWeight();
-      values.productId = values.selectedProduct ? values.selectedProduct.id : "";
-      values.productName = values.selectedProduct ? values.selectedProduct.name : "";
-      values.transporterId = values.selectedCompany ? values.selectedCompany.id : "";
-      values.transporterCompanyName = values.selectedCompany
-        ? values.selectedCompany.name
-        : "";
-      values.transportVehiclePlateNo = PlateNo;
-    }
+    values.progressStatus = 1;
+    values.typeSite = 1;
+    values.typeTransaction = 1;
+    values.originWeighInTimestamp = moment().toDate();
+    values.originWeighInKg = weighbridge.getWeight();
+    values.productId = ProductId;
+    values.productName = ProductName;
+    values.transporterId = TransporterId;
+    values.transporterCompanyName = TransporterCompanyName;
+    values.transporterCompanyCode = TransporterCompanyCode;
+    values.transportVehiclePlateNo = PlateNo;
 
     try {
       // Tambahkan logika untuk menentukan apakah membuat atau mengambil transaksi
@@ -187,108 +187,13 @@ const PksManualTBSinternalTimbangMasuk = ({
       ProductName &&
       TransporterId &&
       TransporterCompanyName &&
+      TransporterCompanyCode &&
       PlateNo
     );
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
-  };
-
-  // BUAH MENTAH
-
-  const [persenBM, setPersenBM] = useState(0);
-
-  const handlePersenBM = (event) => {
-    const value = event.target.value;
-    // Memastikan nilai yang dimasukkan adalah angka
-    if (!isNaN(value)) {
-      setPersenBM(value);
-    }
-  };
-
-  const BMkg = () => {
-    let result;
-    const persenbm = persenBM / values.qtyTbs;
-    // result = Math.round((persenbm * 2500)/100);
-    result = Math.round(((25 / 100) * (persenbm - 5) * values.qtyTbs) / 100);
-
-    return result;
-  };
-
-  // BUAH LEWAT MATANG
-
-  const [persenBLM, setPersenBLM] = useState(0);
-
-  const handlePersenBLM = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenBLM(value);
-    }
-  };
-
-  const BLMkg = () => {
-    let parsenBLM = persenBLM / values.qtyTbs;
-    let result;
-    parsenBLM *= 100;
-    if (parsenBLM >= 5) {
-      result = Math.round(((25 / 100) * (parsenBLM - 5) * values.qtyTbs) / 100);
-    } else {
-      return "Nilai persenBLM kurang dari 5"; // Handle jika persenBLM kurang dari 5
-    }
-    console.log(result);
-    return result;
-  };
-
-  // TANGKAI PANJANG
-
-  const [persenTP, setPersenTP] = useState(0);
-
-  const handlePersenTP = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenTP(value);
-    }
-  };
-
-  const TPkg = () => {
-    const result = (persenTP * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // AIR
-
-  const [persenAir, setPersenAir] = useState(0);
-
-  const handlePersenAir = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenAir(value);
-    }
-  };
-
-  const Airkg = () => {
-    const result = (persenAir * values.qtyTbs) / 100;
-    return result;
-  };
-
-  // SAMPAH
-
-  const [persenSMPH, setPersenSMPH] = useState(0);
-
-  const handlePersenSMPH = (event) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      setPersenSMPH(value);
-    }
-  };
-
-  const SMPHkg = () => {
-    const result = (persenSMPH * values.qtyTbs) / 100;
-    return result;
   };
 
   return (
@@ -313,7 +218,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}>
+                }}
+              >
                 Nomor BON Trip
               </Typography>
             </>
@@ -341,13 +247,14 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 No. DO/NPB
               </Typography>
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <TextField
@@ -370,7 +277,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 Nama Supir
               </Typography>
             </>
@@ -417,6 +325,37 @@ const PksManualTBSinternalTimbangMasuk = ({
           variant="outlined"
           size="small"
           fullWidth
+          placeholder="Masukkan Kebun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Kebun
+              </Typography>
+            </>
+          }
+          name="kebun"
+          value={values?.kebun}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
           placeholder="Masukkan Afdeling"
           sx={{
             my: 2,
@@ -434,7 +373,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}>
+                }}
+              >
                 Afdeling
               </Typography>
             </>
@@ -464,13 +404,45 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}>
+                }}
+              >
                 Blok
               </Typography>
             </>
           }
           name="blok"
           value={values?.blok}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder="Masukkan Tahun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Tahun
+              </Typography>
+            </>
+          }
+          name="yearPlan"
+          value={values?.yearPlan}
           onChange={handleChange}
         />
         <TextField
@@ -483,7 +455,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           }}
           placeholder="Masukkan Jumlah Janjang"
           sx={{
-            my: 2,
+            mt: 2,
+            mb: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -494,7 +467,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 Qty TBS
               </Typography>
             </>
@@ -514,7 +488,7 @@ const PksManualTBSinternalTimbangMasuk = ({
           }}
           placeholder="Masukkan SPTBS"
           sx={{
-            my: 2,
+            mt: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -525,7 +499,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 SPBTS
               </Typography>
             </>
@@ -540,7 +515,8 @@ const PksManualTBSinternalTimbangMasuk = ({
           fullWidth
           placeholder="Masukkan Sertifikasi"
           sx={{
-            my: 2,
+            mt: 4,
+            mb: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -555,7 +531,8 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}>
+                }}
+              >
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -588,7 +565,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight IN
             </Typography>
           }
@@ -614,7 +592,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight OUT
             </Typography>
           }
@@ -640,7 +619,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Wajib Vendor
             </Typography>
           }
@@ -666,7 +646,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Lainnya
             </Typography>
           }
@@ -695,7 +676,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL
             </Typography>
           }
@@ -713,7 +695,8 @@ const PksManualTBSinternalTimbangMasuk = ({
             // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
             //   ? true
             //   : false
-          }>
+          }
+        >
           Simpan
         </Button>
         <BonTripTBS

@@ -109,7 +109,7 @@ const CreateProvinces = ({ isOpen, onClose }) => {
                     placeholder="Masukkan Nama"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}

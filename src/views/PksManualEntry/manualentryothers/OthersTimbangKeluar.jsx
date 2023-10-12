@@ -13,20 +13,18 @@ import {
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useForm } from "../../../utils/useForm";
 import WeightWB from "../../../components/weightWB";
 import BonTripTBS from "../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../api/transactionApi";
-import * as ProductAPI from "../../../api/productsApi";
-import * as CompaniesAPI from "../../../api/companiesApi";
-import * as DriverAPI from "../../../api/driverApi";
-import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
-import * as CustomerAPI from "../../../api/customerApi";
 
 import { useWeighbridge, useConfig } from "../../../common/hooks";
 
-const PksManualOthersTimbangKeluar = (props) => {
-  const { TransporterId, TransporterCompanyName, PlateNo } = props;
+const PksManualOthersTimbangKeluar = ({
+  TransporterId,
+  TransporterCompanyName,
+  TransporterCompanyCode,
+  PlateNo,
+}) => {
   const [configs] = useConfig();
   const [weighbridge] = useWeighbridge();
 
@@ -50,6 +48,7 @@ const PksManualOthersTimbangKeluar = (props) => {
     driverName: "",
     transporterId: "",
     transporterCompanyName: "",
+    transporterCompanyCode: "",
     transportVehiclePlateNo: "",
     originWeighOutKg: "",
     deliveryOrderNo: "",
@@ -64,18 +63,16 @@ const PksManualOthersTimbangKeluar = (props) => {
   const [values, setValues] = useState(initialValues);
 
   const handleSubmit = async () => {
-    let tempTrans = { ...values };
-
-    // Mengatur properti lainnya seperti yang Anda lakukan sebelumnya
-    tempTrans.progressStatus = 4;
-    tempTrans.originWeighOutTimestamp = moment().toDate();
-    tempTrans.transporterId = TransporterId;
-    tempTrans.transporterCompanyName = TransporterCompanyName;
-    tempTrans.transportVehiclePlateNo = PlateNo;
-    tempTrans.originWeighOutKg = weighbridge.getWeight();
+    values.progressStatus = 4;
+    values.originWeighOutTimestamp = moment().toDate();
+    values.transporterId = TransporterId;
+    values.transporterCompanyName = TransporterCompanyName;
+    values.transporterCompanyCode = TransporterCompanyCode;
+    values.transportVehiclePlateNo = PlateNo;
+    values.originWeighOutKg = weighbridge.getWeight();
 
     try {
-      const rUpdTrans = await TransactionAPI.update({ ...tempTrans });
+      const rUpdTrans = await TransactionAPI.update({ ...values });
 
       if (!rUpdTrans?.status) {
         toast.error(`Error: ${rUpdTrans?.message}.`);
@@ -86,7 +83,7 @@ const PksManualOthersTimbangKeluar = (props) => {
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
     }
-    setValues({ ...tempTrans });
+    setValues({ ...values });
   };
 
   useEffect(() => {
@@ -146,14 +143,12 @@ const PksManualOthersTimbangKeluar = (props) => {
       values.driverName &&
       TransporterId &&
       TransporterCompanyName &&
+      TransporterCompanyCode &&
       PlateNo
     );
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
 
@@ -208,13 +203,14 @@ const PksManualOthersTimbangKeluar = (props) => {
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}>
+                }}
+              >
                 No. DO/NPB
               </Typography>
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <TextField
@@ -244,7 +240,7 @@ const PksManualOthersTimbangKeluar = (props) => {
             </>
           }
           name="driverName"
-          value={values.driverName}
+          value={values?.driverName}
           onChange={handleChange}
         />
 
@@ -305,12 +301,42 @@ const PksManualOthersTimbangKeluar = (props) => {
                   px: 1,
                 }}
               >
+                Kebun
+              </Typography>
+            </>
+          }
+          name="kebun"
+          value={values?.kebun}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
                 Afdeling
               </Typography>
             </>
           }
           name="afdeling"
-          value={values.afdeling}
+          value={values?.afdeling}
           onChange={handleChange}
         />
         <TextField
@@ -340,17 +366,81 @@ const PksManualOthersTimbangKeluar = (props) => {
             </>
           }
           name="blok"
-          value={values.blok}
+          value={values?.blok}
           onChange={handleChange}
         />
-        <hr />
+           
         <TextField
           variant="outlined"
           size="small"
           fullWidth
           sx={{
-            mt: 4,
+            mt: 2,
             mb: 1,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Tahun
+              </Typography>
+            </>
+          }
+          name="yearPlan"
+          value={values?.yearPlan}
+          onChange={handleChange}
+        />
+
+        <hr />
+      
+        <TextField
+          variant="outlined"
+          size="small"
+          type="text"
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          // placeholder="Masukkan Jumlah Janjang"
+          sx={{
+            my: 1,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1.5,
+                }}
+              >
+                SPTBS
+              </Typography>
+            </>
+          }
+          name="sptbs"
+          value={values?.sptbs}
+          onChange={handleChange}
+        />
+          <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{
+            mt: 3,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -372,38 +462,7 @@ const PksManualOthersTimbangKeluar = (props) => {
             </>
           }
           name="transportVehicleSccModel"
-          value={values.transportVehicleSccModel}
-          onChange={handleChange}
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          type="text"
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          // placeholder="Masukkan Jumlah Janjang"
-          sx={{
-            mt: 3,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-            },
-          }}
-          label={
-            <>
-              <Typography
-                sx={{
-                  bgcolor: "white",
-                  px: 1.5,
-                }}
-              >
-                SPTBS
-              </Typography>
-            </>
-          }
-          name="sptbs"
-          value={values.sptbs}
+          value={values?.transportVehicleSccModel}
           onChange={handleChange}
         />
       </FormControl>
@@ -434,7 +493,8 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight IN
             </Typography>
           }
@@ -463,7 +523,8 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Weight OUT
             </Typography>
           }
@@ -493,7 +554,8 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Wajib Vendor
             </Typography>
           }
@@ -522,7 +584,8 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               Potongan Lainnya
             </Typography>
           }
@@ -551,7 +614,8 @@ const PksManualOthersTimbangKeluar = (props) => {
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}>
+              }}
+            >
               TOTAL
             </Typography>
           }
@@ -582,7 +646,8 @@ const PksManualOthersTimbangKeluar = (props) => {
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}>
+          onClick={handleClose}
+        >
           Tutup
         </Button>
       </FormControl>

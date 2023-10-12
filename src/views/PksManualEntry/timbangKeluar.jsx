@@ -7,8 +7,7 @@ import {
   Box,
   TextField,
   FormControl,
-  Autocomplete,
-  InputLabel,
+  InputAdornment,
   IconButton,
 } from "@mui/material";
 import useSWR from "swr";
@@ -28,14 +27,22 @@ import * as ProductAPI from "../../api/productsApi";
 import * as TransportVehicleAPI from "../../api/transportvehicleApi";
 import * as CompaniesAPI from "../../api/companiesApi";
 import { cibSlack } from "@coreui/icons";
+import FilterDataCompany from "./filterDtCompany";
 
 const typeTransaction = 1;
 
 const TimbangKeluar = () => {
   const [configs] = useConfig();
+
   const { id } = useParams();
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
+  });
+
+  const [Transporter, setTransporter] = useState({
+    Id: values.transporterId,
+    Name: values.transporterCompanyName,
+    Code: values.transporterCompanyCode,
   });
 
   useEffect(() => {
@@ -46,8 +53,15 @@ const TimbangKeluar = () => {
           setValues({
             ...dataById.record,
           });
-          const productName = dataById.record.productName.toLowerCase();
 
+          // Set nilai Transporter dari dataById.record
+          setTransporter({
+            Id: dataById.record.transporterId,
+            Name: dataById.record.transporterCompanyName,
+            Code: dataById.record.transporterCompanyCode,
+          });
+
+          const productName = dataById.record.productName.toLowerCase();
           if (productName.includes("tbs")) {
             setSelectedOption("Tbs");
           } else {
@@ -62,6 +76,10 @@ const TimbangKeluar = () => {
     fetchData();
   }, [id]);
 
+  const handleTransporterChange = (newTransporter) => {
+    setTransporter(newTransporter);
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -72,6 +90,7 @@ const TimbangKeluar = () => {
   };
 
   const [selectedOption, setSelectedOption] = useState("");
+  const [isFilterData, setIsFilterData] = useState(false);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
@@ -158,7 +177,8 @@ const TimbangKeluar = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}>
+                    }}
+                  >
                     STATUS PROSES
                   </Typography>
                 </>
@@ -240,7 +260,8 @@ const TimbangKeluar = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}>
+                        }}
+                      >
                         Nomor Polisi
                       </Typography>
                     </>
@@ -249,7 +270,7 @@ const TimbangKeluar = () => {
                   value={values?.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
-                <FormControl
+                {/* <FormControl
                   fullWidth
                   variant="outlined"
                   size="small"
@@ -286,7 +307,48 @@ const TimbangKeluar = () => {
                       />
                     )}
                   />
-                </FormControl>
+                </FormControl> */}
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment
+                        position="end"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        <SearchIcon sx={{ fontSize: "18px" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  placeholder="Cari cust/vendor..."
+                  sx={{
+                    my: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Cust/Vendor transport
+                      </Typography>
+                    </>
+                  }
+                  // Menentukan nilai yang akan ditampilkan berdasarkan kondisi Transporter.Code
+                  value={Transporter.Code ? Transporter.Code : Transporter.Name}
+                  onClick={() => {
+                    setIsFilterData(true);
+                  }}
+                />
+
                 <TextField
                   variant="outlined"
                   size="small"
@@ -316,20 +378,33 @@ const TimbangKeluar = () => {
               </FormControl>
               {/* CPO & PKO */}
               {/* {selectedOption === "CpoPko" && <CpoPko />} */}
+
               {/* TBS */}
               {selectedOption === "Tbs" && (
                 <TimbangKeluarTBS
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
+                TransporterId={Transporter.Id}
+                  TransporterCompanyName={Transporter.Name}
+                  TransporterCompanyCode={Transporter.Code}
                   PlateNo={values?.transportVehiclePlateNo}
                 />
               )}
+
               {/* OTHERS */}
               {selectedOption === "Others" && (
                 <TimbangKeluarOthers
-                  TransporterId={values?.transporterId}
-                  TransporterCompanyName={values?.transporterCompanyName}
+                TransporterId={Transporter.Id}
+                TransporterCompanyName={Transporter.Name}
+                TransporterCompanyCode={Transporter.Code}
                   PlateNo={values?.transportVehiclePlateNo}
+                />
+              )}
+
+              {isFilterData && (
+                <FilterDataCompany
+                  isFilterData={isFilterData}
+                  onClose={() => setIsFilterData(false)}
+                  selectedTransporter={Transporter} // Mengirimkan transporter ke FilterDataCompany
+                  onTransporterChange={handleTransporterChange} // Fungsi untuk mengubah transporter
                 />
               )}
             </Box>
@@ -355,7 +430,8 @@ const TimbangKeluar = () => {
                       .includes(searchQuery.toLowerCase())
                   );
                   gridRef.current.api.setRowData(filteredData);
-                }}>
+                }}
+              >
                 <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
               </IconButton>
             </Box>

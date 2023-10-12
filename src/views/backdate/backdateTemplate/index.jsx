@@ -175,6 +175,7 @@ const BackdateTemplate = () => {
       ...row,
       id: index,
       typeTransaction: 2,
+      typeSite: 1,
       bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
         4,
         "0"
@@ -311,7 +312,7 @@ const BackdateTemplate = () => {
               groupSelectsChildren="true"
               suppressRowClickSelection="true"
               autoGroupColumnDef={autoGroupColumnDef}
-              pagination="true"
+              // pagination="true"
               paginationAutoPageSize="true"
               groupDefaultExpanded="1"
               onRowClicked={handleRowClick}

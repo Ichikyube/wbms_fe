@@ -167,6 +167,7 @@ export const InitialData = {
   qtyTbs: 0,
   qtyTbsDikirim: 0,
   qtyTbsDikembalikan: 0,
+  yearPlan: "",
 
   currentSeal1: "",
   currentSeal2: "",

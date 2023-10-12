@@ -132,7 +132,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -156,7 +156,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Code Sap...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.codeSap}
+                    value={values?.codeSap}
                     name="codeSap"
                     error={!!touched.codeSap && !!errors.codeSap}
                     helperText={touched.codeSap && errors.codeSap}
@@ -180,7 +180,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Full Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -205,7 +205,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortName}
+                    value={values?.shortName}
                     name="shortName"
                     error={!!touched.shortName && !!errors.shortName}
                     helperText={touched.shortName && errors.shortName}
@@ -225,7 +225,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   <Select
                     fullWidth
                     name="companyId"
-                    value={values.companyId}
+                    value={values?.companyId}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -272,7 +272,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukan Company Name....."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.companyName}
+                    value={values?.companyName}
                     name="companyName"
                     error={!!touched.companyName && !!errors.companyName}
                     helperText={touched.companyName && errors.companyName}
@@ -293,7 +293,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   <Select
                     fullWidth
                     name="sourceSiteId"
-                    value={values.sourceSiteId || ""}
+                    value={values?.sourceSiteId || ""}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -338,7 +338,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Source Site Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.sourceSiteName}
+                    value={values?.sourceSiteName}
                     name="sourceSiteName"
                     error={!!touched.sourceSiteName && !!errors.sourceSiteName}
                     helperText={touched.sourceSiteName && errors.sourceSiteName}
@@ -358,7 +358,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   <Select
                     fullWidth
                     name="cityId"
-                    value={values.cityId}
+                    value={values?.cityId}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
@@ -392,7 +392,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Latitude...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.latitude}
+                    value={values?.latitude}
                     name="latitude"
                     error={!!touched.latitude && !!errors.latitude}
                     helperText={touched.latitude && errors.latitude}
@@ -416,7 +416,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Longitude...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.longitude}
+                    value={values?.longitude}
                     name="longitude"
                     error={!!touched.longitude && !!errors.longitude}
                     helperText={touched.longitude && errors.longitude}
@@ -440,7 +440,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Solar Calibration...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.solarCalibration}
+                    value={values?.solarCalibration}
                     name="solarCalibration"
                     error={
                       !!touched.solarCalibration && !!errors.solarCalibration
@@ -464,7 +464,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                   <Select
                     labelId="label-module"
                     fullWidth
-                    value={values.isMill}
+                    value={values?.isMill}
                     name="isMill"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -500,7 +500,7 @@ const CreateSites = ({ isOpen, onClose, dtCity, dtCompanies, dtSites }) => {
                     placeholder="Masukkan Description...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.description}
+                    value={values?.description}
                     name="description"
                     error={!!touched.description && !!errors.description}
                     helperText={touched.description && errors.description}

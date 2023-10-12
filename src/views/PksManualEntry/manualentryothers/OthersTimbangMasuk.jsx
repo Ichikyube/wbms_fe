@@ -35,6 +35,7 @@ const PksManualTimbangMasukOthers = ({
   ProductName,
   TransporterId,
   TransporterCompanyName,
+  TransporterCompanyCode,
   PlateNo,
 }) => {
   // console.clear();
@@ -66,6 +67,7 @@ const PksManualTimbangMasukOthers = ({
     driverName: "",
     transporterId: "",
     transporterCompanyName: "",
+    transporterCompanyCode: "",
     transportVehiclePlateNo: "",
     productId: "",
     productName: "",
@@ -77,6 +79,8 @@ const PksManualTimbangMasukOthers = ({
     afdeling: "",
     blok: "",
     sptbs: "",
+    // yearPlan: "",
+    // kebun: "",
   };
 
   const [values, setValues] = useState(initialValues);
@@ -92,20 +96,19 @@ const PksManualTimbangMasukOthers = ({
     }
   };
   const handleSubmit = async () => {
-    let tempTrans = { ...values };
+    values.progressStatus = 1;
+    values.typeTransaction = 2;
+    values.typeSite = 1;
+    values.originWeighInTimestamp = moment().toDate();
+    values.productId = ProductId;
+    values.productName = ProductName;
+    values.transporterId = TransporterId;
+    values.transporterCompanyName = TransporterCompanyName;
+    values.transporterCompanyCode = TransporterCompanyCode;
+    values.transportVehiclePlateNo = PlateNo;
+    values.originWeighInKg = weighbridge.getWeight();
 
-    tempTrans.progressStatus = 1;
-    tempTrans.typeTransaction = 1;
-    tempTrans.typeSite = 1;
-    tempTrans.originWeighInTimestamp = moment().toDate();
-    tempTrans.productId = ProductId;
-    tempTrans.productName = ProductName;
-    tempTrans.transporterId = TransporterId;
-    tempTrans.transporterCompanyName = TransporterCompanyName;
-    tempTrans.transportVehiclePlateNo = PlateNo;
-    tempTrans.originWeighInKg = weighbridge.getWeight();
-
-    if (tempTrans.progressStatus === 1) {
+    if (values.progressStatus === 1) {
       const transactionsFromAPI = await fetchTransactionsFromAPI();
 
       const duplicatePlateNo = transactionsFromAPI.find(
@@ -137,7 +140,7 @@ const PksManualTimbangMasukOthers = ({
       }
 
       try {
-        const results = await TransactionAPI.create({ ...tempTrans });
+        const results = await TransactionAPI.create({ ...values });
 
         if (!results?.status) {
           toast.error(`Error: ${results?.message}.`);
@@ -151,7 +154,7 @@ const PksManualTimbangMasukOthers = ({
         return;
       }
     }
-    setValues({ ...tempTrans });
+    setValues({ ...values });
   };
   useEffect(() => {
     // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
@@ -173,14 +176,12 @@ const PksManualTimbangMasukOthers = ({
       ProductName &&
       TransporterId &&
       TransporterCompanyName &&
+      TransporterCompanyCode &&
       PlateNo
     );
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
 
@@ -315,6 +316,37 @@ const PksManualTimbangMasukOthers = ({
           variant="outlined"
           size="small"
           fullWidth
+          placeholder="Masukkan Kebun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Kebun
+              </Typography>
+            </>
+          }
+          name="kebun"
+          value={values?.kebun}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
           placeholder="Masukkan Afdeling"
           sx={{
             my: 2,
@@ -373,6 +405,39 @@ const PksManualTimbangMasukOthers = ({
           value={values?.blok}
           onChange={handleChange}
         />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
+          placeholder="Masukkan Tahun"
+          sx={{
+            mt: 2,
+            mb: 1,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Tahun
+              </Typography>
+            </>
+          }
+          name="yearPlan"
+          value={values?.yearPlan}
+          onChange={handleChange}
+        />
+
         <hr />
         <TextField
           variant="outlined"
@@ -384,7 +449,7 @@ const PksManualTimbangMasukOthers = ({
             shrink: true,
           }}
           sx={{
-            mt: 3,
+            mt: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -599,13 +664,13 @@ const PksManualTimbangMasukOthers = ({
           sx={{ mt: 2 }}
           fullWidth
           onClick={handleSubmit}
-          // disabled={
-          //   // !validateForm()
-          //   // !weighbridge.isStable() ||
-          //   // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
-          //   //   ? true
-          //   //   : false
-          // }
+          disabled={
+            !validateForm()
+            // !weighbridge.isStable() ||
+            // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
+            //   ? true
+            //   : false
+          }
         >
           Simpan
         </Button>

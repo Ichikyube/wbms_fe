@@ -29,7 +29,7 @@ const monthNames = [
   "Des",
 ];
 
-const typeTransaction = 1;
+const typeSite = 1;
 
 const AreaCharts = () => {
   const [salesData, setSalesData] = useState([]);
@@ -38,7 +38,7 @@ const AreaCharts = () => {
   useEffect(() => {
     TransactionAPI.searchMany({
       where: {
-        typeTransaction,
+        typeSite,
         isDeleted: false,
         progressStatus: { notIn: [1] },
       },

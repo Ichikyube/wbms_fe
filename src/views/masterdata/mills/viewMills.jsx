@@ -80,7 +80,7 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -105,7 +105,7 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                     placeholder="Masukkan Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -131,7 +131,7 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.site.name}
+                    value={values?.site.name}
                     name="siteId"
                     error={!!touched.siteId && !!errors.siteId}
                     helperText={touched.siteId && errors.siteId}
@@ -155,7 +155,7 @@ const ViewMills = ({ isViewOpen, onClose, dtCompanies, dtSites, dtMills }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.company.name}
+                    value={values?.company.name}
                     name="companyId"
                     error={!!touched.companyId && !!errors.companyId}
                     helperText={touched.companyId && errors.companyId}

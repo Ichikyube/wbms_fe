@@ -287,7 +287,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Name"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.profile?.name}
+                      value={values?.profile?.name}
                       name="profile.name"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
@@ -311,7 +311,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Email"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.email}
+                      value={values?.email}
                       name="email"
                       error={!!touched.email && !!errors.email}
                       helperText={touched.email && errors.email}
@@ -335,7 +335,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan No Telepon"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.profile.phone}
+                      value={values?.profile.phone}
                       name="profile.phone"
                       error={!!touched.phone && !!errors.phone}
                       helperText={touched.phone && errors.phone}
@@ -359,7 +359,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Nik"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.nik}
+                      value={values?.nik}
                       name="nik"
                       error={!!touched.nik && !!errors.nik}
                       helperText={touched.nik && errors.nik}
@@ -384,7 +384,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Username"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.username}
+                      value={values?.username}
                       name="username"
                       error={!!touched.username && !!errors.username}
                       helperText={touched.username && errors.username}
@@ -409,7 +409,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Division"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.profile.division}
+                      value={values?.profile.division}
                       name="profile.division"
                       error={!!touched.division && !!errors.division}
                       helperText={touched.division && errors.division}
@@ -433,7 +433,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Position"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.profile.position}
+                      value={values?.profile.position}
                       name="profile.position"
                       error={!!touched.position && !!errors.position}
                       helperText={touched.position && errors.position}
@@ -487,7 +487,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan alamat....."
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.profile.alamat}
+                      value={values?.profile.alamat}
                       name="profile.alamat"
                       error={!!touched.alamat && !!errors.alamat}
                       helperText={touched.alamat && errors.alamat}
@@ -507,7 +507,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     <Select
                       fullWidth
                       name="roleId"
-                      value={values.roleId}
+                      value={values?.roleId}
                       onChange={(event) => {
                         const { name, value } = event.target;
                         const selectedRole = dtRole.find(

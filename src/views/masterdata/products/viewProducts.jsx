@@ -80,7 +80,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -105,7 +105,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan SAP Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.codeSap}
+                    value={values?.codeSap}
                     name="codeSap"
                     error={!!touched.codeSap && !!errors.codeSap}
                     helperText={touched.codeSap && errors.codeSap}
@@ -130,7 +130,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan Full Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -156,7 +156,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortName}
+                    value={values?.shortName}
                     name="shortName"
                     error={!!touched.shortName && !!errors.shortName}
                     helperText={touched.shortName && errors.shortName}
@@ -182,7 +182,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan Product Group Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.productGroupName}
+                    value={values?.productGroupName}
                     name="productGroupName"
                     error={
                       touched.productGroupName && !!errors.productGroupName
@@ -211,7 +211,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan  Sertifikasi...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.certification}
+                    value={values?.certification}
                     name="certification"
                     error={touched.certification && !!errors.certification}
                     helperText={touched.certification && errors.certification}
@@ -239,7 +239,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     placeholder="Masukkan Deskripsi...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.description}
+                    value={values?.description}
                     name="description"
                     error={touched.description && !!errors.description}
                     helperText={touched.description && errors.description}

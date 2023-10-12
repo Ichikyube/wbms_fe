@@ -113,7 +113,7 @@ const CreateCities = ({ isOpen, onClose, dtProvinces }) => {
                     type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -133,7 +133,7 @@ const CreateCities = ({ isOpen, onClose, dtProvinces }) => {
                   <Select
                     fullWidth
                     name="provinceId"
-                    value={values.provinceId}
+                    value={values?.provinceId}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty

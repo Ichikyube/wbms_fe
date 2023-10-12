@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Grid,
   Paper,
   Button,
   Box,
+  Stack,
   IconButton,
   Typography,
 } from "@mui/material";
 import useSWR from "swr";
-import { blue, yellow } from "@mui/material/colors";
+import { yellow } from "@mui/material/colors";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import "ag-grid-enterprise";
+
+import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
@@ -21,17 +24,12 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
 import * as ConfigAPI from "../../../api/configApi";
-import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
-import CreateIcon from "@mui/icons-material/Create";
-import ModeIcon from "@mui/icons-material/Mode";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
 import CreateRequestConfig from "../../../views/usermanagement/config/createRequest";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
-import Swal from "sweetalert2";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -40,21 +38,29 @@ ModuleRegistry.registerModules([
 ]);
 const Config = () => {
   // console.clear();
-
   const gridRef = useRef();
   const { userInfo } = useSelector((state) => state.app);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [showConfig, setShowConfig] = useState();
+  const [selectedButton, setSelectedButton] = useState(1);
+  const tempConfigsGroup = (item) => item.id >= 3 && item.id <= 6;
+  const tbsConfigGroup = (item) => item.id >= 7 && item.id <= 18;
+  const eDispatchConfigGroup = (item) => item.id > 18 || item.id < 3;
+
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);
-
   // search
   const [searchQuery, setSearchQuery] = useState("");
   const { data: dtConfigs } = useSWR(
     searchQuery ? `config?name_like=${searchQuery}` : "config",
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
   );
+
   //filter
   const updateGridData = useCallback((config) => {
     if (gridRef.current && gridRef.current.api) {
@@ -62,16 +68,38 @@ const Config = () => {
     }
   }, []);
 
+  const handleButtonClick = (buttonNumber) => {
+    setSelectedButton(buttonNumber);
+  };
+
   useEffect(() => {
+    updateGridData(showConfig);
     if (dtConfigs) {
-      const filteredData = dtConfigs.filter((config) => {
+      if (selectedButton === 1) {
+        setShowConfig(dtConfigs.filter(tempConfigsGroup));
+      } else if (selectedButton === 2) {
+        setShowConfig(dtConfigs.filter(tbsConfigGroup));
+      } else if (selectedButton === 3) {
+        setShowConfig(dtConfigs.filter(eDispatchConfigGroup));
+      }
+    }
+  }, [dtConfigs, selectedButton]);
+
+  useEffect(() => {
+    if (showConfig) {
+      const filteredData = showConfig.filter((config) => {
         const configData = Object.values(config).join(" ").toLowerCase();
         return configData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtConfigs, updateGridData]);
-
+  }, [searchQuery, showConfig, updateGridData]);
+  const defaultColDef = {
+    sortable: true,
+    resizable: true,
+    floatingFilter: false,
+    filter: true,
+  };
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -126,19 +154,12 @@ const Config = () => {
       valueGetter: (params) => {
         const { data } = params;
         if (!data?.start) return "-";
-        console.log(params)
-        if (data.type != "Boolean") return "Always";
-        const options = {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        };
-        console.log(data?.start)
-        const formattedActiveStart = new Date(data?.start).toLocaleString('id-ID');
-        const formattedActiveEnd = new Date(data?.end).toLocaleString('id-ID');
+        console.log(params);
+        if (data.type !== "Boolean") return "Always";
+        const formattedActiveStart = new Date(data?.start).toLocaleString(
+          "id-ID"
+        );
+        const formattedActiveEnd = new Date(data?.end).toLocaleString("id-ID");
 
         return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
@@ -152,9 +173,26 @@ const Config = () => {
           <Box display="flex" justifyContent="center">
             <Box
               display="flex"
-              bgcolor={yellow[900]}
               borderRadius="5px"
               justifyContent="center"
+              cursor={
+                userInfo?.role.toLowerCase().includes("admin") ||
+                params.data.type === "Boolean"
+                  ? "pointer"
+                  : "not-allowed"
+              }
+              pointer-events={
+                userInfo?.role.toLowerCase().includes("admin") ||
+                params.data.type === "Boolean"
+                  ? "auto"
+                  : "none"
+              }
+              bgcolor={
+                userInfo?.role.toLowerCase().includes("admin") ||
+                params.data.type === "Boolean"
+                  ? yellow[900]
+                  : null
+              }
               textAlign="center"
               alignItems="center"
               color="white"
@@ -168,16 +206,16 @@ const Config = () => {
                 setSelectedConfig(params.data);
                 if (userInfo?.role.toLowerCase().includes("admin"))
                   setIsEditOpen(true);
-                else setIsRequestOpen(true);
+                else if (params.data.type === "Boolean") setIsRequestOpen(true);
               }}>
               {" "}
               {userInfo?.role.toLowerCase().includes("admin") ? (
                 <DriveFileRenameOutlineIcon
                   sx={{ ontSize: "20px", "&:hover": { color: "blue" } }}
                 />
-              ) : (
+              ) : params.data.type === "Boolean" ? (
                 <LiveHelpOutlinedIcon sx={{ mr: "3px", fontSize: "19px" }} />
-              )}
+              ) : null}
             </Box>
           </Box>
         );
@@ -204,6 +242,23 @@ const Config = () => {
               </Box>
               <hr sx={{ width: "100%" }} />
               <Box display="flex" pb={1}>
+                <Stack spacing={2} direction="row">
+                  <Button
+                    variant={selectedButton === 1 ? "contained" : "outlined"}
+                    onClick={() => handleButtonClick(1)}>
+                    Temporary Configs
+                  </Button>
+                  <Button
+                    variant={selectedButton === 2 ? "contained" : "outlined"}
+                    onClick={() => handleButtonClick(2)}>
+                    TBS Configs
+                  </Button>
+                  <Button
+                    variant={selectedButton === 3 ? "contained" : "outlined"}
+                    onClick={() => handleButtonClick(3)}>
+                    E-DISPATCH Configs
+                  </Button>
+                </Stack>
                 <Box
                   display="flex"
                   borderRadius="5px"
@@ -215,7 +270,6 @@ const Config = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-
                   <IconButton
                     type="button"
                     sx={{ p: 1 }}
@@ -232,12 +286,25 @@ const Config = () => {
                 </Box>
               </Box>
             </div>
-            <Tables
-              name={"configs"}
-              fetcher={fetcher}
-              colDefs={columnDefs}
-              gridRef={gridRef}
-            />
+            <div
+              className="ag-theme-alpine"
+              style={{ width: "auto", height: "70vh" }}>
+              <AgGridReact
+                ref={gridRef}
+                rowData={showConfig} // Row Data for Rows
+                columnDefs={columnDefs} // Column Defs for Columns
+                defaultColDef={defaultColDef} // Default Column Properties
+                animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                rowSelection="multiple" // Options - allows click selection of rows
+                // rowGroupPanelShow="always"
+                enableRangeSelection="true"
+                groupSelectsChildren="true"
+                suppressRowClickSelection="true"
+                pagination="false"
+                paginationAutoPageSize="true"
+                groupDefaultExpanded="1"
+              />
+            </div>
           </Paper>
         </Grid>
       </Grid>

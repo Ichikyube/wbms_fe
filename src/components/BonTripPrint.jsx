@@ -356,7 +356,9 @@ const BonTripPrint = (props) => {
                           color: "grey",
                           fontFamily: "Courier New",
                         }}
-                      ></td>
+                      >
+
+                      </td>
                       <td
                         style={{
                           borderCollapse: "collapse",
@@ -364,7 +366,9 @@ const BonTripPrint = (props) => {
                           color: "grey",
                           fontFamily: "Courier New",
                         }}
-                      ></td>
+                      >
+                        
+                      </td>
                     </tr>
                     <tr>
                       <td

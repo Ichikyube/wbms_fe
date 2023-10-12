@@ -3,7 +3,7 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
-
+const BackdateForm = lazy(() => import("./views/backdate/backdateForm"));
 const BackdateFormTBS = lazy(() => import("./views/backdate/backdateForm/backdateFormTbs"));
 const BackdateFormOthers = lazy(() =>
   import("./views/backdate/backdateFormOthers")
@@ -120,7 +120,6 @@ export const protectedRoute = [
     exact: true,
     resource: "Transaction",
   },
-
   {
     path: "/md/province",
     name: "Master Data Province",
@@ -220,6 +219,12 @@ export const protectedRoute = [
 ];
 
 export const backdateFormRoutes = [
+  {
+    path: "/backdate-Form",
+    name: "Backdate Form",
+    element: BackdateForm,
+    exact: true,
+  },
   {
     path: "/backdateFormTBS",
     name: "Backdate Form TBS",

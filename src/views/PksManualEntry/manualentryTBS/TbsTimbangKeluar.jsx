@@ -33,17 +33,20 @@ import { IosShareRounded } from "@mui/icons-material";
 
 const typeSite = 1;
 
-const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, TransporterCompanyName }) => {
+const PksManualTBSTimbangKeluar = ({
+  selectedCompany,
+  PlateNo,
+  TransporterId,
+  TransporterCompanyName,
+}) => {
   const [dtCompany, setDtCompany] = useState([]);
   const [dtProduct, setDtProduct] = useState([]);
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
   const [dtSite, setDtSite] = useState([]);
-
   const [socket, setSocket] = useState();
   const [qtyTbs, setQtyTbs] = useState();
-  const [millCode, setMillCode] = useState();
 
   const [results, setResults] = useState([]);
 
@@ -65,11 +68,12 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   };
   const [weighbridge] = useWeighbridge();
   const [configs] = useConfig();
-  const { trxGradingPencentage } = useSelector((state) => state.tempConfigs);
+  const { trxGradingPencentage, trxTypeCodes } = Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")));
+  const {company, millPlant, millStoLoc, transitStoLoc} = JSON.parse(trxTypeCodes);
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm(initialValues);
-  console.log(trxGradingPencentage)
+
   const gradingPercentage = JSON.parse(trxGradingPencentage);
   let trxGradingWAJIB;
   const {
@@ -95,6 +99,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
   const [potTotalKG, setPotTotalKG] = useState();
   const [originWeightNetto, setOriginWeightNetto] = useState(8000);
   const [canSubmit, setCanSubmit] = useState(false);
+  const trxGradingWajibPERSEN = selectedCompany?.persenPotngWajib || 0;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -204,7 +209,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     socket.on("connect", () => console.log("Connected"));
     socket.on("result", (values) => {
       setResults(values);
-      console.log(values)
+      console.log(values);
     });
     socket.on("connect_error", (error) => {
       console.error("Connection Error:", error.message); // Handle the error here
@@ -214,21 +219,21 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     };
   }, []);
   useEffect(() => {
-    if(results) {
-      setPotBMKG(results.calculatedBM)
-      setPotBLMKG(results.calculatedBLM)
-      setPotTPKG(results.calculatedTP)
-      setPotTKKG(results.calculatedTK)
-      setPotSMPHKG(results.calculatedTrash)
-      setPotAirKG(results.calculatedWater)
-      setPotPartenoKG(results.calculatedParteno)
-      setPotBrondolanKG(results.calculatedBrondolan)
-      // setPotWajibKG()
+    if (results) {
+      setPotBMKG(results.calculatedBM);
+      setPotBLMKG(results.calculatedBLM);
+      setPotTPKG(results.calculatedTP);
+      setPotTKKG(results.calculatedTK);
+      setPotSMPHKG(results.calculatedTrash);
+      setPotAirKG(results.calculatedWater);
+      setPotPartenoKG(results.calculatedParteno);
+      setPotBrondolanKG(results.calculatedBrondolan);
+      setPotWajibKG(results.calculatedObligatory);
       // setPotLainnyaKG()
       // setPotTotalKG()
     }
-  }, [results])
-  
+  }, [results]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -253,10 +258,9 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
     fetchData();
   }, [id]);
 
-
   useEffect(() => {
     socket?.emit("hitungPotongan", {
-      millCode,
+      millCode:millPlant,
       qtyTbs,
       weightnetto: originWeightNetto,
       trxGradingAIRPERSEN,
@@ -267,9 +271,10 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
       trxGradingBMPERSEN,
       trxGradingPartenoPERSEN,
       trxGradingBrondolanPERSEN,
+      trxGradingWajibPERSEN,
     });
   }, [
-    millCode,
+    millPlant,
     qtyTbs,
     originWeightNetto,
     trxGradingAIRPERSEN,
@@ -304,8 +309,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -333,8 +337,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -419,8 +422,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Nama Supir
               </Typography>
             </>
@@ -517,8 +519,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Afdeling
               </Typography>
             </>
@@ -547,8 +548,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Blok
               </Typography>
             </>
@@ -578,8 +578,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Qty TBS
               </Typography>
             </>
@@ -617,8 +616,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPBTS
               </Typography>
             </>
@@ -648,8 +646,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -665,13 +662,11 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           display="grid"
           gridTemplateColumns="4fr 2fr"
           gap={2}
-          alignItems="center"
-        >
+          alignItems="center">
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -706,8 +701,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Mentah
                 </Typography>
               }
@@ -743,8 +737,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -779,8 +772,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Lewat Matang
                 </Typography>
               }
@@ -816,8 +808,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -852,8 +843,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Panjang
                 </Typography>
               }
@@ -889,8 +879,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -925,8 +914,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Kosong
                 </Typography>
               }
@@ -962,8 +950,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -998,8 +985,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Sampah
                 </Typography>
               }
@@ -1035,8 +1021,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1071,8 +1056,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Air
                 </Typography>
               }
@@ -1108,8 +1092,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1144,8 +1127,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Parteno
                 </Typography>
               }
@@ -1181,8 +1163,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1217,8 +1198,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Brondolan
                 </Typography>
               }
@@ -1254,8 +1234,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1290,8 +1269,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1328,8 +1306,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1364,8 +1341,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Lainnya
                 </Typography>
               }
@@ -1418,8 +1394,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL Potongan
             </Typography>
           }
@@ -1448,8 +1423,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -1475,8 +1449,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -1503,8 +1476,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1531,8 +1503,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -1562,8 +1533,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -1581,8 +1551,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
             // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
             //   ? true
             //   : false
-          }
-        >
+          }>
           Simpan
         </Button>
         <BonTripTBS
@@ -1593,8 +1562,7 @@ const PksManualTBSTimbangKeluar = ({ selectedCompany, PlateNo, TransporterId, Tr
           variant="contained"
           sx={{ my: 1 }}
           fullWidth
-          onClick={handleClose}
-        >
+          onClick={handleClose}>
           Tutup
         </Button>
       </FormControl>

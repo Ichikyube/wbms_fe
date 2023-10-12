@@ -1,3 +1,15 @@
+export const options = {
+  weekday: "short",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  timeZoneName: "short",
+  timeZone: "Asia/Jakarta",
+};
+
 export const jembatanTimbangList = ["PKS", "T30", "Labanan"];
 export const masterDataList = [
   "Province",

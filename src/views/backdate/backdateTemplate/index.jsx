@@ -30,6 +30,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import * as TransactionAPI from "../../../api/transactionApi";
+import * as TransactionTempAPI from "../../../api/temporaryDataApi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import Papa from "papaparse";
@@ -77,7 +78,8 @@ const BackdateTemplate = () => {
   };
 
   const handleSave = () => {
-    TransactionAPI.create(uploadedData)
+    console.log(uploadedData)
+    TransactionTempAPI.createMany(uploadedData)
       .then(() => {
         setIsFileUploaded(true);
         toast.success("Data saved successfully.");
@@ -146,9 +148,8 @@ const BackdateTemplate = () => {
     const generatedBonTripNo = generateBonTripNo();
     setBonTripNo(generatedBonTripNo);
 
-    // Tingkatkan nilai increment setiap kali Anda menghasilkan nomor baru
     setIncrement(increment + 0);
-  }, [formattedDate]);
+  }, [formattedDate, increment]);
 
   const processUploadedData = (csvData) => {
     setIsFileUploaded(true);
@@ -173,7 +174,7 @@ const BackdateTemplate = () => {
     const dataWithId = csvData.map((row, index) => ({
       ...row,
       id: index,
-      typeTransaction: 1,
+      typeTransaction: 2,
       bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
         4,
         "0"

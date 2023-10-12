@@ -21,7 +21,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Tables = (props) => {
-  const { name, fetcher, colDefs, groupColDef, gridRef } = props;
+  const { name, fetcher, pagination, colDefs, groupColDef, gridRef } = props;
 
   const { data } = useSWR(name, fetcher, {
     refreshInterval: 2000,
@@ -55,7 +55,7 @@ const Tables = (props) => {
         groupSelectsChildren="true"
         suppressRowClickSelection="true"
         autoGroupColumnDef={groupColDef}
-        pagination="true"
+        pagination={pagination || "true"}
         paginationAutoPageSize="true"
         groupDefaultExpanded="1"
       />

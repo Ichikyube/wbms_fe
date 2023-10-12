@@ -154,6 +154,7 @@ const ConfigRequest = () => {
           photo: userInfo.profilePic,
           sender: userInfo.name,
         };
+
         dispatch(createNotificationAsync(notificationData))
           .unwrap()
           .then((createdNotification) => {

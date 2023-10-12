@@ -11,8 +11,7 @@ import baseRoute, {
 } from "../routes";
 
 const AppContent = () => {
-  const { backDatedForm, backDatedTemplate, editTransaction } = useMatrix;
-
+  const { backDatedForm, backDatedTemplate, editTransaction } = useMatrix();
   const ConfigList = {
     backDatedForm,
     backDatedTemplate,
@@ -33,7 +32,7 @@ const AppContent = () => {
   const [routes, setRoutes] = useState(routesList);
   const newRoutes = useMemo(() => {
     const tempConfigList = Object.keys(ConfigList).filter(
-      (key) => ConfigList[key]
+      (key) => ConfigMap[key]
     );
     return tempConfigList.map((key) => ConfigMap[key]).flat();
   }, [ConfigList, ConfigMap]);
@@ -41,26 +40,7 @@ const AppContent = () => {
   useEffect(() => {
     setRoutes((prevRoutes) => prevRoutes.concat(newRoutes));
   }, []);
-  // useEffect(() => {
-  //   const tempConfigList = Object.keys(ConfigList).filter(
-  //     (key) => ConfigList[key]
-  //   );
-
-  //   // Filter the keys in ConfigMap based on tempConfigList
-  //   const includedConfigMap = Object.keys(ConfigMap)
-  //     .filter((key) => tempConfigList.includes(key))
-  //     .reduce((acc, key) => {
-  //       acc[key] = ConfigMap[key];
-  //       return acc;
-  //     }, {});
-
-  //   // Flatten the values from includedConfigMap into an array
-  //   const newRoutes = Object.values(includedConfigMap).flat();
-
-  //   // Assuming `routeList` is an existing array of routes
-  //   setRoutes(routesList.concat(newRoutes));
-  // }, [ConfigList, ConfigMap]);
-
+  // console.log(routes)
   //hanya user yang melakukan request yang bisa menggunakan temporari konfig.
 
   return (
@@ -82,7 +62,6 @@ const AppContent = () => {
           })}
           <Route path="/" exact element={<Navigate to="dashboard" replace />} />
         </Routes>
-        s
       </Suspense>
     </CContainer>
   );

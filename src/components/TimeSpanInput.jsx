@@ -17,9 +17,6 @@ const TimeSpanInput = ({ onChange, initialHours, initialMinutes }) => {
     onChange(hours * 60 * 60 + newMinutes * 60);
   };
 
-  // const calculateTotalSeconds = () => {
-  //   return hours * 3600 + minutes * 60;
-  // };
   return (
     <div>
       <InputNumber
@@ -28,11 +25,7 @@ const TimeSpanInput = ({ onChange, initialHours, initialMinutes }) => {
         min="0"
         max="23"
         name="Hours"
-        // disabled={disabled}
-        // readOnly={readOnly}
-        // keyboard={keyboard}
       />
-
       <span>hours</span>
       <InputNumber
         value={minutes}
@@ -40,12 +33,8 @@ const TimeSpanInput = ({ onChange, initialHours, initialMinutes }) => {
         min="0"
         max="59"
         name="Minutes"
-        // placeholder="Hours"
-        // disabled={disabled}
-        // readOnly={readOnly}
         // keyboard={keyboard}
       />
-
       <span>minutes</span>
     </div>
   );

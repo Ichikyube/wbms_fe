@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
 import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism.css";
 
-export default function TrxGradingFormula({ dtConfig }) {
+export default function TrxGradingFormula({ dtConfig, setFieldValue, values }) {
   const [code, setCode] = React.useState(dtConfig.defaultVal);
+  useEffect(() => {
+    setFieldValue("defaultVal", code);
+    console.log(values.defaultVal)
+  }, [code])
   return (
     <CodeEditor
       value={code}

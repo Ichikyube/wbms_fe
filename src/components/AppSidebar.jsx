@@ -16,31 +16,40 @@ import { backdateTemplateNav } from "../_nav";
 import NavList from "../_nav";
 
 import { setSidebar } from "../slices/appSlice";
-import { masterDataList, userManagementList } from "../constants/attributeListObj";
+import {
+  masterDataList,
+  userManagementList,
+} from "../constants/attributeListObj";
 
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
   const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
-  const cNav = access.includes("Transaction")?['WB',...access]:access;
-  const bNav = masterDataList.some(value => access.includes(value.toLowerCase()))?['Base', 'MD',...cNav]:['Base',...cNav];
-  const aNav = ["MD"].some(item=>bNav.includes(item.toLowerCase()))?['ADMIN',...bNav]:[...bNav];
+  const cNav = access.includes("Transaction") ? ["WB", ...access] : access;
+  const bNav = masterDataList.some((value) =>
+    access.includes(value.toLowerCase())
+  )
+    ? ["Base", "MD", ...cNav]
+    : ["Base", ...cNav];
+  const aNav = ["MD"].some((item) => bNav.includes(item.toLowerCase()))
+    ? ["ADMIN", ...bNav]
+    : [...bNav];
 
   const { backDatedTemplate } = useMatrix();
-  const [tempAdded, setTempAdded] = useState(false);
-  NavList[6].items = NavList[6].items.filter(item => access.includes(item.resource));
-  const navList = NavList.filter(item => aNav.includes(item.resource));
+
   useEffect(() => {
-    if (backDatedTemplate && !tempAdded) {
-      setTempAdded(true);
-      navList[2].items = [...navList[2].items, backdateTemplateNav];
-    } else if (!backDatedTemplate && tempAdded) {
-      setTempAdded(false);
-      navList[2].items = navList[2].items.filter(item => item.name !== "Backdate Template");
+    if (backDatedTemplate && access.includes("Transaction")) {
+      navList[2].items = new Set([...navList[2].items, backdateTemplateNav]);
+    } else if (!backDatedTemplate) {
+      navList[2].items = navList[2].items.filter(
+        (item) => item.name !== "Backdate Template"
+      );
     }
-  }, [backDatedTemplate, tempAdded]);
-
+  }, [backDatedTemplate]);
+  NavList[6].items = NavList[6].items.filter((item) =>
+    access.includes(item.resource)
+  );
+  const navList = NavList.filter((item) => aNav.includes(item.resource));
   const dispatch = useDispatch();
-
   return (
     <CSidebar
       position="fixed"

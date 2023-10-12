@@ -3,7 +3,7 @@ import apiSlice from "./apiSlice";
 
 export const initialTempConfigState = localStorage.getItem("tempConfigs")
   ? Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")))
-  : [];
+  : {};
 
 const tempConfigSlice = createSlice({
   name: "tempConfigs",
@@ -11,14 +11,14 @@ const tempConfigSlice = createSlice({
   reducers: {
     getTempConfigs: (state, action) => {
       if (localStorage.getItem("tempConfigs"))
-        state = JSON.parse(Object.assign({}, ...localStorage.getItem("tempConfigs")));
+        state = Object.assign({}, ...JSON.parse(localStorage.getItem("tempConfigs")));
     },
     setTempConfigs: (state, action) => {
       state = action.payload;
       localStorage.setItem("tempConfigs", JSON.stringify(action.payload));
     },
     clearTempConfigs: (state, action) => {
-      state = null;
+      state.splice(0, state.length); // Clear the array
       localStorage.removeItem("tempConfigs");
     },
   },
@@ -42,28 +42,17 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
     fetchConfigsData: builder.query({
       query: () => "/configs",
       transformResponse: (response) => {
-        const res = response.data;
-        const configItemsData = res.config.records;
+        const configItemsData = response.data?.config.records || [];
         const configItems = configItemsData.map(
           ({ name, defaultVal, type }) => ({
             [name]: switchByType(defaultVal, type),
           })
         );
-        localStorage.setItem("tempConfigs", JSON.stringify(configItems));
+        if(configItems)
+          localStorage.setItem("tempConfigs", JSON.stringify(configItems));
         return configItems;
       },
-      async onQueryUpdated(
-        arg,
-        {
-          dispatch,
-          getState,
-          extra,
-          requestId,
-          cacheEntryRemoved,
-          cacheDataLoaded,
-          getCacheEntry,
-        }
-      ) {
+      async onQueryUpdated(arg, { dispatch }) {
         dispatch(tempConfigSlice.actions.getTempConfigs());
       },
     }),
@@ -86,28 +75,18 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
         let configs = JSON.parse(localStorage.getItem("tempConfigs"));
         for (const item of updatedConfig) {
           const itemName = Object.keys(item)[0]; // Get the name property
-          if (configs.some((config) => config.hasOwnProperty(itemName))) {
+          if (configs && configs.some((config) => config.hasOwnProperty(itemName))) {
             const index = configs.findIndex((config) =>
               config.hasOwnProperty(itemName)
             );
             configs[index][itemName] = item[itemName];
           }
         }
-        localStorage.setItem("tempConfigs", JSON.stringify(configs));
+        if (configs)
+          localStorage.setItem("tempConfigs", JSON.stringify(configs));
         return configs;
       },
-      async onQueryFulfilled(
-        arg,
-        {
-          dispatch,
-          getState,
-          extra,
-          requestId,
-          cacheEntryRemoved,
-          cacheDataLoaded,
-          getCacheEntry,
-        }
-      ) {
+      async onQueryFulfilled(arg, { dispatch }) {
         dispatch(tempConfigSlice.actions.getTempConfigs());
       },
     }),

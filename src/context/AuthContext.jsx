@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearTempConfigs,
   useFetchConfigsDataQuery,
 } from "../slices/tempConfigSlice";
 import { toast } from "react-toastify";

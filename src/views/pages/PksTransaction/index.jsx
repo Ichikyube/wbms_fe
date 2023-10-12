@@ -36,10 +36,9 @@ const PksTransaction = () => {
 
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
-  const { backDatedForm } = useSelector((state) => state.tempConfigs);
+  const { backDatedForm } = useMatrix();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {
     if (codeContent?.trim().length > 10) {
       const data = { content: codeContent.trim(), typeSite };
@@ -200,11 +199,11 @@ const PksTransaction = () => {
                 </Box>
                 <Box sx={{ pl: 1 }}>
                   <Button
-                    // disabled={!backDatedForm}
+                    disabled={!backDatedForm}
                     color="primary"
                     variant="contained"
                     component={Link}
-                    to="/Backdate-Form"
+                    to="/backdate-Form"
                     style={{
                       width: "10vh",
                       fontSize: "13px",

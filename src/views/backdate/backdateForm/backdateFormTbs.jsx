@@ -22,8 +22,8 @@ import { useForm } from "../../../utils/useForm";
 import WeightWB from "../../../components/weightWB";
 
 import BonTripTBS from "../../../components/BonTripTBS";
+import * as TransactionTempAPI from "../../../api/temporaryDataApi";
 import * as TransactionAPI from "../../../api/transactionApi";
-
 import { useConfig } from "../../../common/hooks";
 
 const tType = 1;
@@ -73,19 +73,20 @@ const BackdateFormTBS = ({
   const [values, setValues] = useState(initialValues);
 
   const handleSubmit = async () => {
-    let tempTrans = { ...values };
-
-    tempTrans.progressStatus = 4;
-    tempTrans.typeTransaction = 1;
-    tempTrans.typeSite = 1;
-    tempTrans.productId = ProductId;
-    tempTrans.productName = ProductName;
-    tempTrans.transporterId = TransporterId;
-    tempTrans.transporterCompanyName = TransporterCompanyName;
-    tempTrans.transportVehiclePlateNo = PlateNo;
+    values.progressStatus = 4;
+    values.typeTransaction = 1;
+    values.typeSite = 1;
+    values.productId = ProductId;
+    values.productName = ProductName;
+    values.transporterId = TransporterId;
+    values.transporterCompanyName = TransporterCompanyName;
+    values.transportVehiclePlateNo = PlateNo;
+    const data = {
+      ...values,
+    };
 
     try {
-      const results = await TransactionAPI.create({ ...tempTrans });
+      const results = await TransactionTempAPI.create({ data });
 
       if (!results?.status) {
         toast.error(`Error: ${results?.message}.`);
@@ -96,7 +97,6 @@ const BackdateFormTBS = ({
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
     }
-    setValues({ ...tempTrans });
   };
 
   const [bonTripNo, setBonTripNo] = useState("");
@@ -228,8 +228,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal BonTripNo
             </Typography>
           }
@@ -259,8 +258,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -288,8 +286,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -318,8 +315,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Nama Supir
               </Typography>
             </>
@@ -383,8 +379,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Afdeling
               </Typography>
             </>
@@ -414,8 +409,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Blok
               </Typography>
             </>
@@ -445,8 +439,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Qty TBS
               </Typography>
             </>
@@ -477,8 +470,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPBTS
               </Typography>
             </>
@@ -508,8 +500,7 @@ const BackdateFormTBS = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -524,13 +515,11 @@ const BackdateFormTBS = ({
           display="grid"
           gridTemplateColumns="4fr 2fr"
           gap={2}
-          alignItems="center"
-        >
+          alignItems="center">
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -564,8 +553,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Mentah
                 </Typography>
               }
@@ -602,8 +590,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -637,8 +624,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Buah Lewat Matang
                 </Typography>
               }
@@ -675,8 +661,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -710,8 +695,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Panjang
                 </Typography>
               }
@@ -748,8 +732,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -783,8 +766,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Tangkai Kosong
                 </Typography>
               }
@@ -821,8 +803,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -856,8 +837,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Sampah
                 </Typography>
               }
@@ -894,8 +874,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -929,8 +908,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Air
                 </Typography>
               }
@@ -967,8 +945,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1002,8 +979,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Parteno
                 </Typography>
               }
@@ -1040,8 +1016,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1075,8 +1050,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Brondolan
                 </Typography>
               }
@@ -1113,8 +1087,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1148,8 +1121,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Wajib Vendor
                 </Typography>
               }
@@ -1186,8 +1158,7 @@ const BackdateFormTBS = ({
           <FormControl
             sx={{
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Checkbox
               size="small"
               sx={{
@@ -1221,8 +1192,7 @@ const BackdateFormTBS = ({
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}
-                >
+                  }}>
                   Pot. Lainnya
                 </Typography>
               }
@@ -1276,8 +1246,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL Potongan
             </Typography>
           }
@@ -1308,8 +1277,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -1339,8 +1307,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -1371,8 +1338,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -1401,8 +1367,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -1431,8 +1396,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -1444,8 +1408,7 @@ const BackdateFormTBS = ({
           fullWidth
           sx={{ mt: 2 }}
           onClick={handleSubmit}
-          disabled={!validateForm() || values.progressStatus === 4}
-        >
+          disabled={!validateForm() || values.progressStatus === 4}>
           Simpan
         </Button>
         <BonTripTBS
@@ -1482,8 +1445,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal Weight IN
             </Typography>
           }
@@ -1510,8 +1472,7 @@ const BackdateFormTBS = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal Weight OUT
             </Typography>
           }

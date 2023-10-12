@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TempFeature from "./tempFeature";
 import TrxPercentages from "./trxPercentage";
 import TrxGradingFormula from "./trxGradingFormula";
 import TrxTypeCodes from "./trxTypeCodes";
+import { InputNumber } from "mz-react-input-number";
+import { Grid, InputAdornment } from "@mui/material";
+import { Box } from "@mui/system";
+
+const styles = {
+  border: "3px solid #efefef",
+  backgroundColor: "#fff",
+};
 
 const ConditionalInput = ({
   dtConfig,
@@ -10,7 +18,7 @@ const ConditionalInput = ({
   handleChange,
   values,
 }) => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(dtConfig.defaultVal);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -37,7 +45,20 @@ const ConditionalInput = ({
     );
   } else if (dtConfig.type === "Number") {
     inputComponent = (
-      <input type="number" value={inputValue} onChange={handleInputChange} />
+      <Box marginTop={5} display={"flex"} flexDirection={"column"} width={"25%"} xs={12} sm={8} md={8}>
+        <label htmlFor="defaultValue">Value</label>
+        <InputNumber
+          label="Default Value"
+          // min={0}
+          // max={100}
+          // step={0.1}
+          value={inputValue}
+          autoFocus={true}
+          removeRegex={/[^\-0-9.]*/gi}
+          onChangeCallback={handleInputChange}
+          inputStyles={styles}
+        />
+      </Box>
     );
   } else if (dtConfig.type === "Boolean") {
     inputComponent = (
@@ -62,7 +83,11 @@ const ConditionalInput = ({
       <input type="text" value={inputValue} onChange={handleInputChange} />
     );
   }
-  console.log(values.defaultVal)
+
+  useEffect(() => {
+    setFieldValue("defaultVal", inputValue);
+  }, [inputValue, setFieldValue]);
+
   return <>{inputComponent}</>;
 };
 

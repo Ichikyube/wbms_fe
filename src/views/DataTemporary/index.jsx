@@ -44,7 +44,7 @@ ModuleRegistry.registerModules([
 
 const typeSite = 1;
 
-const DataTransaction = () => {
+const DataTemporary = () => {
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -273,7 +273,7 @@ const DataTransaction = () => {
         >
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
-              <Typography fontSize="20px">Data Transaksi PKS</Typography>
+              <Typography fontSize="20px">Data Transaksi Sementara</Typography>
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
@@ -333,4 +333,4 @@ const DataTransaction = () => {
   );
 };
 
-export default DataTransaction;
+export default DataTemporary;

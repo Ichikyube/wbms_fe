@@ -232,7 +232,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                       placeholder="Masukkan Nama"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.name}
+                      value={values?.name}
                       name="name"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
@@ -253,7 +253,7 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                       placeholder="Masukkan Nama"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.description}
+                      value={values?.description}
                       name="description"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}

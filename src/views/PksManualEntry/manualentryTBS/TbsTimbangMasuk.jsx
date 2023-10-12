@@ -87,7 +87,7 @@ const PksManualTBSinternalTimbangMasuk = ({
   const handleSubmit = async () => {
     values.progressStatus = 1;
     values.typeSite = 1;
-    values.typeTransaction = 2;
+    values.typeTransaction = 1;
     values.originWeighInTimestamp = moment().toDate();
     values.originWeighInKg = weighbridge.getWeight();
     values.productId = ProductId;
@@ -254,7 +254,7 @@ const PksManualTBSinternalTimbangMasuk = ({
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <TextField
@@ -441,8 +441,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               </Typography>
             </>
           }
-          name="tahun"
-          value={values?.tahun}
+          name="yearPlan"
+          value={values?.yearPlan}
           onChange={handleChange}
         />
         <TextField

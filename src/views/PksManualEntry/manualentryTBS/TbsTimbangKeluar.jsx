@@ -112,7 +112,6 @@ const PksManualTBSTimbangKeluar = ({
   };
 
   const handleClose = () => {
-
     navigate("/pks-transaction");
   };
   const handleSubmit = async () => {
@@ -181,27 +180,6 @@ const PksManualTBSTimbangKeluar = ({
   };
 
   useEffect(() => {
-    CompaniesAPI.getAll().then((res) => {
-      setDtCompany(res.data.company.records);
-    });
-
-    ProductAPI.getAll().then((res) => {
-      setDtProduct(res.data.product.records);
-    });
-    DriverAPI.getAll().then((res) => {
-      setDtDriver(res.data.driver.records);
-    });
-
-    TransportVehicleAPI.getAll().then((res) => {
-      setDtTransportVehicle(res.data.transportVehicle.records);
-    });
-
-    CustomerAPI.getAll().then((res) => {
-      setDtCustomer(res.data.customer.records);
-    });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
-    });
 
     const socket = io("http://localhost:6001");
     setSocket(socket);
@@ -343,65 +321,10 @@ const PksManualTBSTimbangKeluar = ({
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
-        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Nama Supir
-          </InputLabel>
-          <Autocomplete
-            id="select-label"
-            options={dtDriver}
-            getOptionLabel={(option) => option.name}
-            value={dtDriver.find((item) => item.id === values.driverId) || null}
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                driverId: newValue ? newValue.id : "",
-                driverName: newValue ? newValue.name : "",
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Nomor Polisi
-          </InputLabel>
-          <Autocomplete
-            id="select-label"
-            options={dtTransportVehicle}
-            getOptionLabel={(option) => option.plateNo}
-            value={
-              dtTransportVehicle.find(
-                (item) => item.id === values.transportVehicleId
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                transportVehicleId: newValue ? newValue.id : "",
-                transportVehiclePlateNo: newValue ? newValue.plateNo : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="-- Pilih Kendaraan --"
-                variant="outlined"
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Supir --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
-              />
-            )}
-          />
-        </FormControl> */}
+
         <TextField
           variant="outlined"
           size="small"
@@ -432,74 +355,7 @@ const PksManualTBSTimbangKeluar = ({
           value={values?.driverName}
           onChange={handleChange}
         />
-        {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Customer
-          </InputLabel>
 
-          <Autocomplete
-            id="select-label"
-            options={dtCustomer}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtCustomer.find((item) => item.id === values.customerId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                customerId: newValue ? newValue.id : "",
-                customerName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Customer --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl>
-        <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-          <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
-            Asal
-          </InputLabel>
-
-          <Autocomplete
-            id="select-label"
-            options={dtSite}
-            getOptionLabel={(option) => option.name}
-            value={
-              dtSite.find((item) => item.id === values.originSiteId) || null
-            }
-            onChange={(event, newValue) => {
-              setValues((prevValues) => ({
-                ...prevValues,
-                originSiteId: newValue ? newValue.id : "",
-                originSiteName: newValue ? newValue.name : "",
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "10px",
-                  },
-                }}
-                placeholder="-- Pilih Asal --"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </FormControl> */}
         <TextField
           variant="outlined"
           size="small"
@@ -591,7 +447,7 @@ const PksManualTBSTimbangKeluar = ({
           value={values?.blok}
           onChange={handleChange}
         />
-             <TextField
+        <TextField
           variant="outlined"
           size="small"
           fullWidth
@@ -618,8 +474,8 @@ const PksManualTBSTimbangKeluar = ({
               </Typography>
             </>
           }
-          name="tahun"
-          value={values?.tahun}
+          name="yearPlan"
+          value={values?.yearPlan}
           onChange={handleChange}
         />
         <TextField
@@ -650,7 +506,7 @@ const PksManualTBSTimbangKeluar = ({
             </>
           }
           name="qtyTbs"
-          value={values.qtyTbs}
+          value={values?.qtyTbs}
           onChange={(event) => {
             const { name, value } = event.target;
             setValues((prevValues) => ({
@@ -1643,7 +1499,7 @@ const PksManualTBSTimbangKeluar = ({
           sx={{ mt: 2 }}
           onClick={handleSubmit}
           disabled={
-            !validateForm() || values.progressStatus === 4
+            !validateForm() || values?.progressStatus === 4
             //   !weighbridge.isStable() ||
             //   weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
             //     ? true

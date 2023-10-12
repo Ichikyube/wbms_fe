@@ -110,7 +110,7 @@ const CreateBarcodetypes = ({ isOpen, onClose }) => {
                     placeholder="Masukkan Nama"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -134,7 +134,7 @@ const CreateBarcodetypes = ({ isOpen, onClose }) => {
                     placeholder="Masukkan Short Deskripsi"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortDesc}
+                    value={values?.shortDesc}
                     name="shortDesc"
                     error={!!touched.shortDesc && !!errors.shortDesc}
                     helperText={touched.shortDesc && errors.shortDesc}

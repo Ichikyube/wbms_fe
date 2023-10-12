@@ -114,7 +114,7 @@ const CreateMills = ({ isOpen, onClose, dtSites, dtCompanies }) => {
                     placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -138,7 +138,7 @@ const CreateMills = ({ isOpen, onClose, dtSites, dtCompanies }) => {
                     placeholder="Masukkan Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -160,7 +160,7 @@ const CreateMills = ({ isOpen, onClose, dtSites, dtCompanies }) => {
                   <Select
                     fullWidth
                     name="siteId"
-                    value={values.siteId}
+                    value={values?.siteId}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
@@ -190,7 +190,7 @@ const CreateMills = ({ isOpen, onClose, dtSites, dtCompanies }) => {
                   <Select
                     fullWidth
                     name="companyId"
-                    value={values.companyId}
+                    value={values?.companyId}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty

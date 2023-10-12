@@ -165,9 +165,6 @@ const BackdateFormOthers = () => {
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
   const [dtCompany, setDtCompany] = useState([]);
@@ -232,7 +229,8 @@ const BackdateFormOthers = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}>
+                    }}
+                  >
                     STATUS PROSES
                   </Typography>
                 </>
@@ -256,7 +254,8 @@ const BackdateFormOthers = () => {
                   sx={{
                     bgcolor: "white",
                     px: 1,
-                  }}>
+                  }}
+                >
                   Tanggal BonTripNo
                 </Typography>
               }
@@ -274,7 +273,8 @@ const BackdateFormOthers = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
                   variant="outlined"
@@ -295,7 +295,8 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}>
+                        }}
+                      >
                         Nomor BON Trip
                       </Typography>
                     </>
@@ -323,13 +324,14 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}>
+                        }}
+                      >
                         No. DO/NPB
                       </Typography>
                     </>
                   }
                   name="deliveryOrderNo"
-                  value={values.deliveryOrderNo}
+                  value={values?.deliveryOrderNo}
                   onChange={handleChange}
                 />
                 <TextField
@@ -349,20 +351,22 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}>
+                        }}
+                      >
                         Nomor Polisi
                       </Typography>
                     </>
                   }
                   name="transportVehiclePlateNo"
-                  value={values.transportVehiclePlateNo}
+                  value={values?.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Nama Supir
                   </InputLabel>
                   <Autocomplete
@@ -399,7 +403,8 @@ const BackdateFormOthers = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Nama Vendor
                   </InputLabel>
                   <Autocomplete
@@ -453,20 +458,22 @@ const BackdateFormOthers = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1,
-                        }}>
+                        }}
+                      >
                         Sertifikasi Tipe Truk
                       </Typography>
                     </>
                   }
                   name="transportVehicleSccModel"
-                  value={values.transportVehicleSccModel}
+                  value={values?.transportVehicleSccModel}
                   onChange={handleChange}
                 />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Customer
                   </InputLabel>
 
@@ -505,7 +512,8 @@ const BackdateFormOthers = () => {
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}>
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
                     Jenis Barang
                   </InputLabel>
                   <Autocomplete
@@ -565,7 +573,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Weight IN
                     </Typography>
                   }
@@ -597,7 +606,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Weight OUT
                     </Typography>
                   }
@@ -630,7 +640,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Potongan Wajib Vendor
                     </Typography>
                   }
@@ -661,7 +672,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Potongan Lainnya
                     </Typography>
                   }
@@ -692,7 +704,8 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       TOTAL
                     </Typography>
                   }
@@ -704,7 +717,8 @@ const BackdateFormOthers = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={handleSubmit}
-                  disabled={!validateForm() || values.progressStatus === 4}>
+                  disabled={!validateForm() || values.progressStatus === 4}
+                >
                   Simpan
                 </Button>
                 <BonTripTBS
@@ -741,12 +755,13 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Tanggal Weight IN
                     </Typography>
                   }
                   name="originWeighInTimestamp"
-                  value={values.originWeighInTimestamp}
+                  value={values?.originWeighInTimestamp}
                   onChange={handleChange}
                 />
                 <TextField
@@ -768,12 +783,13 @@ const BackdateFormOthers = () => {
                       sx={{
                         bgcolor: "white",
                         px: 1,
-                      }}>
+                      }}
+                    >
                       Tanggal Weight OUT
                     </Typography>
                   }
                   name="originWeighOutTimestamp"
-                  value={values.originWeighOutTimestamp}
+                  value={values?.originWeighOutTimestamp}
                   onChange={handleChange}
                 />
               </FormControl>

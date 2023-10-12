@@ -109,7 +109,7 @@ const EditCustomerGroup = ({ isEditOpen, onClose, dtCustomerGroup }) => {
                     placeholder="Masukkan Nama"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -132,7 +132,7 @@ const EditCustomerGroup = ({ isEditOpen, onClose, dtCustomerGroup }) => {
                     placeholder="Masukkan shortDesc"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortDesc}
+                    value={values?.shortDesc}
                     name="shortDesc"
                     error={!!touched.shortDesc && !!errors.shortDesc}
                     helperText={touched.shortDesc && errors.shortDesc}
@@ -158,7 +158,7 @@ const EditCustomerGroup = ({ isEditOpen, onClose, dtCustomerGroup }) => {
                     placeholder="Masukkan Deskripsi...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.description}
+                    value={values?.description}
                     name="description"
                     error={touched.description && !!errors.description}
                     helperText={touched.description && errors.description}

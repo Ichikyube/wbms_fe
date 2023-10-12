@@ -137,7 +137,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Code"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.code}
+                    value={values?.code}
                     name="code"
                     error={!!touched.code && !!errors.code}
                     helperText={touched.code && errors.code}
@@ -161,7 +161,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Code SAP"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.codeSap}
+                    value={values?.codeSap}
                     name="codeSap"
                     error={!!touched.codeSap && !!errors.codeSap}
                     helperText={touched.codeSap && errors.codeSap}
@@ -185,7 +185,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Full Nama..."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
+                    value={values?.name}
                     name="name"
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
@@ -209,7 +209,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Short Nama"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.shortName}
+                    value={values?.shortName}
                     name="shortName"
                     error={!!touched.shortName && !!errors.shortName}
                     helperText={touched.shortName && errors.shortName}
@@ -229,7 +229,7 @@ const EditStorageTank = ({
                   <Select
                     fullWidth
                     name="productId"
-                    value={values.productId}
+                    value={values?.productId}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -273,7 +273,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Product Name...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.productName}
+                    value={values?.productName}
                     name="productName"
                     error={!!touched.productName && !!errors.productName}
                     helperText={touched.productName && errors.productName}
@@ -293,7 +293,7 @@ const EditStorageTank = ({
                   <Select
                     fullWidth
                     name="siteId"
-                    value={values.siteId}
+                    value={values?.siteId}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -337,7 +337,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Nama Site"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.siteName}
+                    value={values?.siteName}
                     name="siteName"
                     error={!!touched.siteName && !!errors.siteName}
                     helperText={touched.siteName && errors.siteName}
@@ -358,7 +358,7 @@ const EditStorageTank = ({
                   <Select
                     fullWidth
                     name="stockOwnerId"
-                    value={values.stockOwnerId}
+                    value={values?.stockOwnerId}
                     onBlur={handleBlur}
                     onChange={(event) => {
                       handleChange(event);
@@ -402,7 +402,7 @@ const EditStorageTank = ({
                     placeholder="stockOwner Name"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.stockOwnerName}
+                    value={values?.stockOwnerName}
                     name="stockOwnerName"
                     error={!!touched.stockOwnerName && !!errors.stockOwnerName}
                     helperText={touched.stockOwnerName && errors.stockOwnerName}
@@ -432,7 +432,7 @@ const EditStorageTank = ({
                     placeholder="Capacity"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.capacity}
+                    value={values?.capacity}
                     name="capacity"
                     error={!!touched.capacity && !!errors.capacity}
                     helperText={touched.capacity && errors.capacity}
@@ -456,7 +456,7 @@ const EditStorageTank = ({
                     placeholder="Height"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.height}
+                    value={values?.height}
                     name="height"
                     error={!!touched.height && !!errors.height}
                     helperText={touched.height && errors.height}
@@ -479,7 +479,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan SCC Mode"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.sccModel}
+                    value={values?.sccModel}
                     name="sccModel"
                     error={!!touched.sccModel && !!errors.sccModel}
                     helperText={touched.sccModel && errors.sccModel}
@@ -505,7 +505,7 @@ const EditStorageTank = ({
                     placeholder="Masukkan Description...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.description}
+                    value={values?.description}
                     name="description"
                     error={!!touched.description && !!errors.description}
                     helperText={touched.description && errors.description}

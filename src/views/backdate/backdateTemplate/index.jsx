@@ -173,7 +173,8 @@ const BackdateTemplate = () => {
     const dataWithId = csvData.map((row, index) => ({
       ...row,
       id: index,
-      typeTransaction: 1,
+      typeTransaction: 2,
+      typeSite: 1,
       bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
         4,
         "0"

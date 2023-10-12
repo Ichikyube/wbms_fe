@@ -54,26 +54,26 @@ const AppContent = () => {
   useEffect(() => {
     setRoutes((prevRoutes) => prevRoutes.concat(newRoutes));
   }, []);
-  // useEffect(() => {
-  //   const tempConfigList = Object.keys(ConfigList).filter(
-  //     (key) => ConfigList[key]
-  //   );
+  useEffect(() => {
+    const tempConfigList = Object.keys(ConfigList).filter(
+      (key) => ConfigList[key]
+    );
 
-  //   // Filter the keys in ConfigMap based on tempConfigList
-  //   const includedConfigMap = Object.keys(ConfigMap)
-  //     .filter((key) => tempConfigList.includes(key))
-  //     .reduce((acc, key) => {
-  //       acc[key] = ConfigMap[key];
-  //       return acc;
-  //     }, {});
+    // Filter the keys in ConfigMap based on tempConfigList
+    const includedConfigMap = Object.keys(ConfigMap)
+      .filter((key) => tempConfigList.includes(key))
+      .reduce((acc, key) => {
+        acc[key] = ConfigMap[key];
+        return acc;
+      }, {});
 
-  //   // Flatten the values from includedConfigMap into an array
-  //   const newRoutes = Object.values(includedConfigMap).flat();
-
-  //   // Assuming `routeList` is an existing array of routes
-  //   setRoutes(routesList.concat(newRoutes));
-  // }, [ConfigList, ConfigMap]);
-
+    // Flatten the values from includedConfigMap into an array
+    const newRoutes = Object.values(includedConfigMap).flat();
+    // console.log(routeList)
+    // Assuming `routeList` is an existing array of routes
+    setRoutes(routesList.concat(backdateFormRoutes, backdateTemplateRoute, editTransactionRoute));
+  }, [ConfigList, ConfigMap]);
+// console.log(routes)
   //hanya user yang melakukan request yang bisa menggunakan temporari konfig.
 
   return (

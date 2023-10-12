@@ -274,7 +274,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                           setFieldValue("name", e.target.value);
                           setName(e.target.value);
                         }}
-                        value={values.name}
+                        value={values?.name}
                         name="name"
                         error={!!touched.name && !!errors.name}
                         helperText={touched.name && errors.name}
@@ -298,7 +298,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                           setFieldValue("description", e.target.value);
                           setDescription(e.target.value);
                         }}
-                        value={values.description}
+                        value={values?.description}
                         name="description"
                         error={!!touched.name && !!errors.name}
                         helperText={touched.name && errors.name}
@@ -317,7 +317,7 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
                       <Select
                         fullWidth
                         name="provinceId"
-                        value={values.roleId}
+                        value={values?.roleId}
                         onBlur={handleBlur}
                         onChange={(e) => {
                           setSelectedTemplate(

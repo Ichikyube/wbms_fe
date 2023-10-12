@@ -41,73 +41,69 @@ const UserMatrixContextProvider = ({ children }) => {
   }
 
   const {
-    manualEntryWB: WB2,
-    editTransaction: WB3,
-    backDatedTemplate: WB4,
-    backDatedForm: WB5,
+    manualEntryWB,
+    editTransaction,
+    backDatedTemplate,
+    backDatedForm,
   } = configObject;
-  const [backDatedForm, setBackDatedForm] = useState(WB5 ?? WB5?.defaultVal);
-  const [manualEntryWB, setManualEntryWB] = useState(WB2 ?? WB2?.defaultVal);
-  const [backDatedTemplate, setBackdatedTemplate] = useState(
-    WB4 ?? WB4?.defaultVal
-  );
-  const [editTransaction, seteditTransaction] = useState(
-    WB3 ?? WB3?.defaultVal
-  );
+  // const [backDatedForm, setBackDatedForm] = useState(WB5);
+  // const [manualEntryWB, setManualEntryWB] = useState(WB2);
+  // const [backDatedTemplate, setBackdatedTemplate] = useState(WB4);
+  // const [editTransaction, seteditTransaction] = useState(WB3);
+  // console.log(WB4);
+  // const configCallback = useCallback(() => {
+  //   dispatch(fetchGroupMappingData());
+  // }, [dispatch]);
 
-  const configCallback = useCallback(() => {
-    dispatch(fetchGroupMappingData());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   configCallback();
+  // }, [configCallback]);
 
-  useEffect(() => {
-    configCallback();
-  }, [configCallback]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const now = new Date();
+  //     const hours = now.getHours();
+  //     const minutes = now.getMinutes();
+  //     setCurrentTime(now);
+  //     setCurrentHour(hours);
+  //     setCurrentMinute(minutes);
+  //   }, 1000);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      setCurrentTime(now);
-      setCurrentHour(hours);
-      setCurrentMinute(minutes);
-    }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (backDatedForm && currentTime >= WB5?.start)
-      setBackDatedForm(WB5.tempValue);
-    if (currentTime >= WB5?.end) {
-      setBackDatedForm(WB5.defaultValue);
-      requestEnded(5).unwrap();
-    }
-  }, [backDatedForm, currentTime, WB5, requestEnded]);
-  useEffect(() => {
-    if (backDatedTemplate && currentTime >= WB4?.start)
-      setBackdatedTemplate(WB4.tempValue);
-    if (currentTime >= WB4?.end) {
-      setBackdatedTemplate(WB4.defaultValue);
-      requestEnded(4).unwrap();
-    }
-  }, [backDatedTemplate, currentTime, WB4, requestEnded]);
-  useEffect(() => {
-    if (editTransaction && currentTime >= WB3?.start)
-      seteditTransaction(WB3.tempValue);
-    if (currentTime >= WB3?.end) {
-      seteditTransaction(WB3.defaultValue);
-      requestEnded(6).unwrap();
-    }
-  }, [editTransaction, currentTime, WB3, requestEnded]);
-  useEffect(() => {
-    if (manualEntryWB && currentTime >= WB2?.start)
-      setManualEntryWB(WB2.tempValue);
-    if (currentTime >= WB2?.end) {
-      setManualEntryWB(WB2?.defaultValue);
-      requestEnded(3).unwrap();
-    }
-  }, [manualEntryWB, currentTime, WB2, requestEnded]);
+  // useEffect(() => {
+  //   if (backDatedForm && currentTime >= WB5?.start)
+  //     setBackDatedForm(WB5.tempValue);
+  //   if (currentTime >= WB5?.end) {
+  //     setBackDatedForm(WB5.defaultValue);
+  //     requestEnded(5).unwrap();
+  //   }
+  // }, [backDatedForm, currentTime, WB5, requestEnded]);
+  // useEffect(() => {
+  //   if (backDatedTemplate && currentTime >= WB4?.start)
+  //     setBackdatedTemplate(WB4.tempValue);
+  //   if (currentTime >= WB4?.end) {
+  //     setBackdatedTemplate(WB4.defaultValue);
+  //     requestEnded(4).unwrap();
+  //   }
+  // }, [backDatedTemplate, currentTime, WB4, requestEnded]);
+  // useEffect(() => {
+  //   if (editTransaction && currentTime >= WB3?.start)
+  //     seteditTransaction(WB3.tempValue);
+  //   if (currentTime >= WB3?.end) {
+  //     seteditTransaction(WB3.defaultValue);
+  //     requestEnded(6).unwrap();
+  //   }
+  // }, [editTransaction, currentTime, WB3, requestEnded]);
+  // useEffect(() => {
+  //   if (manualEntryWB && currentTime >= WB2?.start)
+  //     setManualEntryWB(WB2.tempValue);
+  //   if (currentTime >= WB2?.end) {
+  //     setManualEntryWB(WB2?.defaultValue);
+  //     requestEnded(3).unwrap();
+  //   }
+  // }, [manualEntryWB, currentTime, WB2, requestEnded]);
   return (
     <UserMatrixContext.Provider
       value={{
@@ -115,7 +111,8 @@ const UserMatrixContextProvider = ({ children }) => {
         editTransaction,
         backDatedTemplate,
         backDatedForm,
-      }}>
+      }}
+    >
       {!isLoading && children}
     </UserMatrixContext.Provider>
   );

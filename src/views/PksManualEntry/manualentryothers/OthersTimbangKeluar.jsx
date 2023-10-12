@@ -149,9 +149,6 @@ const PksManualOthersTimbangKeluar = ({
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
 
@@ -213,7 +210,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <TextField
@@ -243,7 +240,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="driverName"
-          value={values.driverName}
+          value={values?.driverName}
           onChange={handleChange}
         />
 
@@ -339,7 +336,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="afdeling"
-          value={values.afdeling}
+          value={values?.afdeling}
           onChange={handleChange}
         />
         <TextField
@@ -369,7 +366,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="blok"
-          value={values.blok}
+          value={values?.blok}
           onChange={handleChange}
         />
            
@@ -400,8 +397,8 @@ const PksManualOthersTimbangKeluar = ({
               </Typography>
             </>
           }
-          name="tahun"
-          value={values?.tahun}
+          name="yearPlan"
+          value={values?.yearPlan}
           onChange={handleChange}
         />
 
@@ -435,7 +432,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="sptbs"
-          value={values.sptbs}
+          value={values?.sptbs}
           onChange={handleChange}
         />
           <TextField
@@ -465,7 +462,7 @@ const PksManualOthersTimbangKeluar = ({
             </>
           }
           name="transportVehicleSccModel"
-          value={values.transportVehicleSccModel}
+          value={values?.transportVehicleSccModel}
           onChange={handleChange}
         />
       </FormControl>

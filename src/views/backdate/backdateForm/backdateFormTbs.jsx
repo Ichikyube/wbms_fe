@@ -33,6 +33,7 @@ const BackdateFormTBS = ({
   ProductName,
   TransporterId,
   TransporterCompanyName,
+  TransporterCompanyCode,
   PlateNo,
 }) => {
   const dispatch = useDispatch();
@@ -73,19 +74,18 @@ const BackdateFormTBS = ({
   const [values, setValues] = useState(initialValues);
 
   const handleSubmit = async () => {
-    let tempTrans = { ...values };
-
-    tempTrans.progressStatus = 4;
-    tempTrans.typeTransaction = 1;
-    tempTrans.typeSite = 1;
-    tempTrans.productId = ProductId;
-    tempTrans.productName = ProductName;
-    tempTrans.transporterId = TransporterId;
-    tempTrans.transporterCompanyName = TransporterCompanyName;
-    tempTrans.transportVehiclePlateNo = PlateNo;
+    values.progressStatus = 4;
+    values.typeTransaction = 1;
+    values.typeSite = 1;
+    values.productId = ProductId;
+    values.productName = ProductName;
+    values.transporterId = TransporterId;
+    values.transporterCompanyName = TransporterCompanyName;
+    values.transporterCompanyCode = TransporterCompanyCode;
+    values.transportVehiclePlateNo = PlateNo;
 
     try {
-      const results = await TransactionAPI.create({ ...tempTrans });
+      const results = await TransactionAPI.create({ ...values });
 
       if (!results?.status) {
         toast.error(`Error: ${results?.message}.`);
@@ -96,73 +96,25 @@ const BackdateFormTBS = ({
     } catch (error) {
       toast.error(`Error: ${error.message}.`);
     }
-    setValues({ ...tempTrans });
+    setValues({ ...values });
   };
 
   const [bonTripNo, setBonTripNo] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
-    const generateBonTripNumber = async () => {
-      try {
-        const transactions = await TransactionAPI.getAll({}); // Panggil API untuk mendapatkan data transaksi
-        if (Array.isArray(transactions.records)) {
-          // Tentukan nomor berikutnya yang harus digenerate, dimulai dari 000001
-          const lastGeneratedNumber = transactions.records.reduce(
-            (max, record) => {
-              const number = parseInt(record.bonTripNo.substring(9));
-              return number > max ? number : max;
-            },
-            0
-          );
-          const nextNumber = (lastGeneratedNumber + 1).toString().padStart(6);
-
-          // Pastikan nomor bonTripNo belum ada di data transaksi
-          const newBonTripNumber = `P049${moment(selectedDate).format(
-            "YYMMDD"
-          )}${nextNumber}`;
-          const isDuplicate = transactions.records.some(
-            (item) => item.bonTripNo === newBonTripNumber
-          );
-
-          // Jika nomor bonTripNo belum ada, return nomor bonTripNo yang baru
-          if (!isDuplicate) {
-            return nextNumber;
-          } else {
-            console.error(
-              "Duplicate bonTripNo detected, generating the next number."
-            );
-            return (parseInt(nextNumber) + 1).toString().padStart(6);
-          }
-        } else {
-          console.error("Invalid transactions data:", transactions);
-          return null;
-        }
-      } catch (error) {
-        console.error("Error generating bonTripNo:", error);
-        return null;
-      }
+    const generateBonTripNo = () => {
+      const dateNow = moment(selectedDate).format("YYMMDD");
+      const timeNow = moment().format("HHmmss");
+      return `P049${dateNow}${timeNow}`;
     };
 
-    const generateBonTripNo = async () => {
-      const lastGeneratedNumber = await generateBonTripNumber();
-      if (lastGeneratedNumber !== null) {
-        const dateNow = moment(selectedDate).format("YYMMDD");
-        const bonTripNumber = `P049${dateNow}${lastGeneratedNumber}`;
-
-        // Simpan nomor terbaru yang telah di-generate ke database atau penyimpanan lainnya
-        // Contoh: simpan ke database atau local storage
-        // await saveGeneratedNumberToDatabase(lastGeneratedNumber);
-
-        setBonTripNo(bonTripNumber);
-        setValues({
-          ...values,
-          bonTripNo: bonTripNumber,
-        });
-      }
-    };
-
-    generateBonTripNo();
+    const generatedBonTripNo = generateBonTripNo();
+    setBonTripNo(generatedBonTripNo);
+    setValues({
+      ...values,
+      bonTripNo: generatedBonTripNo,
+    });
   }, [selectedDate]);
 
   useEffect(() => {
@@ -191,6 +143,7 @@ const BackdateFormTBS = ({
       ProductName &&
       TransporterId &&
       TransporterCompanyName &&
+      TransporterCompanyCode &&
       PlateNo &&
       values.originWeighInTimestamp &&
       values.originWeighOutTimestamp &&
@@ -200,9 +153,6 @@ const BackdateFormTBS = ({
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
 
@@ -241,32 +191,32 @@ const BackdateFormTBS = ({
           disabled={values.progressStatus === 4}
         />
         <TextField
-          variant="outlined"
-          size="small"
-          fullWidth
+          variant="outlined" // Variasi TextField dengan style "outlined"
+          size="small" // Ukuran TextField kecil
+          fullWidth // TextField akan memiliki lebar penuh
           InputLabelProps={{
             shrink: true,
           }}
           sx={{
-            my: 2,
+            my: 2, // Margin bawah dengan jarak 2 unit
             "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
+              borderRadius: "10px", // Set radius border untuk bagian input
             },
           }}
           label={
             <>
               <Typography
                 sx={{
-                  bgcolor: "white",
-                  px: 1,
+                  bgcolor: "white", // Background color teks label
+                  px: 1, // Padding horizontal teks label 1 unit
                 }}
               >
                 Nomor BON Trip
               </Typography>
             </>
           }
-          name="bonTripNo"
-          value={values?.bonTripNo || ""}
+          name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
+          value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
         />
         <TextField
           variant="outlined"
@@ -295,7 +245,7 @@ const BackdateFormTBS = ({
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <TextField
@@ -366,6 +316,37 @@ const BackdateFormTBS = ({
           variant="outlined"
           size="small"
           fullWidth
+          placeholder="Masukkan Kebun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Kebun
+              </Typography>
+            </>
+          }
+          name="kebun"
+          value={values?.kebun}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          fullWidth
           placeholder="Masukkan Afdeling"
           sx={{
             my: 2,
@@ -427,6 +408,37 @@ const BackdateFormTBS = ({
         <TextField
           variant="outlined"
           size="small"
+          fullWidth
+          placeholder="Masukkan Tahun"
+          sx={{
+            my: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+            readOnly: true,
+          }}
+          label={
+            <>
+              <Typography
+                sx={{
+                  bgcolor: "white",
+                  px: 1,
+                }}
+              >
+                Tahun
+              </Typography>
+            </>
+          }
+          name="yearPlan"
+          value={values?.yearPlan}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          size="small"
           type="number"
           fullWidth
           InputLabelProps={{
@@ -434,7 +446,8 @@ const BackdateFormTBS = ({
           }}
           placeholder="Masukkan Jumlah Janjang"
           sx={{
-            my: 2,
+            mt: 2,
+            mb: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -466,7 +479,7 @@ const BackdateFormTBS = ({
           }}
           placeholder="Masukkan SPTBS"
           sx={{
-            my: 2,
+            mt: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -493,7 +506,8 @@ const BackdateFormTBS = ({
           fullWidth
           placeholder="Masukkan Sertifikasi"
           sx={{
-            my: 2,
+            mt: 4,
+            mb: 1,
             "& .MuiOutlinedInput-root": {
               borderRadius: "10px",
             },
@@ -517,772 +531,6 @@ const BackdateFormTBS = ({
           name="transportVehicleSccModel"
           value={values?.transportVehicleSccModel}
           onChange={handleChange}
-        />
-      </FormControl>
-      <FormControl sx={{ gridColumn: "span 4" }}>
-        <Box
-          display="grid"
-          gridTemplateColumns="4fr 2fr"
-          gap={2}
-          alignItems="center"
-        >
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  mb: 1,
-                },
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Buah Mentah
-                </Typography>
-              }
-              // name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                mb: 1,
-                bgcolor: "whitesmoke",
-              },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Buah Lewat Matang
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-                my: 1,
-              },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Tangkai Panjang
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Tangkai Kosong
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Sampah
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Air
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Parteno
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Brondolan
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Pot. Wajib Vendor
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-          <FormControl
-            sx={{
-              flexDirection: "row",
-            }}
-          >
-            <Checkbox
-              size="small"
-              sx={{
-                alignItems: "center",
-                mb: 1,
-              }}
-            />
-            <TextField
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                    %/Jjg
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                },
-                my: 1,
-              }}
-              label={
-                <Typography
-                  sx={{
-                    bgcolor: "white",
-                    px: 1,
-                  }}
-                >
-                  Pot. Lainnya
-                </Typography>
-              }
-              //   name="originWeighInKg"
-              // value={0}
-            />
-          </FormControl>
-          <TextField
-            type="number"
-            variant="outlined"
-            size="small"
-            fullWidth
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "whitesmoke",
-              },
-              my: 1,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ fontWeight: "bold" }}>
-                  kg
-                </InputAdornment>
-              ),
-            }}
-            //   name="originWeighInKg"
-            // value={0}
-          />
-        </Box>
-        <TextField
-          type="number"
-          variant="outlined"
-          size="small"
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-            },
-            mt: 3,
-          }}
-          label={
-            <Typography
-              sx={{
-                bgcolor: "white",
-                px: 1,
-              }}
-            >
-              TOTAL Potongan
-            </Typography>
-          }
-          //   name="originWeighInKg"
-          // value={0}
         />
       </FormControl>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -1488,7 +736,7 @@ const BackdateFormTBS = ({
             </Typography>
           }
           name="originWeighInTimestamp"
-          value={values.originWeighInTimestamp}
+          value={values?.originWeighInTimestamp}
           onChange={handleChange}
         />
         <TextField
@@ -1516,7 +764,7 @@ const BackdateFormTBS = ({
             </Typography>
           }
           name="originWeighOutTimestamp"
-          value={values.originWeighOutTimestamp}
+          value={values?.originWeighOutTimestamp}
           onChange={handleChange}
         />
       </FormControl>

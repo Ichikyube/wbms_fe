@@ -233,7 +233,7 @@ const TimbangMasuk = () => {
                     </>
                   }
                   name="transportVehiclePlateNo"
-                  value={values.transportVehiclePlateNo}
+                  value={values?.transportVehiclePlateNo}
                   onChange={handleChange}
                 />
                 {/* <FormControl
@@ -329,31 +329,27 @@ const TimbangMasuk = () => {
                   </InputLabel>
                   <Autocomplete
                     id="select-label"
-                    options={dtProduct}
+                    options={dtProduct.filter(
+                      (option) =>
+                        !["cpo", "pko"].includes(option.name.toLowerCase())
+                    )}
                     getOptionLabel={(option) => option.name}
                     value={selectedProduct}
                     onChange={(event, newValue) => {
+                      const selectedValue = newValue
+                        ? newValue
+                        : { id: "", name: "" };
                       setValues((preValues) => ({
                         ...preValues,
-                        productId: newValue ? newValue.id : "",
-                        productName: newValue ? newValue.name : "",
+                        productId: selectedValue.id,
+                        productName: selectedValue.name,
                       }));
-                      setSelectedProduct(newValue);
-                      if (newValue) {
-                        const productName = newValue.name.toLowerCase();
-                        if (
-                          productName.includes("cpo") ||
-                          productName.includes("pko")
-                        ) {
-                          setSelectedOption("CpoPko");
-                        } else if (productName.includes("tbs")) {
-                          setSelectedOption("Tbs");
-                        } else {
-                          setSelectedOption("Others");
-                        }
-                      } else {
-                        setSelectedOption(""); // Reset the selectedOption if no product is selected.
-                      }
+                      setSelectedProduct(selectedValue);
+                      setSelectedOption(
+                        newValue?.name.toLowerCase().includes("tbs")
+                          ? "Tbs"
+                          : "Others"
+                      );
                     }}
                     renderInput={(params) => (
                       <TextField

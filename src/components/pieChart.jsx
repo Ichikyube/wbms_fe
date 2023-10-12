@@ -3,7 +3,7 @@ import { PieChart, Pie, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import * as TransactionAPI from "../api/transactionApi";
 import "../index.css";
 
-const typeTransaction = 1;
+const typeSite = 1;
 
 const PieCharts = () => {
   const [salesData, setSalesData] = useState([]);
@@ -11,7 +11,7 @@ const PieCharts = () => {
   useEffect(() => {
     TransactionAPI.searchMany({
       where: {
-        typeTransaction,
+        typeSite,
         isDeleted: false,
         progressStatus: { notIn: [1] },
       },

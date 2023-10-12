@@ -77,6 +77,8 @@ const PksManualTimbangMasukOthers = ({
     afdeling: "",
     blok: "",
     sptbs: "",
+    // yearPlan: "",
+    // kebun: "",
   };
 
   const [values, setValues] = useState(initialValues);
@@ -200,9 +202,6 @@ const PksManualTimbangMasukOthers = ({
   };
 
   const handleClose = () => {
-    // setProgressStatus("-");
-    // setWbPksTransaction(null);
-
     navigate("/pks-transaction");
   };
 
@@ -454,8 +453,8 @@ const PksManualTimbangMasukOthers = ({
               </Typography>
             </>
           }
-          name="tahun"
-          value={values?.tahun}
+          name="yearPlan"
+          value={values?.yearPlan}
           onChange={handleChange}
         />
 

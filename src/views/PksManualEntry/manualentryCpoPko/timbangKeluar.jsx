@@ -301,7 +301,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </>
           }
           name="deliveryOrderNo"
-          value={values.deliveryOrderNo}
+          value={values?.deliveryOrderNo}
           onChange={handleChange}
         />
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
@@ -433,7 +433,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </>
           }
           name="transportVehicleSccModel"
-          value={values.transportVehicleSccModel || "-"}
+          value={values?.transportVehicleSccModel || "-"}
         />
         <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
           <InputLabel id="select-label" shrink sx={{ bgcolor: "white", px: 1 }}>
@@ -642,7 +642,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="originWeighInKg"
-          value={values.originWeighInKg}
+          value={values?.originWeighInKg}
         />
         <TextField
           type="number"
@@ -696,7 +696,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="potonganWajib"
-          value={values.potonganWajib || 0}
+          value={values?.potonganWajib || 0}
         />
         <TextField
           type="number"
@@ -723,7 +723,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="potonganLain"
-          value={values.potonganLain || 0}
+          value={values?.potonganLain || 0}
         />
         <TextField
           type="number"
@@ -810,7 +810,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="currentSeal1"
-          value={values.currentSeal1}
+          value={values?.currentSeal1}
           onChange={handleChange}
         />
         <TextField
@@ -838,7 +838,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="currentSeal2"
-          value={values.currentSeal2}
+          value={values?.currentSeal2}
           onChange={handleChange}
         />
         <TextField
@@ -866,7 +866,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="currentSeal3"
-          value={values.currentSeal3}
+          value={values?.currentSeal3}
           onChange={handleChange}
         />
         <TextField
@@ -894,7 +894,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             </Typography>
           }
           name="currentSeal4"
-          value={values.currentSeal4}
+          value={values?.currentSeal4}
           onChange={handleChange}
         />
 
@@ -913,7 +913,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
             multiple
             options={["RSPO", "ISCC"]}
             getOptionLabel={(option) => option}
-            value={values.sertifikasi}
+            value={values?.sertifikasi}
             onChange={(event, newValue) => {
               setValues({
                 ...values,

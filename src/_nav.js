@@ -46,6 +46,11 @@ const _nav = [
         name: "Data Transaction",
         to: "/data-transaction",
       },
+      {
+        component: CNavItem,
+        name: "Temporary Data",
+        to: "/temporary-transaction",
+      },
     ],
   },
   {
@@ -104,7 +109,6 @@ const _nav = [
         to: "/md/province",
         resource: "Province",
       },
-
       {
         component: CNavItem,
         name: "City",

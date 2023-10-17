@@ -62,29 +62,23 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
         : false,
     }))
   );
-  const [selectedResources, setSelectedResources] = useState([]);
-  const [attrOptions, setAttrOptions] = useState(dtAttrJson);
-  const handleCheckboxChange = (id, values, setFieldValue) => {
-    setCheckboxes((prevCheckboxes) =>
-      prevCheckboxes.map((checkbox) =>
-        checkbox.id === id
-          ? { ...checkbox, checked: !checkbox.checked }
-          : checkbox
-      )
-    );
-  };
+  const [selectedResources, setSelectedResources] = useState(
+    resourcesList.filter((res) =>
+      dtRole?.permissions.some(({ resource }) => resource === res)
+    )
+  );
   const actionOptions = ["read", "create", "update", "delete"];
-  const adjustValues = {
-    id: dtRole?.id,
-    name: dtRole?.name,
-    description: dtRole?.description,
-    permissions: dtRole?.permissions.map(({ resource, grants }) => ({
+  const [possesionList, setPossesionList] = useState(
+    Array(actionOptions.length).fill("own")
+  );
+  const [permissions, setPermissions] = useState(
+    dtRole?.permissions.map(({ resource, grants }) => ({
       resource,
       roleId: dtRole?.id,
       grants: actionOptions.map((actionOption, index) => {
-        const grant = grants[grants.map(({ action }) => action).indexOf(actionOption)];
-    
-        if (grant) {
+        const grant =
+          grants[grants.map(({ action }) => action).indexOf(actionOption)];
+
           return {
             action: grant.action,
             possession: grant.possession,
@@ -92,24 +86,73 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
               .filter(({ attr }) => attr !== "")
               .map((attr) => ({ value: attr, label: attr })),
           };
-        } else {
-          return {
-            action: '', // or some default value if action is empty
-            possession: '', // or some default value if possession is empty
-            attributes: [], // or an empty array if attributes are empty
-          };
-        }
       }),
-    })),
+    }))
+  );
+  const [grants] = useState(
+    actionOptions.map((action, index) => ({
+      action: action,
+      possession: possesionList[index],
+      attributes: [
+        {
+          attr: "id",
+        },
+      ],
+    }))
+  );
+  const [attrOptions, setAttrOptions] = useState(dtAttrJson);
+  const handleCheckboxChange = (id, setFieldValue, values) => {
+    setCheckboxes((prevCheckboxes) =>
+      prevCheckboxes.map((checkbox) =>
+        checkbox.id === id
+          ? { ...checkbox, checked: !checkbox.checked }
+          : checkbox
+      )
+    );
+    setFieldValue("permissions", permissions);
+    console.log(values);
   };
-  const inValues = _.mergeWith({}, adjustValues, dtRole, (objValue, srcValue) => {
-    // Replace values in role with those from initialValue
-    if (_.isArray(objValue) && _.isArray(srcValue)) {
-      return srcValue;
+  // Use the useEffect to update selectedResources
+  useEffect(() => {
+    const updatedResources = checkboxes
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.label);
+    setSelectedResources(updatedResources);
+  }, [checkboxes]);
+  useEffect(() => {
+    const updatedResources = checkboxes
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.label);
+    setSelectedResources(updatedResources);
+  }, [checkboxes]);
+
+  const adjustValues = {
+    id: dtRole?.id,
+    name: dtRole?.name,
+    description: dtRole?.description,
+    permissions: {},
+  };
+  const inValues = _.mergeWith(
+    {},
+    adjustValues,
+    dtRole,
+    (objValue, srcValue) => {
+      // Replace values in role with those from initialValue
+      if (_.isArray(objValue) && _.isArray(srcValue)) {
+        return srcValue;
+      }
+      return undefined; // Default behavior to let _.merge handle the merge
     }
-    return undefined; // Default behavior to let _.merge handle the merge
-  });
-  const { users, isDeleted, userCreated, ...initialValues } = inValues;
+  );
+  const {
+    users,
+    isDeleted,
+    userCreated,
+    userModified,
+    dtCreated,
+    dtModified,
+    ...initialValues
+  } = inValues;
   const [mountAttributes, setMountAttributes] = useState([]);
   const toggleAttr = (attrId) => {
     if (mountAttributes.includes(attrId)) {
@@ -119,14 +162,28 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
     }
   };
 
-  // Use the useEffect to update selectedResources
   useEffect(() => {
-    const updatedResources = checkboxes
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => checkbox.label);
-    setSelectedResources(updatedResources);
-  }, [checkboxes]);
-
+    setPermissions(
+      selectedResources.map((resource) => ({
+        resource,
+        grants,
+      }))
+    );
+    setAttrOptions(
+      Object.keys(dtAttrJson)
+        .filter((resource) => selectedResources.includes(resource))
+        .reduce((obj, key) => {
+          obj[key] = dtAttrJson[key];
+          return obj;
+        }, {})
+    );
+  }, [selectedResources, grants]);
+  useEffect(() => {
+    console.log(selectedResources);
+  }, [selectedResources]);
+  useEffect(() => {
+    console.log(permissions);
+  }, [permissions]);
   const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
     const updatedPermissions = values.permissions.filter((permission) =>
       selectedResources.includes(permission.resource)
@@ -138,7 +195,6 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
       description,
       permissions: updatedPermissions,
     };
-    console.log(values);
     RoleAPI.update(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -262,8 +318,8 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                           onChange={() =>
                             handleCheckboxChange(
                               checkbox.id,
-                              values,
-                              setFieldValue
+                              setFieldValue,
+                              values
                             )
                           }
                         />
@@ -303,17 +359,22 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                               <strong>{resource}</strong>
                               <br />
                               {expanded !== index &&
-                                values.permissions[index]?.grants.map((a, i) => (
-                                  <span key={i}>
-                                    {values.permissions[index].grants[i].action}
-                                    <span style={{ fontSize: "10px" }}>
+                                values.permissions[index]?.grants.map(
+                                  (a, i) => (
+                                    <span key={i}>
                                       {
-                                        values.permissions[index]?.grants[i]
-                                          .possession
-                                      }{" "}
+                                        values.permissions[index].grants[i]
+                                          .action
+                                      }
+                                      <span style={{ fontSize: "10px" }}>
+                                        {
+                                          values.permissions[index]?.grants[i]
+                                            .possession
+                                        }{" "}
+                                      </span>
                                     </span>
-                                  </span>
-                                ))}
+                                  )
+                                )}
                             </Typography>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -359,17 +420,23 @@ const EditRoles = ({ isEditOpen, onClose, dtRole }) => {
                                           }
                                           onChange={(event) => {
                                             if (event.target.checked)
-                                              setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                                action: event.target.value,
-                                                possession: "own",
-                                                attributes: []
-                                              });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: event.target.value,
+                                                  possession: "own",
+                                                  attributes: [],
+                                                }
+                                              );
                                             else
-                                            setFieldValue(`permissions[${index}].grants[${actionIndex}]`, {
-                                              action: "",
-                                              possession: "",
-                                              attributes: []
-                                            });
+                                              setFieldValue(
+                                                `permissions[${index}].grants[${actionIndex}]`,
+                                                {
+                                                  action: "",
+                                                  possession: "",
+                                                  attributes: [],
+                                                }
+                                              );
                                           }}
                                           value={actionOption}
                                         />

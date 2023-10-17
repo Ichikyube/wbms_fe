@@ -24,7 +24,7 @@ const AppContent = () => {
   };
 
   const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
-
+  
   const routeAccess = protectedRoute.filter((item) =>
     access.includes(item.resource)
   );

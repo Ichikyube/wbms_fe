@@ -55,6 +55,7 @@ const Products = () => {
 
   const fetcher = () =>
     ProductsAPI.getAll().then((res) => res.data.product.records);
+  const syncSemai = () => ProductsAPI.syncSemai();
 
   // search
 
@@ -206,8 +207,7 @@ const Products = () => {
                 onClick={() => {
                   setSelectedProduct(params.data);
                   setIsViewOpen(true);
-                }}
-              >
+                }}>
                 <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
 
@@ -227,8 +227,7 @@ const Products = () => {
                 onClick={() => {
                   setSelectedProduct(params.data);
                   setIsEditOpen(true);
-                }}
-              >
+                }}>
                 <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
               <Box
@@ -245,8 +244,7 @@ const Products = () => {
                   color: "white",
                   textDecoration: "none",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
             </Box>
@@ -269,8 +267,7 @@ const Products = () => {
               onClick={() => {
                 setSelectedProduct(params.data);
                 setIsViewOpen(true);
-              }}
-            >
+              }}>
               <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           );
@@ -376,12 +373,10 @@ const Products = () => {
                 marginLeft: "37px",
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 0px 0px",
-              }}
-            >
+              }}>
               <TabList
                 onChange={handleChange}
-                aria-label="lab API tabs example"
-              >
+                aria-label="lab API tabs example">
                 <Tab label="all" value="" />
                 <Tab label="wbms" value="0" />
                 <Tab label="e-dispatch" value="1" />
@@ -391,8 +386,12 @@ const Products = () => {
 
             <TabPanel value="">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Product</Typography>
@@ -409,8 +408,7 @@ const Products = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -422,8 +420,7 @@ const Products = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -441,8 +438,7 @@ const Products = () => {
                               .includes(searchQuery.toLowerCase())
                           );
                           gridRef.current.api.setRowData(filteredData);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -459,8 +455,12 @@ const Products = () => {
             </TabPanel>
             <TabPanel value="0">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Product Wbms</Typography>
@@ -477,8 +477,7 @@ const Products = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -490,8 +489,7 @@ const Products = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -504,8 +502,7 @@ const Products = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType0);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -522,8 +519,12 @@ const Products = () => {
             </TabPanel>
             <TabPanel value="1">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -538,7 +539,7 @@ const Products = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
-                      >
+                        onClick={syncSemai}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -550,8 +551,7 @@ const Products = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -564,8 +564,7 @@ const Products = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType1);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -582,8 +581,12 @@ const Products = () => {
             </TabPanel>
             <TabPanel value="2">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Product E-LHP</Typography>
@@ -595,8 +598,7 @@ const Products = () => {
                           fontSize: "12px",
                           padding: "7px 10px",
                           color: "white",
-                        }}
-                      >
+                        }}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -608,8 +610,7 @@ const Products = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -622,8 +623,7 @@ const Products = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType2);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>

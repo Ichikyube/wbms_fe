@@ -11,6 +11,11 @@ export const getById = async (id) => {
   return response?.data;
 };
 
+export const syncSemai = async () => {
+  const response = await api.get(`${endpoint}/sync-with-semai`);
+  return response?.data;
+};
+
 export const create = async (data) => {
   const response = await api.post(endpoint, data);
   return response?.data;

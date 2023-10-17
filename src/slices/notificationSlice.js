@@ -17,7 +17,6 @@ export const createNotificationAsync = createAsyncThunk(
   "notifications/createNotification",
   async (notificationData, { rejectWithValue }) => {
     try {
-      // Make an API request to create a notification with notificationData
       const response = await api.post("/notifications", notificationData);
 
       if (!response?.ok) {
@@ -34,6 +33,28 @@ export const createNotificationAsync = createAsyncThunk(
     }
   }
 );
+
+export const modifyNotificationAsync = createAsyncThunk(
+  'notifications/modifyNotificationAsync',
+  async ({ requestConfigId, newMessage }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch("/notifications/forwarded", requestConfigId, newMessage);
+
+      if (!response?.ok) {
+        // Handle non-successful responses here (e.g., validation errors)
+        const errorData = await response?.json();
+        return rejectWithValue(errorData);
+      }
+
+      const forwardNotification = await response?.json();
+      return forwardNotification;
+    } catch (error) {
+      // Handle network errors or unexpected errors here
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Define an initial state
 const initialState = {
   notifications: [],

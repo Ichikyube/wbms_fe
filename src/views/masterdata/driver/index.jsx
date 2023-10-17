@@ -56,6 +56,7 @@ const Driver = () => {
 
   const fetcher = () =>
     driverAPI.getAll().then((res) => res.data.driver.records);
+  const syncSemai = () => driverAPI.syncSemai();
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -228,8 +229,7 @@ const Driver = () => {
                 onClick={() => {
                   setSelectedDriver(params.data);
                   setIsViewOpen(true);
-                }}
-              >
+                }}>
                 <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
 
@@ -249,8 +249,7 @@ const Driver = () => {
                 onClick={() => {
                   setSelectedDriver(params.data);
                   setIsEditOpen(true);
-                }}
-              >
+                }}>
                 <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
               <Box
@@ -267,8 +266,7 @@ const Driver = () => {
                   color: "white",
                   textDecoration: "none",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
             </Box>
@@ -291,8 +289,7 @@ const Driver = () => {
               onClick={() => {
                 setSelectedDriver(params.data);
                 setIsViewOpen(true);
-              }}
-            >
+              }}>
               <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           );
@@ -399,12 +396,10 @@ const Driver = () => {
                 marginLeft: "37px",
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 0px 0px",
-              }}
-            >
+              }}>
               <TabList
                 onChange={handleChange}
-                aria-label="lab API tabs example"
-              >
+                aria-label="lab API tabs example">
                 <Tab label="all" value="" />
                 <Tab label="wbms" value="0" />
                 <Tab label="e-dispatch" value="1" />
@@ -414,8 +409,12 @@ const Driver = () => {
 
             <TabPanel value="">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Driver</Typography>
@@ -432,8 +431,7 @@ const Driver = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -445,8 +443,7 @@ const Driver = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -464,8 +461,7 @@ const Driver = () => {
                               .includes(searchQuery.toLowerCase())
                           );
                           gridRef.current.api.setRowData(filteredData);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -482,8 +478,12 @@ const Driver = () => {
             </TabPanel>
             <TabPanel value="0">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Driver Wbms</Typography>
@@ -500,8 +500,7 @@ const Driver = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -513,8 +512,7 @@ const Driver = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -527,8 +525,7 @@ const Driver = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType0);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -545,8 +542,12 @@ const Driver = () => {
             </TabPanel>
             <TabPanel value="1">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -561,7 +562,7 @@ const Driver = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
-                      >
+                        onClick={syncSemai}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -573,8 +574,7 @@ const Driver = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -587,8 +587,7 @@ const Driver = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType1);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -605,8 +604,12 @@ const Driver = () => {
             </TabPanel>
             <TabPanel value="2">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Driver E-LHP</Typography>
@@ -618,8 +621,7 @@ const Driver = () => {
                           fontSize: "12px",
                           padding: "7px 10px",
                           color: "white",
-                        }}
-                      >
+                        }}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -631,8 +633,7 @@ const Driver = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -645,8 +646,7 @@ const Driver = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType2);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>

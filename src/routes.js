@@ -118,6 +118,13 @@ export const protectedRoute = [
     resource: "Transaction",
   },
   {
+    path: "/temporary-transaction",
+    name: "Temporary Transaction",
+    element: DataTemporary,
+    exact: true,
+    resource: "Transaction",
+  },
+  {
     path: "/md/province",
     name: "Master Data Province",
     element: Provinces,

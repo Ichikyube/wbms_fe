@@ -25,6 +25,7 @@ import BonTripTBS from "../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../api/transactionApi";
 import Swal from "sweetalert2";
 import { useWeighbridge, useConfig } from "../../../common/hooks";
+import useBonTripGenerator from "../../../utils/useBonTripGenerator";
 
 const PksManualTBSinternalTimbangMasuk = ({
   ProductId,
@@ -146,26 +147,14 @@ const PksManualTBSinternalTimbangMasuk = ({
     }
   };
 
-  const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
+  const bonTripNo = useBonTripGenerator(); // State untuk menyimpan Nomor BON Trip
 
   useEffect(() => {
-    // Fungsi untuk menghasilkan Nomor BON Trip dengan format P041YYMMDDHHmmss
-    const generateBonTripNo = () => {
-      const dateNow = moment().format("YYMMDDHHmmss");
-      return `P041${dateNow}`;
-    };
-
-    const generatedBonTripNo = generateBonTripNo(); // Panggil fungsi untuk menghasilkan Nomor BON Trip
-    setBonTripNo(generatedBonTripNo); // Simpan Nomor BON Trip dalam state
-
     // Set nilai Nomor BON Trip ke dalam form values
     setValues({
       ...values,
-      bonTripNo: generatedBonTripNo,
+      bonTripNo: bonTripNo,
     });
-  }, []);
-
-  useEffect(() => {
     // ... (kode useEffect yang sudah ada)
 
     // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
@@ -176,7 +165,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
     }
     setCanSubmit(cSubmit);
-  }, [values]);
+  }, [values,bonTripNo]);
 
   const validateForm = () => {
     return (
@@ -218,8 +207,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
@@ -247,8 +235,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -277,8 +264,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Nama Supir
               </Typography>
             </>
@@ -342,8 +328,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Kebun
               </Typography>
             </>
@@ -373,8 +358,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Afdeling
               </Typography>
             </>
@@ -404,8 +388,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Blok
               </Typography>
             </>
@@ -435,8 +418,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Tahun
               </Typography>
             </>
@@ -467,8 +449,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Qty TBS
               </Typography>
             </>
@@ -499,8 +480,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPBTS
               </Typography>
             </>
@@ -531,8 +511,7 @@ const PksManualTBSinternalTimbangMasuk = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -565,8 +544,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -592,8 +570,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -619,8 +596,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -646,8 +622,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -676,8 +651,7 @@ const PksManualTBSinternalTimbangMasuk = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -695,8 +669,7 @@ const PksManualTBSinternalTimbangMasuk = ({
             // weighbridge.getWeight() < configs.ENV.WBMS_WB_MIN_WEIGHT
             //   ? true
             //   : false
-          }
-        >
+          }>
           Simpan
         </Button>
         <BonTripTBS

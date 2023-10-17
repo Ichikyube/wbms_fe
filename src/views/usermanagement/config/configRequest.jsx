@@ -32,7 +32,10 @@ import {
   useApproveRequestMutation,
   useRejectRequestMutation,
 } from "../../../slices/requestConfigsSlice";
-import { createNotificationAsync } from "../../../slices/notificationSlice";
+import {
+  createNotificationAsync,
+  modifyNotificationAsync,
+} from "../../../slices/notificationSlice";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -85,7 +88,7 @@ const ConfigRequest = () => {
         gridRef.current.api.setRowData(requestList);
       }
     },
-    [requestList]
+    []
   );
 
   useEffect(() => {
@@ -150,12 +153,13 @@ const ConfigRequest = () => {
       if (data.approval.length < data.config.lvlOfApprvl) {
         const notificationData = {
           message: `${userInfo.name} telah menyetujui ${data.config.name}, dan kini menunggu persetujuan anda`,
-          target: Object.keys(groupMap).filter((id => groupMap[id] === lvl[ data.approval.length + 1])),
-          photo: userInfo.profilePic,
+          target: Object.keys(groupMap).filter(
+            (id) => groupMap[id] === lvl[data.approval.length + 1]
+          ),
           sender: userInfo.name,
         };
 
-        dispatch(createNotificationAsync(notificationData))
+        dispatch(modifyNotificationAsync(data.config.id, notificationData))
           .unwrap()
           .then((createdNotification) => {
             console.log("Notification sended:", createdNotification);

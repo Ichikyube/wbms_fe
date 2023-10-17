@@ -26,8 +26,11 @@ export const masterDataList = [
   "StorageTank",
   "TransportVehicle",
   "Weighbridge",
+  "User",
+  "Role",
+  "Config",
 ];
-export const userManagementList = ["User", "Role", "Config"];
+// export const userManagementList = ["User", "Role", "Config"];
 export const dtAttrJson = {
   Province: [
     { value: "id", label: "id" },

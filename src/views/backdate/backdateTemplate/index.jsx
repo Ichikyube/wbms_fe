@@ -79,7 +79,7 @@ const BackdateTemplate = () => {
 
   const handleSave = () => {
     console.log(uploadedData)
-    TransactionTempAPI.createMany(uploadedData)
+    TransactionTempAPI.createManyTrxData(uploadedData)
       .then(() => {
         setIsFileUploaded(true);
         toast.success("Data saved successfully.");

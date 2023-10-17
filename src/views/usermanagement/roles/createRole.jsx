@@ -52,12 +52,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
     }))
   );
 
-  const INITIAL_DATA = {
-    name: "",
-    description: "",
-    permissions: [],
-  };
-
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const [selectedResources, setSelectedResources] = useState([]);
@@ -137,14 +131,6 @@ const CreateRoles = ({ isOpen, onClose, dtRoles }) => {
   }, [checkboxes]);
 
   useEffect(() => {
-    // console.log(permissions);
-    // if (permissions) {
-    //   const selectedPermissions = permissions.filter((permission) =>
-    //     selectedResources.includes(permission.resource)
-    //   );
-
-    //   setPermissions(...selectedPermissions, ...selectedResources);
-    // }
     if (!selectedTemplate)
       setPermissions(
         selectedResources.map((resource) => ({ resource, grants }))

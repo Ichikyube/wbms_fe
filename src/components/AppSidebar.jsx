@@ -20,17 +20,17 @@ import {
   masterDataList,
   userManagementList,
 } from "../constants/attributeListObj";
-
+console.log(masterDataList)
 const AppSidebar = () => {
   const { sidebar } = useSelector((state) => state.app);
   const access = Object.keys(JSON.parse(localStorage.getItem("userAccess")));
   const cNav = access.includes("Transaction") ? ["WB", ...access] : access;
   const bNav = masterDataList.some((value) =>
-    access.includes(value.toLowerCase())
+    access.includes(value)
   )
     ? ["Base", "MD", ...cNav]
     : ["Base", ...cNav];
-  const aNav = ["MD"].some((item) => bNav.includes(item.toLowerCase()))
+  const aNav = ["MD"].some((item) => bNav.includes(item))
     ? ["ADMIN", ...bNav]
     : [...bNav];
 
@@ -38,17 +38,19 @@ const AppSidebar = () => {
 
   useEffect(() => {
     if (backDatedTemplate && access.includes("Transaction")) {
-      navList[2].items = new Set([...navList[2].items, backdateTemplateNav]);
+      NavList[2].items = new Set([...NavList[2].items, backdateTemplateNav]);
     } else if (!backDatedTemplate) {
-      navList[2].items = navList[2].items.filter(
+      NavList[2].items = NavList[2].items.filter(
         (item) => item.name !== "Backdate Template"
       );
     }
-  }, [backDatedTemplate]);
+  }, [backDatedTemplate, access]);
   NavList[6].items = NavList[6].items.filter((item) =>
     access.includes(item.resource)
   );
+
   const navList = NavList.filter((item) => aNav.includes(item.resource));
+
   const dispatch = useDispatch();
   return (
     <CSidebar

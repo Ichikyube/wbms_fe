@@ -62,6 +62,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
         sender: userInfo.name,
         message: `Meminta persetujuan untuk mengaktifkan ${dtConfig.name}`,
         target: Object.keys(groupMap).filter((id => groupMap[id] === 'PJ1')),
+        configRequestId: dtConfig.id
       };
       dispatch(createNotificationAsync(notificationData))
         .unwrap()

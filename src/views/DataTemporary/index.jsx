@@ -30,11 +30,11 @@ import { useNavigate } from "react-router-dom";
 import Config from "../../configs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
-import * as TransactionAPI from "../../api/transactionApi";
+import * as TransactionAPI from "../../api/temporaryDataApi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-
+import { useGetAllTransactionsQuery } from "../../slices/temporaryDataSlice";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -48,24 +48,6 @@ const DataTemporary = () => {
   const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
-  };
-
-  const handleCellClick = (params) => {
-    const productName = params.data.productName.toLowerCase();
-    const progressStatus = params.data.progressStatus;
-
-    if (
-      !(
-        progressStatus === 1 ||
-        productName.includes("cpo") ||
-        productName.includes("pko")
-      )
-    ) {
-      const Id = params.data.id;
-      navigate(`/edit-data-Transaction/${Id}`);
-    } else {
-      toast.warning("Tidak dapat mengedit transaksi CPO atau PKO");
-    }
   };
 
   const deleteById = (id, bonTripNo, productName) => {
@@ -168,9 +150,7 @@ const DataTemporary = () => {
               style={{
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-              onClick={() => handleCellClick(params)}
-            >
+              }}>
               <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
             <Box
@@ -190,8 +170,7 @@ const DataTemporary = () => {
                 color: "white",
                 textDecoration: "none",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <CancelOutlinedIcon sx={{ fontSize: "25px" }} />
             </Box>
           </Box>
@@ -222,24 +201,12 @@ const DataTemporary = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetcher = () =>
-    TransactionAPI.searchMany({
-      where: {
-        typeSite,
-        isDeleted: false,
-        progressStatus: { notIn: [20, 21, 22, 1] },
-      },
-      orderBy: { bonTripNo: "desc" },
-    }).then((res) => res.records);
+  const {
+    data: transactions,
+  } = useGetAllTransactionsQuery();
+  const dtTransactions = transactions.map((obj) => obj.data);
 
-  const { data: dtTransactions } = useSWR(
-    searchQuery ? `transaction?name_like=${searchQuery}` : "transaction",
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
-  );
-
+  console.log(dtTransactions)
   const updateGridData = useCallback((transaction) => {
     if (gridRef.current && gridRef.current.api) {
       gridRef.current.api.setRowData(transaction);
@@ -269,8 +236,7 @@ const DataTemporary = () => {
             mt: 2,
             borderTop: "5px solid #000",
             borderRadius: "10px 10px 10px 10px",
-          }}
-        >
+          }}>
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
               <Typography fontSize="20px">Data Transaksi Sementara</Typography>
@@ -281,8 +247,7 @@ const DataTemporary = () => {
                 display="flex"
                 borderRadius="5px"
                 ml="auto"
-                border="solid grey 1px"
-              >
+                border="solid grey 1px">
                 <InputBase
                   sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                   placeholder="Search"
@@ -300,8 +265,7 @@ const DataTemporary = () => {
                         .includes(searchQuery.toLowerCase())
                     );
                     gridRef.current.api.setRowData(filteredData);
-                  }}
-                >
+                  }}>
                   <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                 </IconButton>
               </Box>
@@ -309,8 +273,7 @@ const DataTemporary = () => {
           </div>
           <div
             className="ag-theme-alpine"
-            style={{ width: "auto", height: "70vh" }}
-          >
+            style={{ width: "auto", height: "70vh" }}>
             <AgGridReact
               ref={gridRef}
               rowData={dtTransactions} // Row Data for Rows

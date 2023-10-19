@@ -308,55 +308,49 @@ const Products = () => {
   };
 
   useEffect(() => {
-    const refreshData = setInterval(() => {
-      if (dtProduct) {
-        const filteredData = dtProduct.filter((product) => {
-          const productData = Object.values(product).join(" ").toLowerCase();
-          return productData.includes(searchQuery.toLowerCase());
-        });
-        setFilteredData(filteredData);
+    if (dtProduct) {
+      const filteredData = dtProduct.filter((product) => {
+        const productData = Object.values(product).join(" ").toLowerCase();
+        return productData.includes(searchQuery.toLowerCase());
+      });
+      setFilteredData(filteredData);
 
-        const filteredDataRefType0 = filteredData.filter(
-          (product) => product.refType === 0
+      const filteredDataRefType0 = filteredData.filter(
+        (product) => product.refType === 0
+      );
+      setFilteredDataRefType0(filteredDataRefType0);
+
+      const filteredDataRefType1 = filteredData.filter(
+        (product) => product.refType === 1
+      );
+      setFilteredDataRefType1(filteredDataRefType1);
+
+      const filteredDataRefType2 = filteredData.filter(
+        (product) => product.refType === 2
+      );
+      setFilteredDataRefType2(filteredDataRefType2);
+
+      let newFilteredData = [];
+
+      if (value === "") {
+        newFilteredData = filteredData;
+      } else {
+        newFilteredData = filteredData.filter(
+          (product) => product.refType === parseInt(value)
         );
-        setFilteredDataRefType0(filteredDataRefType0);
-
-        const filteredDataRefType1 = filteredData.filter(
-          (product) => product.refType === 1
-        );
-        setFilteredDataRefType1(filteredDataRefType1);
-
-        const filteredDataRefType2 = filteredData.filter(
-          (product) => product.refType === 2
-        );
-        setFilteredDataRefType2(filteredDataRefType2);
-
-        let newFilteredData = [];
-
-        if (value === "") {
-          newFilteredData = filteredData;
-        } else {
-          newFilteredData = filteredData.filter(
-            (product) => product.refType === parseInt(value)
-          );
-        }
-
-        setColumnDefs((prevDefs) => {
-          const newDefs = [...prevDefs];
-          const actionColumn = newDefs.find((column) => column.field === "id");
-          if (actionColumn) {
-            actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
-          }
-          return newDefs;
-        });
-
-        setFilteredData(newFilteredData);
       }
-    }, 1000); // Refresh interval setiap 500ms
 
-    return () => {
-      clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
-    };
+      setColumnDefs((prevDefs) => {
+        const newDefs = [...prevDefs];
+        const actionColumn = newDefs.find((column) => column.field === "id");
+        if (actionColumn) {
+          actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
+        }
+        return newDefs;
+      });
+
+      setFilteredData(newFilteredData);
+    }
   }, [searchQuery, dtProduct, value]);
 
   return (

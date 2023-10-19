@@ -31,6 +31,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
 import CreateRequestConfig from "../../../views/usermanagement/config/createRequest";
+import { useFetchConfigsDataQuery } from "../../../slices/tempConfigSlice";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -51,17 +52,9 @@ const Config = () => {
   const tbsConfigGroup = (item) => item.id >= 7 && item.id <= 18;
   const eDispatchConfigGroup = (item) => item.id > 18 || item.id < 3;
 
-  const fetcher = () =>
-    ConfigAPI.getAll().then((res) => res.data.config.records);
-  // search
+  const { data: dtConfigs, isLoading, refetch } = useFetchConfigsDataQuery();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: dtConfigs } = useSWR(
-    searchQuery ? `config?name_like=${searchQuery}` : "config",
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
-  );
 
   //filter
   const updateGridData = useCallback((config) => {
@@ -311,6 +304,7 @@ const Config = () => {
           isEditOpen={isEditOpen}
           onClose={() => setIsEditOpen(false)}
           dtConfig={selectedConfig}
+          refetch={refetch}
         />
       )}
       {isRequestOpen && (

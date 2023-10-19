@@ -32,18 +32,21 @@ import { blue, grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configApi";
 import ConditionalInput from "./editConfig/conditionalInput";
 
-const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
+const EditConfig = ({ isEditOpen, onClose, dtConfig, refetch }) => {
   const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
-    if(dtConfig.type === "Json")  values.defaultVal = JSON.stringify(values.defaultVal);
+    if (dtConfig.type === "Json")
+      values.defaultVal = JSON.stringify(values.defaultVal);
     try {
       ConfigApi.update(values);
-      toast.success("Data Berhasil Diperbarui");
+
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
       console.error("Data Gagal Diperbarui:", error);
       toast.error("Data Gagal Diperbarui: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
+      refetch();
+      toast.success("Data Berhasil Diperbarui");
       setSubmitting(false);
       resetForm();
       onClose("", false);
@@ -85,7 +88,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
             setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
-              <Box fullWidth
+              <Box
+                fullWidth
                 display="block"
                 padding={2}
                 paddingBottom={3}

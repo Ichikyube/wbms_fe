@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Grid,
   Paper,
@@ -44,6 +45,8 @@ ModuleRegistry.registerModules([
 ]);
 
 const BackdateTemplate = () => {
+  const { WBMS_SITE_CODE, WBMS_BONTRIP_SUFFIX_BACKDATED_TEMPLATE } =
+    useSelector((app) => app.tempConfigs);
   const gridRef = useRef();
 
   const defaultColDef = {
@@ -71,15 +74,29 @@ const BackdateTemplate = () => {
   const [isEditFormVisible, setIsEditFormVisible] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   const [editColumnDefs, setEditColumnDefs] = useState([]);
-
+  console.log(uploadedData);
   const handleFormClose = () => {
     setIsEditFormVisible(false);
     setEditFormData({});
   };
 
   const handleSave = () => {
-    console.log(uploadedData)
-    TransactionTempAPI.createManyTrxData(uploadedData)
+    console.log(uploadedData);
+
+    const data = uploadedData.map((item) => ({
+      bonTripNo: item.bonTripNo,
+      deliveryOrderNo: item["DO No"],
+      originWeighInKg: item["WB-IN"],
+      returnWeighInKg: item["Return WB-IN"],
+      originWeighOutKg: item["WB-OUT"],
+      returnWeighOutKg: item["Return WB-OUT"],
+      productName: item["Product"],
+      transportVehiclePlateNo: item["No Pol"],
+      typeSite: item.typeSite,
+      typeTransaction: item.typeTransaction,
+    }));
+
+    TransactionTempAPI.createManyTrxData(data)
       .then(() => {
         setIsFileUploaded(true);
         toast.success("Data saved successfully.");
@@ -176,10 +193,9 @@ const BackdateTemplate = () => {
       id: index,
       typeTransaction: 2,
       typeSite: 1,
-      bonTripNo: `P049${formattedDate}${String(increment + index).padStart(
-        4,
-        "0"
-      )}`,
+      bonTripNo: `${WBMS_SITE_CODE}${WBMS_BONTRIP_SUFFIX_BACKDATED_TEMPLATE}${formattedDate}${String(
+        increment + index
+      ).padStart(4, "0")}`,
     }));
 
     setColumnDefs(newColumnDefs);

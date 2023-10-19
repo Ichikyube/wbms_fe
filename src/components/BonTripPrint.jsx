@@ -17,6 +17,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const BonTripPrint = (props) => {
   const { userInfo } = useSelector((state) => state.app);
+  const { namaPrintBONTRIP } = useSelector((state) => state.tempConfigs);
+  const { namePGS, nameMillHead } = JSON.parse(namaPrintBONTRIP);
   const { dtTrans, isDisable } = props;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -63,8 +65,7 @@ const BonTripPrint = (props) => {
         disabled={isDisable}
         onClick={() => {
           setIsOpen(true);
-        }}
-      >
+        }}>
         Print Bontrip
       </Button>
       <Dialog open={isOpen} fullWidth maxWidth={"md"}>
@@ -79,8 +80,7 @@ const BonTripPrint = (props) => {
             }}
             onClick={() => {
               setIsOpen(false);
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -115,8 +115,7 @@ const BonTripPrint = (props) => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span " },
-              }}
-            >
+              }}>
               <Table striped sx={{ gridColumn: "span 2 " }}>
                 <tbody>
                   <Typography fontSize="15px">
@@ -300,8 +299,7 @@ const BonTripPrint = (props) => {
                       borderCollapse: "collapse",
                       border: "1px solid black",
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     <tr>
                       <td
                         style={{
@@ -310,8 +308,7 @@ const BonTripPrint = (props) => {
                           paddingLeft: "45px",
                           paddingRight: "45px",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         Dibuat,
                       </td>
                       <td
@@ -321,8 +318,7 @@ const BonTripPrint = (props) => {
                           paddingLeft: "45px",
                           paddingRight: "45px",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         Diketahui,
                       </td>
                       <td
@@ -332,9 +328,8 @@ const BonTripPrint = (props) => {
                           paddingLeft: "45px",
                           paddingRight: "45px",
                           fontWeight: "bold",
-                        }}
-                      >
-                        Disetujui,
+                        }}>
+                        Disetujssui,
                       </td>
                     </tr>
                     <tr>
@@ -345,8 +340,7 @@ const BonTripPrint = (props) => {
                           color: "grey",
                           padding: "23px",
                           fontFamily: "Courier New",
-                        }}
-                      >
+                        }}>
                         {userInfo.name}
                       </td>
                       <td
@@ -355,9 +349,8 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           color: "grey",
                           fontFamily: "Courier New",
-                        }}
-                      >
-
+                        }}>
+                        {namePGS}
                       </td>
                       <td
                         style={{
@@ -365,9 +358,8 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           color: "grey",
                           fontFamily: "Courier New",
-                        }}
-                      >
-                        
+                        }}>
+                        {nameMillHead}
                       </td>
                     </tr>
                     <tr>
@@ -376,8 +368,7 @@ const BonTripPrint = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         Operator Timbang
                       </td>
                       <td
@@ -385,8 +376,7 @@ const BonTripPrint = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         PGS
                       </td>
                       <td
@@ -394,8 +384,7 @@ const BonTripPrint = (props) => {
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         Mill Head
                       </td>
                     </tr>
@@ -412,8 +401,7 @@ const BonTripPrint = (props) => {
                 <Button
                   variant="contained"
                   color="success"
-                  sx={{ textTransform: "none" }}
-                >
+                  sx={{ textTransform: "none" }}>
                   Print PKS Transaction
                 </Button>
               )}

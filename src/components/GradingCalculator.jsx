@@ -1022,7 +1022,7 @@ const GradingCalculator = ({
         </Button>
         <BonTripTBS
           dtTrans={{ ...values }}
-          isDisable={values.progressStatus !== 4}
+          // isDisable={values.progressStatus !== 4}
         />
         <Button
           variant="contained"

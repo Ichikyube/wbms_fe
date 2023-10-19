@@ -67,7 +67,7 @@ const UserMatrixContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (startBackDatedForm) {
-      if (currentTime >= startBackDatedForm) setBackDatedForm(WB5.tempValue);
+      if (currentTime >= startBackDatedForm) setBackDatedForm(WB5?.tempValue);
       if (currentTime >= endBackDatedForm) {
         setBackDatedForm(WB5?.defaultVal);
         requestEnded(5).unwrap();
@@ -78,7 +78,7 @@ const UserMatrixContextProvider = ({ children }) => {
   useEffect(() => {
     if (startBackDateTemplate) {
       if (currentTime >= startBackDateTemplate)
-        setBackdatedTemplate(WB4.tempValue);
+        setBackdatedTemplate(WB4?.tempValue);
       if (currentTime >= endBackDateTemplate) {
         setBackdatedTemplate(WB4?.defaultVal);
         requestEnded(4).unwrap();
@@ -88,7 +88,7 @@ const UserMatrixContextProvider = ({ children }) => {
   useEffect(() => {
     if (startEditTransaction) {
       if (currentTime >= startEditTransaction)
-        seteditTransaction(WB3.tempValue);
+        seteditTransaction(WB3?.tempValue);
       if (currentTime >= endEditTransaction) {
         seteditTransaction(WB3?.defaultVal);
         requestEnded(6).unwrap();
@@ -97,7 +97,7 @@ const UserMatrixContextProvider = ({ children }) => {
   }, [currentTime, WB3, requestEnded]);
   useEffect(() => {
     if (startManualEntryWB) {
-      if (currentTime >= startManualEntryWB) setManualEntryWB(WB2.tempValue);
+      if (currentTime >= startManualEntryWB) setManualEntryWB(WB2?.tempValue);
       if (currentTime >= endManualEntryWB) {
         setManualEntryWB(WB2?.defaultVal);
         requestEnded(3).unwrap();

@@ -772,7 +772,7 @@ const PksManualCpoPkoTimbangMasuk = () => {
         </Button>
         <BonTripPrint
           dtTrans={{ ...values }}
-          isDisable={!(values.progressStatus === 4)}
+          // isDisable={!(values.progressStatus === 4)}
         />
         <Button
           variant="contained"

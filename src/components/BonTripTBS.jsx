@@ -18,6 +18,8 @@ import CloseIcon from "@mui/icons-material/Close";
 const BonTripPrint = (props) => {
   const { dtTrans, isDisable } = props;
   const { userInfo } = useSelector((state) => state.app);
+  const {namaPrintBONTRIP} = useSelector((state) => state.tempConfigs);
+  const {namePGS, nameMillHead} = JSON.parse(namaPrintBONTRIP);
   const [isOpen, setIsOpen] = useState(false);
 
   const formRef = useRef();
@@ -350,14 +352,14 @@ const BonTripPrint = (props) => {
                           border: "1px solid black",
                           color: "grey",
                           fontFamily: "Courier New",
-                        }}></td>
+                        }}>{namePGS}</td>
                       <td
                         style={{
                           borderCollapse: "collapse",
                           border: "1px solid black",
                           color: "grey",
                           fontFamily: "Courier New",
-                        }}></td>
+                        }}>{nameMillHead}</td>
                     </tr>
                     <tr>
                       <td

@@ -331,55 +331,49 @@ const Driver = () => {
   };
 
   useEffect(() => {
-    const refreshData = setInterval(() => {
-      if (dtDriver) {
-        const filteredData = dtDriver.filter((driver) => {
-          const driverData = Object.values(driver).join(" ").toLowerCase();
-          return driverData.includes(searchQuery.toLowerCase());
-        });
-        setFilteredData(filteredData);
+    if (dtDriver) {
+      const filteredData = dtDriver.filter((driver) => {
+        const driverData = Object.values(driver).join(" ").toLowerCase();
+        return driverData.includes(searchQuery.toLowerCase());
+      });
+      setFilteredData(filteredData);
 
-        const filteredDataRefType0 = filteredData.filter(
-          (driver) => driver.refType === 0
+      const filteredDataRefType0 = filteredData.filter(
+        (driver) => driver.refType === 0
+      );
+      setFilteredDataRefType0(filteredDataRefType0);
+
+      const filteredDataRefType1 = filteredData.filter(
+        (driver) => driver.refType === 1
+      );
+      setFilteredDataRefType1(filteredDataRefType1);
+
+      const filteredDataRefType2 = filteredData.filter(
+        (driver) => driver.refType === 2
+      );
+      setFilteredDataRefType2(filteredDataRefType2);
+
+      let newFilteredData = [];
+
+      if (value === "") {
+        newFilteredData = filteredData;
+      } else {
+        newFilteredData = filteredData.filter(
+          (driver) => driver.refType === parseInt(value)
         );
-        setFilteredDataRefType0(filteredDataRefType0);
-
-        const filteredDataRefType1 = filteredData.filter(
-          (driver) => driver.refType === 1
-        );
-        setFilteredDataRefType1(filteredDataRefType1);
-
-        const filteredDataRefType2 = filteredData.filter(
-          (driver) => driver.refType === 2
-        );
-        setFilteredDataRefType2(filteredDataRefType2);
-
-        let newFilteredData = [];
-
-        if (value === "") {
-          newFilteredData = filteredData;
-        } else {
-          newFilteredData = filteredData.filter(
-            (driver) => driver.refType === parseInt(value)
-          );
-        }
-
-        setColumnDefs((prevDefs) => {
-          const newDefs = [...prevDefs];
-          const actionColumn = newDefs.find((column) => column.field === "id");
-          if (actionColumn) {
-            actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
-          }
-          return newDefs;
-        });
-
-        setFilteredData(newFilteredData);
       }
-    }, 1000); // Refresh interval setiap 500ms
 
-    return () => {
-      clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
-    };
+      setColumnDefs((prevDefs) => {
+        const newDefs = [...prevDefs];
+        const actionColumn = newDefs.find((column) => column.field === "id");
+        if (actionColumn) {
+          actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
+        }
+        return newDefs;
+      });
+
+      setFilteredData(newFilteredData);
+    }
   }, [searchQuery, dtDriver, value]);
 
   return (

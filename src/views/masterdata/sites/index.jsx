@@ -322,7 +322,6 @@ const Sites = () => {
   };
 
   useEffect(() => {
-    const refreshData = setInterval(() => {
       if (dtSites) {
         const filteredData = dtSites.filter((site) => {
           const siteData = Object.values(site).join(" ").toLowerCase();
@@ -366,11 +365,7 @@ const Sites = () => {
 
         setFilteredData(newFilteredData);
       }
-    }, 1000); // Refresh interval setiap 500ms
 
-    return () => {
-      clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
-    };
   }, [searchQuery, dtSites, value]);
 
   return (

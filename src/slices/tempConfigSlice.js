@@ -41,6 +41,7 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     fetchConfigsData: builder.query({
       query: () => "/configs",
+      // pollingInterval: 1000, // Every 5 seconds
       transformResponse: (response) => {
         const configItemsData = response.data?.config.records || [];
         const configItems = configItemsData.map(
@@ -50,7 +51,7 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
         );
         if(configItems)
           localStorage.setItem("tempConfigs", JSON.stringify(configItems));
-        return configItems;
+        return response.data?.config.records;
       },
       async onQueryUpdated(arg, { dispatch }) {
         dispatch(tempConfigSlice.actions.getTempConfigs());

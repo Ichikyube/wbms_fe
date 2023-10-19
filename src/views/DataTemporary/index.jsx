@@ -201,12 +201,10 @@ const DataTemporary = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {
-    data: transactions,
-  } = useGetAllTransactionsQuery();
-  const dtTransactions = transactions.map((obj) => obj.data);
+  const { data: transactions, isLoading } = useGetAllTransactionsQuery();
+  const dtTransactions = transactions? transactions.map((obj) => obj.data) : [];
 
-  console.log(dtTransactions)
+  console.log(dtTransactions);
   const updateGridData = useCallback((transaction) => {
     if (gridRef.current && gridRef.current.api) {
       gridRef.current.api.setRowData(transaction);

@@ -246,8 +246,7 @@ const Companies = () => {
                 onClick={() => {
                   setSelectedCompanies(params.data);
                   setIsViewOpen(true);
-                }}
-              >
+                }}>
                 <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
 
@@ -267,8 +266,7 @@ const Companies = () => {
                 onClick={() => {
                   setSelectedCompanies(params.data);
                   setIsEditOpen(true);
-                }}
-              >
+                }}>
                 <BorderColorOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
               <Box
@@ -285,8 +283,7 @@ const Companies = () => {
                   color: "white",
                   textDecoration: "none",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <DeleteOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
               </Box>
             </Box>
@@ -309,8 +306,7 @@ const Companies = () => {
               onClick={() => {
                 setSelectedCompanies(params.data);
                 setIsViewOpen(true);
-              }}
-            >
+              }}>
               <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
             </Box>
           );
@@ -352,55 +348,49 @@ const Companies = () => {
   };
 
   useEffect(() => {
-    const refreshData = setInterval(() => {
-      if (dtCompany) {
-        const filteredData = dtCompany.filter((company) => {
-          const companyData = Object.values(company).join(" ").toLowerCase();
-          return companyData.includes(searchQuery.toLowerCase());
-        });
-        setFilteredData(filteredData);
+    if (dtCompany) {
+      const filteredData = dtCompany.filter((company) => {
+        const companyData = Object.values(company).join(" ").toLowerCase();
+        return companyData.includes(searchQuery.toLowerCase());
+      });
+      setFilteredData(filteredData);
 
-        const filteredDataRefType0 = filteredData.filter(
-          (company) => company.refType === 0
+      const filteredDataRefType0 = filteredData.filter(
+        (company) => company.refType === 0
+      );
+      setFilteredDataRefType0(filteredDataRefType0);
+
+      const filteredDataRefType1 = filteredData.filter(
+        (company) => company.refType === 1
+      );
+      setFilteredDataRefType1(filteredDataRefType1);
+
+      const filteredDataRefType2 = filteredData.filter(
+        (company) => company.refType === 2
+      );
+      setFilteredDataRefType2(filteredDataRefType2);
+
+      let newFilteredData = [];
+
+      if (value === "") {
+        newFilteredData = filteredData;
+      } else {
+        newFilteredData = filteredData.filter(
+          (company) => company.refType === parseInt(value)
         );
-        setFilteredDataRefType0(filteredDataRefType0);
-
-        const filteredDataRefType1 = filteredData.filter(
-          (company) => company.refType === 1
-        );
-        setFilteredDataRefType1(filteredDataRefType1);
-
-        const filteredDataRefType2 = filteredData.filter(
-          (company) => company.refType === 2
-        );
-        setFilteredDataRefType2(filteredDataRefType2);
-
-        let newFilteredData = [];
-
-        if (value === "") {
-          newFilteredData = filteredData;
-        } else {
-          newFilteredData = filteredData.filter(
-            (company) => company.refType === parseInt(value)
-          );
-        }
-
-        setColumnDefs((prevDefs) => {
-          const newDefs = [...prevDefs];
-          const actionColumn = newDefs.find((column) => column.field === "id");
-          if (actionColumn) {
-            actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
-          }
-          return newDefs;
-        });
-
-        setFilteredData(newFilteredData);
       }
-    }, 1000); // Refresh interval setiap 500ms
 
-    return () => {
-      clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
-    };
+      setColumnDefs((prevDefs) => {
+        const newDefs = [...prevDefs];
+        const actionColumn = newDefs.find((column) => column.field === "id");
+        if (actionColumn) {
+          actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
+        }
+        return newDefs;
+      });
+
+      setFilteredData(newFilteredData);
+    }
   }, [searchQuery, dtCompany, value]);
 
   return (
@@ -417,12 +407,10 @@ const Companies = () => {
                 marginLeft: "37px",
                 borderTop: "5px solid #000",
                 borderRadius: "10px 10px 0px 0px",
-              }}
-            >
+              }}>
               <TabList
                 onChange={handleChange}
-                aria-label="lab API tabs example"
-              >
+                aria-label="lab API tabs example">
                 <Tab label="all" value="" />
                 <Tab label="wbms" value="0" />
                 <Tab label="e-dispatch" value="1" />
@@ -432,8 +420,12 @@ const Companies = () => {
 
             <TabPanel value="">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company</Typography>
@@ -450,8 +442,7 @@ const Companies = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -463,8 +454,7 @@ const Companies = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -482,8 +472,7 @@ const Companies = () => {
                               .includes(searchQuery.toLowerCase())
                           );
                           gridRef.current.api.setRowData(filteredData);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -500,8 +489,12 @@ const Companies = () => {
             </TabPanel>
             <TabPanel value="0">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company Wbms</Typography>
@@ -518,8 +511,7 @@ const Companies = () => {
                         }}
                         onClick={() => {
                           setIsOpen(true);
-                        }}
-                      >
+                        }}>
                         <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Tambah Data
                       </Button>
@@ -531,8 +523,7 @@ const Companies = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -545,8 +536,7 @@ const Companies = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType0);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -563,8 +553,12 @@ const Companies = () => {
             </TabPanel>
             <TabPanel value="1">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">
@@ -579,8 +573,7 @@ const Companies = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
-                        onClick={SyncSemai}
-                      >
+                        onClick={SyncSemai}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -592,8 +585,7 @@ const Companies = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -606,8 +598,7 @@ const Companies = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType1);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>
@@ -624,8 +615,12 @@ const Companies = () => {
             </TabPanel>
             <TabPanel value="2">
               <Paper
-                sx={{ p: 3, mx: 1, borderRadius: "10px 10px 10px 10px", mb: 3 }}
-              >
+                sx={{
+                  p: 3,
+                  mx: 1,
+                  borderRadius: "10px 10px 10px 10px",
+                  mb: 3,
+                }}>
                 <div style={{ marginBottom: "10px" }}>
                   <Box display="flex">
                     <Typography fontSize="20px">Data Company E-LHP</Typography>
@@ -637,8 +632,7 @@ const Companies = () => {
                           fontSize: "12px",
                           padding: "7px 10px",
                           color: "white",
-                        }}
-                      >
+                        }}>
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync
                       </Button>
@@ -650,8 +644,7 @@ const Companies = () => {
                       display="flex"
                       borderRadius="5px"
                       ml="auto"
-                      border="solid grey 1px"
-                    >
+                      border="solid grey 1px">
                       <InputBase
                         sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                         placeholder="Search"
@@ -664,8 +657,7 @@ const Companies = () => {
                         sx={{ p: 1 }}
                         onClick={() => {
                           gridRef.current.api.setRowData(filteredDataRefType2);
-                        }}
-                      >
+                        }}>
                         <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                       </IconButton>
                     </Box>

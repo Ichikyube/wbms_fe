@@ -41,7 +41,7 @@ const PksManualTimbangMasukOthers = ({
   // console.clear();
 
   const [weighbridge] = useWeighbridge();
-  const [bonTripNo, setBonTripNo] = useBonTripGenerator();
+  const bonTripNo = useBonTripGenerator();
   const [configs] = useConfig();
 
   const dispatch = useDispatch();
@@ -214,7 +214,7 @@ const PksManualTimbangMasukOthers = ({
             </>
           }
           name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
-          value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
+          value={values?.bonTripNo || bonTripNo} // Nilai data Nomor BON Trip yang diambil dari state 'values'
         />
         <TextField
           variant="outlined"

@@ -25,6 +25,7 @@ import BonTripTBS from "../../../components/BonTripTBS";
 import * as TransactionAPI from "../../../api/transactionApi";
 
 import { useConfig } from "../../../common/hooks";
+import useBonTripGenerator from "../../../utils/useBonTripGenerator";
 
 const tType = 1;
 
@@ -98,23 +99,8 @@ const BackdateFormOthers = ({
     setValues({ ...values });
   };
 
-  const [bonTripNo, setBonTripNo] = useState("");
+  const bonTripNo = useBonTripGenerator();
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  useEffect(() => {
-    const generateBonTripNo = () => {
-      const dateNow = moment(selectedDate).format("YYMMDD");
-      const timeNow = moment().format("HHmmss");
-      return `P049${dateNow}${timeNow}`;
-    };
-
-    const generatedBonTripNo = generateBonTripNo();
-    setBonTripNo(generatedBonTripNo);
-    setValues({
-      ...values,
-      bonTripNo: generatedBonTripNo,
-    });
-  }, [selectedDate]);
 
   useEffect(() => {
     // setProgressStatus(Config.PKS_PROGRESS_STATUS[values.progressStatus]);
@@ -131,7 +117,7 @@ const BackdateFormOthers = ({
         values.potonganLain;
       setOriginWeightNetto(total);
     }
-  }, [values]);
+  }, [values, configs.ENV.WBMS_WB_MIN_WEIGHT]);
 
   const validateForm = () => {
     return (
@@ -177,8 +163,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal BonTripNo
             </Typography>
           }
@@ -208,14 +193,13 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white", // Background color teks label
                   px: 1, // Padding horizontal teks label 1 unit
-                }}
-              >
+                }}>
                 Nomor BON Trip
               </Typography>
             </>
           }
           name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
-          value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
+          value={values?.bonTripNo || bonTripNo} // Nilai data Nomor BON Trip yang diambil dari state 'values'
         />
         <TextField
           variant="outlined"
@@ -237,8 +221,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 No. DO/NPB
               </Typography>
             </>
@@ -267,8 +250,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 Nama Supir
               </Typography>
             </>
@@ -332,8 +314,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Kebun
               </Typography>
             </>
@@ -363,8 +344,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Afdeling
               </Typography>
             </>
@@ -394,8 +374,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Blok
               </Typography>
             </>
@@ -426,8 +405,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Tahun
               </Typography>
             </>
@@ -459,8 +437,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1.5,
-                }}
-              >
+                }}>
                 SPBTS
               </Typography>
             </>
@@ -490,8 +467,7 @@ const BackdateFormOthers = ({
                 sx={{
                   bgcolor: "white",
                   px: 1,
-                }}
-              >
+                }}>
                 Sertifikasi Tipe Truk
               </Typography>
             </>
@@ -524,8 +500,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight IN
             </Typography>
           }
@@ -555,8 +530,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Weight OUT
             </Typography>
           }
@@ -587,8 +561,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Wajib Vendor
             </Typography>
           }
@@ -617,8 +590,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Potongan Lainnya
             </Typography>
           }
@@ -647,8 +619,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               TOTAL
             </Typography>
           }
@@ -660,8 +631,7 @@ const BackdateFormOthers = ({
           fullWidth
           sx={{ mt: 2 }}
           onClick={handleSubmit}
-          disabled={!validateForm() || values.progressStatus === 4}
-        >
+          disabled={!validateForm() || values.progressStatus === 4}>
           Simpan
         </Button>
         <BonTripTBS
@@ -698,8 +668,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal Weight IN
             </Typography>
           }
@@ -726,8 +695,7 @@ const BackdateFormOthers = ({
               sx={{
                 bgcolor: "white",
                 px: 1,
-              }}
-            >
+              }}>
               Tanggal Weight OUT
             </Typography>
           }

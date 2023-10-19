@@ -136,18 +136,16 @@ const ConfigRequest = () => {
     if (result.isConfirmed) {
       try {
         await approveRequest(data.id);
+      } catch (error) {
+        console.error("Config Gagal di setujui:", error);
+        toast.error("Config Gagal di setujui ");
+      } finally {
         await refetch();
-
-        console.log(data);
         await toast.success(
           data.approval.length + 1 >= data.config.lvlOfApprvl
             ? "Permintaan telah di setujui"
             : "Request naik 1 tingkat"
         );
-        await refetch();
-      } catch (error) {
-        console.error("Config Gagal di setujui:", error);
-        toast.error("Config Gagal di setujui ");
       }
     }
   };

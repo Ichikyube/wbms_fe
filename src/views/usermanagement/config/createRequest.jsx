@@ -30,7 +30,7 @@ moment.locale("id");
 const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
 
   const dispatch = useDispatch();
-  const { refetch } = useFetchRequestsQuery();
+
   const { userInfo } = useSelector((state) => state.app);
   const groupMap = useSelector((state) => state.groupMapping);
   const [createRequest, { isLoading, isSuccess }] = useCreateRequestMutation();
@@ -62,10 +62,8 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
       toast.error("Data Gagal Dibuat: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
-      await refetch();
       toast.success("Data Berhasil Dibuat");
       setSubmitting(false);
-      refetch();
       resetForm();
       onClose("", false);
     }

@@ -19,6 +19,7 @@ import { useForm } from "../../../utils/useForm";
 import * as SemaiUtils from "../../../utils/SemaiUtils";
 import * as TransactionAPI from "../../../api/transactionApi";
 import * as SemaiAPI from "../../../api/semaiApi";
+import useBonTripGenerator from "../../../../utils/useBonTripGenerator";
 
 const typeTransaction = 1;
 
@@ -154,7 +155,7 @@ const PksWbNormal = (props) => {
             return handleClose();
           }
 
-          let bonTripNo = `P041${moment().format("YYMMDDHHmmss")}`; //moment().valueOf()
+          let bonTripNo =useBonTripGenerator(); //moment().valueOf()
 
           setValues({
             ...wbPksTransaction,
@@ -404,7 +405,7 @@ const PksWbNormal = (props) => {
 
           <BonTripPrint
             dtTrans={{ ...values }}
-            isDisable={!(values.progressStatus === 4)}
+            // isDisable={!(values.progressStatus === 4)}
           />
 
           <Button

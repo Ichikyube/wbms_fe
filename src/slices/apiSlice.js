@@ -32,7 +32,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         api,
         extraOptions
       );
-      console.log(refreshResult.data)
       if (refreshResult?.data.tokens) {
         const at = refreshResult.data.data.tokens["access_token"];
         const rt = refreshResult.data.data.tokens["refresh_token"];
@@ -40,10 +39,10 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         document.cookie = "rt=" + rt + "; SameSite=Lax";
         // retry the original query with new access token
         result = await baseQuery(args, api, extraOptions);
-      } /*else if(refreshResult?.data.logs.error.status === 403 || localStorage.getItem("wbms_at")) {
+      } else if(refreshResult?.data.logs.error.status === 403 || localStorage.getItem("wbms_at")) {
         localStorage.clear();
         window.location.reload();
-      }*/
+      }
     } catch (_error) {
       return Promise.reject(_error);
     }

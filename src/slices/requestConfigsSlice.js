@@ -20,7 +20,7 @@ export const configRequestApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     fetchRequests: builder.query({
       query: () => "config-requests",
-      pollingInterval: 1000, // Every 5 seconds
+      pollingInterval: 1000,
     }),
     createRequest: builder.mutation({
       query: (requestData) => ({

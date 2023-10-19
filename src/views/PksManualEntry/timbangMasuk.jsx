@@ -143,8 +143,7 @@ const TimbangMasuk = () => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "30px",
                       },
-                    }}
-                  >
+                    }}>
                     STATUS PROSES
                   </Typography>
                 </>
@@ -160,8 +159,7 @@ const TimbangMasuk = () => {
             <Box
               display="grid"
               gap="20px"
-              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
-            >
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))">
               <FormControl sx={{ gridColumn: "span 3" }}>
                 {/* <FormControl
                   fullWidth
@@ -226,8 +224,7 @@ const TimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Nomor Polisi
                       </Typography>
                     </>
@@ -286,8 +283,7 @@ const TimbangMasuk = () => {
                     endAdornment: (
                       <InputAdornment
                         position="end"
-                        sx={{ fontWeight: "bold" }}
-                      >
+                        sx={{ fontWeight: "bold" }}>
                         <SearchIcon sx={{ fontSize: "18px" }} />
                       </InputAdornment>
                     ),
@@ -302,14 +298,13 @@ const TimbangMasuk = () => {
                         sx={{
                           bgcolor: "white",
                           px: 1.5,
-                        }}
-                      >
+                        }}>
                         Cust/Vendor transport
                       </Typography>
                     </>
                   }
                   // name="Name"
-                  value={Transporter.Code}
+                  value={Transporter.Code ? Transporter.Code : Transporter.Name}
                   onClick={() => {
                     setIsFilterData(true);
                   }}
@@ -318,13 +313,11 @@ const TimbangMasuk = () => {
                   fullWidth
                   variant="outlined"
                   size="small"
-                  sx={{ my: 2 }}
-                >
+                  sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
+                    sx={{ bgcolor: "white", px: 1 }}>
                     Nama Product
                   </InputLabel>
                   <Autocomplete
@@ -423,8 +416,7 @@ const TimbangMasuk = () => {
                       .includes(searchQuery.toLowerCase())
                   );
                   gridRef.current.api.setRowData(filteredData);
-                }}
-              >
+                }}>
                 <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
               </IconButton>
             </Box>

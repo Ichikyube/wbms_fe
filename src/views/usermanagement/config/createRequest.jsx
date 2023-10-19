@@ -19,15 +19,16 @@ import { format, addDays, addHours } from "date-fns";
 import { Formik } from "formik";
 import { grey } from "@mui/material/colors";
 import moment from "moment";
+import "moment/locale/id";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useTimescape, $NOW } from "timescape/react";
 import {
   useFetchRequestsQuery,
   useCreateRequestMutation,
 } from "../../../slices/requestConfigsSlice";
-import { createNotificationAsync } from "../../../slices/notificationSlice";
-
+moment.locale("id");
 const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
+
   const dispatch = useDispatch();
   const { refetch } = useFetchRequestsQuery();
   const { userInfo } = useSelector((state) => state.app);
@@ -43,6 +44,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
   const [timeReceipt, setTimeReceipt] = useState("");
   const { getRootProps, getInputProps } = useTimescape({
     minDate: $NOW,
+    maxDate: moment().add(3, "days").calendar(),
     date: nextSchedule,
     wrapAround: false,
     onChangeDate: setNextSchedule,
@@ -51,33 +53,17 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
     setIsCopied(true);
   };
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values["schedule"] = new Date(nextSchedule);
+    values["schedule"] = moment(nextSchedule).format("YYYY-MM-DD[T]HH:mm");
 
     try {
       await createRequest(values);
-      await refetch();
-      toast.success("Data Berhasil Dibuat");
-      const notificationData = {
-        photo: userInfo.profilePic,
-        sender: userInfo.name,
-        message: `Meminta persetujuan untuk mengaktifkan ${dtConfig.name}`,
-        target: Object.keys(groupMap).filter((id => groupMap[id] === 'PJ1')),
-        configRequestId: dtConfig.id
-      };
-      dispatch(createNotificationAsync(notificationData))
-        .unwrap()
-        .then((createdNotification) => {
-          console.log("Notification sended:", createdNotification);
-        })
-        .catch((error) => {
-          // Handle failure (error in creating notification)
-          console.error("Error sending notification:", error);
-        });
     } catch (error) {
       console.error("Data Gagal Dibuat:", error);
       toast.error("Data Gagal Dibuat: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
+      await refetch();
+      toast.success("Data Berhasil Dibuat");
       setSubmitting(false);
       refetch();
       resetForm();
@@ -87,9 +73,9 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
 
   useEffect(() => {
     setTimeReceipt(
-      `Perkiraan request akan berlaku mulai ${nextSchedule} hingga ${new Date(
-        new Date(nextSchedule).getTime() + dtConfig?.lifespan * 1000
-      )}`
+      `Perkiraan request akan berlaku mulai ${moment(
+        nextSchedule
+      ).calendar()} hingga ${moment(nextSchedule).add(dtConfig?.lifespan, 'seconds').calendar()}`
     );
   }, [nextSchedule, dtConfig]);
 
@@ -182,7 +168,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
                       values.schedule
                         ? format(
                             new Date(values.schedule),
-                            "yyyy-MM-dd'T'HH:mm"
+                            "yyyy-MM-dd[T]HH:mm"
                           )
                         : ""
                     }>
@@ -190,7 +176,7 @@ const CreateRequestConfig = ({ isRequestOpen, onClose, dtConfig }) => {
                     <span>/</span>
                     <input {...getInputProps("months")} />
                     <span>/</span>
-                    <input {...getInputProps("years")} />
+                    <input disabled {...getInputProps("years")} />
                     <span className="separator">&nbsp;</span>
                     <input {...getInputProps("hours")} />
                     <span>:</span>

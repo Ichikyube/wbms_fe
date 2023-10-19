@@ -32,7 +32,7 @@ const UserMatrixContextProvider = ({ children }) => {
   } = useFetchActiveConfigsDataQuery();
   const [requestEnded] = useRequestEndedMutation();
   const dispatch = useDispatch();
-  const currentTime = moment().format('hh:mm');
+  const currentTime = moment().format("HH:mm");
 
   const {
     manualEntryWB: WB2,
@@ -56,48 +56,54 @@ const UserMatrixContextProvider = ({ children }) => {
   useEffect(() => {
     configCallback();
   }, [configCallback]);
-  const startBackDateTemplate = moment(WB4?.start).utc().format('hh:mm');
-  const endBackDateTemplate = moment(WB4?.end).utc().format('hh:mm');
-  const startEditTransaction = moment(WB3?.start).utc().format('hh:mm');
-  const endEditTransaction = moment(WB3?.end).utc().format('hh:mm');
-  const startManualEntryWB = moment(WB2?.start).utc().format('hh:mm');
-  const endManualEntryWB = moment(WB2?.end).utc().format('hh:mm');
-  const startBackDatedForm = moment(WB5?.start).utc().format('hh:mm');
-  const endBackDatedForm = moment(WB5?.end).utc().format('hh:mm');
-  useEffect(() => {
-    if (backDatedForm && currentTime >= startBackDatedForm)
-      setBackDatedForm(WB5.tempValue);
-    if (backDatedForm && currentTime >= endBackDatedForm) {
-      setBackDatedForm(WB5?.defaultVal);
-      requestEnded(5).unwrap();
-    }
-  }, [backDatedForm, currentTime, WB5, requestEnded]);
-
+  const startBackDateTemplate = moment(WB4?.start).utc().format("HH:mm");
+  const endBackDateTemplate = moment(WB4?.end).utc().format("HH:mm");
+  const startEditTransaction = moment(WB3?.start).utc().format("HH:mm");
+  const endEditTransaction = moment(WB3?.end).utc().format("HH:mm");
+  const startManualEntryWB = moment(WB2?.start).utc().format("HH:mm");
+  const endManualEntryWB = moment(WB2?.end).utc().format("HH:mm");
+  const startBackDatedForm = moment(WB5?.start).utc().format("HH:mm");
+  const endBackDatedForm = moment(WB5?.end).utc().format("HH:mm");
 
   useEffect(() => {
-    if (backDatedTemplate && currentTime >= startBackDateTemplate)
-      setBackdatedTemplate(WB4.tempValue);
-    if (backDatedTemplate && currentTime >= endBackDateTemplate) {
-      setBackdatedTemplate(WB4?.defaultVal);
-      requestEnded(4).unwrap();
+    if (startBackDatedForm) {
+      if (currentTime >= startBackDatedForm) setBackDatedForm(WB5.tempValue);
+      if (currentTime >= endBackDatedForm) {
+        setBackDatedForm(WB5?.defaultVal);
+        requestEnded(5).unwrap();
+      }
     }
-  }, [backDatedTemplate, currentTime, WB4, requestEnded]);
+  }, [currentTime, WB5, requestEnded]);
+
   useEffect(() => {
-    if (editTransaction && currentTime >= startEditTransaction)
-      seteditTransaction(WB3.tempValue);
-    if (editTransaction && currentTime >= endEditTransaction) {
-      seteditTransaction(WB3?.defaultVal);
-      requestEnded(6).unwrap();
+    if (startBackDateTemplate) {
+      if (currentTime >= startBackDateTemplate)
+        setBackdatedTemplate(WB4.tempValue);
+      if (currentTime >= endBackDateTemplate) {
+        setBackdatedTemplate(WB4?.defaultVal);
+        requestEnded(4).unwrap();
+      }
     }
-  }, [editTransaction, currentTime, WB3, requestEnded]);
+  }, [currentTime, WB4, requestEnded]);
   useEffect(() => {
-    if (manualEntryWB && currentTime >= startManualEntryWB)
-      setManualEntryWB(WB2.tempValue);
-    if (manualEntryWB && currentTime >= endManualEntryWB) {
-      setManualEntryWB(WB2?.defaultVal);
-      requestEnded(3).unwrap();
+    if (startEditTransaction) {
+      if (currentTime >= startEditTransaction)
+        seteditTransaction(WB3.tempValue);
+      if (currentTime >= endEditTransaction) {
+        seteditTransaction(WB3?.defaultVal);
+        requestEnded(6).unwrap();
+      }
     }
-  }, [manualEntryWB, currentTime, WB2, requestEnded]);
+  }, [currentTime, WB3, requestEnded]);
+  useEffect(() => {
+    if (startManualEntryWB) {
+      if (currentTime >= startManualEntryWB) setManualEntryWB(WB2.tempValue);
+      if (currentTime >= endManualEntryWB) {
+        setManualEntryWB(WB2?.defaultVal);
+        requestEnded(3).unwrap();
+      }
+    }
+  }, [currentTime, WB2, requestEnded]);
   return (
     <UserMatrixContext.Provider
       value={{

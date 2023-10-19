@@ -122,7 +122,6 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                   dtConfig={dtConfig}
                   setFieldValue={setFieldValue}
                   values={values}
-                  fullWidth
                   handleChange={handleChange}
                 />
               </Box>

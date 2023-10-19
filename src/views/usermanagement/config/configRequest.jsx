@@ -27,6 +27,8 @@ import InputBase from "@mui/material/InputBase";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import CancelIcon from "@mui/icons-material/CancelOutlined";
 import Swal from "sweetalert2";
+import moment from "moment";
+import "moment/locale/id";
 import {
   useFetchRequestsQuery,
   useApproveRequestMutation,
@@ -43,7 +45,7 @@ ModuleRegistry.registerModules([
   RowGroupingModule,
   RichSelectModule,
 ]);
-
+moment.locale("id");
 const ConfigRequest = () => {
   // console.clear();
   const dispatch = useDispatch();
@@ -82,14 +84,11 @@ const ConfigRequest = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const updateGridData = useCallback(
-    (requestList) => {
-      if (gridRef.current && gridRef.current.api) {
-        gridRef.current.api.setRowData(requestList);
-      }
-    },
-    []
-  );
+  const updateGridData = useCallback((requestList) => {
+    if (gridRef.current && gridRef.current.api) {
+      gridRef.current.api.setRowData(requestList);
+    }
+  }, []);
 
   useEffect(() => {
     if (requestList) {
@@ -150,26 +149,6 @@ const ConfigRequest = () => {
         console.error("Config Gagal di setujui:", error);
         toast.error("Config Gagal di setujui ");
       }
-      if (data.approval.length < data.config.lvlOfApprvl) {
-        const notificationData = {
-          message: `${userInfo.name} telah menyetujui ${data.config.name}, dan kini menunggu persetujuan anda`,
-          target: Object.keys(groupMap).filter(
-            (id) => groupMap[id] === lvl[data.approval.length + 1]
-          ),
-          sender: userInfo.name,
-        };
-
-        dispatch(modifyNotificationAsync(data.config.id, notificationData))
-          .unwrap()
-          .then((createdNotification) => {
-            console.log("Notification sended:", createdNotification);
-          })
-          .catch((error) => {
-            // Handle failure (error in creating notification)
-            console.error("Error sending notification:", error);
-          });
-      }
-      console.log(data.approval.length + 1);
     }
   };
   // Show config name, description, start, end?, value proposed, signed button
@@ -216,28 +195,13 @@ const ConfigRequest = () => {
       flex: 3,
       valueGetter: (params) => {
         const { data } = params;
-        const activeStart = new Date(data.schedule);
-        const activeEnd = new Date(
-          new Date(data.schedule).getTime() + data.config.lifespan
-        );
 
-        const options = {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        };
+        console.log(data)
+        const formattedActiveStart = moment(data.schedule).calendar();
 
-        const formattedActiveStart = activeStart.toLocaleDateString(
-          "id-ID",
-          options
-        );
-        const formattedActiveEnd = activeEnd.toLocaleDateString(
-          "id-ID",
-          options
-        );
+        const formattedActiveEnd = moment(data.schedule)
+          .add(data.config.lifespan, "seconds")
+          .calendar();
 
         return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },

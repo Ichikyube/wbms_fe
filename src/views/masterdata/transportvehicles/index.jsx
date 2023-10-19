@@ -71,8 +71,7 @@ const TransportVehicles = () => {
     searchQuery
       ? `Transportvehicle?name_like=${searchQuery}`
       : "Transportvehicle",
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const updateGridData = useCallback((Transportvehicle) => {
@@ -146,8 +145,8 @@ const TransportVehicles = () => {
     },
 
     {
-      headerName: "SAP Code",
-      field: "codeSap",
+      headerName: "Code",
+      field: "code",
       filter: true,
       sortable: true,
       hide: false,
@@ -344,59 +343,59 @@ const TransportVehicles = () => {
     setFilteredData(newFilteredData);
   };
 
-  useEffect(() => {
-    const refreshData = setInterval(() => {
-      if (dtTransportvehicle) {
-        const filteredData = dtTransportvehicle.filter((transportvehicle) => {
-          const transportvehicleData = Object.values(transportvehicle)
-            .join(" ")
-            .toLowerCase();
-          return transportvehicleData.includes(searchQuery.toLowerCase());
-        });
-        setFilteredData(filteredData);
+  // useEffect(() => {
+  //   const refreshData = setInterval(() => {
+  //     if (dtTransportvehicle) {
+  //       const filteredData = dtTransportvehicle.filter((transportvehicle) => {
+  //         const transportvehicleData = Object.values(transportvehicle)
+  //           .join(" ")
+  //           .toLowerCase();
+  //         return transportvehicleData.includes(searchQuery.toLowerCase());
+  //       });
+  //       setFilteredData(filteredData);
 
-        const filteredDataRefType0 = filteredData.filter(
-          (transportvehicle) => transportvehicle.refType === 0
-        );
-        setFilteredDataRefType0(filteredDataRefType0);
+  //       const filteredDataRefType0 = filteredData.filter(
+  //         (transportvehicle) => transportvehicle.refType === 0
+  //       );
+  //       setFilteredDataRefType0(filteredDataRefType0);
 
-        const filteredDataRefType1 = filteredData.filter(
-          (transportvehicle) => transportvehicle.refType === 1
-        );
-        setFilteredDataRefType1(filteredDataRefType1);
+  //       const filteredDataRefType1 = filteredData.filter(
+  //         (transportvehicle) => transportvehicle.refType === 1
+  //       );
+  //       setFilteredDataRefType1(filteredDataRefType1);
 
-        const filteredDataRefType2 = filteredData.filter(
-          (transportvehicle) => transportvehicle.refType === 2
-        );
-        setFilteredDataRefType2(filteredDataRefType2);
+  //       const filteredDataRefType2 = filteredData.filter(
+  //         (transportvehicle) => transportvehicle.refType === 2
+  //       );
+  //       setFilteredDataRefType2(filteredDataRefType2);
 
-        let newFilteredData = [];
+  //       let newFilteredData = [];
 
-        if (value === "") {
-          newFilteredData = filteredData;
-        } else {
-          newFilteredData = filteredData.filter(
-            (transportvehicle) => transportvehicle.refType === parseInt(value)
-          );
-        }
+  //       if (value === "") {
+  //         newFilteredData = filteredData;
+  //       } else {
+  //         newFilteredData = filteredData.filter(
+  //           (transportvehicle) => transportvehicle.refType === parseInt(value)
+  //         );
+  //       }
 
-        setColumnDefs((prevDefs) => {
-          const newDefs = [...prevDefs];
-          const actionColumn = newDefs.find((column) => column.field === "id");
-          if (actionColumn) {
-            actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
-          }
-          return newDefs;
-        });
+  //       setColumnDefs((prevDefs) => {
+  //         const newDefs = [...prevDefs];
+  //         const actionColumn = newDefs.find((column) => column.field === "id");
+  //         if (actionColumn) {
+  //           actionColumn.hide = !value; // Mengatur hide menjadi true jika tidak ada filter refType yang aktif
+  //         }
+  //         return newDefs;
+  //       });
 
-        setFilteredData(newFilteredData);
-      }
-    }, 1000); // Refresh interval setiap 500ms
+  //       setFilteredData(newFilteredData);
+  //     }
+  //   }, 1000); // Refresh interval setiap 500ms
 
-    return () => {
-      clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
-    };
-  }, [searchQuery, dtTransportvehicle, value]);
+  //   return () => {
+  //     clearInterval(refreshData); // Membersihkan interval saat komponen tidak lagi digunakan
+  //   };
+  // }, [searchQuery, dtTransportvehicle, value]);
 
   return (
     <>

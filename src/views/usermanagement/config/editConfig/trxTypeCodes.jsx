@@ -13,12 +13,10 @@ const TrxTypeCodes = ({ dtConfig, setFieldValue, values }) => {
   const [formData, setFormData] = useState(JSON.parse(dtConfig.defaultVal));
   useEffect(() => {
     setFieldValue("defaultVal", formData);
-  }, [formData])
+  }, [formData, setFieldValue]);
   const handleChange = (fieldName) => async (event) => {
     const input = event.target.value;
-    console.log(values.defaultVal);
 
-    
     setFormData(prevFormData => ({
       ...prevFormData,
       [fieldName]: input,

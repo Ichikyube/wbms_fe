@@ -93,14 +93,14 @@ export const tempConfigApiSlice = apiSlice.injectEndpoints({
     requestApproved: builder.mutation({
       query: ({ id, data }) => ({
         url: `/configs/${id}/approve`,
-        method: "POST",
+        method: "PATCH",
         body: { data },
       }),
     }),
     requestEnded: builder.mutation({
       query: (id) => ({
-        url: `/configs/${id}/requestEnded`,
-        method: "POST",
+        url: `/configs/${id}/ended`,
+        method: "PATCH",
       }),
     }),
   }),

@@ -13,7 +13,8 @@ import useSWR from "swr";
 import { yellow } from "@mui/material/colors";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import "ag-grid-enterprise";
-
+import moment from "moment";
+import "moment/locale/id";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -36,6 +37,7 @@ ModuleRegistry.registerModules([
   RowGroupingModule,
   RichSelectModule,
 ]);
+moment.locale("id");
 const Config = () => {
   // console.clear();
   const gridRef = useRef();
@@ -73,7 +75,6 @@ const Config = () => {
   };
 
   useEffect(() => {
-    updateGridData(showConfig);
     if (dtConfigs) {
       if (selectedButton === 1) {
         setShowConfig(dtConfigs.filter(tempConfigsGroup));
@@ -154,12 +155,9 @@ const Config = () => {
       valueGetter: (params) => {
         const { data } = params;
         if (!data?.start) return "-";
-        console.log(params);
         if (data.type !== "Boolean") return "Always";
-        const formattedActiveStart = new Date(data?.start).toLocaleString(
-          "id-ID"
-        );
-        const formattedActiveEnd = new Date(data?.end).toLocaleString("id-ID");
+        const formattedActiveStart = moment(data?.start).calendar();
+        const formattedActiveEnd = moment(data?.end).calendar();
 
         return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
@@ -181,7 +179,7 @@ const Config = () => {
                   ? "pointer"
                   : "not-allowed"
               }
-              pointer-events={
+              pointerEvents={
                 userInfo?.role.toLowerCase().includes("admin") ||
                 params.data.type === "Boolean"
                   ? "auto"

@@ -37,6 +37,7 @@ const PksTransaction = () => {
   // const [wbPksTransaction, setWbPksTransaction] = useState(null);
   // const [progressStatus, setProgressStatus] = useState("-");
   const { backDatedForm } = useMatrix();
+  console.log(backDatedForm)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleCloseQRCodeScanner = async (codeContent, readEnter) => {

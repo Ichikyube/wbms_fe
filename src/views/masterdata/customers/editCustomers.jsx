@@ -28,7 +28,6 @@ const EditCustomer = ({
 }) => {
   const userSchema = yup.object().shape({
     code: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
     name: yup.string().required("required"),
     shortName: yup.string().required("required"),
     cityId: yup.string().required("required"),
@@ -114,7 +113,7 @@ const EditCustomer = ({
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -142,34 +141,7 @@ const EditCustomer = ({
                     }}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    SAP Code
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan SAP Code...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
-                    sx={{
-                      gridColumn: "span 4",
-                      "& label": { typography: { fontSize: "14px" } },
-                    }}
-                  />
-                </FormControl>
+               
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{

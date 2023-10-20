@@ -158,14 +158,7 @@ const Customers = () => {
       hide: false,
       flex: 3,
     },
-    {
-      headerName: "SAP Code",
-      field: "codeSap",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 3,
-    },
+   
     {
       headerName: "Nama",
       field: "name",

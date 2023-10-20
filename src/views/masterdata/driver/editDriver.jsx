@@ -33,7 +33,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
       .email("Enter a valid email")
       .required("Email is required"),
     phone: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
+    code: yup.string().required("required"),
     licenseNo: yup.string(),
     licenseED: yup.date().required("required"),
   });
@@ -137,19 +137,19 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Code Sap
+                    Code 
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Code Sap...."
+                    placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
+                    value={values?.code}
+                    name="code"
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 8" }}>

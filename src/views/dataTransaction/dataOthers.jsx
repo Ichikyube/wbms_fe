@@ -107,7 +107,7 @@ const EditDataOthers = ({}) => {
     } else {
       let total =
         Math.abs(values.originWeighInKg - values.originWeighOutKg) -
-        values.potonganWajib -
+        values.persenPotngWajib -
         values.potonganLain;
       setOriginWeightNetto(total);
     }

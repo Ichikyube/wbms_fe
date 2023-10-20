@@ -52,7 +52,7 @@ const CreateTransportvehicle = ({
   const checkoutSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
+    code: yup.string().required("required"),
     productId: yup.string().required("required"),
     productName: yup.string().required("required"),
     productCode: yup.string().required("required"),
@@ -77,7 +77,7 @@ const CreateTransportvehicle = ({
     model: "",
     sccModel: "",
     notes: "",
-    codeSap: "",
+    code: "",
     licenseED: "",
     keurED: "",
   };
@@ -161,19 +161,19 @@ const CreateTransportvehicle = ({
                       fontWeight: "bold",
                     }}
                   >
-                    Code Sap
+                    Code 
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Code Sap...."
+                    placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
+                    value={values?.code}
+                    name="code"
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>

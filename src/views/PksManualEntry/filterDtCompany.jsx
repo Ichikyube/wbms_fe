@@ -64,7 +64,7 @@ const FilterDataCompany = ({
     const dataCompany = {
       Id: params.data.id,
       Name: params.data.name,
-      Code: params.data.codeSap,
+      Code: params.data.codeVendor,
     };
     onClose("", false);
     // Mengirimkan data perusahaan yang dipilih ke TimbangKeluar untuk diperbarui
@@ -87,8 +87,8 @@ const FilterDataCompany = ({
 
   const [columnDefs] = useState([
     {
-      headerName: "SAP Code",
-      field: "codeSap",
+      headerName: "Code",
+      field: "codeVendor",
       filter: true,
       sortable: true,
       hide: false,
@@ -133,8 +133,7 @@ const FilterDataCompany = ({
   return (
     <Dialog open={isFilterData} fullWidth maxWidth="md">
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "18px" }}
-      >
+        sx={{ color: "black", backgroundColor: "white", fontSize: "18px" }}>
         Pencarian Data
         <IconButton
           sx={{
@@ -145,8 +144,7 @@ const FilterDataCompany = ({
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -169,8 +167,7 @@ const FilterDataCompany = ({
                   company.name.toLowerCase().includes(searchQuery.toLowerCase())
                 );
                 gridRef.current.api.setRowData(filteredData);
-              }}
-            >
+              }}>
               <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
             </IconButton>
           </Box>
@@ -179,8 +176,7 @@ const FilterDataCompany = ({
         <Paper sx={{ p: 2, mt: 1 }}>
           <div
             className="ag-theme-alpine"
-            style={{ width: "auto", height: "50vh" }}
-          >
+            style={{ width: "auto", height: "50vh" }}>
             <AgGridReact
               ref={gridRef}
               rowData={dtCompany}
@@ -199,8 +195,7 @@ const FilterDataCompany = ({
                 backgroundColor: red[700],
                 color: "white",
               }}
-              onClick={handleCancel}
-            >
+              onClick={handleCancel}>
               Batal
             </Button>
           </Box>

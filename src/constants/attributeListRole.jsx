@@ -4,7 +4,7 @@ export const dtAttrJson = {
     { value: "refType", label: "refType" },
     { value: "refId", label: "refId" },
     { value: "code", label: "code" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "name", label: "name" },
     { value: "shortName", label: "shortName" },
     { value: "address", label: "address" },
@@ -29,7 +29,7 @@ export const dtAttrJson = {
     { value: "customerGroupId", label: "customerGroupId" },
     { value: "cityId", label: "cityId" },
     { value: "code", label: "code" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "name", label: "name" },
     { value: "shortName", label: "shortName" },
     { value: "address", label: "address" },
@@ -54,7 +54,7 @@ export const dtAttrJson = {
     { value: "companyName", label: "companyName" },
     { value: "cityId", label: "cityId" },
     { value: "code", label: "code" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "name", label: "name" },
     { value: "shortName", label: "shortName" },
     { value: "description", label: "description" },
@@ -82,7 +82,7 @@ export const dtAttrJson = {
     { value: "refId", label: "refId" },
     { value: "productGroupName", label: "productGroupName" },
     { value: "code", label: "code" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "name", label: "name" },
     { value: "shortName", label: "shortName" },
     { value: "description", label: "description" },
@@ -102,7 +102,7 @@ export const dtAttrJson = {
     { value: "productRefId", label: "productRefId" },
     { value: "productName", label: "productName" },
     { value: "code", label: "code" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "name", label: "name" },
     { value: "shortName", label: "shortName" },
     { value: "description", label: "description" },
@@ -114,7 +114,7 @@ export const dtAttrJson = {
     { value: "id", label: "id" },
     { value: "refType", label: "refType" },
     { value: "refId", label: "refId" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "companyId", label: "companyId" },
     { value: "companyRefId", label: "companyRefId" },
     { value: "companyName", label: "companyName" },
@@ -130,7 +130,7 @@ export const dtAttrJson = {
     { value: "id", label: "id" },
     { value: "refType", label: "refType" },
     { value: "refId", label: "refId" },
-    { value: "codeSap", label: "codeSap" },
+
     { value: "companyId", label: "companyId" },
     { value: "companyRefId", label: "companyRefId" },
     { value: "companyName", label: "companyName" },
@@ -232,7 +232,7 @@ export const dtAttrJson = {
       label: "originWeighOutOperatorName",
     },
     { value: "originWeighOutTimestamp", label: "originWeighOutTimestamp" },
-    { value: "potonganWajib", label: "potonganWajib" },
+    { value: "persenPotngWajib", label: "persenPotngWajib" },
     { value: "potonganLain", label: "potonganLain" },
     { value: "destinationWeighInKg", label: "destinationWeighInKg" },
     { value: "destinationWeighInRemark", label: "destinationWeighInRemark" },

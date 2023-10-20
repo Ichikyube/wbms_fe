@@ -31,7 +31,6 @@ const EditSites = ({
     // sourceSiteName: yup.string().required("required"),
     companyName: yup.string().required("required"),
     code: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
     shortName: yup.string().required("required"),
     description: yup.string().required("required"),
     name: yup.string().required("required"),
@@ -113,7 +112,7 @@ const EditSites = ({
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -137,30 +136,7 @@ const EditSites = ({
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Code Sap...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
-                  />
-                </FormControl>
+              
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{

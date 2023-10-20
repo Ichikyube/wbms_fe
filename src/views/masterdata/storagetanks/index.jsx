@@ -150,13 +150,7 @@ const StorageTanks = () => {
       hide: false,
       flex: 2,
     },
-    {
-      headerName: "Code SAP",
-      field: "codeSap",
-      sortable: true,
-      hide: false,
-      flex: 2,
-    },
+   
     {
       headerName: "Nama",
       field: "name",

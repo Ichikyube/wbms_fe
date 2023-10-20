@@ -946,8 +946,8 @@ const GradingCalculator = ({
               Potongan Wajib Vendor
             </Typography>
           }
-          name="potonganWajib"
-          value={values.potonganWajib || 0}
+          name="persenPotngWajib"
+          value={values.persenPotngWajib || 0}
         />
         <TextField
           type="number"

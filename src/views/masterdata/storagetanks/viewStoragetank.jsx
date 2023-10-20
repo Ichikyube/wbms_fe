@@ -72,7 +72,7 @@ const EditStorageTank = ({
                 gap="20px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
               >
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 8" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -97,31 +97,7 @@ const EditStorageTank = ({
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Code SAP
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Code SAP"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
-                  />
-                </FormControl>
+              
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{

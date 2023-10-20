@@ -141,7 +141,7 @@ export const InitialData = {
   originWeighOutOperatorName: "",
   originWeighOutTimestamp: null,
 
-  potonganWajib: 0,
+  persenPotngWajib: 0,
   potonganLain: 0,
 
   destinationWeighInKg: 0,

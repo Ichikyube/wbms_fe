@@ -231,7 +231,7 @@ const BonTripPrint = (props) => {
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">
-                        {dtTrans.potonganWajib + dtTrans.potonganLain}
+                        {dtTrans.persenPotngWajib + dtTrans.potonganLain}
                       </td>
                     </tr>
                     <tr>
@@ -242,7 +242,7 @@ const BonTripPrint = (props) => {
                       <td className="nota-text">
                         {dtTrans.originWeighOutKg -
                           dtTrans.originWeighInKg -
-                          dtTrans.potonganWajib -
+                          dtTrans.persenPotngWajib -
                           dtTrans.potonganLain}
                         KG
                       </td>

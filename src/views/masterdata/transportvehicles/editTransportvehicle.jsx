@@ -54,7 +54,7 @@ const EditTransportvehicle = ({
   const UserSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
+    code: yup.string().required("required"),
     productId: yup.string().required("required"),
     productName: yup.string().required("required"),
     productCode: yup.string().required("required"),
@@ -71,8 +71,7 @@ const EditTransportvehicle = ({
   return (
     <Dialog open={isEditOpen} fullWidth maxWidth="md">
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Edit Data Transport Vehicle
         <IconButton
           sx={{
@@ -83,8 +82,7 @@ const EditTransportvehicle = ({
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -92,8 +90,7 @@ const EditTransportvehicle = ({
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={dtTransportvehicle}
-        validationSchema={UserSchema}
-      >
+        validationSchema={UserSchema}>
         {({
           values,
           errors,
@@ -112,8 +109,7 @@ const EditTransportvehicle = ({
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(8, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -121,8 +117,7 @@ const EditTransportvehicle = ({
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Plat No
                   </FormLabel>
                   <TextField
@@ -145,21 +140,20 @@ const EditTransportvehicle = ({
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
+                    }}>
+                    Code
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Code Sap...."
+                    placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
+                    value={values?.code}
+                    name="code"
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -169,8 +163,7 @@ const EditTransportvehicle = ({
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Company
                   </FormLabel>
                   <Select
@@ -188,8 +181,7 @@ const EditTransportvehicle = ({
                         selectedCompany ? selectedCompany.name : ""
                       );
                     }}
-                    displayEmpty
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih Company --
                     </MenuItem>
@@ -209,8 +201,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Company Name
                   </FormLabel>
                   <TextField
@@ -233,8 +224,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Capacity
                   </FormLabel>
 
@@ -264,8 +254,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     License ED
                   </FormLabel>
                   <TextField
@@ -292,8 +281,7 @@ const EditTransportvehicle = ({
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Product
                   </FormLabel>
                   <Select
@@ -311,8 +299,7 @@ const EditTransportvehicle = ({
                         selectedproduct ? selectedproduct.name : ""
                       );
                     }}
-                    displayEmpty
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih Product --
                     </MenuItem>
@@ -332,8 +319,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Product Name
                   </FormLabel>
                   <TextField
@@ -356,8 +342,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Product Code
                   </FormLabel>
                   <TextField
@@ -380,8 +365,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Scc Model
                   </FormLabel>
                   <TextField
@@ -404,8 +388,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Brand
                   </FormLabel>
                   <TextField
@@ -428,8 +411,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Model
                   </FormLabel>
                   <TextField
@@ -452,8 +434,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Notes
                   </FormLabel>
                   <TextField
@@ -477,8 +458,7 @@ const EditTransportvehicle = ({
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Keur ED
                   </FormLabel>
                   <TextField
@@ -512,8 +492,7 @@ const EditTransportvehicle = ({
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}
-                  >
+                    }}>
                     Cancel
                   </Button>
                 </Box>
@@ -523,8 +502,7 @@ const EditTransportvehicle = ({
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

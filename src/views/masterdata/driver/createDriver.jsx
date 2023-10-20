@@ -50,14 +50,14 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
       .email("Enter a valid email")
       .required("Email is required"),
     phone: yup.string().required("required"),
-    codeSap: yup.string().required("required"),
+    code: yup.string().required("required"),
     licenseNo: yup.string().required("required"),
     licenseED: yup.date().required("required"),
   });
   const initialValues = {
     companyId: "",
     companyName: "",
-    codeSap: "",
+    code: "",
     nik: "",
     name: "",
     address: "",
@@ -70,8 +70,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth="md">
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Tambah Data Driver
         <IconButton
           sx={{
@@ -82,8 +81,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -91,8 +89,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
       <Formik
         onSubmit={handleSubmit}
         initialValues={initialValues}
-        validationSchema={checkoutSchema}
-      >
+        validationSchema={checkoutSchema}>
         {({
           values,
           errors,
@@ -111,8 +108,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(8, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -120,8 +116,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     NPK
                   </FormLabel>
                   <TextField
@@ -144,21 +139,20 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
-                    Code Sap
+                    }}>
+                    Code
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Code Sap...."
+                    placeholder="Masukkan Code...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
+                    value={values?.code}
+                    name="code"
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 8" }}>
@@ -168,8 +162,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Name
                   </FormLabel>
 
@@ -193,8 +186,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     License (SIM)
                   </FormLabel>
                   <TextField
@@ -217,8 +209,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     License ED
                   </FormLabel>
                   <TextField
@@ -241,8 +232,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Company
                   </FormLabel>
                   <Select
@@ -263,8 +253,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih Company --
                     </MenuItem>
@@ -284,8 +273,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Company Name
                   </FormLabel>
                   <TextField
@@ -309,8 +297,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Email
                   </FormLabel>
                   <TextField
@@ -333,8 +320,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Phone Number
                   </FormLabel>
                   <TextField
@@ -357,8 +343,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address
                   </FormLabel>
                   <TextField
@@ -390,8 +375,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}
-                  >
+                    }}>
                     Cancel
                   </Button>
                 </Box>
@@ -401,8 +385,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

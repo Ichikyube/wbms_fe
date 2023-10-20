@@ -110,7 +110,7 @@ const PksManualTBSTimbangKeluar = ({
   //   } else {
   //     let total =
   //       Math.abs(values.originWeighInKg - weighbridge.getWeight()) -
-  //       values.potonganWajib -
+  //       values.persenPotngWajib -
   //       values.potonganLain;
   //     setOriginWeightNetto(total);
   //   }

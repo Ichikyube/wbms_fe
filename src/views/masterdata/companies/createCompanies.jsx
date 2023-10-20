@@ -47,6 +47,9 @@ const CreateCompanies = ({ isOpen, onClose }) => {
     province: "",
     city: "",
     code: "",
+    codeVendor: "",
+    persenPotngWajib: "",
+    type: "",
     shortName: "",
     address: "",
     addressExt: "",
@@ -68,6 +71,9 @@ const CreateCompanies = ({ isOpen, onClose }) => {
     province: yup.string().required("required"),
     city: yup.string().required("required"),
     code: yup.string().required("required"),
+    codeVendor: yup.string().required("required"),
+    persenPotngWajib: yup.string().required("required"),
+    type: yup.string().required("required"),
     shortName: yup.string().required("required"),
     address: yup.string().required("required"),
     addressExt: yup.string().required("required"),
@@ -90,8 +96,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Tambah Data Company
         <IconButton
           sx={{
@@ -102,8 +107,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -111,8 +115,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
       <Formik
         onSubmit={handleSubmit}
         initialValues={initialValues}
-        validationSchema={checkoutSchema}
-      >
+        validationSchema={checkoutSchema}>
         {({
           values,
           errors,
@@ -130,17 +133,15 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8, minmax(0, 1fr))"
-              >
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                gridTemplateColumns="repeat(8, minmax(0, 1fr))">
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Code
                   </FormLabel>
                   <TextField
@@ -156,6 +157,29 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}>
+                    Code Vendor
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan Code Vendor...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values?.codeVendor}
+                    name="codeVendor"
+                    error={!!touched.codeVendor && !!errors.codeVendor}
+                    helperText={touched.codeVendor && errors.codeVendor}
+                  />
+                </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{
@@ -163,8 +187,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Full Name
                   </FormLabel>
 
@@ -188,8 +211,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Short Name
                   </FormLabel>
                   <TextField
@@ -212,8 +234,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Url
                   </FormLabel>
                   <TextField
@@ -235,8 +256,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Email
                   </FormLabel>
                   <TextField
@@ -259,8 +279,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Phone Number
                   </FormLabel>
                   <TextField
@@ -283,8 +302,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Name
                   </FormLabel>
                   <TextField
@@ -307,8 +325,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Phone
                   </FormLabel>
                   <TextField
@@ -331,8 +348,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Country
                   </FormLabel>
                   <TextField
@@ -355,8 +371,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Province
                   </FormLabel>
                   <TextField
@@ -379,8 +394,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     City
                   </FormLabel>
                   <TextField
@@ -403,8 +417,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address
                   </FormLabel>
                   <TextField
@@ -427,8 +440,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Postal Code
                   </FormLabel>
                   <TextField
@@ -450,8 +462,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address Ext
                   </FormLabel>
                   <TextField
@@ -471,25 +482,30 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
-                      marginBottom: "8px",
                       color: "black",
+                      marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Tipe
                   </FormLabel>
-                  <TextField
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan tipe...."
+                  <Select
+                    labelId="label-module"
+                    fullWidth
+                    value={values?.type}
+                    name="type"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.tipe}
-                    name="tipe"
-                    error={!!touched.tipe && !!errors.tipe}
-                    helperText={touched.tipe && errors.tipe}
-                  />
+                    displayEmpty
+                    sx={{
+                      color: MenuItem ? "gray" : "black",
+                    }}>
+                    <MenuItem value="" disabled>
+                      -- Pilih Tipe --
+                    </MenuItem>
+                    <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Eksternal">Eksternal</MenuItem>
+                  </Select>
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -498,8 +514,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Persen Potong Wajib
                   </FormLabel>
                   <TextField
@@ -510,8 +525,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           %
                         </InputAdornment>
                       ),
@@ -519,10 +533,14 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     placeholder="Masukkan Potongan Wajib...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.potonganwajib}
-                    name="potonganwajib"
-                    error={!!touched.potonganwajib && !!errors.potonganwajib}
-                    helperText={touched.potonganwajib && errors.potonganwajib}
+                    value={values?.persenPotngWajib}
+                    name="persenPotngWajib"
+                    error={
+                      !!touched.persenPotngWajib && !!errors.persenPotngWajib
+                    }
+                    helperText={
+                      touched.persenPotngWajib && errors.persenPotngWajib
+                    }
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -532,8 +550,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator
                   </FormLabel>
                   <Select
@@ -546,8 +563,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator --
                     </MenuItem>
@@ -562,8 +578,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator Transporter
                   </FormLabel>
                   <Select
@@ -575,8 +590,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator Transporter --
                     </MenuItem>
@@ -591,8 +605,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     SiteOperator
                   </FormLabel>
                   <Select
@@ -605,8 +618,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih SiteOperator --
                     </MenuItem>
@@ -621,8 +633,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Estate
                   </FormLabel>
                   <Select
@@ -635,8 +646,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     displayEmpty
                     sx={{
                       color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    }}>
                     <MenuItem value="" disabled>
                       -- Pilih Estate --
                     </MenuItem>
@@ -657,8 +667,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}
-                  >
+                    }}>
                     Cancel
                   </Button>
                 </Box>
@@ -668,8 +677,7 @@ const CreateCompanies = ({ isOpen, onClose }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

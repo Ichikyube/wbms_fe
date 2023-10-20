@@ -137,13 +137,7 @@ const Products = () => {
       hide: false,
       flex: 2,
     },
-    {
-      headerName: "SAP Code",
-      field: "codeSap",
-      sortable: true,
-      hide: false,
-      flex: 2,
-    },
+  
     {
       headerName: "Nama",
       field: "name",

@@ -98,20 +98,20 @@ const ViewTransportvehicle = ({
                       fontWeight: "bold",
                     }}
                   >
-                    Code Sap
+                    Code 
                   </FormLabel>
                   <TextField
                     fullWidth
                     inputProps={{ readOnly: true }}
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Code Sap...."
+                    placeholder="Masukkan Code ...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
+                    value={values.code}
+                    name="code"
+                    error={!!touched.code && !!errors.code}
+                    helperText={touched.code && errors.code}
                   />
                 </FormControl>
                

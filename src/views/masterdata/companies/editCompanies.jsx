@@ -26,6 +26,9 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
     province: yup.string().required("required"),
     city: yup.string().required("required"),
     code: yup.string().required("required"),
+    codeVendor: yup.string().required("required"),
+    persenPotngWajib: yup.string().required("required"),
+    type: yup.string().required("required"),
     shortName: yup.string().required("required"),
     address: yup.string().required("required"),
     addressExt: yup.string().required("required"),
@@ -64,11 +67,9 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}
-    >
+      onClose={() => onClose("", false)}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Edit Data Company
         <IconButton
           sx={{
@@ -79,8 +80,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -88,8 +88,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={dtCompanies}
-        validationSchema={userSchema}
-      >
+        validationSchema={userSchema}>
         {({
           values,
           errors,
@@ -107,17 +106,15 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8, minmax(0, 1fr))"
-              >
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                gridTemplateColumns="repeat(8, minmax(0, 1fr))">
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Code
                   </FormLabel>
                   <TextField
@@ -133,6 +130,29 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}>
+                    Code Vendor
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan Code Vendor...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values?.codeVendor}
+                    name="codeVendor"
+                    error={!!touched.codeVendor && !!errors.codeVendor}
+                    helperText={touched.codeVendor && errors.codeVendor}
+                  />
+                </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{
@@ -140,8 +160,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Full Name
                   </FormLabel>
 
@@ -165,8 +184,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Short Name
                   </FormLabel>
                   <TextField
@@ -189,8 +207,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Url
                   </FormLabel>
                   <TextField
@@ -212,8 +229,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Email
                   </FormLabel>
                   <TextField
@@ -236,8 +252,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Phone Number
                   </FormLabel>
                   <TextField
@@ -260,8 +275,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Name
                   </FormLabel>
                   <TextField
@@ -284,8 +298,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Phone
                   </FormLabel>
                   <TextField
@@ -308,8 +321,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Country
                   </FormLabel>
                   <TextField
@@ -332,8 +344,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Province
                   </FormLabel>
                   <TextField
@@ -356,8 +367,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     City
                   </FormLabel>
                   <TextField
@@ -380,8 +390,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address
                   </FormLabel>
                   <TextField
@@ -403,8 +412,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Postal Code
                   </FormLabel>
                   <TextField
@@ -426,8 +434,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address Ext
                   </FormLabel>
                   <TextField
@@ -447,25 +454,27 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
-                      marginBottom: "8px",
                       color: "black",
+                      marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Tipe
                   </FormLabel>
-                  <TextField
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan tipe...."
+                  <Select
+                    labelId="label-module"
+                    fullWidth
+                    value={values?.type}
+                    name="type"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.tipe}
-                    name="tipe"
-                    error={!!touched.tipe && !!errors.tipe}
-                    helperText={touched.tipe && errors.tipe}
-                  />
+                    displayEmpty>
+                    <MenuItem value="" disabled>
+                      -- Pilih Tipe --
+                    </MenuItem>
+                    <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Eksternal">Eksternal</MenuItem>
+                  </Select>
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
@@ -474,8 +483,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Persen Potong Wajib
                   </FormLabel>
                   <TextField
@@ -486,8 +494,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           %
                         </InputAdornment>
                       ),
@@ -495,10 +502,14 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Potongan Wajib...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.potonganwajib}
-                    name="potonganwajib"
-                    error={!!touched.potonganwajib && !!errors.potonganwajib}
-                    helperText={touched.potonganwajib && errors.potonganwajib}
+                    value={values?.persenPotngWajib}
+                    name="persenPotngWajib"
+                    error={
+                      !!touched.persenPotngWajib && !!errors.persenPotngWajib
+                    }
+                    helperText={
+                      touched.persenPotngWajib && errors.persenPotngWajib
+                    }
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -508,8 +519,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator
                   </FormLabel>
                   <Select
@@ -519,11 +529,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="isMillOperator"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator --
                     </MenuItem>
@@ -538,8 +544,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator Transporter
                   </FormLabel>
                   <Select
@@ -548,11 +553,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="isTransporter"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih Mill Operator Transporter --
                     </MenuItem>
@@ -567,8 +568,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     SiteOperator
                   </FormLabel>
                   <Select
@@ -578,11 +578,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="isSiteOperator"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih SiteOperator --
                     </MenuItem>
@@ -597,8 +593,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Estate
                   </FormLabel>
                   <Select
@@ -608,11 +603,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     name="isEstate"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
+                    displayEmpty>
                     <MenuItem value="" disabled>
                       -- Pilih Estate --
                     </MenuItem>
@@ -633,8 +624,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     }}
                     onClick={() => {
                       onClose("", false);
-                    }}
-                  >
+                    }}>
                     Cancel
                   </Button>
                 </Box>
@@ -644,8 +634,7 @@ const EditCompanies = ({ isEditOpen, onClose, dtCompanies }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

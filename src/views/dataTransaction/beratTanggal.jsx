@@ -86,7 +86,7 @@ const BeratTanggal = () => {
     } else {
       let total =
         Math.abs(values.originWeighInKg - values.originWeighOutKg) -
-        values.potonganWajib -
+        values.persenPotngWajib -
         values.potonganLain;
       setOriginWeightNetto(total);
     }
@@ -201,8 +201,8 @@ const BeratTanggal = () => {
               Potongan Wajib Vendor
             </Typography>
           }
-          name="potonganWajib"
-          value={values.potonganWajib || 0}
+          name="persenPotngWajib"
+          value={values.persenPotngWajib || 0}
         />
         <TextField
           type="number"

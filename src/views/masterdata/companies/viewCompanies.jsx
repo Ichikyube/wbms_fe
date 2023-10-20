@@ -21,11 +21,9 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
       open={isViewOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}
-    >
+      onClose={() => onClose("", false)}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Detail Data Company
         <IconButton
           sx={{
@@ -36,8 +34,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -60,17 +57,15 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(8, minmax(0, 1fr))"
-              >
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                gridTemplateColumns="repeat(8, minmax(0, 1fr))">
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Code
                   </FormLabel>
                   <TextField
@@ -87,6 +82,30 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}>
+                    Code Vendor
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    inputProps={{ readOnly: true }}
+                    placeholder="Masukkan Code Vendor...."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values?.codeVendor}
+                    name="codeVendor"
+                    error={!!touched.codeVendor && !!errors.codeVendor}
+                    helperText={touched.codeVendor && errors.codeVendor}
+                  />
+                </FormControl>
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{
@@ -94,8 +113,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Full Name
                   </FormLabel>
 
@@ -120,8 +138,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Short Name
                   </FormLabel>
                   <TextField
@@ -145,8 +162,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Url
                   </FormLabel>
                   <TextField
@@ -169,8 +185,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Email
                   </FormLabel>
                   <TextField
@@ -194,8 +209,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Phone Number
                   </FormLabel>
                   <TextField
@@ -219,8 +233,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Name
                   </FormLabel>
                   <TextField
@@ -244,8 +257,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Contact Phone
                   </FormLabel>
                   <TextField
@@ -269,8 +281,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Country
                   </FormLabel>
                   <TextField
@@ -294,8 +305,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Province
                   </FormLabel>
                   <TextField
@@ -319,8 +329,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     City
                   </FormLabel>
                   <TextField
@@ -344,8 +353,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address
                   </FormLabel>
                   <TextField
@@ -369,8 +377,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Postal Code
                   </FormLabel>
                   <TextField
@@ -393,8 +400,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Address Ext
                   </FormLabel>
                   <TextField
@@ -419,8 +425,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Tipe
                   </FormLabel>
                   <TextField
@@ -429,10 +434,10 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan tipe...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.tipe}
-                    name="tipe"
-                    error={!!touched.tipe && !!errors.tipe}
-                    helperText={touched.tipe && errors.tipe}
+                    value={values?.type}
+                    name="type"
+                    error={!!touched.type && !!errors.type}
+                    helperText={touched.type && errors.type}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -442,8 +447,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Persen Potong Wajib
                   </FormLabel>
                   <TextField
@@ -454,8 +458,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       endAdornment: (
                         <InputAdornment
                           position="end"
-                          sx={{ fontWeight: "bold" }}
-                        >
+                          sx={{ fontWeight: "bold" }}>
                           %
                         </InputAdornment>
                       ),
@@ -463,10 +466,14 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                     placeholder="Masukkan Potongan Wajib...."
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values?.potonganwajib}
-                    name="potonganwajib"
-                    error={!!touched.potonganwajib && !!errors.potonganwajib}
-                    helperText={touched.potonganwajib && errors.potonganwajib}
+                    value={values?.persenPotngWajib}
+                    name="persenPotngWajib"
+                    error={
+                      !!touched.persenPotngWajib && !!errors.persenPotngWajib
+                    }
+                    helperText={
+                      touched.persenPotngWajib && errors.persenPotngWajib
+                    }
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -476,8 +483,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator
                   </FormLabel>
                   <Select
@@ -505,8 +511,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Mill Operator Transporter
                   </FormLabel>
                   <Select
@@ -533,8 +538,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     SiteOperator
                   </FormLabel>
                   <Select
@@ -562,8 +566,7 @@ const ViewCompanies = ({ isViewOpen, onClose, dtCompanies }) => {
                       marginBottom: "8px",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Estate
                   </FormLabel>
                   <Select

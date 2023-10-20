@@ -165,7 +165,7 @@ const PksManualTBSinternalTimbangMasuk = ({
       cSubmit = values.originWeighOutKg >= configs.ENV.WBMS_WB_MIN_WEIGHT;
     }
     setCanSubmit(cSubmit);
-  }, [values,bonTripNo]);
+  }, [values, bonTripNo]);
 
   const validateForm = () => {
     return (
@@ -600,8 +600,8 @@ const PksManualTBSinternalTimbangMasuk = ({
               Potongan Wajib Vendor
             </Typography>
           }
-          name="potonganWajib"
-          value={values.potonganWajib || 0}
+          name="persenPotngWajib"
+          value={values.persenPotngWajib || 0}
         />
         <TextField
           type="number"

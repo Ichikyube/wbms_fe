@@ -86,31 +86,7 @@ const ViewProduct = ({ isViewOpen, onClose, dtProducts }) => {
                     helperText={touched.code && errors.code}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    SAP Code
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    inputProps={{ readOnly: true }}
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan SAP Code...."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values?.codeSap}
-                    name="codeSap"
-                    error={!!touched.codeSap && !!errors.codeSap}
-                    helperText={touched.codeSap && errors.codeSap}
-                  />
-                </FormControl>
+               
                 <FormControl sx={{ gridColumn: "span 5" }}>
                   <FormLabel
                     sx={{

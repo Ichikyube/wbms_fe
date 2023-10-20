@@ -61,10 +61,8 @@ export default function TrxGradingFormula({
       setAvailableParams(params.filter((param) => !parameters.includes(param)));
     }
   }, [parameters, params]);
-
   useEffect(() => {
-    const stringOfCode = String(code);
-    setFieldValue("defaultVal", { parameters, stringOfCode });
+    setFieldValue("defaultVal", `[${parameters}]<##FunctionCode##>${code}`);
     console.log(values.defaultVal);
   }, [code, setFieldValue, parameters]);
 

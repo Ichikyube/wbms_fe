@@ -94,9 +94,11 @@ const ConditionalInput = ({
         handleChange={handleChange}
         values={values}
         params={[
-          "trxGradingWAJIB: number",
+          "trxGradingPERSEN: number",
           "originWeighInKg: number",
           "originWeighOutKg: number",
+          "qtyTbs: number",
+          "weightnetto: number",
           "adTransactionMILL_ID: string",
         ]}
       />

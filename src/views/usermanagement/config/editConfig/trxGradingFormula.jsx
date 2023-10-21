@@ -12,8 +12,11 @@ export default function TrxGradingFormula({
   params,
   values,
 }) {
-  const [code, setCode] = React.useState(dtConfig.defaultVal);
-  const [parameters, setParameters] = useState([]);
+  const [prevParams, prevCode] =
+    dtConfig.defaultVal.split("<##FunctionCode##>");
+  console.log(prevParams.split(","))
+  const [code, setCode] = React.useState(prevCode);
+  const [parameters, setParameters] = useState(prevParams.split(","));
   const [generatedFunction, setGeneratedFunction] = useState("");
   const [availableParams, setAvailableParams] = useState(params);
   const [numParams, setNumParams] = useState(0);
@@ -62,8 +65,7 @@ export default function TrxGradingFormula({
     }
   }, [parameters, params]);
   useEffect(() => {
-    setFieldValue("defaultVal", `[${parameters}]<##FunctionCode##>${code}`);
-    console.log(values.defaultVal);
+    setFieldValue("defaultVal", `${parameters}<##FunctionCode##>${code}`);
   }, [code, setFieldValue, parameters]);
 
   return (
@@ -99,9 +101,9 @@ export default function TrxGradingFormula({
           >
             <option value="">Select a parameter</option>
             <option
-              value="trxGradingWAJIB: number"
+              value="trxGradingPERSEN: number"
               disabled={parameters.includes(params[0])}>
-              trxGradingWAJIB: number
+              trxGradingPERSEN: number
             </option>
             <option
               value="originWeighInKg: number"
@@ -114,8 +116,18 @@ export default function TrxGradingFormula({
               originWeighOutKg: number
             </option>
             <option
-              value="adTransactionMILL_ID: string"
+              value="qtyTbs: number"
               disabled={parameters.includes(params[3])}>
+              qtyTbs: number
+            </option>
+            <option
+              value="weightnetto: number"
+              disabled={parameters.includes(params[4])}>
+              weightnetto: number
+            </option>
+            <option
+              value="adTransactionMILL_ID: string"
+              disabled={parameters.includes(params[5])}>
               adTransactionMILL_ID: string
             </option>
           </select>

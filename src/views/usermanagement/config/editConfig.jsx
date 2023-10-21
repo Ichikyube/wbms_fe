@@ -37,7 +37,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, refetch }) => {
     if (dtConfig.type === "Json")
       values.defaultVal = JSON.stringify(values.defaultVal);
     try {
-      ConfigApi.update(values);
+      if(dtConfig.type === "Function") ConfigApi.updateFunction(values);
+      else ConfigApi.update(values);
 
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {

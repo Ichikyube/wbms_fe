@@ -21,7 +21,13 @@ export const update = async (data) => {
   const response = await api.patch(`${endpoint}/${data.id}`, data);
   return response?.data;
 };
-
+export const updateFunction = async (data) => {
+  const response = await api.post(
+    `${endpoint}/${data.id}/edit-function`,
+    data
+  );
+  return response?.data;
+};
 export const deleteById = async (id) => {
   const response = await api.delete(`${endpoint}/${id}`);
   return response?.data;
@@ -68,6 +74,5 @@ export const getISCC_SCC_MODEL = () => {
   };
   return response?.data;
 };
-
 
 //Modul Instalasasi
